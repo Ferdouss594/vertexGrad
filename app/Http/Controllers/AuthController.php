@@ -56,12 +56,14 @@ class AuthController extends Controller
              
         }
 
-        // فحص وجود المستخدم + التحقق من كلمة المرور المشفرة
-        if (!$user || $request->password !== $user->password) {
+       
+
+if (!$user || !Hash::check($request->password, $user->password)) {
     return back()->withErrors([
         'login_id' => 'Email/Username or password is incorrect.'
     ]);
 }
+
 
         // تسجيل الدخول
         Auth::login($user);

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
 
 class Project extends Model
 {
@@ -27,21 +28,26 @@ class Project extends Model
     ];
 
     // علاقات
-    public function student() {
-        return $this->belongsTo(Student::class, 'student_id');
-    }
+    
 
-    public function supervisor() {
-        return $this->belongsTo(Supervisor::class, 'supervisor_id');
-    }
+public function student() {
+    return $this->belongsTo(User::class, 'student_id');
+}
 
-    public function manager() {
-        return $this->belongsTo(Manager::class, 'manager_id');
-    }
+public function supervisor() {
+    return $this->belongsTo(User::class, 'supervisor_id');
+}
 
-    public function investor() {
-        return $this->belongsTo(Investor::class, 'investor_id');
-    }
+public function manager() {
+    return $this->belongsTo(User::class, 'manager_id');
+}
+
+public function investor() {
+    return $this->belongsTo(User::class, 'investor_id');
+}
+
+
+   
 
     public function tasks() {
         return $this->hasMany(ProjectTask::class, 'project_id');

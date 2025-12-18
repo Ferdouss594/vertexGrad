@@ -70,46 +70,53 @@ class InvestorController extends Controller
             return redirect()->back()->withInput()->with('error', 'البريد الإلكتروني موجود مسبقًا.');
         }
 
-        DB::transaction(function() use ($request, &$investor) {
+        try {
+            DB::transaction(function() use ($request, &$investor) {
 
-            // إنشاء المستخدم
-            $user = User::create([
-                'username' => $request->username,
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => bcrypt($request->password),
-                'role' => 'Investor',
-                'status' => $request->status ?? 'active',
-                'gender' => $request->gender ?? null,
-                'city' => $request->city ?? null,
-                'state' => $request->state ?? null,
-                'profile_image' => $request->profile_image ?? null,
-            ]);
+                // إنشاء المستخدم
+                $user = User::create([
+                    'username' => $request->username,
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'password' => bcrypt($request->password),
+                    'role' => 'Investor',
+                    'status' => $request->status ?? 'active',
+                    'gender' => $request->gender ?? null,
+                    'city' => $request->city ?? null,
+                    'state' => $request->state ?? null,
+                    'profile_image' => $request->profile_image ?? null,
+                ]);
 
-            // إنشاء المستثمر
-            $investor = Investor::create([
-                'user_id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'status' => $request->status ?? 'Active',
-                'company' => $request->company ?? null,
-                'position' => $request->position ?? null,
-                'investment_type' => $request->investment_type ?? null,
-                'budget' => $request->budget ?? null,
-                'source' => $request->source ?? null,
-                'notes' => $request->notes ?? null,
-            ]);
+                // إنشاء المستثمر
+                $investor = Investor::create([
+                    'user_id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'status' => $request->status ?? 'Active',
+                    'company' => $request->company ?? null,
+                    'position' => $request->position ?? null,
+                    'investment_type' => $request->investment_type ?? null,
+                    'budget' => $request->budget ?? null,
+                    'source' => $request->source ?? null,
+                    'notes' => $request->notes ?? null,
+                ]);
 
-            // سجل النشاط
-            InvestorActivity::create([
-                'investor_id' => $investor->id,
-                'user_id' => auth()->id(),
-                'action' => 'created',
-                'meta' => ['name'=>$investor->name]
-            ]);
-        });
+                // سجل النشاط
+                InvestorActivity::create([
+                    'investor_id' => $investor->id,
+                    'user_id' => auth()->id(),
+                    'action' => 'created',
+                    'meta' => ['name'=>$investor->name]
+                ]);
+            });
 
-        return redirect()->route('investors.show', $investor)->with('success','تم إنشاء المستثمر بنجاح.');
+            return redirect()->route('investors.show', $investor)->with('success','تم إنشاء المستثمر بنجاح.');
+        } catch (\Illuminate\Database\QueryException $e) {
+            if ($e->getCode() == 23000) { // Integrity constraint violation
+                return redirect()->back()->withInput()->with('error', 'البريد الإلكتروني موجود مسبقًا أو حدث خطأ في قاعدة البيانات.');
+            }
+            throw $e; // Re-throw if not a duplicate key error
+        }
     }
 
     // =================== عرض مستثمر ===================

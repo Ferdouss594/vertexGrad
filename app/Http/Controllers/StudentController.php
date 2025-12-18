@@ -47,12 +47,14 @@ class StudentController extends Controller
         ]);
 
         $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'role' => 'Student',
-            'status' => $request->status ?? 'active',
-            'password' => bcrypt('12345678'),
-        ]);
+    'username' => explode('@', $request->email)[0], // توليد تلقائي
+    'name'     => $request->name,
+    'email'    => $request->email,
+    'role'     => 'Student',
+    'status'   => $request->status ?? 'active',
+    'password' => bcrypt('12345678'),
+]);
+
 
         if ($request->filled('major') || $request->filled('phone') || $request->filled('address')) {
             $user->student()->create([

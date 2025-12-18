@@ -159,3 +159,9 @@ Route::prefix('projects/{project}')->group(function(){
 });
 Route::get('/investors/create', [InvestorController::class, 'create'])->name('investors.create');
 Route::post('/investors', [InvestorController::class, 'store'])->name('investors.store');
+// routes/web.php
+Route::prefix('dashboard')->middleware(['auth'])->group(function() {
+    Route::get('projects/create', [ProjectController::class, 'create'])->name('projects.create');
+    Route::post('projects', [ProjectController::class, 'store'])->name('projects.store');
+});
+Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('projects.show');

@@ -83,9 +83,12 @@
         </div>
         <!-- END CHARTS -->
 
+       
+
+     
+
         <!-- PROJECTS TABLE -->
         <div class="card-box bg-white p-3 mt-4">
-
             <table class="table table-bordered table-striped">
                 <thead class="thead-dark">
                     <tr>
@@ -108,22 +111,26 @@
                         <tr>
                             <td>{{ $loop->iteration }}</td>
 
+                            <!-- اسم المشروع مع رابط Show -->
                             <td>
-                                <a href="{{ route('projects.show', $project->id) }}">
+                                <a href="{{ route('projects.show', $project) }}">
                                     {{ $project->name }}
                                 </a>
                             </td>
 
+                            <!-- اسماء الطلاب والمشرفين والمديرين -->
                             <td>{{ $project->student->name ?? '—' }}</td>
                             <td>{{ $project->supervisor->name ?? '—' }}</td>
                             <td>{{ $project->manager->name ?? '—' }}</td>
                             <td>{{ $project->investor->name ?? '—' }}</td>
 
+                            <!-- الحالة badge -->
                             <td>
                                 <span class="badge 
-                                    @if($project->status=='Pending') badge-warning 
-                                    @elseif($project->status=='Active') badge-primary
-                                    @else badge-success @endif">
+                                    @if(strtolower($project->status)=='pending') bg-warning
+                                    @elseif(strtolower($project->status)=='active') bg-primary
+                                    @elseif(strtolower($project->status)=='completed') bg-success
+                                    @else bg-secondary @endif">
                                     {{ $project->status }}
                                 </span>
                             </td>
@@ -132,8 +139,9 @@
                             <td>{{ $project->start_date ?? '—' }}</td>
                             <td>{{ $project->end_date ?? '—' }}</td>
 
+                            <!-- زر View -->
                             <td>
-                                <a href="{{ route('projects.show',$project->id) }}" class="btn btn-sm btn-info">View</a>
+                                <a href="{{ route('projects.show',$project) }}" class="btn btn-sm btn-info">View</a>
                             </td>
                         </tr>
                     @empty
@@ -144,7 +152,6 @@
                 </tbody>
 
             </table>
-
         </div>
         <!-- END TABLE -->
 

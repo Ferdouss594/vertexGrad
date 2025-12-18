@@ -15,11 +15,11 @@ return new class extends Migration
             $table->string('category', 50)->nullable();
             $table->enum('status', ['Pending','Active','Completed'])->default('Pending');
 
-            // علاقات
-            $table->foreignId('student_id')->constrained('students');
-            $table->foreignId('supervisor_id')->nullable()->constrained('supervisors');
-            $table->foreignId('manager_id')->nullable()->constrained('managers');
-            $table->foreignId('investor_id')->nullable()->constrained('investors');
+ $table->foreignId('student_id')->constrained('users');
+$table->foreignId('supervisor_id')->nullable()->constrained('users');
+$table->foreignId('manager_id')->nullable()->constrained('users');
+$table->foreignId('investor_id')->nullable()->constrained('users');
+
 
             // الحقول الإضافية
             $table->decimal('budget', 10,2)->nullable();
