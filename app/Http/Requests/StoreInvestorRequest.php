@@ -8,7 +8,7 @@ class StoreInvestorRequest extends FormRequest
     public function rules() {
         return [
             'name'=>'required|string|max:150',
-            'email'=>'nullable|email|unique:investors,email',
+            'email' => 'required|email|unique:users,email',
             'phone'=>'nullable|string|max:50',
             'company'=>'nullable|string|max:150',
             'position'=>'nullable|string|max:150',

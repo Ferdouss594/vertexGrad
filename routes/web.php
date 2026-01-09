@@ -88,6 +88,7 @@ Route::prefix('manager')->name('manager.')
         Route::post('/reject/{user}', [UserApproveController::class,'reject'])->name('users.reject');
 
         Route::get('/users/{user}', [UserController::class, 'show'])->name('users.show');
+     
 });
 
 /*
@@ -163,5 +164,12 @@ Route::post('/investors', [InvestorController::class, 'store'])->name('investors
 Route::prefix('dashboard')->middleware(['auth'])->group(function() {
     Route::get('projects/create', [ProjectController::class, 'create'])->name('projects.create');
     Route::post('projects', [ProjectController::class, 'store'])->name('projects.store');
+    Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('projects.show');
 });
-Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('projects.show');
+Route::prefix('manager')->name('manager.')->middleware([Authenticate::class, 'role:Manager'])->group(function () {
+    Route::get('/calendar', function () {
+       return view('manager.calendar');
+
+    })->name('calendar.index');
+});
+

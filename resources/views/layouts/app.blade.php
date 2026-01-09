@@ -445,7 +445,14 @@ function showToast(message, type='success'){
                   <li>
                     <a href="{{ route('projects.index') }}" class="dropdown-toggle no-arrow">
                         <span class="micon bi bi-people"></span>
-                        <span class="mtext">Investors</span>
+                        <span class="mtext">projects</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('manager.calendar.index') }}" class="dropdown-toggle no-arrow">
+
+                        <span class="micon bi bi-people"></span>
+                        <span class="mtext">projects</span>
                     </a>
                 </li>
                  

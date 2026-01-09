@@ -3,10 +3,40 @@
 @section('title','Projects')
 
 @section('content')
+<style>
+/* هذا يضمن أن كل زر View داخل الجدول يظهر اليد عند المرور */
+.table td a.btn {
+    cursor: pointer !important;}
+    /* تصميم زر View جديد */
+.btn-view {
+    background-color: #1b00ff; /* اللون الرئيسي */
+    color: #fff; /* لون النص */
+    border-radius: 8px; /* حواف مستديرة */
+    padding: 5px 15px; /* مساحة داخلية */
+    font-weight: 500; /* سمك الخط */
+    transition: all 0.3s ease; /* تأثير سلس عند hover */
+    cursor: pointer; /* مؤشر اليد */
+    display: inline-block;
+    text-decoration: none;
+}
 
+/* تأثير عند المرور على الزر */
+.btn-view:hover {
+    background-color: #0000cc; /* تغيير اللون عند المرور */
+    color: #fff;
+    transform: translateY(-2px); /* رفع الزر قليلاً */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* ظل احترافي */
+}
+
+
+
+
+</style>
 @if(session('success'))
     <div class="alert alert-success">{{ session('success') }}</div>
+    
 @endif
+
 
 <div class="pd-ltr-20 xs-pd-20-10">
     <div class="min-height-200px">
@@ -141,8 +171,9 @@
 
                             <!-- زر View -->
                             <td>
-                                <a href="{{ route('projects.show',$project) }}" class="btn btn-sm btn-info">View</a>
-                            </td>
+    <a href="{{ route('projects.show',$project) }}" class="btn btn-view">View</a>
+</td>
+
                         </tr>
                     @empty
                         <tr>

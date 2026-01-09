@@ -15,6 +15,7 @@ class DashboardController extends Controller
         $totalUsers = User::count();
         $activeUsers = User::where('status', 'active')->count();
         $pendingUsers = User::where('status', 'pending')->count();
+         $students = User::where('role', 'Student')->get();
 
         return view('manager.dashboard', compact('totalUsers', 'activeUsers', 'pendingUsers'));
     }

@@ -4,20 +4,27 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+
 class ProjectFile extends Model
 {
-    protected $fillable = ['project_id','file_name','file_type','path','access_level'];
+    use HasFactory;
+
+    protected $fillable = ['project_id','file_path','file_type'];
 
     public function project()
     {
-        return $this->belongsTo(Project::class);
+        return $this->belongsTo(Project::class, 'project_id', 'project_id');
     }
 }
 
 class Project extends Model
 {
+    use HasFactory;
+
+    protected $primaryKey = 'project_id';
+
     public function files()
     {
-        return $this->hasMany(ProjectFile::class);
+        return $this->hasMany(ProjectFile::class, 'project_id', 'project_id');
     }
 }

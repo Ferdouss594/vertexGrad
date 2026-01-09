@@ -15,9 +15,10 @@
 </div>
 @endif
 
-<form action="{{ route('projects.store') }}" method="POST">
+<form action="{{ route('projects.store') }}" method="POST" enctype="multipart/form-data">
     @csrf
 
+    <!-- Project Basic Info -->
     <div class="mb-3">
         <label>Project Name</label>
         <input type="text" name="name" class="form-control" value="{{ old('name') }}" required>
@@ -33,6 +34,7 @@
         <input type="text" name="category" class="form-control" value="{{ old('category') }}">
     </div>
 
+    <!-- Users Selection -->
     <div class="mb-3">
         <label>Supervisor</label>
         <select name="supervisor_id" class="form-select">
@@ -44,17 +46,16 @@
             @endforeach
         </select>
     </div>
-   
-</select>
-<label>Student</label>
-<select name="student_id" class="form-select" required>
-    <option value="">Select Student</option>
-    @foreach($students as $student)
-        <option value="{{ $student->id }}">{{ $student->name }}</option>
-    @endforeach
-</select>
 
-
+    <div class="mb-3">
+        <label>Student</label>
+        <select name="student_id" class="form-select" required>
+            <option value="">Select Student</option>
+            @foreach($students as $student)
+                <option value="{{ $student->id }}">{{ $student->name }}</option>
+            @endforeach
+        </select>
+    </div>
 
     <div class="mb-3">
         <label>Manager</label>
@@ -79,17 +80,18 @@
             @endforeach
         </select>
     </div>
-<div class="mb-3">
-    <label>Status</label>
-    <select name="status" class="form-select" required>
-        <option value="">Select Status</option>
-        <option value="Pending" {{ old('status')=='Pending' ? 'selected' : '' }}>Pending</option>
-        <option value="Active" {{ old('status')=='Active' ? 'selected' : '' }}>Active</option>
-        <option value="Completed" {{ old('status')=='Completed' ? 'selected' : '' }}>Completed</option>
-    </select>
-</div>
 
-    <!-- باقي الحقول مثل Budget, Dates, Priority, Featured -->
+    <!-- Status, Budget, Dates, Priority -->
+    <div class="mb-3">
+        <label>Status</label>
+        <select name="status" class="form-select" required>
+            <option value="">Select Status</option>
+            <option value="Pending" {{ old('status')=='Pending' ? 'selected' : '' }}>Pending</option>
+            <option value="Active" {{ old('status')=='Active' ? 'selected' : '' }}>Active</option>
+            <option value="Completed" {{ old('status')=='Completed' ? 'selected' : '' }}>Completed</option>
+        </select>
+    </div>
+
     <div class="mb-3">
         <label>Budget</label>
         <input type="number" step="0.01" name="budget" class="form-control" value="{{ old('budget') }}">
@@ -119,7 +121,75 @@
         <label class="form-check-label">Featured Project</label>
     </div>
 
+    <!-- File Uploads -->
+    <div class="mb-4">
+        <h5>Upload Files</h5>
+
+        <!-- Images -->
+        <label>Images</label>
+        <input type="file" name="project_files[images][]" multiple accept="image/*" class="form-control mb-2" onchange="previewSpecific(this,'images_preview')">
+        <div id="images_preview" class="mb-3"></div>
+
+        <!-- Videos -->
+        <label>Videos</label>
+        <input type="file" name="project_files[videos][]" multiple accept="video/*" class="form-control mb-2" onchange="previewSpecific(this,'videos_preview')">
+        <div id="videos_preview" class="mb-3"></div>
+
+        <!-- PDFs -->
+        <label>PDF Files</label>
+        <input type="file" name="project_files[pdfs][]" multiple accept="application/pdf" class="form-control mb-2" onchange="previewSpecific(this,'pdfs_preview')">
+        <div id="pdfs_preview" class="mb-3"></div>
+
+        <!-- PPT Files -->
+        <label>PPT / PPTX Files</label>
+        <input type="file" name="project_files[ppts][]" multiple accept="application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation" class="form-control mb-2" onchange="previewSpecific(this,'ppts_preview')">
+        <div id="ppts_preview" class="mb-3"></div>
+    </div>
+
     <button type="submit" class="btn btn-success">Create Project</button>
     <a href="{{ route('projects.index') }}" class="btn btn-secondary">Back</a>
 </form>
+
+<!-- Script Preview لكل نوع -->
+<script>
+function previewSpecific(input, previewId) {
+    const preview = document.getElementById(previewId);
+    preview.innerHTML = '';
+    const files = input.files;
+
+    for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const div = document.createElement('div');
+        div.style.marginBottom = '10px';
+
+        if (file.type.startsWith('image/')) {
+            const img = document.createElement('img');
+            img.src = URL.createObjectURL(file);
+            img.width = 150;
+            div.appendChild(img);
+        } else if (file.type.startsWith('video/')) {
+            const video = document.createElement('video');
+            video.src = URL.createObjectURL(file);
+            video.width = 300;
+            video.controls = true;
+            div.appendChild(video);
+        } else if (file.type === 'application/pdf') {
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(file);
+            link.textContent = 'Preview PDF: ' + file.name;
+            link.target = '_blank';
+            div.appendChild(link);
+        } else {
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(file);
+            link.textContent = 'File: ' + file.name;
+            link.target = '_blank';
+            div.appendChild(link);
+        }
+
+        preview.appendChild(div);
+    }
+}
+</script>
+
 @endsection
