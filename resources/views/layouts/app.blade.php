@@ -442,19 +442,27 @@ function showToast(message, type='success'){
                         <span class="mtext">Investors</span>
                     </a>
                 </li>
-                  <li>
-                    <a href="{{ route('projects.index') }}" class="dropdown-toggle no-arrow">
-                        <span class="micon bi bi-people"></span>
-                        <span class="mtext">projects</span>
-                    </a>
-                </li>
                 <li>
-                    <a href="{{ route('manager.calendar.index') }}" class="dropdown-toggle no-arrow">
+    <a href="{{ route('projects.index') }}" class="dropdown-toggle no-arrow">
+        <span class="micon bi bi-briefcase"></span> <!-- أيقونة المشاريع -->
+        <span class="mtext">Projects</span>
+    </a>
+</li>
 
-                        <span class="micon bi bi-people"></span>
-                        <span class="mtext">projects</span>
-                    </a>
-                </li>
+              <li>
+    <a href="{{ route('manager.calendar.index') }}" class="dropdown-toggle no-arrow">
+        <span class="micon bi bi-calendar"></span>
+        <span class="mtext">Calendar</span>
+    </a>
+</li>
+
+                <li>
+    <a href="{{ route('reports.platform') }}" class="dropdown-toggle no-arrow">
+        <span class="micon bi bi-file-earmark-text"></span>
+        <span class="mtext">Platform Reports</span>
+    </a>
+</li>
+
                  
             </ul>
         </div>
@@ -471,15 +479,7 @@ function showToast(message, type='success'){
 <!-- ===================== END MAIN CONTAINER ===================== -->
 
 <!-- ===================== WELCOME MODAL (lazy iframe) ===================== -->
-<div class="welcome-modal">
-    <button class="welcome-modal-close" aria-label="Close welcome modal">
-        <i class="bi bi-x-lg"></i>
-    </button>
-    <iframe class="w-100 border-0" loading="lazy" src="https://embed.lottiefiles.com/animation/31548" title="Welcome animation"></iframe>
-    <div class="text-center">
-        <h3 class="h5 weight-500 text-center mb-2">Welcome!</h3>
-    </div>
-</div>
+
 <!-- ===================== END WELCOME MODAL ===================== -->
 
 <!-- ===================== SCRIPTS (keep core scripts loaded early so UI toggles work) ===================== -->
@@ -633,24 +633,6 @@ function showToast(message, type='success'){
                     }
                 }
             });
-        });
-    })();
-</script>
-
-<!-- ===================== Small fallback & polyfill for older browsers (optional) ===================== -->
-<script>
-    // tiny helper: ensure body has class for page-transition initial state
-    (function() {
-        if (!document.body.classList.contains('page-transition')) {
-            document.body.classList.add('page-transition');
-        }
-        // remove fade-out class on load to show content
-        window.addEventListener('load', function() {
-            // small timeout to allow CSS transitions to be perceptible but quick
-            setTimeout(function() {
-                document.body.classList.remove('fade-out');
-                document.body.classList.add('page-transition-active');
-            }, 60);
         });
     })();
 </script>

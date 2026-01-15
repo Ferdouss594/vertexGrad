@@ -166,10 +166,48 @@ Route::prefix('dashboard')->middleware(['auth'])->group(function() {
     Route::post('projects', [ProjectController::class, 'store'])->name('projects.store');
     Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('projects.show');
 });
-Route::prefix('manager')->name('manager.')->middleware([Authenticate::class, 'role:Manager'])->group(function () {
-    Route::get('/calendar', function () {
-       return view('manager.calendar');
 
-    })->name('calendar.index');
+Route::prefix('reports')->group(function () {
+    Route::get('/platform', [\App\Http\Controllers\Report\PlatformReportController::class, 'index'])
+        ->name('reports.platform');
 });
+Route::get('/reports/platform/export/excel', function () {
+    return \Maatwebsite\Excel\Facades\Excel::download(
+        new \App\Exports\PlatformReportExport,
+        'platform_report.xlsx'
+    );
+})->name('reports.platform.excel');
+Route::get('/reports/platform/export/pdf',
+    [\App\Http\Controllers\Report\PlatformReportController::class, 'exportPdf']
+)->name('reports.platform.pdf');
 
+use App\Http\Controllers\Report\PlatformReportController;
+
+Route::prefix('reports')->name('reports.')->group(function() {
+    // الصفحة الرئيسية للتقارير
+    Route::get('platform', [PlatformReportController::class,'index'])->name('platform');
+
+    // Investors
+    Route::get('investors/excel', [PlatformReportController::class,'exportInvestorsExcel'])->name('investors.excel');
+    Route::get('investors/pdf', [PlatformReportController::class,'exportInvestorsPdf'])->name('investors.pdf');
+
+    // Students
+    Route::get('students/excel', [PlatformReportController::class,'exportStudentsExcel'])->name('students.excel');
+    Route::get('students/pdf', [PlatformReportController::class,'exportStudentsPdf'])->name('students.pdf');
+
+    // Projects
+    Route::get('projects/excel', [PlatformReportController::class,'exportProjectsExcel'])->name('projects.excel');
+    Route::get('projects/pdf', [PlatformReportController::class,'exportProjectsPdf'])->name('projects.pdf');
+});
+use App\Http\Controllers\CalendarController;
+
+
+
+Route::prefix('manager')->group(function(){
+    Route::get('/calendar', [CalendarController::class, 'index'])->name('manager.calendar.index');
+    Route::get('/calendar/events', [CalendarController::class, 'getEvents']); // لجلب الأحداث
+ // لجلب الأحداث
+    Route::post('/calendar/add-event', [CalendarController::class, 'addEvent']); 
+    Route::post('/calendar/delete-events', [CalendarController::class, 'deleteEvents']);
+// إضافة حدث جديد
+});
