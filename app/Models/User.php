@@ -80,7 +80,8 @@ protected $casts = [
 ];
 public function investor()
 {
-    return $this->hasOne(Investor::class, 'user_id');
+    return $this->hasOne(Investor::class);
 }
+
 
 }

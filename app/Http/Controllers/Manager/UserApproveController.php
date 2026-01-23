@@ -30,6 +30,9 @@ class UserApproveController extends Controller
      * --------------------------------------------------------- */
 public function pendingUsers()
 {
+    $allUsers      = User::all(); // ← جميع المستخدمين
+    $allCount      = $allUsers->count(); // ← العدد الإجمالي
+
     $pendingUsers  = User::where('status', 'pending')->get();
     $activeUsers   = User::where('status', 'active')->get();
     $inactiveUsers = User::where('status', 'inactive')->get();
@@ -44,10 +47,12 @@ public function pendingUsers()
     $this->logActivity('View', 'PendingUsers', 'Viewed pending users list');
 
     return view('manager.pending_users', compact(
+        'allUsers',      
         'pendingUsers',
         'activeUsers',
         'inactiveUsers',
         'disabledUsers',
+         'allCount', 
         'pendingCount',
         'activeCount',
         'inactiveCount',
@@ -201,6 +206,37 @@ public function pendingUsers()
         return redirect()->route('manager.pending.users')
             ->with('success', 'User created successfully!');
     }
+public function index()
+{
+    // جميع المستخدمين
+    $allUsers = User::latest()->get();
+
+    // حسب الحالة
+    $pendingUsers  = User::where('status', 'pending')->latest()->get();
+    $activeUsers   = User::where('status', 'active')->latest()->get();
+    $inactiveUsers = User::where('status', 'inactive')->latest()->get();
+    $disabledUsers = User::where('status', 'disabled')->latest()->get();
+
+    // العدّادات
+    $allCount      = $allUsers->count();
+    $pendingCount  = $pendingUsers->count();
+    $activeCount   = $activeUsers->count();
+    $inactiveCount = $inactiveUsers->count();
+    $disabledCount = $disabledUsers->count();
+
+    return view('manager.pending_users', compact(
+        'allUsers',
+        'pendingUsers',
+        'activeUsers',
+        'inactiveUsers',
+        'disabledUsers',
+        'allCount',
+        'pendingCount',
+        'activeCount',
+        'inactiveCount',
+        'disabledCount'
+    ));
+}
 
     /* ---------------------------------------------------------
      * 🟢 تحرير مستخدم

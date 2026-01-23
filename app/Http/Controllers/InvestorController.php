@@ -23,7 +23,6 @@ class InvestorController extends Controller
     {
         $query = User::where('role', 'Investor');
 
-        // البحث
         if ($request->filled('search')) {
             $s = $request->search;
             $query->where(function ($q) use ($s) {
@@ -33,7 +32,6 @@ class InvestorController extends Controller
             });
         }
 
-        // التصفية
         if ($request->filled('city')) {
             $query->where('city', $request->city);
         }
@@ -42,7 +40,6 @@ class InvestorController extends Controller
             $query->where('status', $request->status);
         }
 
-        // الترتيب
         $sortBy  = $request->get('sort_by', 'created_at');
         $sortDir = $request->get('sort_dir', 'desc');
 
@@ -50,7 +47,6 @@ class InvestorController extends Controller
             ->paginate(15)
             ->withQueryString();
 
-        // إحصائيات
         $stats = [
             'total'    => User::where('role', 'Investor')->count(),
             'active'   => User::where('role', 'Investor')->where('status', 'active')->count(),
@@ -62,7 +58,7 @@ class InvestorController extends Controller
         return view('investors.index', compact('investors', 'stats'));
     }
 
-    // =================== صفحة الإضافة ===================
+    // =================== صفحة إضافة مستثمر ===================
     public function create()
     {
         return view('investors.create');
@@ -73,23 +69,21 @@ class InvestorController extends Controller
     {
         try {
             DB::transaction(function () use ($request, &$investor) {
-
-                // ✅ إنشاء المستخدم
+                // إنشاء المستخدم
                 $user = User::create([
                     'username' => $request->username,
                     'name'     => $request->name,
                     'email'    => $request->email,
-                    'password' => $request->password, // يتم التشفير في Model
+                    'password' => bcrypt($request->password), // تشفير كلمة السر
                     'role'     => 'Investor',
-                    'status'   => $request->status ?? 'active',
+                    'status'   => $request->status ?? 'Active',
                     'gender'   => $request->gender,
                     'city'     => $request->city,
                     'state'    => $request->state,
                 ]);
 
-                // ✅ إنشاء المستثمر
-                $investor = Investor::create([
-                    'user_id'         => $user->id,
+                // إنشاء بيانات المستثمر المرتبطة بالمستخدم
+                $investor = $user->investor()->create([
                     'company'         => $request->company,
                     'position'        => $request->position,
                     'investment_type' => $request->investment_type,
@@ -98,7 +92,7 @@ class InvestorController extends Controller
                     'notes'           => $request->notes,
                 ]);
 
-                // ✅ تسجيل النشاط
+                // تسجيل النشاط
                 InvestorActivity::create([
                     'investor_id' => $investor->id,
                     'user_id'     => auth()->id(),
@@ -107,8 +101,7 @@ class InvestorController extends Controller
                 ]);
             });
 
-            return redirect()
-                ->route('investors.index')
+            return redirect()->route('investors.index')
                 ->with('success', 'تم إنشاء المستثمر بنجاح');
 
         } catch (\Exception $e) {
@@ -117,41 +110,56 @@ class InvestorController extends Controller
     }
 
     // =================== عرض مستثمر ===================
-    public function show(Investor $investor)
+    public function show( Investor $investor)
     {
-        $investor->load(
-            'user',
-            'notes.user',
-            'files.uploader',
-            'activities.user'
-        );
-
+           $investor->load('user', 'notes.user', 'files', 'activities.user'); 
         return view('investors.show', compact('investor'));
     }
 
-    // =================== تعديل مستثمر ===================
+    // =================== صفحة تعديل المستثمر ===================
     public function edit(Investor $investor)
     {
+        // تحميل العلاقة مع Investor
         return view('investors.edit', compact('investor'));
     }
 
-    // =================== تحديث مستثمر ===================
-    public function update(UpdateInvestorRequest $request, Investor $investor)
-    {
-        $investor->update($request->validated());
+    // =================== تحديث بيانات المستثمر والمستخدم ===================
+  public function update(Request $request, Investor $investor)
+{
+    $data = $request->validate([
+        'name'  => 'required|string|max:150',
+        'email' => 'required|email|unique:users,email,' . $investor->user_id,
+        'status'=> 'required|string|in:Active,Inactive',
+        'phone' => 'nullable|string|max:50',
+        'company' => 'nullable|string|max:150',
+        'position' => 'nullable|string|max:150',
+        'investment_type' => 'nullable|string|max:100',
+        'budget' => 'nullable|numeric',
+        'source' => 'nullable|string|max:100',
+    ]);
 
-        $investor->activities()->create([
-            'user_id' => auth()->id(),
-            'action'  => 'updated',
-            'meta'    => ['updated_fields' => array_keys($request->validated())],
+    DB::transaction(function() use ($investor, $data) {
+        // تحديث بيانات المستخدم
+        $investor->user()->update([
+            'name'   => $data['name'],
+            'email'  => $data['email'],
+            'status' => $data['status'],
         ]);
 
-        return redirect()
-            ->route('investors.show', $investor)
-            ->with('success', 'تم تحديث المستثمر');
-    }
+        // تحديث أو إنشاء بيانات المستثمر
+        $investor->update([
+            'phone'           => $data['phone'] ?? null,
+            'company'         => $data['company'] ?? null,
+            'position'        => $data['position'] ?? null,
+            'investment_type' => $data['investment_type'] ?? null,
+            'budget'          => $data['budget'] ?? 0,
+            'source'          => $data['source'] ?? null,
+        ]);
+    });
 
-    // =================== حذف (أرشفة) ===================
+    return redirect()->route('investors.index')->with('success', 'تم تحديث المستثمر بنجاح.');
+}
+
     public function destroy(Investor $investor)
     {
         $investor->delete();
@@ -161,9 +169,7 @@ class InvestorController extends Controller
             'action'  => 'deleted',
         ]);
 
-        return redirect()
-            ->route('investors.index')
-            ->with('success', 'تم أرشفة المستثمر');
+        return redirect()->route('investors.index')->with('success', 'تم أرشفة المستثمر');
     }
 
     // =================== استعادة ===================
@@ -191,9 +197,7 @@ class InvestorController extends Controller
 
         $investor->forceDelete();
 
-        return redirect()
-            ->route('investors.index')
-            ->with('success', 'تم حذف المستثمر نهائيًا');
+        return redirect()->route('investors.index')->with('success', 'تم حذف المستثمر نهائيًا');
     }
 
     // =================== الملاحظات ===================
@@ -212,10 +216,7 @@ class InvestorController extends Controller
             'meta'    => ['note_id' => $note->id],
         ]);
 
-        return response()->json([
-            'status' => 'success',
-            'note'   => $note->load('user'),
-        ]);
+        return response()->json(['status' => 'success', 'note' => $note->load('user')]);
     }
 
     public function deleteNote(Investor $investor, InvestorNote $note)
@@ -243,7 +244,7 @@ class InvestorController extends Controller
             'path'        => $path,
             'mime'        => $file->getClientMimeType(),
             'size'        => $file->getSize(),
-            'uploaded_by'=> auth()->id(),
+            'uploaded_by' => auth()->id(),
         ]);
 
         $investor->activities()->create([

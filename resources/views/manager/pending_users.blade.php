@@ -73,6 +73,14 @@
 
     <!-- ======================= Stats + Add User ======================== -->
     <div class="row mb-4 g-3 justify-content-center">
+<div class="col-lg-2 col-md-3 col-sm-4">
+    <div class="stats-card text-center" 
+         style="cursor:pointer; height:120px; display:flex; flex-direction:column; justify-content:center; background-color:#36b9cc; color:white;"
+         onclick="showTab('allTab')">
+        <h6 class="text-light mb-2">All Users</h6>
+        <h3><i class="bi bi-people-fill"></i></h3>
+    </div>
+</div>
 
         <!-- Pending -->
         <div class="col-lg-2 col-md-3 col-sm-4">
@@ -140,24 +148,36 @@ function showTab(tabId) {
 
 <!-- ======================= Tabs ======================== -->
 <ul class="nav nav-tabs mb-3">
-    <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#pendingTab">Pending</a></li>
-    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#activeTab">Active</a></li>
-    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#inactiveTab">Inactive</a></li>
-    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#disabledTab">Disabled</a></li>
+    <li class="nav-item">
+        <a class="nav-link active" data-bs-toggle="tab" href="#allTab">All Users</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="tab" href="#pendingTab">Pending</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="tab" href="#activeTab">Active</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="tab" href="#inactiveTab">Inactive</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="tab" href="#disabledTab">Disabled</a>
+    </li>
 </ul>
 
 <!-- ======================= Tabs Content ======================== -->
 <div class="tab-content">
 
-    <!-- TAB TEMPLATE -->
-    @php
-        $tabs = [
-            'pendingTab' => $pendingUsers,
-            'activeTab' => $activeUsers,
-            'inactiveTab' => $inactiveUsers,
-            'disabledTab' => $disabledUsers,
-        ];
-    @endphp
+@php
+    $tabs = [
+        'allTab' => $allUsers,       // أضف هذا السطر لمحتوى جميع المستخدمين
+        'pendingTab' => $pendingUsers,
+        'activeTab' => $activeUsers,
+        'inactiveTab' => $inactiveUsers,
+        'disabledTab' => $disabledUsers,
+    ];
+@endphp
+
 
   @foreach ($tabs as $tabId => $users)
 <div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}" id="{{ $tabId }}">

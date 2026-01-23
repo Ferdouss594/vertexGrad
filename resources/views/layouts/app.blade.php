@@ -1,190 +1,164 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Flash Messages -->
-<div id="flash-messages" style="position: fixed; top: 20px; right: 20px; z-index: 9999;"></div>
-
-@if(session('success'))
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        showToast('{{ session('success') }}', 'success');
-    });
-</script>
-@endif
-
-@if(session('error'))
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        showToast('{{ session('error') }}', 'danger');
-    });
-</script>
-@endif
-
-@push('scripts')
-<script>
-function showToast(message, type='success'){
-    let flashDiv = document.getElementById('flash-messages');
-
-    let toast = document.createElement('div');
-    toast.className = 'alert alert-' + type + ' alert-dismissible fade show';
-    toast.style.minWidth = '250px';
-    toast.style.marginBottom = '10px';
-    toast.innerHTML = message + `<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span></button>`;
-
-    flashDiv.appendChild(toast);
-
-    setTimeout(() => {
-        toast.classList.remove('show');
-        toast.remove();
-    }, 4000); // يختفي بعد 4 ثواني
-}
-</script>
-@endpush
-
     <meta charset="utf-8" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
     <title>VertexGrad - Dashboard</title>
 
     <!-- Favicons -->
-    <link rel="apple-touch-icon" href="{{ asset('vendors/images/apple-touch-icon.png') }}?v=2.0" />
-                                                                                                                                                                                                                                                        ``````````````````````````````````````````qw 
+    <link rel="apple-touch-icon" href="{{ asset('vendors/images/apple-touch-icon.png') }}" />
 
     <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
 
-    <!-- Core CSS (keep original order/design) -->
-    <link rel="stylesheet" type="text/css" href="{{ asset('vendors/styles/core.css') }}" />
-    <link rel="stylesheet" type="text/css" href="{{ asset('vendors/styles/icon-font.min.css') }}" />
-    <link rel="stylesheet" type="text/css" href="{{ asset('src/plugins/datatables/css/dataTables.bootstrap4.min.css') }}" />
-    <link rel="stylesheet" type="text/css" href="{{ asset('src/plugins/datatables/css/responsive.bootstrap4.min.css') }}" />
-    <link rel="stylesheet" type="text/css" href="{{ asset('vendors/styles/style.css') }}" />
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="{{ asset('vendors/styles/core.css') }}" />
+    <link rel="stylesheet" href="{{ asset('vendors/styles/icon-font.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('src/plugins/datatables/css/dataTables.bootstrap4.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('src/plugins/datatables/css/responsive.bootstrap4.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('vendors/styles/style.css') }}" />
 
-    <!-- Bootstrap CSS (kept) -->
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Small custom performance + transitions (does NOT change layout) -->
+    <!-- Custom lightweight transitions -->
     <style>
-        /* Lightweight, fast transitions — very short durations for snappy feel */
+        body.page-transition { opacity: 1; transition: opacity 0.2s ease-out; }
+        body.page-transition.fade-out { opacity: 0; }
+
         .main-container,
         .left-side-bar,
         .right-sidebar,
         .header,
-        .footer {
-            transition: transform 0.20s ease-out, opacity 0.20s ease-out !important;
-            will-change: transform, opacity;
-        }
+        .footer { transition: transform 0.2s ease-out, opacity 0.2s ease-out; will-change: transform, opacity; }
+        .main-container { opacity: 0; transform: translateY(8px); }
+        .main-container.loaded { opacity: 1; transform: translateY(0); }
 
-        /* Fade-in the main container on load */
-        .main-container {
-            opacity: 0;
-            transform: translateY(8px);
-        }
-        .main-container.loaded {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        /* Sidebar links */
+        #accordion-menu li a { display: flex; align-items: center; gap: 10px; transition: background-color 0.15s, padding 0.15s; }
+        #accordion-menu li a:hover { padding-right: 5px; }
 
-        /* Sidebar open/close smoother */
-        .left-side-bar, .right-sidebar {
-            transition: transform 0.18s ease-out, opacity 0.18s ease-out !important;
-        }
+        #accordion-menu li a .micon { display: inline-flex; align-items: center; justify-content: center; font-size: 18px; }
 
-        /* Sidebar links hover small shift */
-        .sidebar-menu li a {
-            transition: background-color 0.15s ease, padding-left 0.14s ease !important;
-        }
-        .sidebar-menu li a:hover {
-            padding-right: 5px !important;
-        }
-
-        /* Modal animation tweak (keeps bootstrap modal look) */
-        .modal.fade .modal-dialog {
-            transform: translateY(-6px);
-            transition: transform 0.11s ease-out;
-        }
-        .modal.show .modal-dialog {
-            transform: translateY(0);
-        }
-
-        /* Page transition fade for links (very quick) */
-        body.page-transition {
-            opacity: 1;
-            transition: opacity 0.20s ease-out;
-        }
-        body.page-transition.fade-out {
-            opacity: 0;
-        }
-
-        /* Keep images responsive but lazy */
-        img[loading="lazy"] {
-            -webkit-user-drag: none;
-            user-select: none;
-        }
-
-        /* Right-sidebar small visual polish */
-        .right-sidebar .sidebar-btn-group .btn {
-            transition: transform 0.12s ease, box-shadow 0.12s ease;
-        }
-        .right-sidebar .sidebar-btn-group .btn:active {
-            transform: translateY(1px);
-        }
-/* رابط القائمة flex أفقي */
-/* رابط القائمة flex أفقي */
-#accordion-menu li a {
-    display: flex;        
-    align-items: center;  
-    gap: 10px;            
-}
-
-/* تأكد من أن الأيقونة لا تتحول لعرض كامل */
-#accordion-menu li a .micon {
-    display: inline-flex; 
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;  
-	    
- 
-}
-
-
-
-
-		
+        /* Flash messages */
+        #flash-messages { position: fixed; top: 20px; right: 20px; z-index: 9999; min-width: 250px; }
     </style>
 
-    <!-- Google Analytics & Ads (async, unchanged) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-GBZ3SGGX85"></script>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2973766580778258" crossorigin="anonymous"></script>
+    <!-- Flash Messages Script -->
     <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-GBZ3SGGX85');
-    </script>
+        function showToast(message, type='success'){
+            const flashDiv = document.getElementById('flash-messages');
+            const toast = document.createElement('div');
+            toast.className = `alert alert-${type} alert-dismissible fade show`;
+            toast.style.marginBottom = '10px';
+            toast.innerHTML = message + `<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
+            flashDiv.appendChild(toast);
+            setTimeout(() => { toast.classList.remove('show'); toast.remove(); }, 4000);
+        }
 
-    <!-- Google Tag Manager -->
-    <script>
-    (function(w,d,s,l,i){
-        w[l]=w[l]||[];
-        w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'});
-        var f=d.getElementsByTagName(s)[0],
-            j=d.createElement(s),
-            dl=l!='dataLayer'?'&l='+l:'';
-        j.async=true;
-        j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;
-        f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-NXZMQSS');
+        document.addEventListener('DOMContentLoaded', function() {
+            @if(session('success'))
+                showToast('{{ session('success') }}', 'success');
+            @endif
+            @if(session('error'))
+                showToast('{{ session('error') }}', 'danger');
+            @endif
+        });
     </script>
-    <!-- End head -->
 </head>
 <body class="page-transition">
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const sidebar = document.querySelector('.left-side-bar');
+    if (!sidebar) return;
+
+    // تأكد من وجود transition سلس
+    sidebar.style.transition = 'transform 0.25s ease, opacity 0.25s ease';
+    sidebar.classList.remove('closed');
+    sidebar.style.transform = 'translateX(0)';
+    sidebar.style.opacity = '1';
+
+    // اختيار كل أزرار الـ toggle أو close
+    const toggleBtns = document.querySelectorAll('[data-toggle="left-sidebar-toggle"], .close-sidebar');
+
+    toggleBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            if (sidebar.classList.contains('closed')) {
+                sidebar.classList.remove('closed');
+                sidebar.style.transform = 'translateX(0)';
+                sidebar.style.opacity = '1';
+            } else {
+                sidebar.classList.add('closed');
+                sidebar.style.transform = 'translateX(-260px)';
+                sidebar.style.opacity = '0';
+            }
+        });
+    });
+
+    // إجبار sidebar على أن يظل مفتوح عند العودة للصفحة
+    window.addEventListener('pageshow', () => {
+        sidebar.classList.remove('closed');
+        sidebar.style.transform = 'translateX(0)';
+        sidebar.style.opacity = '1';
+    });
+});
+</script>
+@endpush
+
+<!-- Flash Messages -->
+<div id="flash-messages"></div>
 
 <!-- Google Tag Manager (noscript) -->
 <noscript>
     <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NXZMQSS" height="0" width="0" style="display:none;visibility:hidden"></iframe>
 </noscript>
+
+<!-- ===================== HEADER ===================== -->
+<div class="header">
+    <div class="header-left">
+        <div class="menu-icon bi bi-list" data-toggle="left-sidebar-toggle"></div>
+        <div class="search-toggle-icon bi bi-search" data-toggle="header_search"></div>
+    </div>
+
+    <div class="header-right d-flex align-items-center gap-2">
+        <!-- Settings -->
+        <a href="javascript:;" class="dashboard-setting" data-toggle="right-sidebar"><i class="dw dw-settings2"></i></a>
+
+        <!-- Notifications -->
+        <div class="dropdown">
+            <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                <i class="icon-copy dw dw-notification"></i>
+                <span class="badge bg-danger rounded-circle notification-active"></span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+                <li class="dropdown-header">Notifications</li>
+                <li><a href="#"><i class="bi bi-envelope"></i> New message from John</a></li>
+                <li><a href="#"><i class="bi bi-check-circle"></i> Task completed</a></li>
+            </ul>
+        </div>
+
+        <!-- Profile -->
+        <div class="dropdown user-info-dropdown">
+            <a class="dropdown-toggle d-flex align-items-center gap-2" href="#" role="button" data-bs-toggle="dropdown">
+                <img src="{{ Auth::user()->avatar ? asset('storage/' . Auth::user()->avatar) : asset('vendors/images/photo1.jpg') }}" class="rounded-circle" width="32" height="32" alt="User Avatar">
+                <span>{{ Auth::check() ? Auth::user()->name : 'Guest' }}</span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+                <li><a class="dropdown-item" href="{{ route('profile') }}"><i class="bi bi-person"></i> Profile</a></li>
+                <li><a class="dropdown-item" href="#"><i class="bi bi-gear"></i> Settings</a></li>
+                <li><a class="dropdown-item" href="{{ route('logout') }}"
+                       onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                    <i class="bi bi-box-arrow-right"></i> Log Out
+                </a></li>
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">@csrf</form>
+            </ul>
+        </div>
+    </div>
+</div>
+<!-- ===================== END HEADER ===================== -->
+
 
 <!-- ===================== HEADER (original markup preserved) ===================== -->
 <div class="header">
@@ -407,8 +381,8 @@ function showToast(message, type='success'){
 <div class="left-side-bar">
     <div class="brand-logo">
         <a href="{{ route('dashboard') }}">
-            <img src="vendors/images/VertexGrad_logod.png" alt="" class="dark-logo" style="margin-top:30px;" />
-            <img src="vendors/images/VertexGrad_logod.png" alt="" class="light-logo" style="margin-top:30px;" />
+            <img src="{{ asset('vendors/images/VertexGrad_logod.png') }}" alt="Logo" class="dark-logo" style="margin-top:30px;" />
+            <img src="{{ asset('vendors/images/VertexGrad_logod.png') }}" alt="Logo" class="light-logo" style="margin-top:30px;" />
         </a>
         <div class="close-sidebar" data-toggle="left-sidebar-close">
             <i class="ion-close-round"></i>
@@ -418,56 +392,73 @@ function showToast(message, type='success'){
     <div class="menu-block customscroll">
         <div class="sidebar-menu">
             <ul id="accordion-menu">
+
+                <!-- Home -->
                 <li>
                     <a href="{{ route('dashboard') }}" class="dropdown-toggle no-arrow" style="margin-top:30px;">
-                        <span class="micon bi bi-house "></span>
-                        <span class="mtext">Home</span >
+                        <span class="micon bi bi-house-door-fill"></span>
+                        <span class="mtext">Home</span>
                     </a>
                 </li>
+
+                <!-- User Management -->
                 <li>
                     <a href="{{ route('manager.pending.users') }}" class="dropdown-toggle no-arrow">
-                        <span class="micon bi bi-people"></span>
-                        <span class="mtext">User managment</span>
+                        <span class="micon bi bi-person-badge-fill"></span>
+                        <span class="mtext">User Management</span>
                     </a>
                 </li>
+<li>
+                    <a href="{{ route('manager.index') }}" class="dropdown-toggle no-arrow">
+                        <span class="micon bi bi-person-badge-fill"></span>
+                        <span class="mtext"> manager</span>
+                    </a>
+                </li>
+                <!-- Students -->
                 <li>
                     <a href="{{ route('students.index') }}" class="dropdown-toggle no-arrow">
-                        <span class="micon bi bi-people"></span>
-                        <span class="mtext">student</span>
+                        <span class="micon bi bi-mortarboard-fill"></span>
+                        <span class="mtext">Students</span>
                     </a>
                 </li>
+
+                <!-- Investors -->
                 <li>
                     <a href="{{ route('investors.index') }}" class="dropdown-toggle no-arrow">
-                        <span class="micon bi bi-people"></span>
+                        <span class="micon bi bi-wallet2"></span>
                         <span class="mtext">Investors</span>
                     </a>
                 </li>
+
+                <!-- Projects -->
                 <li>
-    <a href="{{ route('projects.index') }}" class="dropdown-toggle no-arrow">
-        <span class="micon bi bi-briefcase"></span> <!-- أيقونة المشاريع -->
-        <span class="mtext">Projects</span>
-    </a>
-</li>
+                    <a href="{{ route('projects.index') }}" class="dropdown-toggle no-arrow">
+                        <span class="micon bi bi-briefcase-fill"></span>
+                        <span class="mtext">Projects</span>
+                    </a>
+                </li>
 
-              <li>
-    <a href="{{ route('manager.calendar.index') }}" class="dropdown-toggle no-arrow">
-        <span class="micon bi bi-calendar"></span>
-        <span class="mtext">Calendar</span>
-    </a>
-</li>
-
+                <!-- Calendar -->
                 <li>
-    <a href="{{ route('reports.platform') }}" class="dropdown-toggle no-arrow">
-        <span class="micon bi bi-file-earmark-text"></span>
-        <span class="mtext">Platform Reports</span>
-    </a>
-</li>
+                    <a href="{{ route('manager.calendar.index') }}" class="dropdown-toggle no-arrow">
+                        <span class="micon bi bi-calendar-check-fill"></span>
+                        <span class="mtext">Calendar</span>
+                    </a>
+                </li>
 
-                 
+                <!-- Platform Reports -->
+                <li>
+                    <a href="{{ route('reports.platform') }}" class="dropdown-toggle no-arrow">
+                        <span class="micon bi bi-file-earmark-bar-graph-fill"></span>
+                        <span class="mtext">Platform Reports</span>
+                    </a>
+                </li>
+
             </ul>
         </div>
     </div>
 </div>
+
 <!-- ===================== END LEFT SIDEBAR ===================== -->
 
 <div class="mobile-menu-overlay"></div>
@@ -512,6 +503,7 @@ function showToast(message, type='success'){
 
 <!-- ===================== CUSTOM JS: keep UI intact & add fast transitions ===================== -->
 <script>
+    
     // Ensure DOM interactions for toggles and close buttons run after core scripts loaded
     (function () {
         // Run when DOMContentLoaded

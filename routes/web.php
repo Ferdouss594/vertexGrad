@@ -9,7 +9,7 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\StudentController;
 use App\Http\Middleware\Authenticate;
-
+use App\Http\Controllers\ManagerController;
 /*
 |--------------------------------------------------------------------------
 | الصفحة الرئيسية
@@ -135,19 +135,27 @@ Route::middleware(['auth'])->group(function () {
 use App\Http\Controllers\InvestorController;
 
 Route::resource('investors', InvestorController::class);
+Route::put('investors/{user}', [InvestorController::class, 'update'])->name('investors.update');
 
+// ملاحظات المستثمرين
 Route::post('investors/{investor}/notes', [InvestorController::class,'storeNote'])->name('investors.notes.store');
 Route::delete('investors/{investor}/notes/{note}', [InvestorController::class,'deleteNote'])->name('investors.notes.delete');
 
+// ملفات المستثمرين
 Route::post('investors/{investor}/files', [InvestorController::class,'uploadFile'])->name('investors.files.upload');
 Route::delete('investors/{investor}/files/{file}', [InvestorController::class,'deleteFile'])->name('investors.files.delete');
 
+// استيراد وتصدير
 Route::post('investors/import', [InvestorController::class,'import'])->name('investors.import');
 Route::get('investors/export/{format?}', [InvestorController::class,'export'])->name('investors.export');
 
-Route::post('investors/{id}/restore', [InvestorController::class,'restore'])->name('investors.restore');
-Route::delete('investors/{id}/force-delete', [InvestorController::class,'forceDelete'])->name('investors.forceDelete');
-Route::post('investors', [InvestorController::class,'store'])->name('investors.store');
+// استعادة وحذف نهائي
+Route::post('investors/{investor}/restore', [InvestorController::class,'restore'])->name('investors.restore');
+Route::delete('investors/{investor}/force-delete', [InvestorController::class,'forceDelete'])->name('investors.forceDelete');
+Route::resource('investors', InvestorController::class)->parameters([
+    'investors' => 'investor' // يربط {investor} بالـ User model
+]);
+
 use App\Http\Controllers\ProjectController;
 
 Route::resource('projects', ProjectController::class);
@@ -158,9 +166,7 @@ Route::prefix('projects/{project}')->group(function(){
     Route::put('tasks/{task}', [ProjectTaskController::class,'update'])->name('projects.tasks.update');
     Route::delete('tasks/{task}', [ProjectTaskController::class,'destroy'])->name('projects.tasks.destroy');
 });
-Route::get('/investors/create', [InvestorController::class, 'create'])->name('investors.create');
-Route::post('/investors', [InvestorController::class, 'store'])->name('investors.store');
-// routes/web.php
+
 Route::prefix('dashboard')->middleware(['auth'])->group(function() {
     Route::get('projects/create', [ProjectController::class, 'create'])->name('projects.create');
     Route::post('projects', [ProjectController::class, 'store'])->name('projects.store');
@@ -211,3 +217,10 @@ Route::prefix('manager')->group(function(){
     Route::post('/calendar/delete-events', [CalendarController::class, 'deleteEvents']);
 // إضافة حدث جديد
 });
+// web.php
+
+
+Route::put('investors/{user}', [InvestorController::class, 'update'])->name('investors.update');
+Route::resource('manager', ManagerController::class);
+Route::get('/migrate-managers', [ManagerController::class, 'migrateUsersToManagers'])->name('manager.migrate');
+Route::post('/manager/sync', [ManagerController::class, 'sync'])->name('manager.sync');

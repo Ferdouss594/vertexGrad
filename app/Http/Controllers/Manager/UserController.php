@@ -74,6 +74,11 @@ class UserController extends Controller
     }
 }
 
+/** صفحة إدارة المستخدمين */
+
+    // جميع المستخدمين
+    
+  
 
     /** تعديل مستخدم */
     public function edit(User $user)

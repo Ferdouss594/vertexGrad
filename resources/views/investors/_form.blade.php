@@ -37,7 +37,7 @@
 
     <div class="col-md-6 mb-3">
         <label>Budget</label>
-        <input type="number" name="budget" value="{{ old('budget', $investor->budget ?? '') }}" class="form-control">
+        <input type="number" name="budget" value="{{ old('budget', $investor->budget ?? '') }}" class="form-control" step="0.01">
     </div>
 
     <div class="col-md-6 mb-3">
@@ -51,6 +51,21 @@
         </select>
     </div>
 
-    
-<button class="btn btn-primary">Save</button>
-<a href="{{ route('investors.index') }}" class="btn btn-secondary">Cancel</a>
+    <div class="col-md-6 mb-3">
+        <label>Status</label>
+        <select name="status" class="form-control">
+            <option value="Active" {{ old('status', $investor->status ?? '') == 'Active' ? 'selected' : '' }}>Active</option>
+            <option value="Inactive" {{ old('status', $investor->status ?? '') == 'Inactive' ? 'selected' : '' }}>Inactive</option>
+        </select>
+    </div>
+
+    <div class="col-md-12 mb-3">
+        <label>Notes</label>
+        <textarea name="notes" class="form-control" rows="4">{{ old('notes', $investor->notes ?? '') }}</textarea>
+    </div>
+
+    <div class="col-12">
+        <button class="btn btn-primary">Save</button>
+        <a href="{{ route('investors.index') }}" class="btn btn-secondary">Cancel</a>
+    </div>
+</div>

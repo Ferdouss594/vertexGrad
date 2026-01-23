@@ -1,96 +1,147 @@
 @extends('layouts.app')
 @section('title','Investors')
+
 @section('content')
 
+{{-- Success Message --}}
 @if(session('success'))
-<div class="alert alert-success">{{ session('success') }}</div>
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    <i class="fa fa-check-circle me-2"></i>
+    {{ session('success') }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
 @endif
 
-<!-- Stats Cards -->
-<div class="row mb-4">
-    <div class="col-md-2">
-        <div class="pd-20 bg-white border-radius-4 shadow-sm text-center" style="height:100px;">
-            <h6>Total Investors</h6>
-            <h4>{{ $stats['total'] }}</h4>
+<!-- ===================== Stats Cards ===================== -->
+<div class="row g-3 mb-4">
+    {{-- Total Investors --}}
+    <div class="col-md-2 col-6">
+        <div class="card border-0 shadow-sm text-center h-100 bg-gradient-light">
+            <div class="card-body">
+                <i class="fa fa-users fa-2x text-primary mb-2"></i>
+                <div class="text-uppercase small text-muted">Total Investors</div>
+                <h4 class="fw-bold">{{ $stats['total'] }}</h4>
+            </div>
         </div>
     </div>
-    <div class="col-md-2">
-        <div class="pd-20 bg-white border-radius-4 shadow-sm text-center" style="height:100px;">
-            <h6>Active Investors</h6>
-            <h4>{{ $stats['active'] }}</h4>
-        </div>
-    </div>
-    <div class="col-md-2">
-        <div class="pd-20 bg-white border-radius-4 shadow-sm text-center" style="height:100px;">
-            <h6>Inactive Investors</h6>
-            <h4>{{ $stats['inactive'] }}</h4>
-        </div>
-    </div>
-    <div class="col-md-2">
-        <div class="pd-20 bg-white border-radius-4 shadow-sm text-center" style="height:100px;">
-            <h6>Total Budget</h6>
-            <h4>${{ number_format($stats['budget'] ?? 0,2) }}</h4>
 
+    {{-- Active Investors --}}
+    <div class="col-md-2 col-6">
+        <div class="card border-0 shadow-sm text-center h-100 bg-gradient-light">
+            <div class="card-body">
+                <i class="fa fa-user-check fa-2x text-success mb-2"></i>
+                <div class="text-uppercase small text-muted">Active</div>
+                <h4 class="fw-bold">{{ $stats['active'] }}</h4>
+            </div>
         </div>
     </div>
-    <div class="col-md-2">
-        <div class="pd-20 bg-white border-radius-4 shadow-sm text-center" style="height:100px;">
-            <h6>Top Company</h6>
-            <h4>{{ $stats['top_company']->company ?? 'N/A' }}</h4>
+
+    {{-- Inactive Investors --}}
+    <div class="col-md-2 col-6">
+        <div class="card border-0 shadow-sm text-center h-100 bg-gradient-light">
+            <div class="card-body">
+                <i class="fa fa-user-times fa-2x text-danger mb-2"></i>
+                <div class="text-uppercase small text-muted">Inactive</div>
+                <h4 class="fw-bold">{{ $stats['inactive'] }}</h4>
+            </div>
+        </div>
+    </div>
+
+    {{-- Total Budget --}}
+    <div class="col-md-2 col-6">
+        <div class="card border-0 shadow-sm text-center h-100 bg-gradient-light">
+            <div class="card-body">
+                <i class="fa fa-dollar-sign fa-2x text-warning mb-2"></i>
+                <div class="text-uppercase small text-muted">Total Budget</div>
+                <h4 class="fw-bold">${{ number_format($stats['budget'] ?? 0,2) }}</h4>
+            </div>
+        </div>
+    </div>
+
+    {{-- Top Company --}}
+    <div class="col-md-2 col-6">
+        <div class="card border-0 shadow-sm text-center h-100 bg-gradient-light">
+            <div class="card-body">
+                <i class="fa fa-building fa-2x text-secondary mb-2"></i>
+                <div class="text-uppercase small text-muted">Top Company</div>
+                <h6 class="fw-bold mb-0">{{ $stats['top_company']->company ?? 'N/A' }}</h6>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- Main Table -->
-<div class="pd-20 bg-white border-radius-4 box-shadow mb-30">
-    <div class="d-flex justify-content-between mb-3 align-items-center">
-        <h5>Investors List</h5>
-        <div class="d-flex align-items-center gap-2">
-            <!-- Active / Archived Buttons -->
-            <a href="{{ route('investors.index') }}" class="btn btn-outline-primary">
-                <i class="fa fa-users"></i> Active
-            </a>
-            
+<!-- ===================== Table Card ===================== -->
+<div class="card shadow-sm">
+    {{-- Header --}}
+    <div class="card-header bg-white d-flex justify-content-between align-items-center flex-wrap">
+        <h5 class="mb-0 fw-bold"><i class="fa fa-list me-2"></i> Investors List</h5>
 
-            <!-- Add / Export / Import -->
-            <a href="{{ route('investors.create') }}" class="btn btn-primary">
-                <i class="fa fa-plus"></i> Add Investor
+        <div class="d-flex gap-2 flex-wrap">
+            <a href="{{ route('investors.index') }}" 
+               class="btn btn-outline-primary btn-sm" 
+               style="border-radius: 6px; font-weight: 500; padding: 6px 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                <i class="fa fa-users me-1"></i> Active
             </a>
-            <a href="{{ route('investors.export','xlsx') }}" class="btn btn-outline-secondary">
-                <i class="fa fa-file-export"></i> Export
+
+            <a href="{{ route('investors.create') }}" 
+               class="btn btn-primary btn-sm" 
+               style="border-radius: 6px; font-weight: 500; padding: 6px 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.15);">
+                <i class="fa fa-plus me-1"></i> Add Investor
             </a>
-            <button id="importBtn" class="btn btn-outline-secondary">
-                <i class="fa fa-file-import"></i> Import
+
+            <a href="{{ route('investors.export','xlsx') }}" 
+               class="btn btn-outline-secondary btn-sm" 
+               style="border-radius: 6px; font-weight: 500; padding: 6px 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                <i class="fa fa-file-export me-1"></i> Export
+            </a>
+
+            <button class="btn btn-outline-success btn-sm" 
+                    style="border-radius: 6px; font-weight: 500; padding: 6px 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                <i class="fa fa-file-import me-1"></i> Import
             </button>
-            <input type="file" id="importFile" style="display:none;">
-        </div>
+       
+
+    {{-- Body --}}
+    <div class="card-body p-0">
+        <!-- Table will go here -->
     </div>
-
-    <!-- Filter -->
-    <div class="mb-3">
-        <form method="get" class="form-inline d-flex gap-2">
-            <select name="company" class="form-control">
-    <option value="">Filter by Company</option>
-    @if(!empty($stats['by_company']))
-        @foreach($stats['by_company'] as $c)
-            <option value="{{ $c->company }}" @if(request('company')==$c->company) selected @endif>{{ $c->company }}</option>
-        @endforeach
-    @endif
-</select>
+</div>
 
 
-            <select name="position" class="form-control">
-                <option value="">Filter by Position</option>
-                @foreach($investors->pluck('position')->unique() as $pos)
-                    <option value="{{ $pos }}" @if(request('position')==$pos) selected @endif>{{ $pos }}</option>
-                @endforeach
-            </select>
 
-            <button class="btn btn-sm btn-primary">
-                <i class="fa fa-filter"></i> Filter
-            </button>
+
+    <div class="card-body">
+
+        <!-- ===================== Filters ===================== -->
+        <form method="GET" action="{{ route('investors.index') }}">
+            <div class="row mb-3 align-items-end g-3">
+
+                <!-- Show entries -->
+                <div class="col-md-2">
+                    <label class="form-label small text-muted">Show entries</label>
+                    <select name="per_page" class="form-select form-select-sm" onchange="this.form.submit()">
+                        <option value="10" {{ request('per_page')==10?'selected':'' }}>10</option>
+                        <option value="25" {{ request('per_page')==25?'selected':'' }}>25</option>
+                        <option value="50" {{ request('per_page')==50?'selected':'' }}>50</option>
+                        <option value="100" {{ request('per_page')==100?'selected':'' }}>100</option>
+                    </select>
+                </div>
+
+                <!-- Status -->
+                <div class="col-md-3">
+                    <label class="form-label small text-muted">Status</label>
+                    <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
+                        <option value="">All</option>
+                        <option value="active" {{ request('status')=='active'?'selected':'' }}>Active</option>
+                        <option value="inactive" {{ request('status')=='inactive'?'selected':'' }}>Inactive</option>
+                    </select>
+                </div>
+
+            </div>
         </form>
-    </div>
+
+
+
 
     <table class="data-table table stripe hover nowrap">
         <thead class="table-dark">
@@ -106,27 +157,45 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($investors as $inv)
-            <tr id="investor-{{ $inv->id }}">
-                <td>{{ $loop->iteration + ($investors->currentPage()-1)*$investors->perPage() }}</td>
-                <td>{{ $inv->user->name ?? $inv->name }}</td>
-                <td>{{ $inv->company }}</td>
-                <td>{{ $inv->phone }}</td>
-                <td>{{ $inv->user->email ?? $inv->email }}</td>
-                <td>{{ $inv->position }}</td>
-                <td>{{ $inv->created_at->format('Y-m-d') }}</td>
-                <td class="text-center">
-                    <a href="{{ route('investors.show',$inv) }}" class="btn btn-sm btn-info" title="Show">
-                        <i class="fa fa-id-card"></i>
-                    </a>
-                    <a href="{{ route('investors.edit',$inv) }}" class="btn btn-sm btn-warning" title="Edit">
-                        <i class="fa fa-edit"></i>
-                    </a>
+@foreach($investors as $inv)
+<tr id="investor-{{ $inv->id }}">
+    {{-- الرقم التسلسلي --}}
+    <td>{{ $loop->iteration + ($investors->currentPage() - 1) * $investors->perPage() }}</td>
 
-                    
-                </td>
-            </tr>
-            @endforeach
+
+    {{-- الاسم --}}
+    <td>{{ $inv->user?->name ?? $inv->name ?? '—' }}</td>
+
+    {{-- الشركة --}}
+    <td>{{ $inv->investor?->company ?? '—' }}</td>
+<td>{{ $inv->investor?->phone ?? '—' }}</td>
+
+    
+
+    {{-- البريد الإلكتروني --}}
+    <td>{{ $inv->user?->email ?? $inv->email ?? '—' }}</td>
+
+    {{-- الوظيفة --}}
+    <td>{{ $inv->investor?->position ?? '—' }}</td>
+
+    {{-- تاريخ الإنشاء --}}
+    <td>{{ optional($inv->created_at)->format('Y-m-d') ?? '—' }}</td>
+
+    {{-- أزرار العمليات --}}
+    <td class="text-center">
+        <a href="{{ route('investors.show', $inv->id) }}" class="btn btn-sm btn-info" title="Show">
+            <i class="fa fa-id-card"></i>
+        </a>
+        <a href="{{ route('investors.edit', $inv->id) }}" class="btn btn-sm btn-warning" title="Edit">
+            <i class="fa fa-edit"></i>
+        </a>
+    </td>
+</tr>
+@endforeach
+</tbody>
+
+    
+
         </tbody>
     </table>
     {{ $investors->links() }}
@@ -233,4 +302,29 @@ document.querySelectorAll('.force-delete-investor').forEach(btn=>{
     });
 });
 </script>
+<script>
+$('#editInvestorForm').on('submit', function(e){
+    e.preventDefault(); 
+    let id = $('#investor_id').val();
+    $.ajax({
+        url: '/investors/' + id,
+        method: 'PUT',
+        data: $(this).serialize(),
+        success: function(response){
+            // تحديث الصف مباشرة
+            let row = $('#investor-' + id);
+            row.find('td:nth-child(2)').text(response.user.name);
+            row.find('td:nth-child(3)').text(response.company ?? '—');
+            row.find('td:nth-child(4)').text(response.phone ?? '—');
+            row.find('td:nth-child(5)').text(response.user.email ?? '—');
+            row.find('td:nth-child(6)').text(response.position ?? '—');
+            alert('تم تحديث المستثمر بنجاح!');
+        },
+        error: function(err){
+            alert('حدث خطأ أثناء التحديث');
+        }
+    });
+});
+</script>
+
 @endpush

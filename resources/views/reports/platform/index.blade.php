@@ -50,20 +50,100 @@
         </div>
     </div>
 </div>
-
-<!-- CSS -->
 <style>
-.cards-container { display:flex; flex-wrap:wrap; gap:20px; justify-content:center; }
-.report-card { padding:30px 20px; border-radius:15px; color:#fff; text-align:center; flex:1 1 250px; box-shadow:0 6px 20px rgba(0,0,0,0.12); transition:0.3s; }
-.report-card:hover { transform:translateY(-5px); box-shadow:0 10px 25px rgba(0,0,0,0.18); }
-.report-card h2 { font-size:24px; margin-bottom:10px; }
-.report-card .count { font-size:36px; font-weight:700; margin-bottom:10px; }
-.bg-blue { background: #1a4183; }
-.bg-green { background: #1a4183 }
-.bg-orange { background: #1a4183 }
-.btn-light { color:#333; background-color:#fff; border:none; font-weight:600; margin:0 3px; }
-.btn-light:hover { background: #e8edf8; }
+/* حاوية البطاقات */
+.cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+/* البطاقة */
+.report-card {
+    position: relative;
+    background: #faf5f4; /* خلفية فاتحة */
+    border-radius: 16px;
+    color: #333;
+    text-align: center;
+    flex: 1 1 280px;
+    padding: 30px 20px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    transition: all 0.4s ease;
+    overflow: hidden;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.bg-blue { background: linear-gradient(135deg, #e7e6fb, #f7f4f3); }
+.bg-green { background: linear-gradient(135deg, #bcb9fc, #f9f0ee); }
+.bg-orange { background: linear-gradient(135deg, #cdf4c2, #f6e9e6); }
+.report-card:hover {
+    transform: translateY(-10px) scale(1.03);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+}
+
+/* العنوان */
+.report-card h2 {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+/* الرقم */
+.report-card .count {
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+/* ألوان الحد السفلي للبطاقة لتمييز النوع */
+.bg-blue { border-bottom: 6px solid #1e3a8a; }
+.bg-green { border-bottom: 6px solid #10b981; }
+.bg-orange { border-bottom: 6px solid #f97316; }
+
+/* أزرار حديثة */
+.btn-light {
+    background-color: #f3f4f6;
+    color: #111827;
+    font-weight: 600;
+    border-radius: 10px;
+    border: none;
+    padding: 8px 16px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+}
+
+.btn-light:hover {
+    background-color: #e5e7eb;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.12);
+}
+
+/* مجموعة الأزرار */
+.btn-group {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+/* أيقونات صغيرة داخل الزر */
+.btn-light i {
+    font-size: 16px;
+}
+
+/* Responsive */
+@media(max-width:768px){
+    .cards-container { flex-direction: column; align-items: center; }
+}
 </style>
+
+
 
 <!-- JS للطباعة داخل المتصفح -->
 <script>
