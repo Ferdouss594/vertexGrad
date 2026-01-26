@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Jenssegers\Agent\Agent;
 use Illuminate\Support\Facades\Auth;
-use App\Models\ActivityLog;
 
 class ActivityLog extends Model
 {

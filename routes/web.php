@@ -224,3 +224,90 @@ Route::put('investors/{user}', [InvestorController::class, 'update'])->name('inv
 Route::resource('manager', ManagerController::class);
 Route::get('/migrate-managers', [ManagerController::class, 'migrateUsersToManagers'])->name('manager.migrate');
 Route::post('/manager/sync', [ManagerController::class, 'sync'])->name('manager.sync');
+
+
+
+
+
+/*
+|--------------------------------------------------------------------------
+| FRONTEND (Public Website UI)
+| Base path: resources/views/frontend
+|--------------------------------------------------------------------------
+*/
+
+// ====================================================================
+// I. PUBLIC & AUTHENTICATION ROUTES
+// ====================================================================
+
+// Landing / Home
+Route::get('/', fn () => view('frontend.pages.welcome'))->name('home');
+Route::get('/home', fn () => view('frontend.pages.home'))->name('home.page');
+
+// Auth (Frontend UI only)
+Route::prefix('auth')->group(function () {
+    Route::get('/login', fn () => view('frontend.auth.login'))->name('login');
+    Route::get('/register', fn () => view('frontend.auth.register'))->name('register');
+    Route::get('/register/investor', fn () => view('frontend.auth.investor-register'))->name('register.investor');
+    Route::get('/forgot-password', fn () => view('frontend.auth.forgot-password'))->name('password.request');
+    Route::get('/reset-password', fn () => view('frontend.auth.reset-password'))->name('password.reset');
+});
+
+// ====================================================================
+// II. STATIC / UTILITY PAGES
+// ====================================================================
+Route::prefix('/')->name('utility.')->group(function () {
+    Route::get('about', fn () => view('frontend.pages.utility.about'))->name('about');
+    Route::get('careers', fn () => view('frontend.pages.utility.careers'))->name('careers');
+    Route::get('contact', fn () => view('frontend.pages.utility.contact'))->name('contact');
+    Route::get('how-it-works', fn () => view('frontend.pages.utility.how-it-works'))->name('how-it-works');
+    Route::get('partnerships', fn () => view('frontend.pages.utility.partnerships'))->name('partnerships');
+    Route::get('privacy', fn () => view('frontend.pages.utility.privacy'))->name('privacy');
+    Route::get('support', fn () => view('frontend.pages.utility.support'))->name('support');
+    Route::get('terms', fn () => view('frontend.pages.utility.terms'))->name('terms');
+});
+
+// ====================================================================
+// III. PROJECT SUBMISSION FLOW (Academic)
+// ====================================================================
+Route::prefix('submit-project')->name('project.submit.')->group(function () {
+    Route::get('/', fn () => view('frontend.pages.submissions.step1'))->name('step1');
+    Route::get('/step2', fn () => view('frontend.pages.submissions.step2'))->name('step2');
+    Route::get('/step3', fn () => view('frontend.pages.submissions.step3'))->name('step3');
+    Route::get('/step4', fn () => view('frontend.pages.submissions.step4'))->name('step4');
+    Route::get('/confirm', fn () => view('frontend.pages.submissions.confirm'))->name('confirm');
+});
+
+// ====================================================================
+// IV. DASHBOARDS & SETTINGS (Frontend UI)
+// ====================================================================
+
+// Dashboards
+Route::prefix('dashboard')->name('dashboard.')->group(function () {
+    Route::get('/academic', fn () => view('frontend.components.dashboard.academic'))->name('academic');
+    Route::get('/investor', fn () => view('frontend.components.dashboard.investor'))->name('investor');
+});
+
+// Settings
+Route::prefix('settings')->name('settings.')->group(function () {
+    Route::get('/academic', fn () => view('frontend.components.settings.academic'))->name('academic');
+    Route::get('/investor', fn () => view('frontend.components.settings.investor'))->name('investor');
+});
+
+// ====================================================================
+// V. PROJECT CATALOG (Public)
+// ====================================================================
+Route::prefix('projects')->name('projects.')->group(function () {
+    Route::get('/', fn () => view('frontend.pages.projects.index'))->name('index');
+    Route::get('/example-project', fn () => view('frontend.pages.projects.show'))->name('show');
+});
+
+// ====================================================================
+// VI. ADMIN (FRONTEND UI ONLY – NOT MANAGER DASHBOARD)
+// ====================================================================
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', fn () => view('frontend.pages.admin.dashboard'))->name('dashboard');
+    Route::get('/users', fn () => view('frontend.pages.admin.user-management'))->name('users');
+    Route::get('/system-settings', fn () => view('frontend.pages.admin.system-config'))->name('system.settings');
+    Route::get('/projects/review', fn () => view('frontend.pages.admin.project-vetting'))->name('projects.review');
+});
