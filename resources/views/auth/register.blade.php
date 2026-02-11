@@ -16,10 +16,10 @@
     <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
     <!-- CSS -->
-    <link rel="stylesheet" type="text/css" href="vendors/styles/core.css" />
-    <link rel="stylesheet" type="text/css" href="vendors/styles/icon-font.min.css" />
-    <link rel="stylesheet" type="text/css" href="src/plugins/jquery-steps/jquery.steps.css" />
-    <link rel="stylesheet" type="text/css" href="vendors/styles/style.css" />
+    <link rel="stylesheet" type="text/css" href="{{ asset('vendors/styles/core.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ asset('vendors/styles/icon-font.min.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ asset('src/plugins/jquery-steps/jquery.steps.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ asset('vendors/styles/style.css') }}" />
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -51,7 +51,7 @@
             <div class="col-md-6 col-lg-5">
                 <div class="register-box bg-white box-shadow border-radius-10">
                     <div class="wizard-content">
-                        <form id="registerForm" class="tab-wizard2 wizard-circle wizard" action="{{ route('register.post') }}" method="POST">
+                        <form id="registerForm" class="tab-wizard2 wizard-circle wizard" action="{{ route('admin.register.post') }}" method="POST">
                             @csrf
                             <!-- Step 1: Basic Account Credentials -->
                             <h5>Basic Account Credentials</h5>
@@ -170,7 +170,6 @@
 
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
 <script>
 $(document).ready(function () {
     // إزالة زر Finish الأصلي إذا موجود
@@ -263,15 +262,22 @@ $(document).ready(function () {
             method: "POST",
             data: formData,
             dataType: "json",
-            success: function (response) {
-                if (response.message) {
-                    alert("✅ نجاح: " + response.message);
-                    $("#registerForm")[0].reset();
-                    updateOverview();
-                } else {
-                    alert("❌ فشل: " + response.message);
-                }
-            },error: function (xhr) {
+    success: function (response) {
+        if (response.success || response.message) {
+            alert("✅ نجاح: " + (response.message || "تم التسجيل بنجاح"));
+            
+            // This is the "Magic Line" that takes the user to the dashboard
+            if (response.redirect_url) {
+                window.location.href = response.redirect_url;
+            } else {
+                // Fallback if your controller doesn't send a URL
+                window.location.href = "/manager/dashboard";
+            }
+        } else {
+            alert("❌ فشل: " + response.message);
+        }
+    }
+            ,error: function (xhr) {
     if (xhr.status === 422) {
         // أخطاء التحقق من الصحة
         let errors = xhr.responseJSON.errors;
@@ -304,11 +310,11 @@ $(document).ready(function () {
 </script>
 
 <!-- js -->
-<script src="vendors/scripts/core.js"></script>
-<script src="vendors/scripts/script.min.js"></script>
-<script src="vendors/scripts/process.js"></script>
-<script src="vendors/scripts/layout-settings.js"></script>
-<script src="src/plugins/jquery-steps/jquery.steps.js"></script>
-<script src="vendors/scripts/steps-setting.js"></script>
+<script src="{{ asset('vendors/scripts/core.js') }}"></script>
+<script src="{{ asset('vendors/scripts/script.min.js') }}"></script>
+<script src="{{ asset('vendors/scripts/process.js') }}"></script>
+<script src="{{ asset('vendors/scripts/layout-settings.js') }}"></script>
+<script src="{{ asset('src/plugins/jquery-steps/jquery.steps.js') }}"></script>
+<script src="{{ asset('vendors/scripts/steps-setting.js') }}"></script>
 </body>
 </html>

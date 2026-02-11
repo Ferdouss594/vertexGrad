@@ -7,17 +7,19 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     public function up()
-    {
-        Schema::create('supervisors', function (Blueprint $table) {
-            $table->id();
-            $table->string('name',150);
-            $table->string('email',100)->unique()->nullable();
-            $table->string('department',50)->nullable();
-            $table->string('phone',20)->nullable();
-            $table->string('address',255)->nullable();
-            $table->timestamps();
-        });
-    }
+{
+    Schema::create('supervisors', function (Blueprint $table) {
+        $table->id();
+        // 🔥 ADD THIS LINE - It links the supervisor to the user account
+        $table->foreignId('user_id')->constrained()->onDelete('cascade'); 
+        
+        $table->string('department', 50)->nullable();
+        $table->string('specialization', 100)->nullable(); // Matches your Model fillable
+        $table->string('phone', 20)->nullable();
+        $table->string('address', 255)->nullable();
+        $table->timestamps();
+    });
+}
 
     public function down(): void
     {

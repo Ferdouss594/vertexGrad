@@ -15,10 +15,10 @@ return new class extends Migration
             $table->string('category', 50)->nullable();
             $table->enum('status', ['Pending','Active','Completed'])->default('Pending');
 
- $table->foreignId('student_id')->constrained('users');
-$table->foreignId('supervisor_id')->nullable()->constrained('users');
-$table->foreignId('manager_id')->nullable()->constrained('users');
-$table->foreignId('investor_id')->nullable()->constrained('users');
+            $table->foreignId('student_id')->constrained('users');
+            $table->foreignId('supervisor_id')->nullable()->constrained('users');
+            $table->foreignId('manager_id')->nullable()->constrained('users');
+            $table->foreignId('investor_id')->nullable()->constrained('users');
 
 
             // الحقول الإضافية

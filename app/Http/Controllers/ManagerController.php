@@ -66,20 +66,17 @@ class ManagerController extends Controller
     }
 public function sync()
 {
-    // جلب كل المستخدمين الذين دورهم Manager
-    $users = User::where('role', 'Manager')->get();
+    // Use a transaction for professional data integrity
+    \DB::transaction(function () {
+        $users = \App\Models\User::all();
 
-    foreach ($users as $user) {
-        // تحقق إذا لم يكن موجود بالفعل في جدول managers
-        if (!Manager::where('user_id', $user->id)->exists()) {
-            Manager::create([
-                'user_id' => $user->id,
-                'department' => null, // يمكن تعديلها لاحقًا
-            ]);
+        foreach ($users as $user) {
+            // Simply calling save() triggers the 'booted' logic we wrote in Step 1
+            $user->save(); 
         }
-    }
+    });
 
-    return redirect()->route('manager.index')->with('success', 'All manager users synced successfully.');
+    return redirect()->back()->with('success', 'All 5 roles have been synchronized and cleaned.');
 }
 
     // =================== صفحة إنشاء مدير ===================

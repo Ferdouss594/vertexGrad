@@ -6,7 +6,7 @@
     $cardBg = '#1E293B';
 @endphp
 
-@extends('layouts.app')
+@extends('frontend.layouts.app')
 
 @section('content')
 

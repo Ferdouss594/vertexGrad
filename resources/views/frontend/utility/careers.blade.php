@@ -10,7 +10,7 @@
     ];
 @endphp
 
-@extends('layouts.app')
+@extends('frontend.layouts.app')
 
 @section('content')
 

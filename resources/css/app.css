@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Import your pre-compiled custom styles */
+@import "../../public/assets/css/custom.css";
+
 /* Optional: custom CSS variables */
 :root {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif,

@@ -30,7 +30,7 @@
     // --- SECTION 2 ADDITIONS END HERE ---
 @endphp
 
-@extends('layouts.app')
+@extends('frontend.layouts.app')
 
 @section('content')
 

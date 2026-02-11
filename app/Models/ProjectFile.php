@@ -16,15 +16,3 @@ class ProjectFile extends Model
         return $this->belongsTo(Project::class, 'project_id', 'project_id');
     }
 }
-
-class Project extends Model
-{
-    use HasFactory;
-
-    protected $primaryKey = 'project_id';
-
-    public function files()
-    {
-        return $this->hasMany(ProjectFile::class, 'project_id', 'project_id');
-    }
-}

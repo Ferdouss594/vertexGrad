@@ -10,10 +10,12 @@ class Supervisor extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
-        'department',
-        'specialization',
-    ];
+    'user_id',
+    'department',
+    'specialization',
+    'phone',   // Added to match migration
+    'address', // Added to match migration
+];
 
     public function user()
     {

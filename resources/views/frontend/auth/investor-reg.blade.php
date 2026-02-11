@@ -6,7 +6,7 @@
     $btnPrimaryClass = $design['classes']['btn_base'] . ' ' . $design['classes']['btn_primary'];
 @endphp
 
-@extends('layouts.app')
+@extends('frontend.layouts.app')
 
 @section('content')
 <div class="min-h-screen flex items-center justify-center py-12" style="background-color: {{ $darkBg }};">

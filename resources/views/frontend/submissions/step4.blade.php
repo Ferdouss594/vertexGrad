@@ -8,7 +8,7 @@
     $cardBg = '#1E293B';
 @endphp
 
-@extends('layouts.app')
+@extends('frontend.layouts.app')
 
 @section('content')
 <div class="min-h-screen py-16" style="background-color: {{ $darkBg }};">
@@ -68,7 +68,7 @@
                     <input type="checkbox" name="terms_agreement" required 
                            class="form-checkbox h-5 w-5 text-primary border-primary/30 bg-dark rounded focus:ring-primary">
                     <span class="ml-3 text-sm">
-                        I agree to the <a href="/terms" target="_blank" class="text-primary hover:underline">Terms of Service</a> and confirm the data submitted is accurate. <span class="text-primary">*</span>
+                        I agree to the <a href="/terms" target="_blank" class="text-primary underline">Read Terms & Conditions</a> and confirm the data submitted is accurate. <span class="text-primary">*</span>
                     </span>
                 </label>
             </div>

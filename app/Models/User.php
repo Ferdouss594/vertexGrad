@@ -74,6 +74,8 @@ public function setPasswordAttribute($value)
 {
     $this->attributes['password'] = bcrypt($value);
 }
+// Inside User.php
+
 protected $casts = [
     'last_login' => 'datetime',
     'last_activity' => 'datetime',
@@ -84,4 +86,35 @@ public function investor()
 }
 
 
+public function projects()
+    {
+        return $this->hasMany(Project::class, 'student_id');
+    }
+
+protected static function booted()
+{
+    static::saved(function ($user) {
+        $role = $user->role;
+
+        // 1. Define all possible role-specific tables/models
+        $roleModels = [
+            'Manager'    => \App\Models\Manager::class,
+            'Investor'   => \App\Models\Investor::class,
+            'Student'    => \App\Models\Student::class,
+            'Supervisor' => \App\Models\Supervisor::class,
+            // 'Admin' usually only lives in the users table, but add here if it has a table
+        ];
+
+        // 2. Loop through and clean/sync
+        foreach ($roleModels as $roleName => $modelClass) {
+            if ($role === $roleName) {
+                // If this is the active role, ensure the record exists
+                $modelClass::firstOrCreate(['user_id' => $user->id]);
+            } else {
+                // If this is NOT the active role, delete any old data from that table
+                $modelClass::where('user_id', $user->id)->delete();
+            }
+        }
+    });
+}
 }

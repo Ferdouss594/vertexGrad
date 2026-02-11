@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\User;
+// No change needed to imports
 
 class Project extends Model
 {
@@ -27,27 +27,23 @@ class Project extends Model
         'end_date' => 'date'
     ];
 
-    // علاقات
-    
-
-public function student() {
+    public function student() {
+    // This links Project(student_id) -> User(id)
     return $this->belongsTo(User::class, 'student_id');
-}
+    }
+    // UPDATED RELATIONS: Pointing directly to User model for Auth ease
 
-public function supervisor() {
-    return $this->belongsTo(User::class, 'supervisor_id');
-}
+    public function supervisor() {
+        return $this->belongsTo(User::class, 'supervisor_id');
+    }
 
-public function manager() {
-    return $this->belongsTo(User::class, 'manager_id');
-}
+    public function manager() {
+        return $this->belongsTo(User::class, 'manager_id');
+    }
 
-public function investor() {
-    return $this->belongsTo(User::class, 'investor_id');
-}
-
-
-   
+    public function investor() {
+        return $this->belongsTo(User::class, 'investor_id');
+    }
 
     public function tasks() {
         return $this->hasMany(ProjectTask::class, 'project_id');
@@ -61,7 +57,9 @@ public function investor() {
         return $this->hasMany(ProjectReport::class, 'project_id');
     }
 
+    // FIX: Changed from FileUpload to ProjectFile to match your Controller
     public function files() {
-        return $this->hasMany(FileUpload::class, 'project_id');
+        return $this->hasMany(ProjectFile::class, 'project_id');
     }
+
 }

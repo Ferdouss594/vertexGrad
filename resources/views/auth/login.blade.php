@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="{{ asset('vendors/styles/core.css') }}">
     <link rel="stylesheet" href="{{ asset('vendors/styles/icon-font.min.css') }}">
     <link rel="stylesheet" href="{{ asset('vendors/styles/style.css') }}">
-
     <style>
         .text-danger {
             font-size: 14px;
@@ -39,13 +38,13 @@
     <div class="login-header box-shadow">
         <div class="container-fluid d-flex justify-content-between align-items-center">
             <div class="brand-logo">
-                <a href="{{ route('login.show') }}">
+                <a href="{{ route('admin.login.show') }}">
                     <img src="{{ asset('vendors/images/VertexGrad_logoud.png') }}" alt="" class="light-logo" style="margin-top:13px;">
                 </a>
             </div>
             <div class="login-menu">
                 <ul>
-                    <li><a href="{{ route('register.show') }}">Register</a></li>
+                    <li><a href="{{ route('admin.register.show') }}">Register</a></li>
                 </ul>
             </div>
         </div>
@@ -66,7 +65,7 @@
                                 <h2 class="text-center text-primary">Login to VertexGrad</h2>
                             </div>
 
-                            <form action="{{ route('login.post') }}" method="POST">
+                            <form action="{{ route('admin.login.post') }}" method="POST">
                                 @csrf
 
                                 <!-- Role Selection -->
@@ -132,7 +131,7 @@
                                     <div class="col-sm-12">
                                         <button type="submit" class="btn btn-primary btn-lg btn-block">Sign In</button>
                                         <div class="font-16 weight-600 pt-10 pb-10 text-center" data-color="#707373">OR</div>
-                                        <a class="btn btn-outline-primary btn-lg btn-block" href="{{ route('register.show') }}">Register to Create Account</a>
+                                        <a class="btn btn-outline-primary btn-lg btn-block" href="{{ route('admin.register.show') }}">Register to Create Account</a>
                                     </div>
                                 </div>
 

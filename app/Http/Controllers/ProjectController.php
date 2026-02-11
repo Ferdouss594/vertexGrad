@@ -11,18 +11,43 @@ use Illuminate\Validation\Rule;
 class ProjectController extends Controller
 {
     // عرض كل المشاريع
-    public function index()
-    {
-        $projects = Project::with(['student', 'supervisor', 'manager', 'investor', 'files'])->get();
-        return view('projects.index', compact('projects'));
+public function index(Request $request)
+{
+    $query = Project::with(['student', 'files']);
+
+    // 1. Filter by Category (Matching 'category' name in Blade)
+    if ($request->filled('category')) {
+        $query->where('category', $request->category);
     }
 
-    // عرض مشروع واحد مع التفاصيل
-    public function show(Project $project)
-    {
-        $project->load([ 'files']);
-        return view('projects.show', compact('project'));
+    // 2. Filter by Budget (Matching 'budget_max' name in Blade)
+    if ($request->filled('budget_max')) {
+        $query->where('budget', '<=', $request->budget_max);
     }
+
+    // 3. Sorting
+    $query->orderBy('created_at', 'desc');
+
+    // appends(request()->all()) ensures filters stay active when clicking page 2, 3, etc.
+    $projects = $query->paginate(10)->appends($request->all());
+    $totalProjects = Project::count();
+
+    return view('frontend.projects.index', compact('projects', 'totalProjects'));
+}
+
+    // عرض مشروع واحد مع التفاصيل
+public function show($id)
+{
+    // Eager load 'student' and 'files' to prevent extra database queries
+    $project = Project::with(['student', 'files'])->findOrFail($id);
+
+    // Safety: Ensure students only see their own projects
+    if (auth()->user()->role === 'Student' && $project->student_id !== auth()->id()) {
+        abort(403, 'Unauthorized access to this project details.');
+    }
+
+    return view('frontend.projects.show', compact('project'));
+}
 
     // نموذج إضافة مشروع جديد
     public function create()

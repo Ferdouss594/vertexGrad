@@ -3,7 +3,9 @@ module.exports = {
     content: [
         './resources/views/**/*.blade.php',
         './resources/js/**/*.js',
+        './resources/views/frontend/**/*.blade.php', // Add this line
     ],
+    // ... rest of your config
 
     darkMode: 'class',
 
