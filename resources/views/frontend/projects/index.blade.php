@@ -31,7 +31,7 @@
             <i class="fas fa-filter mr-3 text-primary text-xs"></i> FILTER
         </h3>
         
-        <form action="{{ route('projects.index') }}" method="GET" class="space-y-6">
+        <form action="{{ route('frontend.projects.index') }}" method="GET" class="space-y-6">
             {{-- Discipline Filter --}}
             <div>
                 <label class="text-[10px] font-black text-light/40 uppercase tracking-widest block mb-3">Discipline</label>
@@ -68,7 +68,7 @@
                 </button>
                 
                 @if(request()->hasAny(['category', 'budget_max']))
-                    <a href="{{ route('projects.index') }}" class="block text-center text-[10px] font-black text-light/30 uppercase tracking-widest hover:text-error transition-colors">
+                    <a href="{{ route('frontend.projects.index') }}" class="block text-center text-[10px] font-black text-light/30 uppercase tracking-widest hover:text-error transition-colors">
                         Clear Filters
                     </a>
                 @endif

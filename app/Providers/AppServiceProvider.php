@@ -29,6 +29,16 @@ class AppServiceProvider extends ServiceProvider
     });
         // تسجيل Middleware باسم alias
         Route::aliasMiddleware('role', RoleMiddleware::class);
+
+            // Existing bindings / middleware
+        Route::bind('investor', function ($value) {
+            return Investor::where('user_id', $value)->firstOrFail();
+        });
+
+        // Load admin routes (backend)
+        Route::middleware('web')
+            ->group(base_path('routes/admin.php'));
+
     }
 
 

@@ -22,15 +22,27 @@ class Manager extends Model
         'profile_image',
     ];
 
-    // كل مدير مرتبط بحساب مستخدم
+    // Relationship: each manager is linked to a user account
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    // صلاحيات المدير
+    // Permissions for this manager
     public function permissions()
     {
         return $this->hasMany(ManagerPermission::class);
+    }
+
+    // Professional helper: get dashboard URL dynamically
+    public function getDashboardUrlAttribute(): string
+    {
+        return route('manager.dashboard');
+    }
+
+    // Optional helper: last login formatted
+    public function getLastLoginFormattedAttribute(): ?string
+    {
+        return $this->last_login ? $this->last_login->format('d M Y, H:i') : null;
     }
 }

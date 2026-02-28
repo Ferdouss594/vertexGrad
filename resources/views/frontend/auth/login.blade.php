@@ -43,9 +43,7 @@
                 <select name="role" required class="w-full p-3 rounded-lg border border-primary/30 bg-dark text-light">
                     <option value="">Select role</option>
                     <option value="Student">Student</option>
-                    <option value="Supervisor">Supervisor</option>
                     <option value="Investor">Investor</option>
-                    <option value="Manager">Manager</option>
                 </select>
             </div>
 

@@ -77,19 +77,19 @@
         <h5 class="mb-0 fw-bold"><i class="fa fa-list me-2"></i> Investors List</h5>
 
         <div class="d-flex gap-2 flex-wrap">
-            <a href="{{ route('investors.index') }}" 
+            <a href="{{ route('admin.investors.index') }}" 
                class="btn btn-outline-primary btn-sm" 
                style="border-radius: 6px; font-weight: 500; padding: 6px 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
                 <i class="fa fa-users me-1"></i> Active
             </a>
 
-            <a href="{{ route('investors.create') }}" 
+            <a href="{{ route('admin.investors.create') }}" 
                class="btn btn-primary btn-sm" 
                style="border-radius: 6px; font-weight: 500; padding: 6px 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.15);">
                 <i class="fa fa-plus me-1"></i> Add Investor
             </a>
 
-            <a href="{{ route('investors.export','xlsx') }}" 
+            <a href="{{ route('admin.investors.export','xlsx') }}" 
                class="btn btn-outline-secondary btn-sm" 
                style="border-radius: 6px; font-weight: 500; padding: 6px 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
                 <i class="fa fa-file-export me-1"></i> Export
@@ -113,7 +113,7 @@
     <div class="card-body">
 
         <!-- ===================== Filters ===================== -->
-        <form method="GET" action="{{ route('investors.index') }}">
+        <form method="GET" action="{{ route('admin.investors.index') }}">
             <div class="row mb-3 align-items-end g-3">
 
                 <!-- Show entries -->
@@ -183,10 +183,10 @@
 
     {{-- أزرار العمليات --}}
     <td class="text-center">
-        <a href="{{ route('investors.show', $inv->id) }}" class="btn btn-sm btn-info" title="Show">
+        <a href="{{ route('admin.investors.show', $inv->id) }}" class="btn btn-sm btn-info" title="Show">
             <i class="fa fa-id-card"></i>
         </a>
-        <a href="{{ route('investors.edit', $inv->id) }}" class="btn btn-sm btn-warning" title="Edit">
+        <a href="{{ route('admin.investors.edit', $inv->id) }}" class="btn btn-sm btn-warning" title="Edit">
             <i class="fa fa-edit"></i>
         </a>
     </td>
@@ -256,7 +256,7 @@ document.getElementById('importFile').addEventListener('change', function(){
     var fd = new FormData();
     fd.append('file', f);
     fd.append('_token','{{ csrf_token() }}');
-    fetch("{{ route('investors.import') }}", { method:'POST', body: fd })
+    fetch("{{ route('admin.investors.import') }}", { method:'POST', body: fd })
     .then(r=>r.text())
     .then(()=> location.reload());
 });

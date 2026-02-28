@@ -11,19 +11,32 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+
+        // ✅ Alias Middleware
         $middleware->alias([
             'role' => \App\Http\Middleware\RoleMiddleware::class,
         ]);
 
-        // This ensures that 'auth' sends people to frontend login 
-        // and 'auth:admin' sends people to backend login
-        $middleware->authenticateSessions(); 
-        
-        $middleware->redirectTo(
-            guests: '/auth/login', // Change this to your actual frontend login URL
-            users: '/'
-        );
+        // ✅ FIX: Redirect guests correctly based on URL area
+        $middleware->redirectGuestsTo(function ($request) {
+
+            // Treat ALL of these as dashboard/admin area
+            if (
+                $request->is('admin*') ||
+                $request->is('manager*') ||
+                $request->is('Supervisior*') ||
+                $request->is('supervisior*') ||
+                $request->is('supervisor*')
+            ) {
+                return route('admin.login.show');
+            }
+
+            return route('login.show');
+        });
+
+        $middleware->statefulApi();
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
-    })->create();
+    })
+    ->create();

@@ -55,8 +55,7 @@
                     <div class="flex-1">
                         <div class="flex items-center gap-3 mb-6">
                             <span class="px-4 py-1.5 rounded-xl bg-primary/10 text-primary text-[10px] font-black uppercase tracking-[0.15em] border border-primary/20">
-                                {{ $latestProject->category }}
-                            </span>
+                            {{ $latestProject->category ?? 'Uncategorized' }}                            </span>
                             <span class="text-light/30 text-xs font-mono">REF: PRJ-{{ $latestProject->project_id + 1000 }}</span>
                         </div>
                         <h2 class="text-3xl md:text-5xl font-bold text-light mb-8 leading-[1.1] tracking-tight">
@@ -66,7 +65,7 @@
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-8">
                             <div class="bg-white/5 p-4 rounded-2xl border border-white/5">
                                 <p class="text-light/40 text-[10px] uppercase font-black mb-1 tracking-widest">Target Budget</p>
-                                <p class="text-2xl font-bold text-success">${{ number_format($latestProject->budget) }}</p>
+                                <p class="text-2xl font-bold text-success">${{ number_format($latestProject->budget ?? 0) }}</p>
                             </div>
                             <div class="bg-white/5 p-4 rounded-2xl border border-white/5">
                                 <p class="text-light/40 text-[10px] uppercase font-black mb-1 tracking-widest">Submission Date</p>
@@ -89,12 +88,14 @@
 
                     {{-- Right: Actions --}}
                     <div class="flex flex-col justify-center gap-4 min-w-[260px]">
-                        <a href="{{ route('project.details', $latestProject->project_id) }}" 
-                           class="group/btn flex items-center justify-between p-5 bg-primary text-dark rounded-2xl transition-all hover:bg-white">
+                        <a href="{{ route('projects.show', $latestProject->project_id) }}"
+                        class="group/btn flex items-center justify-between p-5 bg-primary text-dark rounded-2xl transition-all hover:bg-white">
                             <span class="font-black uppercase text-xs tracking-wider">Project Portfolio</span>
                             <i class="fas fa-arrow-right group-hover/btn:translate-x-1 transition-transform"></i>
                         </a>
-                        <button class="flex items-center justify-between p-5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl transition-all group text-light/80">
+
+                        <button type="button"
+                                class="flex items-center justify-between p-5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl transition-all group text-light/80">
                             <span class="font-bold text-xs uppercase tracking-wider">Upload Data</span>
                             <i class="fas fa-upload group-hover:-translate-y-1 transition-transform text-primary"></i>
                         </button>

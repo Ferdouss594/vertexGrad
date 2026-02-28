@@ -40,12 +40,12 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
-        // Add this:
         'admin' => [
             'driver' => 'session',
-            'provider' => 'users',
+            'provider' => 'users', // still using users table
         ],
     ],
+
 
     /*
     |--------------------------------------------------------------------------

@@ -108,7 +108,6 @@
         <p class="mt-8 text-xl lg:text-2xl text-light/80 max-w-4xl mx-auto font-light">
             The exclusive marketplace for institutional investors and industry leaders to fund high-potential, faculty-vetted university projects globally.
         </p>
-
         {{-- Main CTAs: Search Focus (Investors) & Submission Link (Graduates) --}}
         <div class="mt-14 max-w-4xl mx-auto">
             
@@ -152,15 +151,12 @@
     $container = $c['container'];
     $sectionY = $c['section_y'];
     $btnSecondary = "{$c['btn_base']} {$c['btn_secondary']}";
-
-    $projects = $featuredProjects; // Using the placeholder data defined at the top
+    
+    // We will use $featuredProjects directly from the controller
 @endphp
 
  <section class="{{ $sectionY }} bg-darker border-y border-primary/10 overflow-hidden">
-
     <div class="{{ $container }}">
-
-        {{-- Header Column --}}
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-12 items-start">
 
             {{-- LEFT TITLE PANEL --}}
@@ -168,69 +164,80 @@
                 <h2 class="text-4xl lg:text-5xl font-extrabold text-light leading-tight">
                     Featured <span class="text-primary">Projects</span>
                 </h2>
-
                 <p class="mt-4 text-light/70 text-lg leading-relaxed">
                     Explore high-impact innovations selected by academic partners.
                 </p>
-
-                {{-- FIX: Link is already correct: /projects --}}
                 <a href="/projects" 
                    class="mt-8 inline-block {{ $btnSecondary }} px-8 py-3 border-primary/50 text-light hover:text-primary hover:border-primary">
                     View All Projects
                 </a>
             </div>
 
-            {{-- RIGHT PROJECT GRID (2 COL) --}}
+            {{-- RIGHT PROJECT GRID --}}
             <div class="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-8">
-
-                @foreach ($projects as $project)
-                    <div class="opacity-0 translate-y-8 section-anim">
-                        <div class="bg-cardDark border border-white/5 hover:border-primary/40 rounded-xl p-6 shadow-lg hover:shadow-neon_sm transition duration-300">
-
-                            <p class="text-primary text-sm font-semibold mb-2">
-                                {{ $project['category'] }}
-                            </p>
-
-                            <h3 class="text-xl font-bold text-light leading-tight mb-3">
-                                {{ $project['title'] }}
-                            </h3>
-
-                            <p class="text-light/60 text-sm mb-4">
-                                {{ $project['desc'] }}
-                            </p>
-
-                            <p class="text-light/40 text-xs">
-                                By {{ $project['creator'] }}
-                            </p>
-
-                        </div>
+@foreach ($featuredProjects as $project)
+    <div class="opacity-0 translate-y-8 section-anim">
+        <div class="group bg-cardDark border border-white/5 hover:border-primary/40 rounded-xl overflow-hidden shadow-lg hover:shadow-neon_sm transition duration-300">
+            
+            <div class="relative h-48 w-full bg-dark overflow-hidden">
+                {{-- Check if $project is a Model object before calling hasMedia --}}
+                @if(is_object($project) && method_exists($project, 'hasMedia') && $project->hasMedia('images'))
+                    <img src="{{ $project->getFirstMediaUrl('images') }}" 
+                         alt="{{ $project->name }}" 
+                         class="w-full h-full object-cover transition duration-500 group-hover:scale-110">
+                @else
+                    <div class="w-full h-full flex items-center justify-center bg-primary/10">
+                        <i class="fas fa-project-diagram text-primary text-3xl"></i>
                     </div>
-                @endforeach
-
+                @endif
             </div>
 
-        </div>
+            <div class="p-6">
+                <p class="text-primary text-sm font-semibold mb-2">
+                    {{ is_object($project) ? $project->category : ($project['category'] ?? 'General') }}
+                </p>
 
+                <h3 class="text-xl font-bold text-light leading-tight mb-3">
+                    {{ is_object($project) ? $project->name : ($project['name'] ?? 'Unnamed Project') }}
+                </h3>
+
+                <p class="text-light/60 text-sm mb-4 line-clamp-2">
+                    {{ is_object($project) ? $project->description : ($project['description'] ?? '') }}
+                </p>
+
+                <div class="flex justify-between items-center mt-auto">
+                    <p class="text-light/40 text-xs">
+                        By {{ (is_object($project) && $project->student) ? $project->student->name : 'Student' }}
+                    </p>
+                    <a href="{{ is_object($project) ? route('projects.show', $project->project_id) : '#' }}" class="text-primary text-sm font-bold hover:underline">
+                        Details →
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+@endforeach
+            </div>
+        </div>
     </div>
 </section>
 
-
-{{-- GSAP ANIMATION (Kept separate as it was provided) --}}
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    gsap.registerPlugin(ScrollTrigger);
-
-    gsap.fromTo(".section-anim",
-        { opacity: 0, y: 30 },
-        {
-            opacity: 1,
-            y: 0,
-            duration: 0.8,
-            stagger: 0.15,
-            ease: "power3.out",
-            scrollTrigger: { trigger: ".section-anim", start: "top 85%", once: true }
-        }
-    );
+    if (typeof gsap !== 'undefined') {
+        gsap.registerPlugin(ScrollTrigger);
+        gsap.fromTo(".section-anim",
+            { opacity: 0, y: 30 },
+            {
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                stagger: 0.15,
+                ease: "power3.out",
+                scrollTrigger: { trigger: ".section-anim", start: "top 85%", once: true }
+            }
+        );
+    }
 });
 </script>
 

@@ -48,7 +48,7 @@
                     <h4>All Projects</h4>
                 </div>
                 <div class="col-md-6 text-right">
-                    <a href="{{ route('projects.create') }}" class="btn btn-primary">
+                    <a href="{{ route('admin.projects.create') }}" class="btn btn-primary">
                         + Add Project
                     </a>
                 </div>
@@ -143,7 +143,7 @@
 
                             <!-- اسم المشروع مع رابط Show -->
                             <td>
-                                <a href="{{ route('projects.show', $project) }}">
+                                <a href="{{ route('admin.projects.show', $project) }}">
                                     {{ $project->name }}
                                 </a>
                             </td>
@@ -171,7 +171,7 @@
 
                             <!-- زر View -->
                             <td>
-    <a href="{{ route('projects.show',$project) }}" class="btn btn-view">View</a>
+    <a href="{{ route('admin.projects.show',$project) }}" class="btn btn-view">View</a>
 </td>
 
                         </tr>

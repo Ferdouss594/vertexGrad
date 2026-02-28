@@ -55,10 +55,10 @@ class User extends Authenticatable
 
    
 
-    public function notifications()
-    {
-        return $this->belongsToMany(Notification::class, 'notification_user')->withTimestamps();
-    }
+    // public function notifications()
+    // {
+    //     return $this->belongsToMany(Notification::class, 'notification_user')->withTimestamps();
+    // }
 
     public function messages()
     {
@@ -70,10 +70,15 @@ class User extends Authenticatable
         return $this->hasMany(Message::class, 'receiver_id');
     }
     // 🔹 تشفير كلمة المرور تلقائيًا عند الحفظ
-public function setPasswordAttribute($value)
-{
-    $this->attributes['password'] = bcrypt($value);
-}
+// protected function setPasswordAttribute($value)
+// {
+//     // If the value is already a valid hash, do NOT hash it again.
+//     if (\Illuminate\Support\Facades\Hash::needsRehash($value)) {
+//         $this->attributes['password'] = bcrypt($value);
+//     } else {
+//         $this->attributes['password'] = $value;
+//     }
+// }
 // Inside User.php
 
 protected $casts = [

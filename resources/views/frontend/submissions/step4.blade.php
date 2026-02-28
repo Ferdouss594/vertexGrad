@@ -31,9 +31,17 @@
         <p class="text-lg text-light/70 mb-10">
             This account will allow you to track the progress of your submission and manage all future projects.
         </p>
-
-        <form action="/submit-project/step4" method="POST" class="space-y-8">
-            @csrf
+            @if ($errors->any())
+    <div class="mb-6 p-4 rounded-lg bg-red-500/20 border border-red-500/50 text-red-200 text-sm">
+        <ul class="list-disc list-inside">
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+        <form action="{{ route('project.submit.step4.post') }}" method="POST" class="space-y-8"> 
+         @csrf
             
             {{-- Account Credentials --}}
             <div class="border border-light/10 p-6 rounded-lg bg-dark/50">

@@ -14,93 +14,60 @@ class AuthController extends Controller
     // 🟢 عرض صفحة تسجيل الدخول
 public function showLogin()
 {
-    // If the user is already logged in, don't show the login page
-    if (Auth::check()) {
-        $user = Auth::user();
-        
-        // Redirect them to their proper home based on role
-        return redirect()->intended(match($user->role) {
-            'Manager', 'Admin' => route('manager.dashboard'),
-            'Supervisor'       => '/Supervisior/supervisior_page',
-            default            => route('home'),
-        });
+    if (Auth::guard('admin')->check()) {
+        $user = Auth::guard('admin')->user();
+        return redirect()->intended(
+            match($user->role) {
+                'Manager', 'Admin' => route('manager.dashboard'),
+                'Supervisor'       => '/Supervisior/supervisior_page',
+                default            => route('home'),
+            }
+        );
     }
 
-    return view('auth.login'); // Show the admin login form
+    return view('auth.login'); 
 }
 
     // 🟢 تنفيذ تسجيل الدخول مع تتبع الجهاز والمتصفح والجلسة
- public function login(Request $request)
+public function login(Request $request)
 {
     $fieldType = filter_var($request->login_id, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 
-    // 1. Validation Rules
-    $rules = [
-        'login_id' => 'required',
+    $request->validate([
+        'login_id' => 'required|' . ($fieldType === 'email' ? 'email' : 'string'),
         'password' => 'required|min:6',
         'role'     => 'required|in:Manager,Supervisor',
+    ]);
+
+    $credentials = [
+        $fieldType => $request->login_id,
+        'password' => $request->password,
     ];
 
-    $messages = [
-        'login_id.required' => $fieldType === 'email' ? 'Email is required.' : 'Username is required.',
-        'role.required'     => 'Please select your role.',
-    ];
-
-    if ($fieldType === 'email') {
-        $rules['login_id'] .= '|email|exists:users,email';
-    } else {
-        $rules['login_id'] .= '|exists:users,username';
-    }
-
-    $request->validate($rules, $messages);
-
-    // 2. Fetch User (Already in your code)
     $user = User::where($fieldType, $request->login_id)->first();
 
-    // 3. Check Role FIRST (Easier for you to see if the button selection is the problem)
-    if ($user && trim(strtolower($user->role)) !== trim(strtolower($request->role))) {
+    if (!$user) {
+        return back()->withErrors(['login_id' => 'User not found.'])->withInput();
+    }
+
+    if (trim(strtolower($user->role)) !== trim(strtolower($request->role))) {
         return back()->withErrors(['role' => 'This account is not registered as a ' . $request->role])->withInput();
     }
 
-    // 4. Check Password & Status
-    if (!$user || !Hash::check($request->password, $user->password)) {
-        return back()->withErrors(['login_id' => 'Incorrect credentials. Please check your email/username and password.'])->withInput();
+    // ✅ Use the admin guard
+    if (Auth::guard('admin')->attempt($credentials, $request->has('remember'))) {
+        $request->session()->regenerate();
+
+        session(['active_guard' => 'admin']); // keep backend session separate
+
+        return redirect()->intended(match($user->role) {
+            'Manager'    => route('manager.dashboard'),
+            'Supervisor' => '/Supervisior/supervisior_page',
+            default      => route('home'),
+        });
     }
 
-    if ($user->status !== 'active') {
-        return back()->withErrors(['login_id' => 'Your account is ' . $user->status . '.'])->withInput();
-    }
-    // 5. Track Login Data (Agent info)
-    $agent = new Agent();
-    $user->update([
-        'last_login'    => now(),
-        'last_activity' => now(),
-        'login_ip'      => $request->ip(),
-        'device'        => $agent->device(),
-        'browser'       => $agent->browser(),
-        'os'            => $agent->platform(),
-    ]);
-
-    LoginLog::create([
-        'user_id'    => $user->id,
-        'ip'         => $request->ip(),
-        'device'     => $agent->device(),
-        'browser'    => $agent->browser(),
-        'os'         => $agent->platform(),
-        'login_at'   => now(),
-        'session_id' => session()->getId(),
-    ]);
-
-    // 6. Perform Login using the 'admin' guard
-    Auth::guard('admin')->login($user, $request->has('remember'));
-    $request->session()->regenerate();
-
-    // 7. Professional Redirect based on Role
-    return redirect()->intended(match($user->role) {
-        'Manager'    => route('manager.dashboard'),
-        'Supervisor' => '/Supervisior/supervisior_page', // Double check this URL spelling
-        default      => route('home'),
-    });
+    return back()->withErrors(['login_id' => 'Incorrect credentials.'])->withInput();
 }
 
     public function showRegister()
@@ -126,8 +93,7 @@ try {
             'username' => $request->username,
             'name'     => $request->full_name,
             'email'    => $request->email,
-            'password' => $request->password, // Model handles hashing, so this is fine
-            'role'     => 'Supervisor',
+            'password' => Hash::make($request->password), // 🔥 ADD Hash::make HERE            'role'     => 'Supervisor',
             'status'   => 'pending',
             'gender'   => $request->gender,
             'city'     => $request->city,

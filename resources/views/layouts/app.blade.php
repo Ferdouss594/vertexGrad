@@ -146,7 +146,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <span>{{ Auth::check() ? Auth::user()->name : 'Guest' }}</span>
             </a>
             <ul class="dropdown-menu dropdown-menu-end">
-                <li><a class="dropdown-item" href="{{ route('profile') }}"><i class="bi bi-person"></i> Profile</a></li>
+                <li><a class="dropdown-item" href="{{ route('admin.profile') }}"><i class="bi bi-person"></i> Profile</a></li>
                 <li><a class="dropdown-item" href="#"><i class="bi bi-gear"></i> Settings</a></li>
                 <li><a class="dropdown-item" href="{{ route('admin.logout') }}"
                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
@@ -283,7 +283,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 </a>
                 <div class="dropdown-menu dropdown-menu-end dropdown-menu-icon-list">
-                    <a class="dropdown-item" href="{{ route('profile') }}"><i class="dw dw-user1"></i> Profile</a>
+                    <a class="dropdown-item" href="{{ route('admin.profile') }}"><i class="dw dw-user1"></i> Profile</a>
                     <a class="dropdown-item" href="profile.html"><i class="dw dw-settings2"></i> Setting</a>
                     <a class="dropdown-item" href="faq.html"><i class="dw dw-help"></i> Help</a>
                     <a class="dropdown-item" href="{{ route('admin.logout') }}"
@@ -416,7 +416,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 </li>
                 <!-- Students -->
                 <li>
-                    <a href="{{ route('students.index') }}" class="dropdown-toggle no-arrow">
+                    <a href="{{ route('admin.students.index') }}" class="dropdown-toggle no-arrow">
                         <span class="micon bi bi-mortarboard-fill"></span>
                         <span class="mtext">Students</span>
                     </a>
@@ -424,7 +424,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 <!-- Investors -->
                 <li>
-                    <a href="{{ route('investors.index') }}" class="dropdown-toggle no-arrow">
+                    <a href="{{ route('admin.investors.index') }}" class="dropdown-toggle no-arrow">
                         <span class="micon bi bi-wallet2"></span>
                         <span class="mtext">Investors</span>
                     </a>
@@ -432,7 +432,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 <!-- Projects -->
                 <li>
-                    <a href="{{ route('projects.index') }}" class="dropdown-toggle no-arrow">
+                    <a href="{{ route('admin.projects.index') }}" class="dropdown-toggle no-arrow">
                         <span class="micon bi bi-briefcase-fill"></span>
                         <span class="mtext">Projects</span>
                     </a>
@@ -448,7 +448,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 <!-- Platform Reports -->
                 <li>
-                    <a href="{{ route('reports.platform') }}" class="dropdown-toggle no-arrow">
+                    <a href="{{ route('admin.reports.platform') }}" class="dropdown-toggle no-arrow">
                         <span class="micon bi bi-file-earmark-bar-graph-fill"></span>
                         <span class="mtext">Platform Reports</span>
                     </a>

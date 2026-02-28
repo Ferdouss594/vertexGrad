@@ -11,7 +11,7 @@
     <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold mb-0">Students</h2>
-        <a href="{{ route('students.create') }}" class="btn btn-primary">
+        <a href="{{ route('admin.students.create') }}" class="btn btn-primary">
             <i class="bi bi-plus-lg"></i> Add Student
         </a>
     </div>
@@ -78,9 +78,9 @@
                     </td>
                     <td class="text-center">
                         <div class="d-flex gap-1 flex-wrap justify-content-center">
-                            <a href="{{ route('students.show', $user->id) }}" class="btn btn-sm btn-info"><i class="bi bi-eye"></i></a>
-                            <a href="{{ route('students.edit', $user->id) }}" class="btn btn-sm btn-primary"><i class="bi bi-pencil-square"></i></a>
-                            <form action="{{ route('students.destroy', $user->id) }}" method="POST" class="d-inline">
+                            <a href="{{ route('admin.students.show', $user->id) }}" class="btn btn-sm btn-info"><i class="bi bi-eye"></i></a>
+                            <a href="{{ route('admin.students.edit', $user->id) }}" class="btn btn-sm btn-primary"><i class="bi bi-pencil-square"></i></a>
+                            <form action="{{ route('admin.students.destroy', $user->id) }}" method="POST" class="d-inline">
                                 @csrf @method('DELETE')
                                 <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')"><i class="bi bi-trash"></i></button>
                             </form>
