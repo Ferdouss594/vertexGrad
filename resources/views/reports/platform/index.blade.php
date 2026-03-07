@@ -19,8 +19,8 @@
                 <h2>👥 Investors</h2>
                 <p class="count">Total: {{ $investors->count() }}</p>
                 <div class="btn-group mt-3">
-                    <a href="{{ route('reports.investors.excel') }}" class="btn btn-light btn-sm">⬇ Excel</a>
-                    <a href="{{ route('reports.investors.pdf') }}" class="btn btn-light btn-sm">⬇ PDF</a>
+                    <a href="{{ route('admin.reports.investors.excel') }}" class="btn btn-light btn-sm">⬇ Excel</a>
+                    <a href="{{ route('admin.reports.investors.pdf') }}" class="btn btn-light btn-sm">⬇ PDF</a>
                     <button onclick="printReport('investors')" class="btn btn-light btn-sm">🖨 Print</button>
                 </div>
             </div>
@@ -30,8 +30,8 @@
                 <h2>🎓 Students</h2>
                 <p class="count">Total: {{ $students->count() }}</p>
                 <div class="btn-group mt-3">
-                    <a href="{{ route('reports.students.excel') }}" class="btn btn-light btn-sm">⬇ Excel</a>
-                    <a href="{{ route('reports.students.pdf') }}" class="btn btn-light btn-sm">⬇ PDF</a>
+                    <a href="{{ route('admin.reports.students.excel') }}" class="btn btn-light btn-sm">⬇ Excel</a>
+                    <a href="{{ route('admin.reports.students.pdf') }}" class="btn btn-light btn-sm">⬇ PDF</a>
                     <button onclick="printReport('students')" class="btn btn-light btn-sm">🖨 Print</button>
                 </div>
             </div>
@@ -41,8 +41,8 @@
                 <h2>🚀 Projects</h2>
                 <p class="count">Total: {{ $projects->count() }}</p>
                 <div class="btn-group mt-3">
-                    <a href="{{ route('reports.projects.excel') }}" class="btn btn-light btn-sm">⬇ Excel</a>
-                    <a href="{{ route('reports.projects.pdf') }}" class="btn btn-light btn-sm">⬇ PDF</a>
+                    <a href="{{ route('admin.reports.projects.excel') }}" class="btn btn-light btn-sm">⬇ Excel</a>
+                    <a href="{{ route('admin.reports.projects.pdf') }}" class="btn btn-light btn-sm">⬇ PDF</a>
                     <button onclick="printReport('projects')" class="btn btn-light btn-sm">🖨 Print</button>
                 </div>
             </div>

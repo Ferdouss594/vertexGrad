@@ -11,6 +11,12 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\FileIsTooBig;
+use App\Http\Requests\Frontend\SubmitProjectStep1Request;
+use App\Http\Requests\Frontend\SubmitProjectFinalRequest;
+use App\Notifications\ProjectSubmittedNotification;
+use Illuminate\Support\Facades\Notification;
+
+
 
 class ProjectSubmissionController extends Controller
 {
@@ -25,45 +31,35 @@ class ProjectSubmissionController extends Controller
         return view('frontend.submissions.step1');
     }
 
-    public function postStep1(Request $request)
-    {
-        $data = $request->validate([
-            'project_title'   => 'required|max:100',
-            'abstract'        => 'required|max:1000',
-            'discipline'      => 'required|max:50',
 
-            // multiple images
-            'project_photos'      => 'nullable|array',
-            'project_photos.*'    => 'image|max:5120', // each image max 5MB
+public function postStep1(SubmitProjectStep1Request $request)
+{
+    $data = $request->validated();
 
-            // single video
-            'project_video'   => 'nullable|mimes:mp4,mov,ogg,qt|max:51200', // 50MB
-        ]);
+    $temp = [
+        'temp_photos' => [],
+    ];
 
-        $temp = [
-            'temp_photos' => [],
-        ];
-
-        // store images (multiple)
-        if ($request->hasFile('project_photos')) {
-            foreach ($request->file('project_photos') as $img) {
-                $temp['temp_photos'][] = $img->store('tmp', 'public');
-            }
+    // store images (multiple)
+    if ($request->hasFile('project_photos')) {
+        foreach ($request->file('project_photos') as $img) {
+            $temp['temp_photos'][] = $img->store('tmp', 'public');
         }
-
-        // store video (single)
-        if ($request->hasFile('project_video')) {
-            $temp['temp_video'] = $request->file('project_video')->store('tmp', 'public');
-        }
-
-        // remove uploaded files from session payload
-        unset($data['project_photos'], $data['project_video']);
-
-        session()->put('project_data', array_merge($data, $temp));
-
-        return redirect()->route('project.submit.step2');
-
     }
+
+    // store video (single)
+    if ($request->hasFile('project_video')) {
+        $temp['temp_video'] = $request->file('project_video')->store('tmp', 'public');
+    }
+
+    // Remove file keys from session payload
+    unset($data['project_photos'], $data['project_video']);
+
+    // Merge into session
+    session()->put('project_data', array_merge($data, $temp));
+
+    return redirect()->route('project.submit.step2');
+}
 
     /*
     |--------------------------------------------------------------------------
@@ -171,10 +167,16 @@ class ProjectSubmissionController extends Controller
     |--------------------------------------------------------------------------
     */
 
-    public function submitFinal(Request $request)
+    public function submitFinal(SubmitProjectFinalRequest $request)
     {
+        \Log::info('submitFinal hit', [
+            'has_project_data' => session()->has('project_data'),
+            'has_user_data'    => session()->has('user_data'),
+            'web_auth'         => auth('web')->check(),
+            'user_id'          => auth('web')->id(),
+        ]);
+
         $projectData = session()->get('project_data');
-        $userData    = session()->get('user_data');
 
         if (!$projectData) {
             return redirect()
@@ -182,23 +184,23 @@ class ProjectSubmissionController extends Controller
                 ->with('error', 'Session expired.');
         }
 
-        try {
+        // ✅ Only pull/require user_data if guest
+        $userData = null;
+        if (!auth('web')->check()) {
+            $userData = session()->get('user_data');
 
+            if (!$userData) {
+                return redirect()
+                    ->route('project.submit.step4')
+                    ->with('error', 'Account data missing.');
+            }
+        }
+
+        try {
             DB::beginTransaction();
 
-            /*
-            |--------------------------------------------------------------------------
-            | Create User (if not logged in)
-            |--------------------------------------------------------------------------
-            */
-
-            if (!Auth::check()) {
-
-                if (!$userData) {
-                    return redirect()
-                        ->route('project.submit.step4')
-                        ->with('error', 'Account data missing.');
-                }
+            // ✅ Create User (ONLY if not logged in on web guard)
+            if (!auth('web')->check()) {
 
                 $username = strstr($userData['email'], '@', true);
 
@@ -215,31 +217,20 @@ class ProjectSubmissionController extends Controller
                     'status'   => 'Active'
                 ]);
 
-                Auth::login($user);
+                auth('web')->login($user);
             }
 
-            /*
-            |--------------------------------------------------------------------------
-            | Create Project
-            |--------------------------------------------------------------------------
-            */
-
+            // ✅ Create Project (use web user id)
             $project = Project::create([
                 'name'        => $projectData['project_title'],
                 'description' => $projectData['abstract'],
                 'category'    => $projectData['discipline'],
                 'budget'      => $projectData['requested_amount'] ?? null,
-                'student_id'  => Auth::id(),
+                'student_id'  => auth('web')->id(),
                 'status'      => 'Pending',
             ]);
 
-            /*
-            |--------------------------------------------------------------------------
-            | Move Media From Temp to Media Library
-            |--------------------------------------------------------------------------
-            */
-
-            // Move ALL images from tmp -> media library
+            // Move Media From Temp to Media Library
             if (!empty($projectData['temp_photos']) && is_array($projectData['temp_photos'])) {
                 foreach ($projectData['temp_photos'] as $path) {
                     if (!$path) continue;
@@ -254,12 +245,17 @@ class ProjectSubmissionController extends Controller
             }
 
             if (!empty($projectData['temp_video'])) {
+                $videoFull = storage_path('app/public/' . $projectData['temp_video']);
 
-                $project->addMedia(storage_path('app/public/' . $projectData['temp_video']))
-                    ->toMediaCollection('videos');
-
-                Storage::disk('public')->delete($projectData['temp_video']);
+                if (file_exists($videoFull)) {
+                    $project->addMedia($videoFull)->toMediaCollection('videos');
+                    Storage::disk('public')->delete($projectData['temp_video']);
+                }
             }
+
+            // ✅ Notify Managers
+            $managers = User::where('role', 'Manager')->get();
+            Notification::send($managers, new ProjectSubmittedNotification($project));
 
             DB::commit();
 
@@ -270,7 +266,6 @@ class ProjectSubmissionController extends Controller
                 ->with('success', 'Project submitted successfully!');
 
         } catch (FileIsTooBig $e) {
-
             DB::rollBack();
 
             return redirect()
@@ -278,8 +273,13 @@ class ProjectSubmissionController extends Controller
                 ->with('error', 'Uploaded file exceeds allowed size.');
 
         } catch (\Exception $e) {
-
             DB::rollBack();
+
+            \Log::error('submitFinal failed', [
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+            ]);
 
             return redirect()
                 ->route('project.submit.confirm')

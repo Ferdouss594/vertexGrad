@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Contracts\Auth\Guard;
 
 class AuthController extends Controller
 {
@@ -38,11 +39,11 @@ class AuthController extends Controller
         if (Auth::guard('web')->attempt($credentials, $request->has('remember'))) {
             $request->session()->regenerate();
 
-            return redirect()->intended(match(Auth::guard('web')->user()->role) {
-                'Investor' => route('dashboard.investor'),
-                'Student'  => route('dashboard.academic'),
-                default    => route('home'),
-            });
+        return redirect()->to(match(Auth::guard('web')->user()->role) {
+            'Investor' => route('dashboard.investor'),
+            'Student'  => route('dashboard.academic'),
+            default    => route('home'),
+        });
         }
 
         return back()
@@ -81,7 +82,20 @@ class AuthController extends Controller
             return redirect()->route('login.show')->with('success', 'Investor account created successfully!');
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->withErrors(['error' => 'Registration failed: ' . $e->getMessage()]);
+
+            \Log::error('submitFinal failed', [
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+                'has_project_data' => session()->has('project_data'),
+                'has_user_data' => session()->has('user_data'),
+                'user_id' => auth('web')->id(),
+            ]);
+
+            return redirect()
+                ->route('project.submit.confirm')
+                ->with('error', 'Debug: '.$e->getMessage());
         }
     }
 
@@ -117,6 +131,14 @@ class AuthController extends Controller
             return back()->withErrors(['error' => 'Registration failed: ' . $e->getMessage()]);
         }
     }
+
+    public function logout(Request $request)
+{
+    auth('web')->logout();
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+    return redirect()->route('home');
+}
 
 
 }

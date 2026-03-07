@@ -3,32 +3,55 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class NotificationController extends Controller
 {
-    public function getUnreadCount()
+    // GET /notifications/unread-count
+    public function getUnreadCount(Request $request)
     {
-        // This automatically detects if it's 'web' or 'admin'
-        $user = Auth::user(); 
-        
+        $user = auth('web')->user();
+
+        if (!$user) {
+            return response()->json(['count' => 0]);
+        }
+
         return response()->json([
-            'count' => $user ? $user->unreadNotifications->count() : 0
+            'count' => $user->unreadNotifications()->count()
         ]);
     }
 
+    // GET /notifications/{id}/read
     public function markAsRead($id)
     {
-        $user = Auth::user();
-        $notification = $user->notifications()->where('id', $id)->first();
+        $user = auth('web')->user();
 
-        if ($notification) {
-            $notification->markAsRead();
+        if (!$user) {
+            abort(403);
         }
 
-        // If a redirect URL was provided in the query string, go there. 
-        // Otherwise, just go back.
-        $redirectUrl = request('redirect');
-        return $redirectUrl ? redirect($redirectUrl) : back();
+        $n = $user->notifications()->where('id', $id)->firstOrFail();
+        $n->markAsRead();
+
+        // Optional: go to project if exists
+        $projectId = data_get($n->data, 'project_id');
+        if ($projectId) {
+            return redirect()->route('projects.show', $projectId);
+        }
+
+        return back();
+    }
+
+    // GET /notifications/mark-all-read
+    public function markAllRead()
+    {
+        $user = auth('web')->user();
+
+        if (!$user) {
+            abort(403);
+        }
+
+        $user->unreadNotifications->markAsRead();
+
+        return back()->with('success', 'All notifications marked as read.');
     }
 }

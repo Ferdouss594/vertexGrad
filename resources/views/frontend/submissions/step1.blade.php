@@ -26,7 +26,7 @@
 
         {{-- Use route (clean) --}}
 <form action="{{ route('project.submit.step1.post') }}" method="POST" enctype="multipart/form-data">
-           @csrf
+               @csrf
 
             <div>
                 <label for="project_title" class="block text-sm font-medium text-light/80 mb-2">
@@ -68,8 +68,8 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label class="block text-sm font-medium text-light/80 mb-2">Project Photo</label>
-                    <input type="file" name="project_photo" accept="image/*" multiple class="w-full p-2 rounded-lg border border-primary/30 bg-dark text-light">
-                </div>
+<input type="file" name="project_photos[]" accept="image/*" multiple
+ class="w-full p-2 rounded-lg border border-primary/30 bg-dark text-light">                </div>
                 <div>
                     <label class="block text-sm font-medium text-light/80 mb-2">Project Video</label>
                     <input type="file" name="project_video" accept="video/*"

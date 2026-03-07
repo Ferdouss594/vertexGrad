@@ -26,6 +26,32 @@
             Please review all details before officially submitting your project for the vetting process.
         </p>
 
+        {{-- ✅ FLASH + ERRORS (TEMP DEBUG + KEEP IT) --}}
+        @if (session('error'))
+            <div class="mb-6 p-4 rounded-xl border border-red-500/40 bg-red-500/10 text-red-200">
+                <strong class="block font-bold mb-1">Error</strong>
+                <div>{{ session('error') }}</div>
+            </div>
+        @endif
+
+        @if (session('success'))
+            <div class="mb-6 p-4 rounded-xl border border-green-500/40 bg-green-500/10 text-green-200">
+                <strong class="block font-bold mb-1">Success</strong>
+                <div>{{ session('success') }}</div>
+            </div>
+        @endif
+
+        @if ($errors->any())
+            <div class="mb-6 p-4 rounded-xl border border-yellow-500/40 bg-yellow-500/10 text-yellow-200">
+                <strong class="block font-bold mb-1">Validation</strong>
+                <ul class="list-disc ml-5 space-y-1">
+                    @foreach ($errors->all() as $err)
+                        <li>{{ $err }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
         <form action="{{ route('project.submit.final') }}" method="POST" class="space-y-8">
             @csrf
             

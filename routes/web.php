@@ -7,9 +7,10 @@ use App\Http\Controllers\Frontend\Auth\AuthController as FrontendAuth;
 use App\Http\Controllers\Frontend\ProjectSubmissionController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
-use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\ProjectController as FrontendProjectController;
+use App\Http\Controllers\Frontend\NotificationController as FrontNotificationController;
+
 
 // ------------------------
 // FRONTEND PUBLIC PAGES
@@ -22,6 +23,15 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::prefix('auth')->group(function () {
     Route::get('/login', [FrontendAuth::class, 'showLogin'])->name('login.show');
     Route::post('/login', [FrontendAuth::class, 'login'])->name('login.post');
+
+    Route::post('/logout', function () {
+    Auth::guard('web')->logout();
+
+    request()->session()->invalidate();
+    request()->session()->regenerateToken();
+
+    return redirect()->route('home');
+})->name('frontend.logout');
 
     Route::get('/register', fn() => view('frontend.auth.register'))->name('register.show');
 
@@ -44,8 +54,28 @@ Route::get('/projects/{project}', [FrontendProjectController::class, 'show'])->n
 Route::middleware(['auth:web'])->group(function () {
     Route::get('/dashboard/investor', fn() => view('frontend.dashboard.investor'))->name('dashboard.investor');
     Route::get('/dashboard/academic', fn() => view('frontend.dashboard.academic'))->name('dashboard.academic');
+    // Upload extra media to an existing project (student only)
+    Route::get('/projects/{project}/media', [FrontendProjectController::class, 'mediaForm'])
+        ->name('projects.media.form');
 
+    Route::post('/projects/{project}/media', [FrontendProjectController::class, 'mediaUpload'])
+        ->name('projects.media.upload');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+});
+
+Route::middleware(['auth:web'])->group(function () {
+    Route::get('/notifications', [FrontNotificationController::class, 'index'])
+        ->name('frontend.notifications.index');
+
+    Route::get('/notifications/unread-count', [FrontNotificationController::class, 'unreadCount'])
+        ->name('frontend.notifications.count');
+
+    Route::post('/notifications/{id}/read', [FrontNotificationController::class, 'markAsRead'])
+        ->name('frontend.notifications.read');
+
+    Route::post('/notifications/mark-all-read', [FrontNotificationController::class, 'markAllRead'])
+        ->name('frontend.notifications.markAllRead');
 });
 
 // ------------------------
@@ -53,15 +83,6 @@ Route::middleware(['auth:web'])->group(function () {
 // ------------------------
 Route::middleware(['auth:web'])->group(function () {
     Route::get('/profile', [FrontendAuth::class, 'showLogin'])->name('profile'); // replace later with real profile
-});
-
-// ------------------------
-// FRONTEND NOTIFICATIONS (web only)
-// ------------------------
-Route::middleware(['auth:web'])->group(function () {
-    Route::get('/notifications/unread-count', [NotificationController::class, 'getUnreadCount'])->name('notifications.count');
-    Route::get('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
-    Route::get('/notifications/mark-all-read', [NotificationController::class, 'markAllRead'])->name('notifications.markAllRead');
 });
 
 // ------------------------
@@ -108,3 +129,12 @@ Route::prefix('/')->name('utility.')->group(function () {
 
     Route::get('/resume', [ProjectSubmissionController::class, 'resume'])->name('resume');
 });
+
+Route::get('/_debug/auth', function () {
+    return response()->json([
+        'web'   => auth('web')->check(),
+        'admin' => auth('admin')->check(),
+        'user'  => auth('admin')->user(),
+    ]);
+})->middleware('web');
+

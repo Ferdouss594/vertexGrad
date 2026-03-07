@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\Controller;
 use App\Models\Project;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProjectController extends Controller
 {
@@ -36,5 +37,42 @@ class ProjectController extends Controller
         }
 
         return view('frontend.projects.show', compact('project'));
+    }
+
+    public function mediaForm(Project $project)
+    {
+        // Security: ensure the logged-in student owns the project
+        if ($project->student_id !== Auth::id()) {
+            abort(403);
+        }
+
+        return view('frontend.projects.media_upload', compact('project'));
+    }
+
+    public function mediaUpload(Request $request, Project $project)
+    {
+        if ($project->student_id !== Auth::id()) {
+            abort(403);
+        }
+
+        $validated = $request->validate([
+            'project_photos'   => 'nullable|array',
+            'project_photos.*' => 'image|max:5120',
+            'project_video'    => 'nullable|mimes:mp4,mov,ogg,qt|max:51200',
+        ]);
+
+        // Photos (multiple)
+        if ($request->hasFile('project_photos')) {
+            foreach ($request->file('project_photos') as $img) {
+                $project->addMedia($img)->toMediaCollection('images');
+            }
+        }
+
+        // Video (single)
+        if ($request->hasFile('project_video')) {
+            $project->addMedia($request->file('project_video'))->toMediaCollection('videos');
+        }
+
+        return back()->with('success', 'Media uploaded successfully!');
     }
 }

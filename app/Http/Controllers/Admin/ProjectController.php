@@ -5,17 +5,16 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Project;
 use App\Models\User;
-use App\Services\ProjectService;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use App\Http\Requests\Admin\StoreProjectRequest;
+use App\Http\Requests\Admin\UpdateProjectRequest;
 
 class ProjectController extends Controller
 {
-    public function __construct(private ProjectService $service) {}
-
     public function index(Request $request)
     {
-        $query = Project::with(['student', 'files']);
+        $query = Project::with(['student', 'supervisor', 'manager', 'investor', 'media']);
 
         if ($request->filled('category')) {
             $query->where('category', $request->category);
@@ -25,10 +24,9 @@ class ProjectController extends Controller
             $query->where('budget', '<=', $request->budget_max);
         }
 
-        $projects = $query->latest()->paginate(10)->appends($request->all());
+        $projects = $query->latest('project_id')->paginate(10)->appends($request->all());
         $totalProjects = Project::count();
 
-        // ✅ backend view (your existing)
         return view('projects.index', compact('projects', 'totalProjects'));
     }
 
@@ -49,25 +47,42 @@ class ProjectController extends Controller
             'description' => 'nullable|string',
             'category' => 'nullable|string|max:50',
             'status' => 'required|in:Pending,Active,Completed',
+
             'student_id' => ['required', Rule::exists('users', 'id')->where('role', 'Student')],
             'supervisor_id' => ['nullable', Rule::exists('users', 'id')->where('role', 'Supervisor')],
             'manager_id' => ['nullable', Rule::exists('users', 'id')->where('role', 'Manager')],
             'investor_id' => ['nullable', Rule::exists('users', 'id')->where('role', 'Investor')],
-            'budget' => 'nullable|numeric',
+
+            'budget' => 'nullable|numeric|min:100',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date|after_or_equal:start_date',
             'priority' => 'nullable|in:Low,Medium,High',
             'progress' => 'nullable|integer|min:0|max:100',
+
             'is_featured' => 'nullable|boolean',
             'tags' => 'nullable|array',
 
-            // admin files
-            'project_files.*' => 'nullable|file|max:51200',
+            // ✅ Spatie-compatible media (same as frontend)
+            'project_photos' => 'nullable|array',
+            'project_photos.*' => 'image|max:5120',
+            'project_video' => 'nullable|mimetypes:video/mp4,video/quicktime,video/ogg|max:51200',
         ]);
 
-        $adminFiles = $request->file('project_files') ?? null;
+        $data['is_featured'] = $request->boolean('is_featured');
 
-        $this->service->create($data, $adminFiles, null);
+        $project = Project::create($data);
+
+        // images -> "images"
+        if ($request->hasFile('project_photos')) {
+            foreach ($request->file('project_photos') as $img) {
+                $project->addMedia($img)->toMediaCollection('images');
+            }
+        }
+
+        // video -> "videos"
+        if ($request->hasFile('project_video')) {
+            $project->addMedia($request->file('project_video'))->toMediaCollection('videos');
+        }
 
         return redirect()->route('admin.projects.index')
             ->with('success', 'Project created successfully!');
@@ -75,7 +90,7 @@ class ProjectController extends Controller
 
     public function show(Project $project)
     {
-        $project->load(['student','files']);
+        $project->load(['student','supervisor','manager','investor','media','files']);
         return view('projects.show', compact('project'));
     }
 

@@ -30,8 +30,8 @@ class Project extends Model implements HasMedia // ADD "implements HasMedia"
         'tags' => 'array',
         'status_history' => 'array',
         'is_featured' => 'boolean',
-        'start_date' => 'date',
-        'end_date' => 'date'
+        'start_date' => 'datetime',
+        'end_date'   => 'datetime',
     ];
 
     public function student() {
@@ -67,6 +67,10 @@ class Project extends Model implements HasMedia // ADD "implements HasMedia"
     // FIX: Changed from FileUpload to ProjectFile to match your Controller
     public function files() {
         return $this->hasMany(ProjectFile::class, 'project_id');
+    }
+    public function getRouteKeyName()
+    {
+        return 'project_id';
     }
 
 }
