@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+*.class
+*.so
+.Python
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv/
+myenv/
+
+# Models (إذا كنت لا تريد رفع النماذج)
+*.pkl
+*.h5
+*.safetensors
+*.pt
+*.bin
+
+# IDE
+.vscode/
+.idea/
+
