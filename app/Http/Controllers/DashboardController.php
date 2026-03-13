@@ -2,27 +2,55 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-
+use App\Models\Project;
 use App\Models\User;
+use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
-    // صفحة Dashboard للمستخدمين العاديين
+    public function index()
+    {
+        $stats = [
+            'total_users'        => User::count(),
+            'active_users'       => User::where('status', 'active')->count(),
+            'students'           => User::where('role', 'Student')->count(),
+            'investors'          => User::where('role', 'Investor')->count(),
+            'managers'           => User::where('role', 'Manager')->count(),
+
+            'total_projects'     => Project::count(),
+            'pending_projects'   => Project::where('status', 'pending')->count(),
+            'active_projects'    => Project::where('status', 'active')->count(),
+            'completed_projects' => Project::where('status', 'completed')->count(),
+            'rejected_projects'  => Project::where('status', 'rejected')->count(),
+
+            'total_funding'      => Project::whereIn('status', ['active', 'completed'])->sum('budget'),
+        ];
+
+        $recentProjects = Project::with(['student', 'manager'])
+            ->latest('project_id')
+            ->take(6)
+            ->get();
+
+        $recentStudents = User::where('role', 'Student')
+            ->latest('id')
+            ->take(5)
+            ->get();
+
+        $recentInvestors = User::where('role', 'Investor')
+            ->latest('id')
+            ->take(5)
+            ->get();
+
+        return view('manager.dashboard', compact(
+            'stats',
+            'recentProjects',
+            'recentStudents',
+            'recentInvestors'
+        ));
+    }
+
     public function dashboard()
     {
-        // يمكنك تعديل البيانات حسب حاجتك
-        $totalUsers = User::count();
-        $activeUsers = User::where('status', 'active')->count();
-        $pendingUsers = User::where('status', 'pending')->count();
-         $students = User::where('role', 'Student')->get();
-
-        return view('manager.dashboard', compact('totalUsers', 'activeUsers', 'pendingUsers'));
-    }
-     public function index()
-    {
-        return view('manager.dashboard'); // اسم الفيو اللي تبغاه
+        return $this->index();
     }
 }
-
-

@@ -4,30 +4,24 @@
     $containerClass = $design['classes']['container'];
     $headingClass = $design['classes']['heading_primary'];
     $textAccentClass = $design['classes']['text_accent'];
-    
-    // Base classes (defined in your config, but overridden below for softer neon look)
+
     $btnPrimaryClass = $design['classes']['btn_base'] . ' ' . $design['classes']['btn_primary'];
     $btnSecondaryClass = $design['classes']['btn_base'] . ' ' . $design['classes']['btn_secondary'];
-    
-    // Pulling colors directly from config (NOW SYNCHRONIZED)
-    $primaryColor = $design['colors']['primary']; // #00E0FF
-    $darkBg = $design['colors']['dark']; // #0F172A
-    $darkestBg = $design['colors']['darkest'] ?? '#030712'; // Ensuring deep contrast
-    $cardLight = $design['colors']['cardLight']; // #1F2937
 
-    // --- SECTION 2 ADDITIONS START HERE ---
-    $sectionYClass = $design['classes']['section_y'] ?? 'py-20 lg:py-32'; // Default if not in config
-    
-    // Placeholder Data for 6 Featured Projects
-    $featuredProjects = [
-        ['title' => 'Quantum Ledger Security', 'category' => 'Fintech', 'creator' => 'Alex Chen', 'desc' => 'Post-quantum decentralized protocol.'],
-        ['title' => 'Drone Delivery Network', 'category' => 'Engineering', 'creator' => 'Maria Silva', 'desc' => 'Autonomous last-mile logistics.'],
-        ['title' => 'AI Personalized Medicine', 'category' => 'Healthcare', 'creator' => 'Ben Carter', 'desc' => 'Predictive genomic drug modeling.'],
-        ['title' => 'Sustainable Water Unit', 'category' => 'Tech', 'creator' => 'Liam O’Connell', 'desc' => 'Biodegradable filtration for regions.'],
-        ['title' => 'Adaptive E-Learning UI', 'category' => 'Design', 'creator' => 'Chloe Davies', 'desc' => 'Real-time difficulty adjustments.'],
-        ['title' => 'Ethical Data Marketplace', 'category' => 'Business', 'creator' => 'Samir Khan', 'desc' => 'Consent-based data exchange.'],
-    ];
-    // --- SECTION 2 ADDITIONS END HERE ---
+    $primaryColor = $design['colors']['primary'];
+    $darkBg = $design['colors']['dark'];
+    $darkestBg = $design['colors']['darkest'] ?? '#030712';
+    $cardLight = $design['colors']['cardLight'];
+
+    $sectionYClass = $design['classes']['section_y'] ?? 'py-20 lg:py-32';
+
+    $user = auth('web')->user();
+    $isLoggedIn = auth('web')->check();
+    $isInvestor = $isLoggedIn && $user->role === 'Investor';
+    $isStudent = $isLoggedIn && $user->role === 'Student';
+
+    // Fallback if controller sends fewer projects
+    $featuredProjects = $featuredProjects ?? collect();
 @endphp
 
 @extends('frontend.layouts.app')
@@ -74,7 +68,7 @@
                 <path d="M 1920 200 H 1720 V 140 H 1540 V 220 H 1320 V 300 H 1200" stroke="{{ $primaryColor }}" stroke-width="1.5" fill="none" filter="url(#neon-glow)" class="circuit-path animate-flow-3" /><path d="M 1920 420 H 1770 V 460 H 1570 V 380 H 1420 V 300 H 1200" stroke="{{ $primaryColor }}" stroke-width="1.0" fill="none" filter="url(#neon-glow)" class="circuit-path animate-flow-4 opacity-40" />
                 <path d="M 1920 60 H 1820 V 160 H 1670 V 220 H 1470 V 290 H 1200" stroke="{{ $primaryColor }}" stroke-width="0.8" fill="none" filter="url(#neon-glow)" class="circuit-path animate-flow-5 opacity-30" /><path d="M 1920 280 H 1770 V 180 H 1620 V 290 H 1420 V 310 H 1200" stroke="{{ $primaryColor }}" stroke-width="1.2" fill="none" filter="url(#neon-glow)" class="circuit-path animate-flow-6 opacity-50" />
                 <path d="M 1920 470 H 1700 V 400 H 1470 V 360 H 1270 V 300 H 1200" stroke="{{ $primaryColor }}" stroke-width="0.7" fill="none" filter="url(#neon-glow)" class="circuit-path animate-flow-7 opacity-30" /><path d="M 1920 150 H 1870 V 250 H 1620 V 190 H 1370 V 300 H 1200" stroke="{{ $primaryColor }}" stroke-width="1.0" fill="none" filter="url(#neon-glow)" class="circuit-path animate-flow-8 opacity-40" />
-                <path d="M 1920 30 H 1670 V 90 H 1520 V 180 H 1300 V 300 H 1200" stroke="{{ $primaryColor }}" stroke-width="0.6" fill="none" filter="url("neon-glow)" class="circuit-path animate-flow-9 opacity-25" /><path d="M 1920 510 H 1820 V 380 H 1640 V 440 H 1440 V 300 H 1200" stroke="{{ $primaryColor }}" stroke-width="0.7" fill="none" filter="url(#neon-glow)" class="circuit-path animate-flow-10 opacity-35" />
+                <path d="M 1920 30 H 1670 V 90 H 1520 V 180 H 1300 V 300 H 1200" stroke="{{ $primaryColor }}" stroke-width="0.6" fill="none" filter='url(#neon-glow)' class="circuit-path animate-flow-9 opacity-25" /><path d="M 1920 510 H 1820 V 380 H 1640 V 440 H 1440 V 300 H 1200" stroke="{{ $primaryColor }}" stroke-width="0.7" fill="none" filter="url(#neon-glow)" class="circuit-path animate-flow-10 opacity-35" />
                 <path d="M 1920 250 H 1740 V 330 H 1500 V 240 H 1240 V 300 H 1200" stroke="{{ $primaryColor }}" stroke-width="0.9" fill="none" filter="url(#neon-glow)" class="circuit-path animate-flow-11 opacity-45" /><path d="M 1920 490 H 1870 V 420 H 1770 V 350 H 1570 V 300 H 1200" stroke="{{ $primaryColor }}" stroke-width="0.5" fill="none" filter="url(#neon-glow)" class="circuit-path animate-flow-12 opacity-20" />
             </g>
         </g>
@@ -151,15 +145,12 @@
     $container = $c['container'];
     $sectionY = $c['section_y'];
     $btnSecondary = "{$c['btn_base']} {$c['btn_secondary']}";
-    
-    // We will use $featuredProjects directly from the controller
 @endphp
 
- <section class="{{ $sectionY }} bg-darker border-y border-primary/10 overflow-hidden">
+<section class="{{ $sectionY }} bg-darker border-y border-primary/10 overflow-hidden">
     <div class="{{ $container }}">
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-12 items-start">
 
-            {{-- LEFT TITLE PANEL --}}
             <div class="lg:col-span-1 opacity-0 translate-y-8 section-anim">
                 <h2 class="text-4xl lg:text-5xl font-extrabold text-light leading-tight">
                     Featured <span class="text-primary">Projects</span>
@@ -167,56 +158,57 @@
                 <p class="mt-4 text-light/70 text-lg leading-relaxed">
                     Explore high-impact innovations selected by academic partners.
                 </p>
-                <a href="/projects" 
+                <a href="{{ route('frontend.projects.index') }}"
                    class="mt-8 inline-block {{ $btnSecondary }} px-8 py-3 border-primary/50 text-light hover:text-primary hover:border-primary">
                     View All Projects
                 </a>
             </div>
 
-            {{-- RIGHT PROJECT GRID --}}
             <div class="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-8">
-@foreach ($featuredProjects as $project)
-    <div class="opacity-0 translate-y-8 section-anim">
-        <div class="group bg-cardDark border border-white/5 hover:border-primary/40 rounded-xl overflow-hidden shadow-lg hover:shadow-neon_sm transition duration-300">
-            
-            <div class="relative h-48 w-full bg-dark overflow-hidden">
-                {{-- Check if $project is a Model object before calling hasMedia --}}
-                @if(is_object($project) && method_exists($project, 'hasMedia') && $project->hasMedia('images'))
-                    <img src="{{ $project->getFirstMediaUrl('images') }}" 
-                         alt="{{ $project->name }}" 
-                         class="w-full h-full object-cover transition duration-500 group-hover:scale-110">
-                @else
-                    <div class="w-full h-full flex items-center justify-center bg-primary/10">
-                        <i class="fas fa-project-diagram text-primary text-3xl"></i>
+                @forelse ($featuredProjects as $project)
+                    <div class="opacity-0 translate-y-8 section-anim">
+                        <div class="group bg-cardDark border border-white/5 hover:border-primary/40 rounded-xl overflow-hidden shadow-lg hover:shadow-neon_sm transition duration-300">
+                            <div class="relative h-48 w-full bg-dark overflow-hidden">
+                                @if(method_exists($project, 'hasMedia') && $project->hasMedia('images'))
+                                    <img src="{{ $project->getFirstMediaUrl('images') }}"
+                                         alt="{{ $project->name }}"
+                                         class="w-full h-full object-cover transition duration-500 group-hover:scale-110">
+                                @else
+                                    <div class="w-full h-full flex items-center justify-center bg-primary/10">
+                                        <i class="fas fa-project-diagram text-primary text-3xl"></i>
+                                    </div>
+                                @endif
+                            </div>
+
+                            <div class="p-6">
+                                <p class="text-primary text-sm font-semibold mb-2">
+                                    {{ $project->category ?? 'General' }}
+                                </p>
+
+                                <h3 class="text-xl font-bold text-light leading-tight mb-3">
+                                    {{ $project->name }}
+                                </h3>
+
+                                <p class="text-light/60 text-sm mb-4 line-clamp-2">
+                                    {{ $project->description ?? '' }}
+                                </p>
+
+                                <div class="flex justify-between items-center mt-auto">
+                                    <p class="text-light/40 text-xs">
+                                        By {{ $project->student->name ?? 'Student' }}
+                                    </p>
+                                    <a href="{{ route('frontend.projects.show', $project) }}" class="text-primary text-sm font-bold hover:underline">
+                                        Details →
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                @endif
-            </div>
-
-            <div class="p-6">
-                <p class="text-primary text-sm font-semibold mb-2">
-                    {{ is_object($project) ? $project->category : ($project['category'] ?? 'General') }}
-                </p>
-
-                <h3 class="text-xl font-bold text-light leading-tight mb-3">
-                    {{ is_object($project) ? $project->name : ($project['name'] ?? 'Unnamed Project') }}
-                </h3>
-
-                <p class="text-light/60 text-sm mb-4 line-clamp-2">
-                    {{ is_object($project) ? $project->description : ($project['description'] ?? '') }}
-                </p>
-
-                <div class="flex justify-between items-center mt-auto">
-                    <p class="text-light/40 text-xs">
-                        By {{ (is_object($project) && $project->student) ? $project->student->name : 'Student' }}
-                    </p>
-                    <a href="{{ is_object($project) ? route('projects.show', $project->project_id) : '#' }}" class="text-primary text-sm font-bold hover:underline">
-                        Details →
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-@endforeach
+                @empty
+                    <div class="sm:col-span-2 p-10 rounded-2xl border border-dashed border-white/10 text-center text-light/40">
+                        No featured projects available yet.
+                    </div>
+                @endforelse
             </div>
         </div>
     </div>
@@ -224,7 +216,7 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    if (typeof gsap !== 'undefined') {
+    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
         gsap.registerPlugin(ScrollTrigger);
         gsap.fromTo(".section-anim",
             { opacity: 0, y: 30 },
@@ -250,61 +242,48 @@ document.addEventListener('DOMContentLoaded', () => {
 {{-- ---------------------------------------------------------------- --}}
 
 @php
-    // Data for the Categories (Using 6 for a clean grid layout)
     $categories = [
-        ['name' => 'Artificial Intelligence', 'icon' => 'fas fa-brain', 'slug' => 'ai'],
-        ['name' => 'Fintech & Blockchain', 'icon' => 'fas fa-money-bill-wave', 'slug' => 'fintech'],
-        ['name' => 'Biotechnology & Health', 'icon' => 'fas fa-dna', 'slug' => 'biotech'],
-        ['name' => 'Sustainable Energy', 'icon' => 'fas fa-leaf', 'slug' => 'energy'],
-        ['name' => 'Aerospace & Defense', 'icon' => 'fas fa-rocket', 'slug' => 'aerospace'],
-        ['name' => 'Quantum Computing', 'icon' => 'fas fa-cube', 'slug' => 'quantum'],
+        ['name' => 'Artificial Intelligence', 'icon' => 'fas fa-brain', 'query' => 'Artificial Intelligence'],
+        ['name' => 'Fintech & Blockchain', 'icon' => 'fas fa-money-bill-wave', 'query' => 'Fintech'],
+        ['name' => 'Biotechnology & Health', 'icon' => 'fas fa-dna', 'query' => 'Healthcare'],
+        ['name' => 'Sustainable Energy', 'icon' => 'fas fa-leaf', 'query' => 'Energy'],
+        ['name' => 'Aerospace & Defense', 'icon' => 'fas fa-rocket', 'query' => 'Aerospace'],
+        ['name' => 'Quantum Computing', 'icon' => 'fas fa-cube', 'query' => 'Quantum'],
     ];
 @endphp
 
-
-{{-- FIX: Removed incorrect id="partners" from this section --}}
 <section class="{{ $sectionYClass }} bg-dark relative border-b border-primary/10"> 
     <div class="{{ $containerClass }} text-center">
-
-        {{-- Section Title Component --}}
         <x-section-title 
             title="Explore by Vetting Category" 
             subtitle="Find the innovations that align perfectly with your investment thesis." 
         />
         
-        {{-- Category Grid (6 columns on large screens) --}}
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 mt-12">
-            
             @foreach($categories as $category)
-                <a href="/projects/category/{{ $category['slug'] }}" 
+                <a href="{{ route('frontend.projects.index', ['category' => $category['query']]) }}" 
                    class="block p-4 rounded-xl border border-primary/20 bg-cardLight/50 
                               hover:bg-cardLight/70 transition duration-300 group 
                               shadow-neon_sm hover:shadow-neon_md" 
                    style="box-shadow: 0 0 5px {{ $primaryColor }}33;">
-                    
-                    {{-- Icon Container: Large, glowing icon --}}
                     <div class="mb-3">
                         <i class="{{ $category['icon'] }} text-4xl group-hover:text-primary transition duration-300" 
                            style="color: {{ $primaryColor }}; text-shadow: 0 0 8px {{ $primaryColor }}80;">
                         </i>
                     </div>
 
-                    {{-- Category Name --}}
                     <p class="font-semibold text-light text-sm mt-2 group-hover:text-primary transition duration-300">
                         {{ $category['name'] }}
                     </p>
                 </a>
             @endforeach
-
         </div>
         
-        {{-- Subtle CTA for more categories --}}
         <div class="mt-12">
-            <a href="/categories" class="text-sm text-primary/80 hover:text-primary font-medium transition">
-                <i class="fas fa-arrow-right mr-1"></i> View All 20+ Categories
+            <a href="{{ route('frontend.projects.index') }}" class="text-sm text-primary/80 hover:text-primary font-medium transition">
+                <i class="fas fa-arrow-right mr-1"></i> View All Categories
             </a>
         </div>
-
     </div>
 </section>
 
@@ -317,7 +296,6 @@ document.addEventListener('DOMContentLoaded', () => {
 {{-- ---------------------------------------------------------------- --}}
 
 @php
-    // Data for the Three Core Value Propositions (redefined for clarity)
     $valueProps = [
         [
             'title' => 'Faculty-Vetted Exclusivity',
@@ -327,66 +305,62 @@ document.addEventListener('DOMContentLoaded', () => {
         [
             'title' => 'Institutional-Grade Security',
             'icon' => 'fas fa-lock',
-            'description' => 'We utilize quantum-resistant ledger technology to ensure secure, transparent, and immutable tracking of all funding, milestones, and intellectual property (IP) rights.',
+            'description' => 'We utilize structured platform workflows and secure data handling to preserve trust, clarity, and controlled visibility throughout the research lifecycle.',
         ],
         [
             'title' => 'Global Funding Access',
             'icon' => 'fas fa-globe',
-            'description' => 'Connect groundbreaking projects with a curated network of global institutional investors, accelerating development and maximizing return on academic innovation.',
+            'description' => 'Connect groundbreaking projects with a curated network of global investors and institutions, accelerating development and real-world impact.',
         ],
     ];
 @endphp
 
-{{-- FIX: ADDED id="advantage" for Navbar jump link --}}
 <section id="advantage" class="{{ $sectionYClass }} bg-darker relative"> 
     <div class="{{ $containerClass }} text-center">
-
-        {{-- Section Title Component --}}
         <x-section-title 
             title="The VertexGrad Advantage" 
             subtitle="Why the world's leading investors and institutions trust our pipeline." 
         />
         
-        {{-- Value Proposition Grid (3 Columns) --}}
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12 text-left">
-            
             @foreach($valueProps as $prop)
                 <div class="p-6 lg:p-8 rounded-2xl bg-cardLight/30 border border-primary/20 
                              transition duration-500 hover:bg-cardLight/50 hover:shadow-neon_xl"
                              style="box-shadow: 0 0 10px {{ $primaryColor }}15;">
-                    
-                    {{-- Icon with Strong Neon Glow --}}
                     <div class="mb-4">
                         <i class="{{ $prop['icon'] }} text-5xl text-primary" 
                            style="filter: drop-shadow(0 0 6px {{ $primaryColor }});">
                         </i>
                     </div>
 
-                    {{-- Title --}}
                     <h3 class="text-2xl font-bold text-light mb-3 tracking-wide">
                         {{ $prop['title'] }}
                     </h3>
 
-                    {{-- Description --}}
                     <p class="text-light/70 text-base">
                         {{ $prop['description'] }}
                     </p>
                 </div>
             @endforeach
-
         </div>
 
-        {{-- Subtle Footer CTA --}}
         <div class="mt-16">
-            <p class="text-light/50 text-md">
-                Ready to explore the future of investment?
-                {{-- FIX: Link is already correct: /register --}}
-                <a href="/register" class="text-primary font-bold hover:text-light transition">
-                    Create your Investor Account <i class="fas fa-arrow-right ml-1"></i>
-                </a>
-            </p>
+            @guest('web')
+                <p class="text-light/50 text-md">
+                    Ready to explore the future of investment?
+                    <a href="{{ route('register.investor') }}" class="text-primary font-bold hover:text-light transition">
+                        Create your Investor Account <i class="fas fa-arrow-right ml-1"></i>
+                    </a>
+                </p>
+            @else
+                <p class="text-light/50 text-md">
+                    Welcome back.
+                    <a href="{{ $isInvestor ? route('dashboard.investor') : route('dashboard.academic') }}" class="text-primary font-bold hover:text-light transition">
+                        Go to your dashboard <i class="fas fa-arrow-right ml-1"></i>
+                    </a>
+                </p>
+            @endguest
         </div>
-
     </div>
 </section>
 
@@ -394,9 +368,7 @@ document.addEventListener('DOMContentLoaded', () => {
 {{-- END OF SECTION 4 --}}
 {{-- ---------------------------------------------------------------- --}}
 
-
 @php
-    // Data for Placeholder Logos (Replace 'logo-name.svg' with actual paths)
     $partnerLogos = [
         'stanford-logo.svg', 'mit-logo.svg', 'cambridge-logo.svg',
         'harvard-logo.svg', 'caltech-logo.svg', 'oxford-logo.svg',
@@ -407,43 +379,31 @@ document.addEventListener('DOMContentLoaded', () => {
 {{-- START OF SECTION 5: TRUSTED PARTNERS & UNIVERSITIES --}}
 {{-- ---------------------------------------------------------------- --}}
 
-{{-- FIX: ADDED id="partners" for Navbar jump link --}}
 <section id="partners" class="{{ $sectionYClass }} bg-cardLight relative border-b border-primary/10"> 
     <div class="{{ $containerClass }} text-center">
-
-        {{-- Subtle Headline --}}
         <h2 class="text-xl font-semibold uppercase tracking-widest text-light/70 mb-12">
             Trusted by Leading Global Research Institutions
         </h2>
         
-        {{-- Logo Grid (6 columns for prominence) --}}
         <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-12 items-center justify-center">
-            
             @foreach($partnerLogos as $logo)
                 <div class="flex items-center justify-center h-16 opacity-40 hover:opacity-100 transition duration-500">
                     <img src="/img/logos/{{ $logo }}" 
                          alt="{{ pathinfo($logo, PATHINFO_FILENAME) }} logo" 
                          class="max-h-full w-auto filter grayscale transition duration-300 group-hover:filter-none"
-                         style="
-                             filter: grayscale(100%);
-                             mix-blend-mode: luminosity;
-                           ">
+                         style="filter: grayscale(100%); mix-blend-mode: luminosity;">
                 </div>
             @endforeach
-
         </div>
         
-        {{-- Subtle Footer CTA --}}
         <div class="mt-12">
             <p class="text-light/50 text-sm">
-                Interested in becoming a **VertexGrad** Vetting Partner? 
-                {{-- FIX: Link is already correct: /partner --}}
-                <a href="/partner" class="text-primary font-bold hover:text-light transition">
+                Interested in becoming a VertexGrad Vetting Partner? 
+                <a href="{{ route('utility.partnerships') }}" class="text-primary font-bold hover:text-light transition">
                     Learn More <i class="fas fa-external-link-alt ml-1"></i>
                 </a>
             </p>
         </div>
-
     </div>
 </section>
 
@@ -451,11 +411,11 @@ document.addEventListener('DOMContentLoaded', () => {
 {{-- END OF SECTION 5 --}}
 {{-- ---------------------------------------------------------------- --}}
 
-
 {{-- ---------------------------------------------------------------- --}}
 {{-- START OF SECTION 6: DEEP CONTRAST THEME --}}
 {{-- ---------------------------------------------------------------- --}}
 
+@guest('web')
 <section class="{{ $sectionYClass }} relative overflow-hidden" style="background-color: {{ $darkestBg }};">
     <div class="{{ $containerClass }} text-center">
 
@@ -464,10 +424,8 @@ document.addEventListener('DOMContentLoaded', () => {
             subtitle="The secure, verified gateway to the future of academic investment." 
         />
 
-        {{-- Charging Station Container: Central glowing box (placed directly on dark background) --}}
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-20 max-w-6xl mx-auto">
 
-            {{-- 1. INVESTOR CTA (Charging Station 1) --}}
             <div class="p-10 lg:p-16 text-center rounded-2xl 
                          bg-cardLight/10 border border-primary/20 
                          shadow-neon_xl transition duration-500 hover:bg-cardLight/20"
@@ -483,22 +441,18 @@ document.addEventListener('DOMContentLoaded', () => {
                     Secure exclusive access to verified, institutional-grade project pipelines and funding opportunities.
                 </p>
                 
-                {{-- Primary Button: Extreme contrast (FIXED: Link to register/investor) --}}
-                <a href="/register/investor" 
-                   class="{{ $btnPrimaryClass }} text-xl px-12 py-4 
-                         !bg-primary/90 text-darkest font-extrabold border-2 border-primary hover:!bg-primary">
+                <a href="{{ route('register.investor') }}" 
+                   class="{{ $btnPrimaryClass }} text-xl px-12 py-4 !bg-primary/90 text-darkest font-extrabold border-2 border-primary hover:!bg-primary">
                     <i class="fas fa-eye mr-2"></i> REVIEW PROJECTS NOW
                 </a>
             </div>
 
-            {{-- 2. ACADEMIC CTA (Charging Station 2) --}}
             <div class="p-10 lg:p-16 text-center rounded-2xl 
                          bg-cardLight/10 border border-primary/20 
                          shadow-neon_xl transition duration-500 hover:bg-cardLight/20"
                  style="box-shadow: 0 0 25px {{ $primaryColor }}40;">
                 
-                <i class="fas fa-flask text-7xl text-light/80 mb-6">
-                </i>
+                <i class="fas fa-flask text-7xl text-light/80 mb-6"></i>
                 <h3 class="text-4xl font-black text-light mb-3 uppercase tracking-wide">
                     Academic Submission
                 </h3>
@@ -506,10 +460,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     Submit your research for faculty vetting and gain direct exposure to global institutional funding.
                 </p>
 
-                {{-- Secondary Button: Strong outline contrast (FIXED: Link to submit-project) --}}
-                <a href="/submit-project" 
-                   class="{{ $btnSecondaryClass }} text-xl px-12 py-4 
-                         !border-primary/50 text-light hover:text-primary hover:border-primary">
+                <a href="{{ route('project.submit.step1') }}" 
+                   class="{{ $btnSecondaryClass }} text-xl px-12 py-4 !border-primary/50 text-light hover:text-primary hover:border-primary">
                     <i class="fas fa-rocket mr-2"></i> START VETTING PROCESS
                 </a>
             </div>
@@ -518,6 +470,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     </div>
 </section>
+@endguest
 
 {{-- ---------------------------------------------------------------- --}}
 {{-- END OF SECTION 6 --}}

@@ -7,23 +7,98 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Jenssegers\Agent\Agent;
 use App\Models\ActivityLog;
+use App\Models\Project;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class UserApproveController extends Controller
 {
     /* ---------------------------------------------------------
      * 🟢 Dashboard صفحة المدير
      * --------------------------------------------------------- */
-    public function dashboard()
-    {
-        $totalUsers   = User::count();
-        $pendingUsers = User::where('status', 'pending')->count();
-        $activeUsers  = User::where('status', 'active')->count();
+public function dashboard()
+{
+    $stats = [
+        'total_users'        => User::count(),
+        'active_users'       => User::where('status', 'active')->count(),
+        'students'           => User::where('role', 'Student')->count(),
+        'investors'          => User::where('role', 'Investor')->count(),
+        'managers'           => User::where('role', 'Manager')->count(),
 
-        $this->logActivity('View', 'Dashboard', 'Accessed Manager Dashboard');
+        'total_projects'     => Project::count(),
+        'pending_projects'   => Project::where('status', 'pending')->count(),
+        'active_projects'    => Project::where('status', 'active')->count(),
+        'completed_projects' => Project::where('status', 'completed')->count(),
+        'rejected_projects'  => Project::where('status', 'rejected')->count(),
 
-        return view('manager.dashboard', compact('totalUsers', 'pendingUsers', 'activeUsers'));
-    }
+        'total_funding'      => Project::whereIn('status', ['active', 'completed'])->sum('budget'),
+    ];
+
+    $recentProjects = Project::with(['student', 'manager'])
+        ->latest('project_id')
+        ->take(6)
+        ->get();
+
+    $recentStudents = User::where('role', 'Student')
+        ->latest('id')
+        ->take(5)
+        ->get();
+
+    $recentInvestors = User::where('role', 'Investor')
+        ->latest('id')
+        ->take(5)
+        ->get();
+
+    $months = collect(range(5, 0))->map(function ($i) {
+        return Carbon::now()->subMonths($i)->format('M');
+    })->values();
+
+    $submittedByMonth = collect(range(5, 0))->map(function ($i) {
+        $date = Carbon::now()->subMonths($i);
+        return Project::whereYear('created_at', $date->year)
+            ->whereMonth('created_at', $date->month)
+            ->count();
+    })->values();
+
+    $activeByMonth = collect(range(5, 0))->map(function ($i) {
+        $date = Carbon::now()->subMonths($i);
+        return Project::where('status', 'active')
+            ->whereYear('updated_at', $date->year)
+            ->whereMonth('updated_at', $date->month)
+            ->count();
+    })->values();
+
+    $rejectedByMonth = collect(range(5, 0))->map(function ($i) {
+        $date = Carbon::now()->subMonths($i);
+        return Project::where('status', 'rejected')
+            ->whereYear('updated_at', $date->year)
+            ->whereMonth('updated_at', $date->month)
+            ->count();
+    })->values();
+
+    $completedByMonth = collect(range(5, 0))->map(function ($i) {
+        $date = Carbon::now()->subMonths($i);
+        return Project::where('status', 'completed')
+            ->whereYear('updated_at', $date->year)
+            ->whereMonth('updated_at', $date->month)
+            ->count();
+    })->values();
+
+    $this->logActivity('View', 'Dashboard', 'Accessed Manager Dashboard');
+
+    return view('manager.dashboard', compact(
+        'stats',
+        'recentProjects',
+        'recentStudents',
+        'recentInvestors',
+        'months',
+        'submittedByMonth',
+        'activeByMonth',
+        'rejectedByMonth',
+        'completedByMonth'
+    ));
+}
 
     /* ---------------------------------------------------------
      * 🟢 عرض المستخدمين المعلقين

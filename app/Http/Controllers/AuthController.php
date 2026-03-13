@@ -16,7 +16,7 @@ public function showLogin()
 {
     if (Auth::guard('admin')->check()) {
         $user = Auth::guard('admin')->user();
-        return redirect()->intended(
+        return redirect()->to(
             match($user->role) {
                 'Manager', 'Admin' => route('manager.dashboard'),
                 'Supervisor'       => '/Supervisior/supervisior_page',
@@ -60,7 +60,9 @@ public function login(Request $request)
 
         session(['active_guard' => 'admin']); // keep backend session separate
 
-        return redirect()->intended(match($user->role) {
+        $request->session()->forget('url.intended');
+
+        return redirect()->to(match($user->role) {
             'Manager'    => route('manager.dashboard'),
             'Supervisor' => '/Supervisior/supervisior_page',
             default      => route('home'),

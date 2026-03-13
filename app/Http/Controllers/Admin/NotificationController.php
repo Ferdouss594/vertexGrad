@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 
 class NotificationController extends Controller
 {
@@ -22,10 +23,21 @@ class NotificationController extends Controller
         ]);
     }
 
-    public function markAsRead($id)
+    public function markAsRead(Request $request, $id)
     {
-        $notification = auth('admin')->user()->notifications()->where('id', $id)->firstOrFail();
-        $notification->markAsRead();
+        $notification = auth('admin')->user()
+            ->notifications()
+            ->where('id', $id)
+            ->firstOrFail();
+
+        if (is_null($notification->read_at)) {
+            $notification->markAsRead();
+        }
+
+        $redirect = $request->input('redirect');
+        if ($redirect) {
+            return redirect($redirect);
+        }
 
         return back();
     }

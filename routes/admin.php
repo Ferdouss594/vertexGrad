@@ -28,35 +28,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
 });
 
 // ------------------------
-// Backend Profile (admin only)
-// ------------------------
-Route::middleware(['auth:admin'])->group(function () {
-    Route::get('/admin/profile', [AuthController::class, 'profile'])->name('admin.profile');
-});
-
-// ------------------------
-// Manager Area (Role: Manager)
-// ------------------------
-Route::prefix('manager')->name('manager.')->middleware(['auth:admin', 'role:Manager'])->group(function () {
-    Route::get('/dashboard', [UserApproveController::class, 'dashboard'])->name('dashboard');
-    Route::get('/pending-users', [UserApproveController::class, 'pendingUsers'])->name('pending.users');
-    Route::post('/approve-direct/{user}', [UserApproveController::class, 'approveDirect'])->name('users.approve-direct');
-    Route::post('/reject/{user}', [UserController::class, 'reject'])->name('users.reject');
-
-    Route::resource('users', UserController::class)->except(['index']);
-    Route::post('/users/{user}/force-logout', [UserController::class, 'forceLogout'])->name('users.force-logout');
-    Route::get('/users/{user}', [UserController::class, 'show'])->name('users.show');
-
-    Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.index');
-    Route::get('/calendar/events', [CalendarController::class, 'getEvents']);
-    Route::post('/calendar/add-event', [CalendarController::class, 'addEvent']);
-    Route::post('/calendar/delete-events', [CalendarController::class, 'deleteEvents']);
-});
-
-// ------------------------
-// ADMIN CRUD (Students / Investors / Projects / Reports)
+// Backend Profile + Admin CRUD
 // ------------------------
 Route::prefix('admin')->name('admin.')->middleware(['auth:admin'])->group(function () {
+
+    // Profile
+    Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
 
     // Students
     Route::resource('students', StudentController::class);
@@ -77,14 +54,29 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:admin'])->group(functi
     // Projects
     Route::resource('projects', AdminProjectController::class);
 
-    // Project Tasks (ONLY tasks belong under a project)
+    Route::post('projects/{project}/approve', [AdminProjectController::class, 'approve'])
+        ->name('projects.approve');
+
+    Route::post('projects/{project}/reject', [AdminProjectController::class, 'reject'])
+        ->name('projects.reject');
+
+     Route::post('projects/{project}/funding-requests/{user}/approve',
+    [AdminProjectController::class, 'approveInvestor'])
+    ->name('projects.investors.approve');
+
+Route::post('projects/{project}/funding-requests/{user}/reject',
+    [AdminProjectController::class, 'rejectInvestor'])
+    ->name('projects.investors.reject');
+
+
+    // Project Tasks
     Route::prefix('projects/{project}')->group(function () {
         Route::post('tasks', [ProjectTaskController::class, 'store'])->name('projects.tasks.store');
         Route::put('tasks/{task}', [ProjectTaskController::class, 'update'])->name('projects.tasks.update');
         Route::delete('tasks/{task}', [ProjectTaskController::class, 'destroy'])->name('projects.tasks.destroy');
     });
 
-    // ✅ Admin Notifications (GLOBAL, NOT under project)
+    // Admin Notifications
     Route::get('notifications', [AdminNotificationController::class, 'index'])
         ->name('notifications.index');
 
@@ -107,6 +99,25 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:admin'])->group(functi
         Route::get('projects/excel', [PlatformReportController::class, 'exportProjectsExcel'])->name('projects.excel');
         Route::get('projects/pdf', [PlatformReportController::class, 'exportProjectsPdf'])->name('projects.pdf');
     });
+});
+
+// ------------------------
+// Manager Area (Role: Manager)
+// ------------------------
+Route::prefix('manager')->name('manager.')->middleware(['auth:admin', 'role:Manager'])->group(function () {
+    Route::get('/dashboard', [UserApproveController::class, 'dashboard'])->name('dashboard');
+    Route::get('/pending-users', [UserApproveController::class, 'pendingUsers'])->name('pending.users');
+    Route::post('/approve-direct/{user}', [UserApproveController::class, 'approveDirect'])->name('users.approve-direct');
+    Route::post('/reject/{user}', [UserController::class, 'reject'])->name('users.reject');
+
+    Route::resource('users', UserController::class)->except(['index']);
+    Route::post('/users/{user}/force-logout', [UserController::class, 'forceLogout'])->name('users.force-logout');
+    Route::get('/users/{user}', [UserController::class, 'show'])->name('users.show');
+
+    Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.index');
+    Route::get('/calendar/events', [CalendarController::class, 'getEvents']);
+    Route::post('/calendar/add-event', [CalendarController::class, 'addEvent']);
+    Route::post('/calendar/delete-events', [CalendarController::class, 'deleteEvents']);
 });
 
 // ------------------------

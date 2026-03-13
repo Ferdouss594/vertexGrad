@@ -157,9 +157,9 @@
                             <!-- الحالة badge -->
                             <td>
                                 <span class="badge 
-                                    @if(strtolower($project->status)=='pending') bg-warning
-                                    @elseif(strtolower($project->status)=='active') bg-primary
-                                    @elseif(strtolower($project->status)=='completed') bg-success
+                                    @if($project->status)=='pending') bg-warning
+                                    @elseif(($project->status)=='active') bg-primary
+                                    @elseif(($project->status)=='completed') bg-success
                                     @else bg-secondary @endif">
                                     {{ $project->status }}
                                 </span>

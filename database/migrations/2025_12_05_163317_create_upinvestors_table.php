@@ -21,7 +21,7 @@ return new class extends Migration
             $table->decimal('budget', 15,2)->nullable();
             $table->string('source', 100)->nullable();
             $table->text('notes')->nullable();
-            $table->enum('status', ['Active', 'Inactive'])->default('Active');
+            $table->enum('status', ['active', 'inactive'])->default('active');
 
             $table->softDeletes();
             $table->timestamps();

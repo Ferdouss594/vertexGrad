@@ -13,7 +13,7 @@ return new class extends Migration
             $table->string('name', 150);
             $table->text('description')->nullable();
             $table->string('category', 50)->nullable();
-            $table->enum('status', ['Pending','Active','Completed'])->default('Pending');
+            $table->enum('status', ['pending','active','completed','rejected'])->default('pending');
 
             $table->foreignId('student_id')->constrained('users');
             $table->foreignId('supervisor_id')->nullable()->constrained('users');
@@ -30,9 +30,6 @@ return new class extends Migration
             $table->boolean('is_featured')->default(false);
             $table->json('tags')->nullable();
             $table->json('status_history')->nullable(); 
-           
-    $table->string('investor')->nullable();
-
 // لتتبع كل حالة تغير
 
             $table->timestamps();

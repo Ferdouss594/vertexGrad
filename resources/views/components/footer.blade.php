@@ -33,7 +33,7 @@
             <h4 id="footer-resources-heading" class="font-bold text-light uppercase tracking-wider mb-4 border-b border-primary/20 pb-1">Resources</h4>
             <ul class="space-y-2 text-sm">
                 {{-- Resource Links --}}
-                <li><a href="{{ route('projects.index') }}" class="hover:text-primary transition-colors duration-300">Explore Projects</a></li>
+                <li><a href="{{ route('frontend.projects.index') }}" class="hover:text-primary transition-colors duration-300">Explore Projects</a></li>
                 <li><a href="{{ route('utility.how-it-works') }}" class="hover:text-primary transition-colors duration-300">How It Works</a></li>
                 <li><a href="{{ route('project.submit.step1') }}" class="hover:text-primary transition-colors duration-300">Submit Your Idea</a></li>
                 <li><a href="{{ route('utility.support') }}" class="hover:text-primary transition-colors duration-300">Support / FAQ</a></li>

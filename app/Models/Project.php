@@ -73,4 +73,23 @@ class Project extends Model implements HasMedia // ADD "implements HasMedia"
         return 'project_id';
     }
 
+public function investors()
+{
+    return $this->belongsToMany(
+        User::class,
+        'project_investments',
+        'project_id',
+        'investor_id',
+        'project_id',
+        'id'
+    )->withPivot('status','amount')->withTimestamps();
+}
+
+public function approvedInvestments()
+{
+    return $this->investors()
+        ->wherePivot('status','approved');
+}
+
+
 }

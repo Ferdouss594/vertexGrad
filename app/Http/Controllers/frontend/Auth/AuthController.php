@@ -99,38 +99,49 @@ class AuthController extends Controller
         }
     }
 
-    public function registerStudent(Request $request)
-    {
-        $request->validate([
-            'username' => 'required|unique:users',
-            'name'     => 'required',
-            'email'    => 'required|email|unique:users',
-            'password' => 'required|confirmed|min:6',
+public function registerStudent(Request $request)
+{
+    $request->validate([
+        'username' => 'required|unique:users',
+        'name'     => 'required',
+        'email'    => 'required|email|unique:users',
+        'password' => 'required|confirmed|min:6',
+    ]);
+
+    try {
+        DB::beginTransaction();
+
+        $user = User::create([
+            'username' => $request->username,
+            'name'     => $request->name,
+            'email'    => $request->email,
+            'password' => Hash::make($request->password),
+            'role'     => 'Student',
+            'status'   => 'active',
         ]);
 
-        try {
-            DB::beginTransaction();
+        Student::create([
+            'user_id' => $user->id,
+        ]);
 
-            $user = User::create([
-                'username' => $request->username,
-                'name'     => $request->name,
-                'email'    => $request->email,
-                'password' => Hash::make($request->password),
-                'role'     => 'Student',
-                'status'   => 'active',
-            ]);
+        // Notify active managers
+        $managers = User::where('role', 'Manager')
+            ->where('status', 'active')
+            ->get();
 
-            Student::create([
-                'user_id' => $user->id,
-            ]);
+        \Notification::send($managers, new \App\Notifications\NewStudentRegisteredNotification($user));
 
-            DB::commit();
-            return redirect()->route('login.show')->with('success', 'Student account created!');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->withErrors(['error' => 'Registration failed: ' . $e->getMessage()]);
-        }
+        DB::commit();
+
+        return redirect()->route('login.show')->with('success', 'Student account created!');
+    } catch (\Exception $e) {
+        DB::rollBack();
+
+        return back()->withInput()->withErrors([
+            'error' => 'Registration failed: ' . $e->getMessage()
+        ]);
     }
+}
 
     public function logout(Request $request)
 {

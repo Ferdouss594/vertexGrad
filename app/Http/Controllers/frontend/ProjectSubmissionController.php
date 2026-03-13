@@ -15,6 +15,7 @@ use App\Http\Requests\Frontend\SubmitProjectStep1Request;
 use App\Http\Requests\Frontend\SubmitProjectFinalRequest;
 use App\Notifications\ProjectSubmittedNotification;
 use Illuminate\Support\Facades\Notification;
+use App\Notifications\ProjectPendingNotification;
 
 
 
@@ -28,12 +29,14 @@ class ProjectSubmissionController extends Controller
 
     public function step1()
     {
+         $this->ensureGuestOrStudent();
         return view('frontend.submissions.step1');
     }
 
 
 public function postStep1(SubmitProjectStep1Request $request)
 {
+     $this->ensureGuestOrStudent();
     $data = $request->validated();
 
     $temp = [
@@ -69,14 +72,16 @@ public function postStep1(SubmitProjectStep1Request $request)
 
     public function step2()
     {
+         $this->ensureGuestOrStudent();
         return view('frontend.submissions.step2');
     }
 
     public function postStep2(Request $request)
     {
+         $this->ensureGuestOrStudent();
         $step2 = $request->validate([
-            'lead_name'        => 'required',
-            'institution_name' => 'required'
+'lead_name' => 'required|string|max:150',
+'institution_name' => 'required|string|max:150',
         ]);
 
         $data = session()->get('project_data', []);
@@ -93,14 +98,16 @@ public function postStep1(SubmitProjectStep1Request $request)
 
     public function step3()
     {
+         $this->ensureGuestOrStudent();
         return view('frontend.submissions.step3');
     }
 
     public function postStep3(Request $request)
     {
+         $this->ensureGuestOrStudent();
         $step3 = $request->validate([
-            'requested_amount' => 'required|numeric',
-            'duration_months'  => 'required'
+        'requested_amount' => 'required|numeric|min:0',
+        'duration_months' => 'required|integer|min:1',
         ]);
 
         $data = session()->get('project_data', []);
@@ -117,7 +124,8 @@ public function postStep1(SubmitProjectStep1Request $request)
 
     public function step4()
     {
-        if (Auth::check()) {
+        $this->ensureGuestOrStudent();
+        if (auth('web')->check()) {
             return redirect()->route('project.submit.confirm');
         }
 
@@ -126,6 +134,7 @@ public function postStep1(SubmitProjectStep1Request $request)
 
     public function postStep4(Request $request)
     {
+        $this->ensureGuestOrStudent();
         $userData = $request->validate([
             'email'           => 'required|email|unique:users,email',
             'password'        => 'required|confirmed|min:8',
@@ -148,6 +157,7 @@ public function postStep1(SubmitProjectStep1Request $request)
 
     public function confirm()
     {
+        $this->ensureGuestOrStudent();
         $projectData = session()->get('project_data');
 
         if (!$projectData) {
@@ -167,125 +177,141 @@ public function postStep1(SubmitProjectStep1Request $request)
     |--------------------------------------------------------------------------
     */
 
-    public function submitFinal(SubmitProjectFinalRequest $request)
-    {
-        \Log::info('submitFinal hit', [
-            'has_project_data' => session()->has('project_data'),
-            'has_user_data'    => session()->has('user_data'),
-            'web_auth'         => auth('web')->check(),
-            'user_id'          => auth('web')->id(),
-        ]);
+public function submitFinal(SubmitProjectFinalRequest $request)
+{
+        $this->ensureGuestOrStudent();
+    \Log::info('submitFinal hit', [
+        'has_project_data' => session()->has('project_data'),
+        'has_user_data'    => session()->has('user_data'),
+        'web_auth'         => auth('web')->check(),
+        'user_id'          => auth('web')->id(),
+    ]);
 
-        $projectData = session()->get('project_data');
+    $projectData = session()->get('project_data');
 
-        if (!$projectData) {
+    if (!$projectData) {
+        return redirect()
+            ->route('project.submit.step1')
+            ->with('error', 'Session expired.');
+    }
+
+    // Only require user_data if guest
+    $userData = null;
+    if (!auth('web')->check()) {
+        $userData = session()->get('user_data');
+
+        if (!$userData) {
             return redirect()
-                ->route('project.submit.step1')
-                ->with('error', 'Session expired.');
-        }
-
-        // ✅ Only pull/require user_data if guest
-        $userData = null;
-        if (!auth('web')->check()) {
-            $userData = session()->get('user_data');
-
-            if (!$userData) {
-                return redirect()
-                    ->route('project.submit.step4')
-                    ->with('error', 'Account data missing.');
-            }
-        }
-
-        try {
-            DB::beginTransaction();
-
-            // ✅ Create User (ONLY if not logged in on web guard)
-            if (!auth('web')->check()) {
-
-                $username = strstr($userData['email'], '@', true);
-
-                if (User::where('username', $username)->exists()) {
-                    $username .= rand(10, 99);
-                }
-
-                $user = User::create([
-                    'name'     => $projectData['lead_name'],
-                    'username' => $username,
-                    'email'    => $userData['email'],
-                    'password' => Hash::make($userData['password']),
-                    'role'     => 'Student',
-                    'status'   => 'Active'
-                ]);
-
-                auth('web')->login($user);
-            }
-
-            // ✅ Create Project (use web user id)
-            $project = Project::create([
-                'name'        => $projectData['project_title'],
-                'description' => $projectData['abstract'],
-                'category'    => $projectData['discipline'],
-                'budget'      => $projectData['requested_amount'] ?? null,
-                'student_id'  => auth('web')->id(),
-                'status'      => 'Pending',
-            ]);
-
-            // Move Media From Temp to Media Library
-            if (!empty($projectData['temp_photos']) && is_array($projectData['temp_photos'])) {
-                foreach ($projectData['temp_photos'] as $path) {
-                    if (!$path) continue;
-
-                    $full = storage_path('app/public/' . $path);
-
-                    if (file_exists($full)) {
-                        $project->addMedia($full)->toMediaCollection('images');
-                        Storage::disk('public')->delete($path);
-                    }
-                }
-            }
-
-            if (!empty($projectData['temp_video'])) {
-                $videoFull = storage_path('app/public/' . $projectData['temp_video']);
-
-                if (file_exists($videoFull)) {
-                    $project->addMedia($videoFull)->toMediaCollection('videos');
-                    Storage::disk('public')->delete($projectData['temp_video']);
-                }
-            }
-
-            // ✅ Notify Managers
-            $managers = User::where('role', 'Manager')->get();
-            Notification::send($managers, new ProjectSubmittedNotification($project));
-
-            DB::commit();
-
-            session()->forget(['project_data', 'user_data']);
-
-            return redirect()
-                ->route('dashboard.academic')
-                ->with('success', 'Project submitted successfully!');
-
-        } catch (FileIsTooBig $e) {
-            DB::rollBack();
-
-            return redirect()
-                ->route('project.submit.confirm')
-                ->with('error', 'Uploaded file exceeds allowed size.');
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-
-            \Log::error('submitFinal failed', [
-                'message' => $e->getMessage(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
-            ]);
-
-            return redirect()
-                ->route('project.submit.confirm')
-                ->with('error', 'Something went wrong. Please try again.');
+                ->route('project.submit.step4')
+                ->with('error', 'Account data missing.');
         }
     }
+
+    try {
+        DB::beginTransaction();
+
+        // Create user only if not logged in
+        if (!auth('web')->check()) {
+            $username = strstr($userData['email'], '@', true);
+
+            if (User::where('username', $username)->exists()) {
+                $username .= rand(10, 99);
+            }
+
+            $user = User::create([
+                'name'     => $projectData['lead_name'],
+                'username' => $username,
+                'email'    => $userData['email'],
+                'password' => Hash::make($userData['password']),
+                'role'     => 'Student',
+                'status'   => 'active',
+            ]);
+
+            auth('web')->login($user);
+        }
+
+        // Create project
+        $project = Project::create([
+            'name'        => $projectData['project_title'],
+            'description' => $projectData['abstract'],
+            'category'    => $projectData['discipline'],
+            'budget'      => $projectData['requested_amount'] ?? null,
+            'student_id'  => auth('web')->id(),
+            'status'      => 'pending',
+        ]);
+
+        // Move photos from temp to media library
+        if (!empty($projectData['temp_photos']) && is_array($projectData['temp_photos'])) {
+            foreach ($projectData['temp_photos'] as $path) {
+                if (!$path) {
+                    continue;
+                }
+
+                $full = storage_path('app/public/' . $path);
+
+                if (file_exists($full)) {
+                    $project->addMedia($full)->toMediaCollection('images');
+                    Storage::disk('public')->delete($path);
+                }
+            }
+        }
+
+        // Move video from temp to media library
+        if (!empty($projectData['temp_video'])) {
+            $videoFull = storage_path('app/public/' . $projectData['temp_video']);
+
+            if (file_exists($videoFull)) {
+                $project->addMedia($videoFull)->toMediaCollection('videos');
+                Storage::disk('public')->delete($projectData['temp_video']);
+            }
+        }
+
+        // Notify managers
+        $managers = User::where('role', 'Manager')->where('status', 'active')
+    ->get();
+
+        \Log::info('Notifying managers', [
+            'count' => $managers->count(),
+            'ids'   => $managers->pluck('id')->all(),
+        ]);
+
+        Notification::send($managers, new ProjectSubmittedNotification($project));
+
+        // Notify student that project is pending review
+        $student = auth('web')->user();
+        if ($student) {
+            $student->notify(new \App\Notifications\ProjectPendingNotification($project));
+        }
+
+        DB::commit();
+
+        session()->forget(['project_data', 'user_data']);
+
+        return redirect()
+            ->route('dashboard.academic')
+            ->with('success', 'Project submitted successfully! Your project is now pending manager review.');
+
+    } catch (FileIsTooBig $e) {
+        DB::rollBack();
+
+        return redirect()
+            ->route('project.submit.confirm')
+            ->with('error', 'Uploaded file exceeds allowed size.');
+
+    } catch (\Exception $e) {
+        DB::rollBack();
+
+        \Log::error('submitFinal failed', [
+            'message' => $e->getMessage(),
+            'file'    => $e->getFile(),
+            'line'    => $e->getLine(),
+        ]);
+
+        return redirect()
+            ->route('project.submit.confirm')
+            ->with('error', 'Something went wrong. Please try again.');
+    }
+}
 
     /*
     |--------------------------------------------------------------------------
@@ -295,6 +321,7 @@ public function postStep1(SubmitProjectStep1Request $request)
 
     public function resume()
     {
+         $this->ensureGuestOrStudent();
         if (session()->has('user_data')) {
             return redirect()->route('project.submit.confirm');
         }
@@ -305,4 +332,11 @@ public function postStep1(SubmitProjectStep1Request $request)
 
         return redirect()->route('project.submit.step1');
     }
+
+    private function ensureGuestOrStudent()
+{
+    if (auth('web')->check() && auth('web')->user()->role !== 'Student') {
+        abort(403, 'Only students can submit projects.');
+    }
+}
 }

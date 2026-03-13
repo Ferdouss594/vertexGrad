@@ -20,12 +20,12 @@
 
                 if ($user) {
                     if ($user->role === 'Investor') {
-                        array_unshift($navLinks, ['href' => route('projects.index'), 'label' => 'Marketplace']);
+                        array_unshift($navLinks, ['href' => route('frontend.projects.index'), 'label' => 'Marketplace']);
                     } else {
                         array_unshift($navLinks, ['href' => route('project.submit.step1'), 'label' => 'Submit Research']);
                     }
                 } else {
-                    array_unshift($navLinks, ['href' => route('projects.index'), 'label' => 'Explore Projects']);
+                    array_unshift($navLinks, ['href' => route('frontend.projects.index'), 'label' => 'Explore Projects']);
                 }
             @endphp
 
@@ -44,7 +44,7 @@
                 <a href="{{ route('login.show') }}" class="text-light/80 hover:text-primary text-xs font-bold uppercase tracking-widest {{ $transitionBase }} mr-4">
                     Login
                 </a>
-                <a href="{{ route('projects.index') }}"
+                <a href="{{ route('frontend.projects.index') }}"
                    class="{{ config('design.classes.btn_base') }} {{ config('design.classes.btn_primary') }} text-xs py-3 px-6 shadow-neon_sm">
                     Find Investment
                 </a>
@@ -117,16 +117,32 @@
                                     $icon = $n->data['icon'] ?? 'fas fa-circle';
                                 @endphp
 
-                            <form method="POST"
-                            action="{{ route('frontend.notifications.read', $n->id) }}"
-                            class="block">
-                            @csrf
-                            <input type="hidden" name="redirect" value="{{ $url }}">
-                            <button type="submit"
-                                    class="w-full text-left block p-4 border-b border-white/5 hover:bg-white/5 transition {{ $n->read_at ? 'opacity-50' : '' }}">
-                                ...
-                            </button>
-                            </form>
+                    <form method="POST"
+                        action="{{ route('frontend.notifications.read', $n->id) }}"
+                        class="block">
+                        @csrf
+                        <input type="hidden" name="redirect" value="{{ $url }}">
+
+                        <button type="submit"
+                                class="w-full text-left block p-4 border-b border-white/5 hover:bg-white/5 transition {{ $n->read_at ? 'opacity-50' : '' }}">
+                            <div class="flex gap-3">
+                                <div class="text-primary mt-1">
+                                    <i class="{{ $icon }} text-xs"></i>
+                                </div>
+
+                                <div class="min-w-0">
+                                    <p class="text-xs font-bold text-light truncate">{{ $title }}</p>
+                                    <p class="text-[10px] text-light/60 mt-0.5 line-clamp-2">
+                                        {{ $message }}
+                                    </p>
+                                    <p class="text-[10px] text-light/30 mt-1">
+                                        {{ $n->created_at->diffForHumans() }}
+                                    </p>
+                                </div>
+                            </div>
+                        </button>
+                        
+                    </form>
                             @empty
                                 <div class="p-8 text-center text-light/30 text-xs italic">
                                     No notifications yet
@@ -154,20 +170,20 @@
                     Dashboard
                 </a>
 
-                <div class="flex items-center gap-3 ml-4 pl-4 border-l border-white/10">
-                    <div title="{{ $user->role }}"
-                         class="w-10 h-10 rounded-full bg-primary/20 border border-primary text-primary flex items-center justify-center font-black text-sm">
-                        {{ strtoupper(substr($user->name, 0, 1)) }}
-                    </div>
-
-                    {{-- FRONTEND logout (web) --}}
-                    <form action="{{ route('frontend.logout') }}" method="POST" class="inline">
-                        @csrf
-                        <button type="submit" class="text-light/30 hover:text-red-400 transition-colors">
-                            <i class="fas fa-power-off"></i>
-                        </button>
-                    </form>
+            <div class="flex items-center gap-3 ml-4 pl-4 border-l border-white/10">
+                <div title="{{ $user->role }}"
+                    class="w-10 h-10 rounded-full bg-primary/20 border border-primary text-primary flex items-center justify-center font-black text-sm">
+                    {{ strtoupper(substr($user->name, 0, 1)) }}
                 </div>
+
+                <form action="{{ route('frontend.logout') }}" method="POST" class="inline">
+                    @csrf
+                    <button type="submit"
+                            class="px-4 py-2 rounded-xl border border-red-400/30 text-red-300 hover:bg-red-500 hover:text-white transition-all text-[10px] font-black uppercase tracking-widest">
+                        Logout
+                    </button>
+                </form>
+            </div>
             @endauth
         </div>
     </div>

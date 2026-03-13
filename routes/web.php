@@ -10,7 +10,8 @@ use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\ProjectController as FrontendProjectController;
 use App\Http\Controllers\Frontend\NotificationController as FrontNotificationController;
-
+use App\Http\Controllers\Frontend\InvestorDashboardController;
+use App\Http\Controllers\Frontend\AcademicDashboardController;
 
 // ------------------------
 // FRONTEND PUBLIC PAGES
@@ -23,15 +24,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::prefix('auth')->group(function () {
     Route::get('/login', [FrontendAuth::class, 'showLogin'])->name('login.show');
     Route::post('/login', [FrontendAuth::class, 'login'])->name('login.post');
-
-    Route::post('/logout', function () {
-    Auth::guard('web')->logout();
-
-    request()->session()->invalidate();
-    request()->session()->regenerateToken();
-
-    return redirect()->route('home');
-})->name('frontend.logout');
+    Route::post('/logout', [FrontendAuth::class, 'logout'])->name('frontend.logout');
 
     Route::get('/register', fn() => view('frontend.auth.register'))->name('register.show');
 
@@ -45,25 +38,44 @@ Route::prefix('auth')->group(function () {
 // ------------------------
 // FRONTEND MARKETPLACE (Investor browsing)
 // ------------------------
-Route::get('/projects', [FrontendProjectController::class, 'index'])->name('projects.index');
-Route::get('/projects/{project}', [FrontendProjectController::class, 'show'])->name('projects.show');
+Route::get('/projects', [FrontendProjectController::class, 'index'])->name('frontend.projects.index');
+Route::get('/projects/{project}', [FrontendProjectController::class, 'show'])->name('frontend.projects.show');
 
 // ------------------------
 // FRONTEND DASHBOARDS (web guard)
 // ------------------------
 Route::middleware(['auth:web'])->group(function () {
-    Route::get('/dashboard/investor', fn() => view('frontend.dashboard.investor'))->name('dashboard.investor');
-    Route::get('/dashboard/academic', fn() => view('frontend.dashboard.academic'))->name('dashboard.academic');
-    // Upload extra media to an existing project (student only)
+
+    Route::post('/projects/{project}/request-funding', [FrontendProjectController::class, 'requestFunding'])
+    ->name('frontend.projects.requestFunding');
+
+    Route::get('/dashboard/investor', [InvestorDashboardController::class, 'index'])->name('dashboard.investor');
+
+    Route::get('/dashboard/academic', [AcademicDashboardController::class, 'index'])
+        ->name('dashboard.academic');
+
     Route::get('/projects/{project}/media', [FrontendProjectController::class, 'mediaForm'])
         ->name('projects.media.form');
 
     Route::post('/projects/{project}/media', [FrontendProjectController::class, 'mediaUpload'])
         ->name('projects.media.upload');
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+
+    Route::post('/projects/{project}/invest', [FrontendProjectController::class, 'invest'])
+        ->name('frontend.projects.invest');
+
+    Route::delete('/projects/{project}/interest', [FrontendProjectController::class, 'removeInterest'])
+        ->name('frontend.projects.interest.remove');
+
+        Route::get('/investor/investments',
+    [InvestorDashboardController::class,'investments']
+)->name('investor.investments');
 
 });
 
+// ------------------------
+// FRONTEND NOTIFICATIONS
+// ------------------------
 Route::middleware(['auth:web'])->group(function () {
     Route::get('/notifications', [FrontNotificationController::class, 'index'])
         ->name('frontend.notifications.index');
@@ -81,9 +93,15 @@ Route::middleware(['auth:web'])->group(function () {
 // ------------------------
 // FRONTEND PROFILE (web only)
 // ------------------------
-Route::middleware(['auth:web'])->group(function () {
-    Route::get('/profile', [FrontendAuth::class, 'showLogin'])->name('profile'); // replace later with real profile
-});
+Route::middleware(['auth:web'])->get('/profile', function () {
+    $user = auth('web')->user();
+
+    return match ($user->role) {
+        'Investor' => redirect()->route('dashboard.investor'),
+        'Student'  => redirect()->route('dashboard.academic'),
+        default    => redirect()->route('home'),
+    };
+})->name('profile');
 
 // ------------------------
 // PASSWORD RESET ROUTES
@@ -97,21 +115,21 @@ Route::post('reset-password', [ResetPasswordController::class, 'reset'])->name('
 // STATIC / UTILITY
 // ------------------------
 Route::prefix('/')->name('utility.')->group(function () {
-    Route::get('about', fn () => view('frontend.utility.about'))->name('about');
-    Route::get('careers', fn () => view('frontend.utility.careers'))->name('careers');
-    Route::get('contact', fn () => view('frontend.utility.contact'))->name('contact');
-    Route::get('how-it-works', fn () => view('frontend.utility.how-it-works'))->name('how-it-works');
-    Route::get('partnerships', fn () => view('frontend.utility.partnerships'))->name('partnerships');
-    Route::get('privacy', fn () => view('frontend.utility.privacy'))->name('privacy');
-    Route::get('support', fn () => view('frontend.utility.support'))->name('support');
-    Route::get('terms', fn () => view('frontend.utility.terms'))->name('terms');
-    Route::get('disclosures', fn () => view('frontend.utility.disclosures'))->name('disclosures');
+    Route::get('about', fn() => view('frontend.utility.about'))->name('about');
+    Route::get('careers', fn() => view('frontend.utility.careers'))->name('careers');
+    Route::get('contact', fn() => view('frontend.utility.contact'))->name('contact');
+    Route::get('how-it-works', fn() => view('frontend.utility.how-it-works'))->name('how-it-works');
+    Route::get('partnerships', fn() => view('frontend.utility.partnerships'))->name('partnerships');
+    Route::get('privacy', fn() => view('frontend.utility.privacy'))->name('privacy');
+    Route::get('support', fn() => view('frontend.utility.support'))->name('support');
+    Route::get('terms', fn() => view('frontend.utility.terms'))->name('terms');
+    Route::get('disclosures', fn() => view('frontend.utility.disclosures'))->name('disclosures');
 });
 
 // ------------------------
 // ACADEMIC SUBMISSION FLOW
 // ------------------------
-  Route::prefix('submit-project')->name('project.submit.')->group(function () {
+Route::prefix('submit-project')->name('project.submit.')->group(function () {
     Route::get('/', [ProjectSubmissionController::class, 'step1'])->name('step1');
     Route::post('/', [ProjectSubmissionController::class, 'postStep1'])->name('step1.post');
 
@@ -130,6 +148,9 @@ Route::prefix('/')->name('utility.')->group(function () {
     Route::get('/resume', [ProjectSubmissionController::class, 'resume'])->name('resume');
 });
 
+// ------------------------
+// DEBUG
+// ------------------------
 Route::get('/_debug/auth', function () {
     return response()->json([
         'web'   => auth('web')->check(),
@@ -137,4 +158,3 @@ Route::get('/_debug/auth', function () {
         'user'  => auth('admin')->user(),
     ]);
 })->middleware('web');
-

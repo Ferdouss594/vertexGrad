@@ -1,0 +1,31 @@
+<?php
+
+namespace App\Notifications;
+
+use Illuminate\Bus\Queueable;
+use Illuminate\Notifications\Notification;
+
+class NewStudentRegisteredNotification extends Notification
+{
+    use Queueable;
+
+    public function __construct(public $student) {}
+
+    public function via($notifiable)
+    {
+        return ['database'];
+    }
+
+    public function toDatabase($notifiable)
+    {
+        return [
+            'title'   => 'New Student Registered',
+            'message' => 'A new student registered: ' . $this->student->name,
+            'user_id' => $this->student->id,
+            'name'    => $this->student->name,
+            'email'   => $this->student->email,
+            'url'     => route('admin.students.index'),
+            'icon'    => 'fas fa-user-plus',
+        ];
+    }
+}

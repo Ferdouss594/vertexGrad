@@ -4,29 +4,6 @@
     $primaryColor = $design['colors']['primary'];
     $btnPrimaryClass = $design['classes']['btn_base'] . ' ' . $design['classes']['btn_primary'];
     $btnSecondaryClass = $design['classes']['btn_base'] . ' ' . $design['classes']['btn_secondary'];
-
-    $user = auth()->user();
-
-    // Load all student projects
-    $projects = \App\Models\Project::where('student_id', $user->id)
-        ->with('media')
-        ->latest('project_id')
-        ->get();
-
-    // Selected project from query ?project=ID, else latest
-    $selectedId = (int) request()->query('project', 0);
-    $currentProject = $selectedId ? $projects->firstWhere('project_id', $selectedId) : null;
-    if (!$currentProject) $currentProject = $projects->first();
-
-    // Progress based on current project
-    $progress = 20;
-    if ($currentProject) {
-        if ($currentProject->status === 'Active') $progress = 60;
-        if ($currentProject->status === 'Completed') $progress = 100;
-    }
-
-    $currentImages = $currentProject ? $currentProject->getMedia('images') : collect();
-    $currentVideoUrl = $currentProject ? $currentProject->getFirstMediaUrl('videos') : null;
 @endphp
 
 @extends('frontend.layouts.app')
@@ -56,6 +33,30 @@
             </div>
         </header>
 
+
+        @if($currentProject && $currentProject->status === 'pending')
+    <div class="max-w-6xl mx-auto px-4 mb-6">
+        <div class="p-4 rounded-xl border border-yellow-500/40 bg-yellow-500/10 text-yellow-200">
+            Your latest project <strong>"{{ $currentProject->name }}"</strong> has been submitted successfully and is currently <strong>pending manager review</strong>.
+        </div>
+    </div>
+        @endif
+
+@if($currentProject && $currentProject->status === 'rejected')
+    <div class="max-w-6xl mx-auto px-4 mb-6">
+        <div class="p-4 rounded-xl border border-red-500/40 bg-red-500/10 text-red-200">
+            Your latest project <strong>"{{ $currentProject->name }}"</strong> was reviewed and rejected.
+        </div>
+    </div>
+@endif
+
+@if($currentProject && $currentProject->status === 'active')
+    <div class="max-w-6xl mx-auto px-4 mb-6">
+        <div class="p-4 rounded-xl border border-green-500/40 bg-green-500/10 text-green-200">
+            Your latest project <strong>"{{ $currentProject->name }}"</strong> has been approved and is now active.
+        </div>
+    </div>
+@endif
         @if($currentProject)
             {{-- HERO (Selected Project) --}}
             <div class="relative overflow-hidden bg-slate-900/60 backdrop-blur-xl rounded-[2.5rem] border border-white/10 shadow-2xl mb-10 group transition-all hover:border-primary/30">
@@ -97,7 +98,7 @@
                                             <span class="relative inline-flex rounded-full h-2 w-2 bg-warning"></span>
                                         </div>
                                         <span class="text-lg font-bold text-light italic">
-                                            {{ $currentProject->status == 'Pending' ? 'Reviewing' : $currentProject->status }}
+                                            {{ $currentProject->status == 'pending' ? 'Reviewing' : $currentProject->status }}
                                         </span>
                                     </div>
                                 </div>
@@ -145,7 +146,7 @@
 
                         {{-- Right actions --}}
                         <div class="flex flex-col justify-center gap-4 min-w-[260px]">
-                            <a href="{{ route('projects.show', $currentProject->project_id) }}"
+                            <a href="{{ route('frontend.projects.show', $currentProject->project_id) }}"
                                class="group/btn flex items-center justify-between p-5 bg-primary text-dark rounded-2xl transition-all hover:bg-white">
                                 <span class="font-black uppercase text-xs tracking-wider">Project Portfolio</span>
                                 <i class="fas fa-arrow-right group-hover/btn:translate-x-1 transition-transform"></i>
@@ -232,7 +233,7 @@
                                     </div>
                                     <div class="text-light/60">
                                         <span class="text-light/40">Status:</span>
-                                        <span class="font-bold text-light">{{ $project->status === 'Pending' ? 'Reviewing' : $project->status }}</span>
+                                        <span class="font-bold text-light">{{ $project->status === 'pending' ? 'Reviewing' : $project->status }}</span>
                                     </div>
                                 </div>
                             </div>
