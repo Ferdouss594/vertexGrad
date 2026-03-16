@@ -64,7 +64,7 @@ public function login(Request $request)
 
         return redirect()->to(match($user->role) {
             'Manager'    => route('manager.dashboard'),
-            'Supervisor' => '/Supervisior/supervisior_page',
+            'Supervisor'  => route('supervisor.dashboard'),
             default      => route('home'),
         });
     }

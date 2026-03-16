@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Notifications\ProjectApprovedNotification;
 use App\Notifications\ProjectRejectedNotification;
+use Illuminate\Support\Facades\Http;
 
 class ProjectController extends Controller
 {
@@ -43,28 +44,21 @@ class ProjectController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'name' => 'required|string|max:150',
-            'description' => 'nullable|string',
-            'category' => 'nullable|string|max:50',
-            'status' => 'required|in:pending,active,completed',
-
-            'student_id' => ['required', Rule::exists('users', 'id')->where('role', 'Student')],
-            'supervisor_id' => ['nullable', Rule::exists('users', 'id')->where('role', 'Supervisor')],
-            'manager_id' => ['nullable', Rule::exists('users', 'id')->where('role', 'Manager')],
-            'investor_id' => ['nullable', Rule::exists('users', 'id')->where('role', 'Investor')],
-
-            'budget' => 'nullable|numeric|min:100',
-            'start_date' => 'nullable|date',
-            'end_date' => 'nullable|date|after_or_equal:start_date',
-            'priority' => 'nullable|in:Low,Medium,High',
-            'progress' => 'nullable|integer|min:0|max:100',
-
-            'is_featured' => 'nullable|boolean',
-            'tags' => 'nullable|array',
-
-            'project_photos' => 'nullable|array',
-            'project_photos.*' => 'image|max:5120',
-            'project_video' => 'nullable|mimetypes:video/mp4,video/quicktime,video/ogg|max:51200',
+           'name' => 'required|string|max:150',
+'description' => 'nullable|string',
+'category' => 'nullable|string|max:50',
+'student_id' => 'required|exists:users,id',
+'supervisor_id' => 'nullable|exists:users,id',
+'manager_id' => 'nullable|exists:users,id',
+'investor_id' => 'nullable|exists:users,id',
+'budget' => 'nullable|numeric',
+'priority' => 'nullable|in:Low,Medium,High',
+'start_date' => 'nullable|date',
+'end_date' => 'nullable|date|after_or_equal:start_date',
+'progress' => 'nullable|integer|min:0|max:100',
+'is_featured' => 'nullable|boolean',
+'project_photos.*' => 'nullable|image|max:5120',
+'project_video' => 'nullable|mimes:mp4,mov,ogg,qt|max:51200',
         ]);
 
         $data['is_featured'] = $request->boolean('is_featured');
@@ -112,12 +106,17 @@ class ProjectController extends Controller
     public function update(Request $request, Project $project)
     {
         $data = $request->validate([
-            'name' => 'required|string|max:150',
-            'description' => 'nullable|string',
-            'category' => 'nullable|string|max:50',
-            'status' => 'required|in:pending,active,completed,rejected',
-            'budget' => 'nullable|numeric',
-        ]);
+    'name' => 'required|string|max:150',
+    'description' => 'nullable|string',
+    'category' => 'nullable|string|max:50',
+    'status' => 'required|in:pending,scan_requested,awaiting_manual_review,approved,published,active,completed,rejected,scan_failed',
+    'budget' => 'nullable|numeric',
+    'priority' => 'nullable|in:Low,Medium,High',
+    'student_id' => 'nullable|exists:users,id',
+    'supervisor_id' => 'nullable|exists:users,id',
+    'manager_id' => 'nullable|exists:users,id',
+    'investor_id' => 'nullable|exists:users,id',
+]);
 
         $project->update($data);
 
@@ -239,6 +238,147 @@ public function rejectInvestor(Project $project, User $user)
     return back()->with('success', 'Funding request rejected successfully.');
 }
 
+public function sendToScanner(Project $project)
+{
+    if (!$project->student) {
+        return redirect()
+            ->route('admin.projects.edit', $project)
+            ->with('error', 'This project must be assigned to a student before sending it to scanner.');
+    }
 
+    try {
+        $response = Http::withHeaders([
+            'X-INTEGRATION-SECRET' => env('SCANNER_INTEGRATION_SECRET'),
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+        ])->post(env('SCANNER_INTEGRATION_URL'), [
+            'name' => $project->name,
+            'platform_project_id' => $project->project_id,
+            'student_id' => $project->student_id,
+            'student_name' => $project->student->name ?? 'Unknown Student',
+            'student_email' => $project->student->email ?? null,
+            'callback_url' => env('SCANNER_CALLBACK_URL'),
+        ]);
 
+        if (!$response->successful()) {
+            return redirect()
+                ->route('admin.projects.edit', $project)
+                ->with('error', 'Failed to connect to scanner platform.');
+        }
+
+        $payload = $response->json();
+        $scannerData = $payload['data'] ?? [];
+
+        if (!($payload['success'] ?? false)) {
+            return redirect()
+                ->route('admin.projects.edit', $project)
+                ->with('error', $payload['message'] ?? 'Scanner integration failed.');
+        }
+
+        if (empty($scannerData['scanner_project_id']) || empty($scannerData['token'])) {
+            return redirect()
+                ->route('admin.projects.edit', $project)
+                ->with('error', 'Scanner response is missing required data.');
+        }
+
+        $project->update([
+            'status' => 'scan_requested',
+            'scanner_status' => 'pending',
+            'scanner_project_id' => $scannerData['scanner_project_id'],
+        ]);
+
+        $scanUrl = rtrim(env('SCANNER_PUBLIC_BASE_URL'), '/') . '/?project_token=' . urlencode($scannerData['token']);
+
+        return redirect()->away($scanUrl);
+
+    } catch (\Throwable $e) {
+        \Log::error('Admin sendToScanner failed', [
+            'project_id' => $project->project_id,
+            'message' => $e->getMessage(),
+        ]);
+
+        return redirect()
+            ->route('admin.projects.edit', $project)
+            ->with('error', 'An unexpected error occurred while sending the project to scanner.');
+    }
+}
+public function scannerReview(Project $project)
+{
+    $project->load('student');
+
+    if (!$project->student) {
+        return redirect()
+            ->route('admin.projects.edit', $project)
+            ->with('error', 'This project must be assigned to a student before starting scanner review.');
+    }
+
+    return view('projects.scanner-review', compact('project'));
+}
+
+public function startScan(Project $project)
+{
+    $project->load('student');
+
+    if (!$project->student) {
+        return redirect()
+            ->route('admin.projects.edit', $project)
+            ->with('error', 'This project must be assigned to a student before sending it to scanner.');
+    }
+
+    try {
+        $response = Http::withHeaders([
+            'X-INTEGRATION-SECRET' => env('SCANNER_INTEGRATION_SECRET'),
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+        ])->post(env('SCANNER_INTEGRATION_URL'), [
+            'name' => $project->name,
+            'platform_project_id' => $project->project_id,
+            'student_id' => $project->student_id,
+            'student_name' => $project->student->name ?? 'Unknown Student',
+            'student_email' => $project->student->email ?? null,
+            'callback_url' => env('SCANNER_CALLBACK_URL'),
+        ]);
+
+        if (!$response->successful()) {
+            return redirect()
+                ->route('admin.projects.scannerReview', $project)
+                ->with('error', 'Failed to connect to scanner platform.');
+        }
+
+        $payload = $response->json();
+        $scannerData = $payload['data'] ?? [];
+
+        if (!($payload['success'] ?? false)) {
+            return redirect()
+                ->route('admin.projects.scannerReview', $project)
+                ->with('error', $payload['message'] ?? 'Scanner integration failed.');
+        }
+
+        if (empty($scannerData['scanner_project_id']) || empty($scannerData['token'])) {
+            return redirect()
+                ->route('admin.projects.scannerReview', $project)
+                ->with('error', 'Scanner response is missing required data.');
+        }
+
+        $project->update([
+            'status' => 'scan_requested',
+            'scanner_status' => 'pending',
+            'scanner_project_id' => $scannerData['scanner_project_id'],
+        ]);
+
+        $scanUrl = rtrim(env('SCANNER_PUBLIC_BASE_URL'), '/') . '/?project_token=' . urlencode($scannerData['token']);
+
+        return redirect()->away($scanUrl);
+
+    } catch (\Throwable $e) {
+        \Log::error('Admin startScan failed', [
+            'project_id' => $project->project_id,
+            'message' => $e->getMessage(),
+        ]);
+
+        return redirect()
+            ->route('admin.projects.scannerReview', $project)
+            ->with('error', 'An unexpected error occurred while sending the project to scanner.');
+    }
+}
 }

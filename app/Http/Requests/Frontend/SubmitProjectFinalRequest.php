@@ -13,8 +13,6 @@ class SubmitProjectFinalRequest extends FormRequest
 
     public function rules(): array
     {
-        // Final submit doesn’t need inputs from the request usually
-        // because you use session data. Keep it strict and empty.
         return [];
     }
 }

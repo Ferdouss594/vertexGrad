@@ -12,6 +12,7 @@ use App\Http\Controllers\Frontend\ProjectController as FrontendProjectController
 use App\Http\Controllers\Frontend\NotificationController as FrontNotificationController;
 use App\Http\Controllers\Frontend\InvestorDashboardController;
 use App\Http\Controllers\Frontend\AcademicDashboardController;
+use App\Http\Controllers\Admin\ProjectController;
 
 // ------------------------
 // FRONTEND PUBLIC PAGES
@@ -147,8 +148,15 @@ Route::prefix('submit-project')->name('project.submit.')->group(function () {
 
     Route::get('/resume', [ProjectSubmissionController::class, 'resume'])->name('resume');
 });
+Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::patch('/projects/{project}/approve', [ProjectController::class, 'approve'])->name('projects.approve');
+    Route::patch('/projects/{project}/publish', [ProjectController::class, 'publish'])->name('projects.publish');
+ Route::get('projects/{project}/scanner-review', [\App\Http\Controllers\Admin\ProjectController::class, 'scannerReview'])
+    ->name('projects.scannerReview');
 
-// ------------------------
+Route::post('projects/{project}/start-scan', [\App\Http\Controllers\Admin\ProjectController::class, 'startScan'])
+    ->name('projects.startScan');
+} );
 // DEBUG
 // ------------------------
 Route::get('/_debug/auth', function () {

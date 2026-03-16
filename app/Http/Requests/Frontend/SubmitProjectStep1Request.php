@@ -14,14 +14,19 @@ class SubmitProjectStep1Request extends FormRequest
     public function rules(): array
     {
         return [
-            'project_title'   => 'required|string|max:100',
-            'abstract'        => 'required|string|max:1000',
-            'discipline'      => 'required|string|max:50',
+            'project_title' => 'required|string|max:150',
 
-            'project_photos'   => 'nullable|array',
-            'project_photos.*' => 'image|max:5120',
+            'abstract' => 'required|string|max:2000',
 
-            'project_video' => 'nullable|mimetypes:video/mp4,video/quicktime,video/ogg|max:51200',
+            'discipline' => 'required|string|max:100',
+
+            'project_type' => 'required|string|max:50',
+
+            'problem_statement' => 'required|string|max:2000',
+
+            'target_beneficiaries' => 'required|string|max:500',
+
+            'project_nature' => 'required|string|max:50',
         ];
     }
 }
