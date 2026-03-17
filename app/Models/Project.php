@@ -1,95 +1,119 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Spatie\MediaLibrary\HasMedia;            
-use Spatie\MediaLibrary\InteractsWithMedia; 
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-// Make sure these actually exist in your app/Models folder
+// Models
 use App\Models\User;
 use App\Models\ProjectTask;
 use App\Models\ProjectFile;
 
-// If these two don't exist yet, comment them out to stop the errors:
-// use App\Models\ProjectEvaluation; 
-// use App\Models\ProjectReport;
-class Project extends Model implements HasMedia // ADD "implements HasMedia"
+class Project extends Model implements HasMedia
 {
-    use HasFactory, InteractsWithMedia;        // ADD "InteractsWithMedia"
+    use HasFactory, InteractsWithMedia;
 
+    protected $table = 'projects';
     protected $primaryKey = 'project_id';
+
     protected $fillable = [
-        'name','description','category','status',
-        'student_id','supervisor_id','manager_id','investor_id',
-        'budget','start_date','end_date','priority','progress',
-        'tags','is_featured','status_history'
+        'name',
+        'description',
+        'category',
+        'status',
+        'upload_token',
+
+        // Scanner sync fields
+        'scanner_status',
+        'scanner_project_id',
+        'scan_score',
+        'scan_report',
+        'scanned_at',
+
+        // Ownership / relations
+        'student_id',
+        'supervisor_id',
+        'manager_id',
+        'investor_id',
+
+        // Project business fields
+        'budget',
+        'start_date',
+        'end_date',
+        'priority',
+        'progress',
+        'is_featured',
+        'tags',
+        'status_history',
     ];
 
     protected $casts = [
         'tags' => 'array',
         'status_history' => 'array',
         'is_featured' => 'boolean',
+        'scan_score' => 'decimal:2',
+        'scanned_at' => 'datetime',
         'start_date' => 'datetime',
-        'end_date'   => 'datetime',
+        'end_date' => 'datetime',
     ];
 
-    public function student() {
-    // This links Project(student_id) -> User(id)
-    return $this->belongsTo(User::class, 'student_id');
-    }
-    // UPDATED RELATIONS: Pointing directly to User model for Auth ease
-
-    public function supervisor() {
-        return $this->belongsTo(User::class, 'supervisor_id');
-    }
-
-    public function manager() {
-        return $this->belongsTo(User::class, 'manager_id');
-    }
-
-    public function investor() {
-        return $this->belongsTo(User::class, 'investor_id');
-    }
-
-    public function tasks() {
-        return $this->hasMany(ProjectTask::class, 'project_id');
-    }
-
-    // public function evaluations() {
-    //     return $this->hasMany(ProjectEvaluation::class, 'project_id');
-    // }
-
-    // public function reports() {
-    //     return $this->hasMany(ProjectReport::class, 'project_id');
-    // }
-
-    // FIX: Changed from FileUpload to ProjectFile to match your Controller
-    public function files() {
-        return $this->hasMany(ProjectFile::class, 'project_id');
-    }
     public function getRouteKeyName()
     {
         return 'project_id';
     }
 
-public function investors()
-{
-    return $this->belongsToMany(
-        User::class,
-        'project_investments',
-        'project_id',
-        'investor_id',
-        'project_id',
-        'id'
-    )->withPivot('status','amount')->withTimestamps();
-}
+    // =========================
+    // Relationships
+    // =========================
 
-public function approvedInvestments()
-{
-    return $this->investors()
-        ->wherePivot('status','approved');
-}
+    public function student()
+    {
+        return $this->belongsTo(User::class, 'student_id');
+    }
 
+    public function supervisor()
+    {
+        return $this->belongsTo(User::class, 'supervisor_id');
+    }
 
+    public function manager()
+    {
+        return $this->belongsTo(User::class, 'manager_id');
+    }
+
+    public function investor()
+    {
+        return $this->belongsTo(User::class, 'investor_id');
+    }
+
+    public function tasks()
+    {
+        return $this->hasMany(ProjectTask::class, 'project_id', 'project_id');
+    }
+
+    public function files()
+    {
+        return $this->hasMany(ProjectFile::class, 'project_id', 'project_id');
+    }
+
+    public function investors()
+    {
+        return $this->belongsToMany(
+            User::class,
+            'project_investments',
+            'project_id',
+            'investor_id',
+            'project_id',
+            'id'
+        )->withPivot('status', 'amount')->withTimestamps();
+    }
+
+    public function approvedInvestments()
+    {
+        return $this->investors()
+            ->wherePivot('status', 'approved');
+    }
 }

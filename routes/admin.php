@@ -14,6 +14,10 @@ use App\Http\Controllers\Admin\ProjectController as AdminProjectController;
 use App\Http\Controllers\ProjectTaskController;
 use App\Http\Controllers\Report\PlatformReportController;
 use App\Http\Controllers\Admin\NotificationController as AdminNotificationController;
+use App\Http\Controllers\Supervisor\SupervisorDashboardController;
+use App\Http\Controllers\Supervisor\SupervisorProjectController;
+use App\Http\Controllers\Supervisor\SupervisorProfileController;
+
 
 // ------------------------
 // Backend Auth (Managers / Supervisors)
@@ -74,6 +78,7 @@ Route::post('projects/{project}/funding-requests/{user}/reject',
         Route::post('tasks', [ProjectTaskController::class, 'store'])->name('projects.tasks.store');
         Route::put('tasks/{task}', [ProjectTaskController::class, 'update'])->name('projects.tasks.update');
         Route::delete('tasks/{task}', [ProjectTaskController::class, 'destroy'])->name('projects.tasks.destroy');
+        
     });
 
     // Admin Notifications
@@ -128,3 +133,24 @@ Route::middleware(['auth:admin', 'role:Manager'])->group(function () {
     Route::get('/migrate-managers', [ManagerController::class, 'migrateUsersToManagers'])->name('manager.migrate');
     Route::resource('manager', ManagerController::class);
 });
+
+// ------------------------
+// Supervisor Area (Role: Supervisor)
+// ------------------------
+Route::prefix('admin/supervisor')
+    ->name('supervisor.')
+    ->middleware(['auth:admin', 'role:Supervisor'])
+    ->group(function () {
+
+        Route::get('/dashboard', [SupervisorDashboardController::class, 'index'])->name('dashboard');
+
+        Route::get('/projects', [SupervisorProjectController::class, 'index'])->name('projects.index');
+        Route::get('/projects/pending', [SupervisorProjectController::class, 'pending'])->name('projects.pending');
+        Route::get('/projects/approved', [SupervisorProjectController::class, 'approved'])->name('projects.approved');
+        Route::get('/projects/revisions', [SupervisorProjectController::class, 'revisions'])->name('projects.revisions');
+        Route::get('/projects/{project}', [SupervisorProjectController::class, 'show'])->name('projects.show');
+        Route::post('/projects/{project}/review', [SupervisorProjectController::class, 'submitReview'])->name('projects.review');
+
+        Route::get('/profile', [SupervisorProfileController::class, 'index'])->name('profile.index');
+        Route::post('/profile', [SupervisorProfileController::class, 'update'])->name('profile.update');
+    });
