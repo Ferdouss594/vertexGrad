@@ -2,29 +2,43 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class ProjectRequest extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
-        'project_name',
-        'description',
+        'project_id',
+        'supervisor_id',
         'student_id',
+        'title',
+        'request_type',
+        'description',
+        'due_date',
         'status',
-        'date_submitted',
-        'date_updated',
     ];
-
-    public function student()
-    {
-        return $this->belongsTo(Student::class);
-    }
 
     public function project()
     {
-        return $this->hasOne(Project::class, 'student_id', 'student_id');
+        return $this->belongsTo(Project::class, 'project_id', 'project_id');
     }
+
+    public function supervisor()
+    {
+        return $this->belongsTo(User::class, 'supervisor_id', 'id');
+    }
+
+    public function student()
+    {
+        return $this->belongsTo(User::class, 'student_id', 'id');
+    }
+
+    public function responses()
+{
+    return $this->hasMany(ProjectRequestResponse::class, 'project_request_id', 'id');
+}
+
+public function latestResponse()
+{
+    return $this->hasOne(ProjectRequestResponse::class, 'project_request_id', 'id')->latestOfMany();
+}
 }

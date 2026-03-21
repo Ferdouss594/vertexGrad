@@ -1,21 +1,24 @@
 @extends('supervisor.layout.app_super')
 
-@section('title', 'My Projects')
+@section('title', 'All Projects')
 
 @section('content')
 @php
     $totalProjects = $projects->count();
+
     $approvedProjects = $projects->filter(function ($project) {
-        return in_array(strtolower($project->supervisor_status ?? $project->supervisor_decision ?? $project->status ?? ''), ['approved']);
+        $myReview = $project->reviews->first();
+        return strtolower($myReview->decision ?? '') === 'approved';
     })->count();
 
     $pendingProjects = $projects->filter(function ($project) {
-        return in_array(strtolower($project->supervisor_status ?? ''), ['pending', 'under_review'])
-            || is_null($project->supervisor_status)
-            || in_array(strtolower($project->status ?? ''), ['pending', 'scan_requested', 'awaiting_manual_review']);
+        $myReview = $project->reviews->first();
+        return !$myReview || in_array(strtolower($myReview->decision ?? ''), ['pending', 'under_review']);
     })->count();
 
-    $avgScore = $projects->whereNotNull('scan_score')->avg('scan_score');
+    $avgScore = $projects->map(function ($project) {
+        return optional($project->reviews->first())->score;
+    })->filter(fn ($score) => !is_null($score))->avg();
 @endphp
 
 <style>
@@ -108,10 +111,15 @@
         color: #0f172a;
     }
 
+    .projects-page .table-wrap {
+        width: 100%;
+        overflow: hidden;
+    }
+
     .projects-page .modern-table {
         margin-bottom: 0;
         width: 100%;
-        table-layout: fixed;
+        table-layout: auto;
     }
 
     .projects-page .modern-table thead th {
@@ -119,40 +127,40 @@
         color: #334155;
         font-weight: 700;
         border-bottom: 1px solid #e2e8f0;
-        padding: 12px 10px;
+        padding: 12px 8px;
         vertical-align: middle;
         white-space: nowrap;
-        font-size: 13px;
+        font-size: 12px;
     }
 
     .projects-page .modern-table tbody td {
-        padding: 12px 10px;
+        padding: 12px 8px;
         vertical-align: middle;
         border-color: #f1f5f9;
-        font-size: 13px;
-        overflow: hidden;
+        font-size: 12px;
     }
 
     .projects-page .modern-table tbody tr:hover {
         background: #fafcff;
     }
 
-    .projects-page .col-id { width: 45px; }
-    .projects-page .col-project { width: 190px; }
-    .projects-page .col-student { width: 150px; }
-    .projects-page .col-status { width: 115px; }
-    .projects-page .col-scan { width: 115px; }
-    .projects-page .col-score { width: 85px; }
-    .projects-page .col-review { width: 120px; }
-    .projects-page .col-date { width: 110px; }
-    .projects-page .col-actions { width: 135px; }
+    .projects-page .col-id { width: 50px; }
+    .projects-page .col-project { width: 17%; }
+    .projects-page .col-student { width: 13%; }
+    .projects-page .col-status { width: 12%; }
+    .projects-page .col-scan { width: 10%; }
+    .projects-page .col-score { width: 8%; }
+    .projects-page .col-review { width: 10%; }
+    .projects-page .col-note { width: 15%; }
+    .projects-page .col-date { width: 8%; }
+    .projects-page .col-actions { width: 7%; }
 
     .projects-page .project-name {
         font-weight: 700;
         color: #1e293b;
         text-decoration: none;
         display: block;
-        max-width: 170px;
+        max-width: 180px;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -165,16 +173,17 @@
 
     .projects-page .td-ellipsis {
         display: block;
+        max-width: 170px;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
     }
 
     .projects-page .mini-text {
-        font-size: 11px;
+        font-size: 10px;
         color: #64748b;
         margin-top: 3px;
-        line-height: 1.5;
+        line-height: 1.4;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -184,7 +193,7 @@
         display: inline-block;
         padding: 6px 10px;
         border-radius: 999px;
-        font-size: 11px;
+        font-size: 10px;
         font-weight: 700;
         letter-spacing: .2px;
         white-space: nowrap;
@@ -195,6 +204,11 @@
     .projects-page .badge-status-awaiting_manual_review {
         background: #fff7ed;
         color: #c2410c;
+    }
+
+    .projects-page .badge-status-awaiting_final_decision {
+        background: #ede9fe;
+        color: #6d28d9;
     }
 
     .projects-page .badge-status-active,
@@ -266,12 +280,13 @@
         color: #fff;
         border: none;
         border-radius: 10px;
-        padding: 7px 14px;
+        padding: 7px 12px;
         font-weight: 600;
-        font-size: 12px;
+        font-size: 11px;
         transition: all 0.3s ease;
         text-decoration: none;
         display: inline-block;
+        white-space: nowrap;
     }
 
     .projects-page .btn-review:hover {
@@ -315,15 +330,79 @@
         color: #cbd5e1;
     }
 
-    @media (max-width: 1400px) {
-        .projects-page .modern-table thead th,
-        .projects-page .modern-table tbody td {
-            font-size: 12px;
-            padding: 10px 8px;
+    .projects-page .custom-pagination-wrap {
+        padding: 18px 20px 24px;
+        border-top: 1px solid #eef2f7;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .projects-page .custom-pagination {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .projects-page .custom-page-item {
+        min-width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        border: 1px solid #e2e8f0;
+        background: #fff;
+        color: #334155;
+        font-weight: 700;
+        font-size: 13px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        transition: all 0.25s ease;
+        box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+        padding: 0 14px;
+    }
+
+    .projects-page .custom-page-item:hover {
+        text-decoration: none;
+        color: #1b00ff;
+        border-color: #c7d2fe;
+        background: #eef2ff;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 22px rgba(27, 0, 255, 0.10);
+    }
+
+    .projects-page .custom-page-item.active {
+        background: linear-gradient(135deg, #1b00ff, #4338ca);
+        color: #fff;
+        border-color: transparent;
+        box-shadow: 0 12px 24px rgba(27, 0, 255, 0.22);
+    }
+
+    @media (max-width: 1200px) {
+        .projects-page .modern-table {
+            table-layout: fixed;
         }
 
-        .projects-page .project-name {
-            max-width: 150px;
+        .projects-page .modern-table thead th,
+        .projects-page .modern-table tbody td {
+            font-size: 11px;
+            padding: 10px 6px;
+        }
+
+        .projects-page .project-name,
+        .projects-page .td-ellipsis {
+            max-width: 120px;
+        }
+
+        .projects-page .mini-text {
+            font-size: 9px;
+        }
+
+        .projects-page .btn-review {
+            padding: 6px 10px;
+            font-size: 10px;
         }
     }
 </style>
@@ -340,8 +419,8 @@
         <div class="page-header-card mb-4">
             <div class="d-flex justify-content-between align-items-center flex-wrap" style="gap: 15px;">
                 <div>
-                    <h3>My Supervised Projects</h3>
-                    <p>Professional overview of all projects assigned to you, including scan status, scores, and review progress.</p>
+                    <h3>All Projects</h3>
+                    <p>Professional overview of all platform projects, including scan status, scores, and your supervisor evaluation.</p>
                 </div>
 
                 <div class="header-actions">
@@ -372,7 +451,7 @@
                         <i class="fa fa-check-circle"></i>
                     </div>
                     <div class="stats-number">{{ $approvedProjects }}</div>
-                    <p class="stats-label">Approved Reviews</p>
+                    <p class="stats-label">My Approved Evaluations</p>
                 </div>
             </div>
 
@@ -382,7 +461,7 @@
                         <i class="fa fa-clock"></i>
                     </div>
                     <div class="stats-number">{{ $pendingProjects }}</div>
-                    <p class="stats-label">Pending / Under Review</p>
+                    <p class="stats-label">Not Evaluated Yet</p>
                 </div>
             </div>
 
@@ -392,7 +471,7 @@
                         <i class="fa fa-chart-line"></i>
                     </div>
                     <div class="stats-number">{{ $avgScore ? number_format($avgScore, 1) : '0.0' }}</div>
-                    <p class="stats-label">Average Scan Score</p>
+                    <p class="stats-label">My Average Score</p>
                 </div>
             </div>
         </div>
@@ -400,12 +479,12 @@
         <div class="table-card">
             <div class="table-card-header">
                 <div>
-                    <h5>Assigned Projects</h5>
+                    <h5>All Projects</h5>
                     <small class="text-muted">Compact professional review table for supervisor workflow.</small>
                 </div>
             </div>
 
-            <div class="table-responsive">
+            <div class="table-wrap">
                 <table class="table modern-table">
                     <thead>
                         <tr>
@@ -415,7 +494,8 @@
                             <th class="col-status">Project Status</th>
                             <th class="col-scan">Scan</th>
                             <th class="col-score">Score</th>
-                            <th class="col-review">Review</th>
+                            <th class="col-review">My Evaluation</th>
+                            <th class="col-note">My Notes</th>
                             <th class="col-date">Updated</th>
                             <th class="col-actions">Action</th>
                         </tr>
@@ -424,8 +504,17 @@
                     <tbody>
                         @forelse($projects as $project)
                             @php
-                                $statusClass = match(strtolower($project->status ?? '')) {
+                                $myReview = $project->reviews->first();
+
+                                $displayStatus = strtolower($project->status ?? 'unknown');
+
+                                if ($myReview && $displayStatus === 'awaiting_manual_review') {
+                                    $displayStatus = 'awaiting_final_decision';
+                                }
+
+                                $statusClass = match($displayStatus) {
                                     'pending', 'scan_requested', 'awaiting_manual_review' => 'badge-status-pending',
+                                    'awaiting_final_decision' => 'badge-status-awaiting_final_decision',
                                     'active', 'approved', 'published' => 'badge-status-active',
                                     'completed' => 'badge-status-completed',
                                     'rejected', 'scan_failed', 'failed' => 'badge-status-rejected',
@@ -439,14 +528,13 @@
                                     default => 'badge-status-default',
                                 };
 
-                                $reviewStatus = strtolower($project->supervisor_status ?? 'pending');
+                                $myDecision = strtolower($myReview->decision ?? 'pending');
 
-                                $reviewClass = match($reviewStatus) {
+                                $reviewClass = match($myDecision) {
                                     'approved' => 'badge-review-approved',
                                     'revision_requested' => 'badge-review-revision_requested',
                                     'rejected' => 'badge-review-rejected',
-                                    'pending', 'under_review' => 'badge-review-pending',
-                                    default => 'badge-status-default',
+                                    default => 'badge-review-pending',
                                 };
                             @endphp
 
@@ -472,7 +560,7 @@
 
                                 <td>
                                     <span class="badge-soft {{ $statusClass }}">
-                                        {{ ucfirst(str_replace('_', ' ', $project->status ?? 'unknown')) }}
+                                        {{ ucfirst(str_replace('_', ' ', $displayStatus)) }}
                                     </span>
                                     <div class="mini-text td-ellipsis">
                                         Budget: {{ $project->budget !== null ? number_format($project->budget, 2) : '—' }}
@@ -490,19 +578,25 @@
 
                                 <td>
                                     <div class="score-box">
-                                        {{ $project->scan_score !== null ? number_format($project->scan_score, 2) : '—' }}
+                                        {{ $myReview?->score !== null ? number_format($myReview->score, 2) : '—' }}
                                     </div>
                                     <div class="mini-text td-ellipsis">
-                                        Risk: {{ $project->risk_level ?? '—' }}
+                                        Scan: {{ $project->scan_score !== null ? number_format($project->scan_score, 2) : '—' }}
                                     </div>
                                 </td>
 
                                 <td>
                                     <span class="badge-soft {{ $reviewClass }}">
-                                        {{ ucfirst(str_replace('_', ' ', $project->supervisor_status ?? 'not reviewed')) }}
+                                        {{ ucfirst(str_replace('_', ' ', $myReview->decision ?? 'pending')) }}
                                     </span>
                                     <div class="mini-text td-ellipsis">
-                                        Decision: {{ ucfirst(str_replace('_', ' ', $project->supervisor_decision ?? '—')) }}
+                                        {{ $myReview?->reviewed_at ? $myReview->reviewed_at->format('Y-m-d') : 'Not reviewed yet' }}
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <div class="td-ellipsis">
+                                        {{ $myReview?->notes ? \Illuminate\Support\Str::limit($myReview->notes, 40) : 'No notes yet' }}
                                     </div>
                                 </td>
 
@@ -513,16 +607,17 @@
 
                                 <td>
                                     <a href="{{ route('supervisor.projects.show', $project->project_id) }}" class="btn-review">
-                                        <i class="fa fa-search mr-1"></i> Review
+                                        <i class="fa fa-search mr-1"></i>
+                                        {{ $myReview ? 'Update Review' : 'Review' }}
                                     </a>
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="9">
+                                <td colspan="10">
                                     <div class="empty-state">
                                         <i class="fa fa-folder-open"></i>
-                                        <div>No assigned projects found.</div>
+                                        <div>No projects found.</div>
                                     </div>
                                 </td>
                             </tr>
@@ -531,11 +626,19 @@
                 </table>
             </div>
 
-            @if(method_exists($projects, 'links'))
-                <div class="p-3">
-                    {{ $projects->links() }}
+            @if($projects instanceof \Illuminate\Pagination\LengthAwarePaginator && $projects->lastPage() > 1)
+                <div class="custom-pagination-wrap">
+                    <div class="custom-pagination">
+                        @for($i = 1; $i <= $projects->lastPage(); $i++)
+                            <a href="{{ $projects->url($i) }}"
+                               class="custom-page-item {{ $projects->currentPage() == $i ? 'active' : '' }}">
+                                {{ $i }}
+                            </a>
+                        @endfor
+                    </div>
                 </div>
             @endif
+
         </div>
 
     </div>

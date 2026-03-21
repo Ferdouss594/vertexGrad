@@ -133,5 +133,8 @@ public function investments()
         'project_id'
     )->withPivot('status', 'amount', 'message')->withTimestamps();
 }
-
+public function projectReviews()
+{
+    return $this->hasMany(\App\Models\ProjectReview::class, 'supervisor_id', 'id');
+}
 }

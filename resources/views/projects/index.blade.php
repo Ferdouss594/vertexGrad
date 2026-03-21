@@ -3,13 +3,6 @@
 @section('title', 'Projects')
 
 @section('content')
-@php
-    $totalProjects = $projects->count();
-    $completedProjects = $projects->where('status', 'completed')->count();
-    $pendingProjects = $projects->whereIn('status', ['pending', 'scan_requested', 'awaiting_manual_review'])->count();
-    $avgScore = $projects->whereNotNull('scan_score')->avg('scan_score');
-@endphp
-
 <style>
     .projects-page .page-header-card {
         background: linear-gradient(135deg, #0d1b4c 0%, #1b00ff 100%);
@@ -138,7 +131,7 @@
     .projects-page .col-risk { width: 90px; }
     .projects-page .col-budget { width: 95px; }
     .projects-page .col-date { width: 110px; }
-    .projects-page .col-actions { width: 165px; }
+    .projects-page .col-actions { width: 175px; }
 
     .projects-page .project-name {
         font-weight: 700;
@@ -249,26 +242,6 @@
         color: #0f172a;
     }
 
-    .projects-page .btn-view {
-        background: linear-gradient(135deg, #1b00ff, #4338ca);
-        color: #fff;
-        border: none;
-        border-radius: 10px;
-        padding: 7px 14px;
-        font-weight: 600;
-        font-size: 12px;
-        transition: all 0.3s ease;
-        text-decoration: none;
-        display: inline-block;
-    }
-
-    .projects-page .btn-view:hover {
-        color: #fff;
-        transform: translateY(-2px);
-        box-shadow: 0 10px 20px rgba(27, 0, 255, 0.20);
-        text-decoration: none;
-    }
-
     .projects-page .btn-add {
         background: linear-gradient(135deg, #1b00ff, #4f46e5);
         color: #fff;
@@ -340,6 +313,48 @@
         color: #cbd5e1;
     }
 
+    .projects-page .pagination-wrapper {
+        padding: 20px 24px 24px;
+        border-top: 1px solid #eef2f7;
+        background: #fff;
+    }
+
+    .projects-page .pagination-info {
+        font-size: 13px;
+        color: #64748b;
+        margin-bottom: 12px;
+    }
+
+    .projects-page .pagination-wrapper nav {
+        display: flex;
+        justify-content: center;
+    }
+
+    .projects-page .pagination {
+        margin-bottom: 0;
+        gap: 6px;
+        flex-wrap: wrap;
+    }
+
+    .projects-page .page-item .page-link {
+        border: none;
+        border-radius: 10px;
+        color: #334155;
+        padding: 8px 14px;
+        font-weight: 600;
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+    }
+
+    .projects-page .page-item.active .page-link {
+        background: linear-gradient(135deg, #1b00ff, #4f46e5);
+        color: #fff;
+    }
+
+    .projects-page .page-item.disabled .page-link {
+        color: #94a3b8;
+        background: #f8fafc;
+    }
+
     @media (max-width: 1400px) {
         .projects-page .modern-table thead th,
         .projects-page .modern-table tbody td {
@@ -352,7 +367,7 @@
         }
 
         .projects-page .col-actions {
-            width: 150px;
+            width: 160px;
         }
     }
 </style>
@@ -363,6 +378,12 @@
         @if(session('success'))
             <div class="alert alert-success border-0 shadow-sm" style="border-radius: 14px;">
                 {{ session('success') }}
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div class="alert alert-danger border-0 shadow-sm" style="border-radius: 14px;">
+                {{ session('error') }}
             </div>
         @endif
 
@@ -385,7 +406,7 @@
                     <div class="stats-icon primary">
                         <i class="fa fa-folder-open"></i>
                     </div>
-                    <div class="stats-number">{{ $totalProjects }}</div>
+                    <div class="stats-number">{{ $totalProjects ?? 0 }}</div>
                     <p class="stats-label">Total Projects</p>
                 </div>
             </div>
@@ -395,7 +416,7 @@
                     <div class="stats-icon success">
                         <i class="fa fa-check-circle"></i>
                     </div>
-                    <div class="stats-number">{{ $completedProjects }}</div>
+                    <div class="stats-number">{{ $completedProjects ?? 0 }}</div>
                     <p class="stats-label">Completed Projects</p>
                 </div>
             </div>
@@ -405,7 +426,7 @@
                     <div class="stats-icon warning">
                         <i class="fa fa-clock"></i>
                     </div>
-                    <div class="stats-number">{{ $pendingProjects }}</div>
+                    <div class="stats-number">{{ $pendingProjects ?? 0 }}</div>
                     <p class="stats-label">Pending / Review</p>
                 </div>
             </div>
@@ -415,7 +436,7 @@
                     <div class="stats-icon info">
                         <i class="fa fa-chart-line"></i>
                     </div>
-                    <div class="stats-number">{{ $avgScore ? number_format($avgScore, 1) : '0.0' }}</div>
+                    <div class="stats-number">{{ isset($avgScore) && $avgScore !== null ? number_format($avgScore, 1) : '0.0' }}</div>
                     <p class="stats-label">Average Scan Score</p>
                 </div>
             </div>
@@ -473,7 +494,7 @@
                             @endphp
 
                             <tr>
-                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $projects->firstItem() + $loop->index }}</td>
 
                                 <td>
                                     <a href="{{ route('admin.projects.show', $project) }}" class="project-name">
@@ -557,7 +578,7 @@
                                             </form>
                                         @endif
 
-                                        @if(in_array($project->status, ['approved']))
+                                        @if(in_array($project->status, ['active', 'approved']))
                                             <form action="{{ route('admin.projects.publish', $project) }}" method="POST" class="action-form">
                                                 @csrf
                                                 @method('PATCH')
@@ -592,6 +613,17 @@
                     </tbody>
                 </table>
             </div>
+
+            @if(method_exists($projects, 'links'))
+                <div class="pagination-wrapper">
+                    <div class="pagination-info">
+                        Showing {{ $projects->firstItem() ?? 0 }} to {{ $projects->lastItem() ?? 0 }}
+                        of {{ $projects->total() ?? 0 }} projects
+                    </div>
+
+                    {{ $projects->onEachSide(1)->links() }}
+                </div>
+            @endif
         </div>
 
     </div>

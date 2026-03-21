@@ -431,6 +431,12 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span class="mtext">Platform Reports</span>
                     </a>
                 </li>
+                <li>
+    <a href="{{ route('admin.projects.final-decisions.index') }}" class="dropdown-toggle no-arrow">
+        <span class="micon bi bi-check2-square"></span>
+        <span class="mtext">Final Decisions</span>
+    </a>
+</li>
             </ul>
         </div>
     </div>

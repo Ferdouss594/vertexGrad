@@ -4,430 +4,28 @@
 
 @section('content')
 @php
-    $totalProjects = $stats['total_projects'] ?? 0;
-    $pendingReviews = $stats['pending_reviews'] ?? 0;
+    $totalProjects    = $stats['total_projects'] ?? 0;
+    $pendingReviews   = $stats['pending_reviews'] ?? 0;
     $approvedProjects = $stats['approved_projects'] ?? 0;
     $revisionRequests = $stats['revision_requested'] ?? 0;
 
-    $pendingPercent = $totalProjects > 0 ? round(($pendingReviews / $totalProjects) * 100) : 0;
-    $approvedPercent = $totalProjects > 0 ? round(($approvedProjects / $totalProjects) * 100) : 0;
-    $revisionPercent = $totalProjects > 0 ? round(($revisionRequests / $totalProjects) * 100) : 0;
+    $pendingPercent   = $totalProjects > 0 ? round(($pendingReviews / $totalProjects) * 100) : 0;
+    $approvedPercent  = $totalProjects > 0 ? round(($approvedProjects / $totalProjects) * 100) : 0;
+    $revisionPercent  = $totalProjects > 0 ? round(($revisionRequests / $totalProjects) * 100) : 0;
 
     $avgScanScore = $latestProjects->whereNotNull('scan_score')->avg('scan_score');
     $avgScanScore = $avgScanScore ? round($avgScanScore, 1) : 0;
 
     $completedScan = $latestProjects->where('scanner_status', 'completed')->count();
-    $pendingScan = $latestProjects->where('scanner_status', 'pending')->count();
-    $failedScan = $latestProjects->where('scanner_status', 'failed')->count();
+    $pendingScan   = $latestProjects->where('scanner_status', 'pending')->count();
+    $failedScan    = $latestProjects->where('scanner_status', 'failed')->count();
 
-    $chartPending = max($pendingReviews, 0);
+    $chartPending  = max($pendingReviews, 0);
     $chartApproved = max($approvedProjects, 0);
     $chartRevision = max($revisionRequests, 0);
 
     $barMax = max($chartPending, $chartApproved, $chartRevision, 1);
 @endphp
-
-<div class="pd-ltr-20 xs-pd-20-10 supervisor-dashboard-page">
-    <div class="min-height-200px">
-
-        {{-- Hero --}}
-        <div class="super-hero-card mb-4">
-            <div class="row align-items-center">
-                <div class="col-xl-8 col-lg-7">
-                    <div class="hero-content">
-                        <div class="hero-eyebrow">Supervisor Control Center</div>
-                        <h2 class="hero-title">Welcome back, {{ $user->name }}</h2>
-                        <p class="hero-text">
-                            Monitor assigned projects, review technical scan outcomes, track supervisor decisions,
-                            and manage revision workflows from one professional dashboard.
-                        </p>
-
-                        <div class="hero-actions">
-                            <a href="{{ route('supervisor.projects.index') }}" class="hero-btn hero-btn-primary">
-                                <i class="fa fa-folder-open mr-2"></i> My Projects
-                            </a>
-                            <a href="{{ route('supervisor.projects.pending') }}" class="hero-btn hero-btn-outline">
-                                <i class="fa fa-clock-o mr-2"></i> Pending Reviews
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-xl-4 col-lg-5 mt-4 mt-lg-0">
-                    <div class="hero-summary-card">
-                        <div class="hero-summary-head">
-                            <span>Review Performance</span>
-                            <span class="hero-summary-badge">{{ $totalProjects }} Projects</span>
-                        </div>
-
-                        <div class="hero-summary-score">
-                            <div class="score-number">{{ $avgScanScore }}</div>
-                            <div class="score-label">Avg. Scan Score</div>
-                        </div>
-
-                        <div class="hero-summary-metrics">
-                            <div class="metric-item">
-                                <span>Pending</span>
-                                <strong>{{ $pendingReviews }}</strong>
-                            </div>
-                            <div class="metric-item">
-                                <span>Approved</span>
-                                <strong>{{ $approvedProjects }}</strong>
-                            </div>
-                            <div class="metric-item">
-                                <span>Revisions</span>
-                                <strong>{{ $revisionRequests }}</strong>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        {{-- KPI Cards --}}
-        <div class="row mb-4">
-            <div class="col-xl-3 col-md-6 mb-3">
-                <div class="kpi-card kpi-primary">
-                    <div class="kpi-icon">
-                        <i class="fa fa-folder-open"></i>
-                    </div>
-                    <div class="kpi-info">
-                        <div class="kpi-label">Total Projects</div>
-                        <div class="kpi-value">{{ $totalProjects }}</div>
-                        <div class="kpi-sub">Assigned under your supervision</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-xl-3 col-md-6 mb-3">
-                <div class="kpi-card kpi-warning">
-                    <div class="kpi-icon">
-                        <i class="fa fa-hourglass-half"></i>
-                    </div>
-                    <div class="kpi-info">
-                        <div class="kpi-label">Pending Reviews</div>
-                        <div class="kpi-value">{{ $pendingReviews }}</div>
-                        <div class="kpi-sub">{{ $pendingPercent }}% of your workload</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-xl-3 col-md-6 mb-3">
-                <div class="kpi-card kpi-success">
-                    <div class="kpi-icon">
-                        <i class="fa fa-check-circle"></i>
-                    </div>
-                    <div class="kpi-info">
-                        <div class="kpi-label">Approved Projects</div>
-                        <div class="kpi-value">{{ $approvedProjects }}</div>
-                        <div class="kpi-sub">{{ $approvedPercent }}% approved rate</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-xl-3 col-md-6 mb-3">
-                <div class="kpi-card kpi-danger">
-                    <div class="kpi-icon">
-                        <i class="fa fa-refresh"></i>
-                    </div>
-                    <div class="kpi-info">
-                        <div class="kpi-label">Revision Requests</div>
-                        <div class="kpi-value">{{ $revisionRequests }}</div>
-                        <div class="kpi-sub">{{ $revisionPercent }}% sent back for edits</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        {{-- Charts Area --}}
-        <div class="row mb-4">
-            <div class="col-xl-5 mb-3">
-                <div class="dashboard-panel h-100">
-                    <div class="panel-header">
-                        <div>
-                            <h5>Review Distribution</h5>
-                            <p class="mb-0">Supervisor decisions overview</p>
-                        </div>
-                    </div>
-
-                    <div class="donut-wrap">
-                        <div class="donut-chart"
-                             style="background:
-                                conic-gradient(
-                                    #f59e0b 0% {{ $pendingPercent }}%,
-                                    #22c55e {{ $pendingPercent }}% {{ $pendingPercent + $approvedPercent }}%,
-                                    #ef4444 {{ $pendingPercent + $approvedPercent }}% 100%
-                                );">
-                            <div class="donut-inner">
-                                <div class="donut-total">{{ $totalProjects }}</div>
-                                <div class="donut-label">Projects</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="legend-grid">
-                        <div class="legend-item">
-                            <span class="legend-dot legend-warning"></span>
-                            <div>
-                                <strong>{{ $pendingReviews }}</strong>
-                                <small>Pending</small>
-                            </div>
-                        </div>
-
-                        <div class="legend-item">
-                            <span class="legend-dot legend-success"></span>
-                            <div>
-                                <strong>{{ $approvedProjects }}</strong>
-                                <small>Approved</small>
-                            </div>
-                        </div>
-
-                        <div class="legend-item">
-                            <span class="legend-dot legend-danger"></span>
-                            <div>
-                                <strong>{{ $revisionRequests }}</strong>
-                                <small>Revisions</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-xl-7 mb-3">
-                <div class="dashboard-panel h-100">
-                    <div class="panel-header">
-                        <div>
-                            <h5>Review Status Analytics</h5>
-                            <p class="mb-0">Visual comparison across key review states</p>
-                        </div>
-                    </div>
-
-                    <div class="bar-chart-wrap">
-                        <div class="bar-group">
-                            <div class="bar-value">{{ $chartPending }}</div>
-                            <div class="bar-track">
-                                <div class="bar-fill bar-fill-warning" style="height: {{ ($chartPending / $barMax) * 100 }}%;"></div>
-                            </div>
-                            <div class="bar-label">Pending</div>
-                        </div>
-
-                        <div class="bar-group">
-                            <div class="bar-value">{{ $chartApproved }}</div>
-                            <div class="bar-track">
-                                <div class="bar-fill bar-fill-success" style="height: {{ ($chartApproved / $barMax) * 100 }}%;"></div>
-                            </div>
-                            <div class="bar-label">Approved</div>
-                        </div>
-
-                        <div class="bar-group">
-                            <div class="bar-value">{{ $chartRevision }}</div>
-                            <div class="bar-track">
-                                <div class="bar-fill bar-fill-danger" style="height: {{ ($chartRevision / $barMax) * 100 }}%;"></div>
-                            </div>
-                            <div class="bar-label">Revisions</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        {{-- Progress / Scan panels --}}
-        <div class="row mb-4">
-            <div class="col-xl-6 mb-3">
-                <div class="dashboard-panel h-100">
-                    <div class="panel-header">
-                        <div>
-                            <h5>Review Progress Breakdown</h5>
-                            <p class="mb-0">Current supervisor workflow percentages</p>
-                        </div>
-                    </div>
-
-                    <div class="progress-block">
-                        <div class="progress-row">
-                            <div class="progress-meta">
-                                <span>Pending Reviews</span>
-                                <strong>{{ $pendingPercent }}%</strong>
-                            </div>
-                            <div class="custom-progress">
-                                <div class="custom-progress-bar warning" style="width: {{ $pendingPercent }}%;"></div>
-                            </div>
-                        </div>
-
-                        <div class="progress-row">
-                            <div class="progress-meta">
-                                <span>Approved Projects</span>
-                                <strong>{{ $approvedPercent }}%</strong>
-                            </div>
-                            <div class="custom-progress">
-                                <div class="custom-progress-bar success" style="width: {{ $approvedPercent }}%;"></div>
-                            </div>
-                        </div>
-
-                        <div class="progress-row">
-                            <div class="progress-meta">
-                                <span>Revision Requests</span>
-                                <strong>{{ $revisionPercent }}%</strong>
-                            </div>
-                            <div class="custom-progress">
-                                <div class="custom-progress-bar danger" style="width: {{ $revisionPercent }}%;"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-xl-6 mb-3">
-                <div class="dashboard-panel h-100">
-                    <div class="panel-header">
-                        <div>
-                            <h5>Scan Pipeline Snapshot</h5>
-                            <p class="mb-0">Scanner completion trends for your latest projects</p>
-                        </div>
-                    </div>
-
-                    <div class="scan-metric-grid">
-                        <div class="scan-metric-card">
-                            <div class="scan-metric-icon scan-blue">
-                                <i class="fa fa-chart-line"></i>
-                            </div>
-                            <div class="scan-metric-text">
-                                <span>Average Score</span>
-                                <strong>{{ $avgScanScore }}</strong>
-                            </div>
-                        </div>
-
-                        <div class="scan-metric-card">
-                            <div class="scan-metric-icon scan-green">
-                                <i class="fa fa-check"></i>
-                            </div>
-                            <div class="scan-metric-text">
-                                <span>Completed Scans</span>
-                                <strong>{{ $completedScan }}</strong>
-                            </div>
-                        </div>
-
-                        <div class="scan-metric-card">
-                            <div class="scan-metric-icon scan-orange">
-                                <i class="fa fa-clock-o"></i>
-                            </div>
-                            <div class="scan-metric-text">
-                                <span>Pending Scans</span>
-                                <strong>{{ $pendingScan }}</strong>
-                            </div>
-                        </div>
-
-                        <div class="scan-metric-card">
-                            <div class="scan-metric-icon scan-red">
-                                <i class="fa fa-times"></i>
-                            </div>
-                            <div class="scan-metric-text">
-                                <span>Failed Scans</span>
-                                <strong>{{ $failedScan }}</strong>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        {{-- Recent Projects Table --}}
-        <div class="dashboard-panel">
-            <div class="panel-header">
-                <div>
-                    <h5>Recent Assigned Projects</h5>
-                    <p class="mb-0">Latest updated projects assigned to you</p>
-                </div>
-                <a href="{{ route('supervisor.projects.index') }}" class="panel-action-btn">
-                    View All
-                </a>
-            </div>
-
-            <div class="panel-body p-0">
-                @if($latestProjects->count())
-                    <div class="table-responsive">
-                        <table class="table dashboard-table mb-0">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Project</th>
-                                    <th>Student</th>
-                                    <th>Status</th>
-                                    <th>Scanner</th>
-                                    <th>Score</th>
-                                    <th>Updated</th>
-                                    <th class="text-end">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($latestProjects as $project)
-                                    @php
-                                        $statusClass = match(strtolower($project->status ?? '')) {
-                                            'pending', 'scan_requested', 'awaiting_manual_review' => 'badge-soft-warning',
-                                            'approved', 'active', 'published' => 'badge-soft-primary',
-                                            'completed' => 'badge-soft-success',
-                                            'rejected', 'scan_failed', 'failed' => 'badge-soft-danger',
-                                            default => 'badge-soft-secondary',
-                                        };
-
-                                        $scanClass = match(strtolower($project->scanner_status ?? '')) {
-                                            'completed' => 'badge-soft-success',
-                                            'pending' => 'badge-soft-warning',
-                                            'failed' => 'badge-soft-danger',
-                                            default => 'badge-soft-secondary',
-                                        };
-                                    @endphp
-
-                                    <tr>
-                                        <td>{{ $project->project_id }}</td>
-                                        <td>
-                                            <div class="project-cell-title">{{ $project->name }}</div>
-                                            <div class="project-cell-sub">{{ $project->category ?? '—' }}</div>
-                                        </td>
-                                        <td>
-                                            <div class="project-cell-title">{{ $project->student->name ?? 'N/A' }}</div>
-                                            <div class="project-cell-sub">{{ $project->student->email ?? 'No email' }}</div>
-                                        </td>
-                                        <td>
-                                            <span class="badge-soft {{ $statusClass }}">
-                                                {{ ucfirst(str_replace('_', ' ', $project->status ?? 'N/A')) }}
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <span class="badge-soft {{ $scanClass }}">
-                                                {{ ucfirst(str_replace('_', ' ', $project->scanner_status ?? 'N/A')) }}
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <div class="score-pill">{{ $project->scan_score ?? '—' }}</div>
-                                        </td>
-                                        <td>
-                                            <div class="project-cell-title">{{ optional($project->updated_at)->format('Y-m-d') }}</div>
-                                            <div class="project-cell-sub">{{ optional($project->updated_at)->format('h:i A') }}</div>
-                                        </td>
-                                        <td class="text-end">
-                                            <a href="{{ route('supervisor.projects.show', $project->project_id) }}" class="table-action-btn">
-                                                Open
-                                            </a>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                @else
-                    <div class="empty-dashboard-state">
-                        <i class="fa fa-folder-open-o"></i>
-                        <h6>No assigned projects yet</h6>
-                        <p class="mb-0">Projects assigned to this supervisor will appear here.</p>
-                    </div>
-                @endif
-            </div>
-        </div>
-
-    </div>
-</div>
-@endsection
-
 
 <style>
 .supervisor-dashboard-page .super-hero-card {
@@ -918,6 +516,11 @@
     font-weight: 800;
 }
 
+.supervisor-dashboard-page .dashboard-table {
+    width: 100%;
+    table-layout: fixed;
+}
+
 .supervisor-dashboard-page .dashboard-table thead th {
     background: #f8fafc;
     border-bottom: 1px solid #e2e8f0;
@@ -932,6 +535,7 @@
     padding: 16px;
     vertical-align: middle;
     border-color: #f1f5f9;
+    overflow: hidden;
 }
 
 .supervisor-dashboard-page .dashboard-table tbody tr:hover {
@@ -942,12 +546,18 @@
     font-weight: 700;
     color: #0f172a;
     line-height: 1.4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .supervisor-dashboard-page .project-cell-sub {
     font-size: 12px;
     color: #64748b;
     margin-top: 4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .supervisor-dashboard-page .badge-soft {
@@ -959,30 +569,11 @@
     letter-spacing: .2px;
 }
 
-.supervisor-dashboard-page .badge-soft-primary {
-    background: #eff6ff;
-    color: #1d4ed8;
-}
-
-.supervisor-dashboard-page .badge-soft-warning {
-    background: #fff7ed;
-    color: #c2410c;
-}
-
-.supervisor-dashboard-page .badge-soft-success {
-    background: #ecfdf5;
-    color: #15803d;
-}
-
-.supervisor-dashboard-page .badge-soft-danger {
-    background: #fef2f2;
-    color: #dc2626;
-}
-
-.supervisor-dashboard-page .badge-soft-secondary {
-    background: #f1f5f9;
-    color: #475569;
-}
+.supervisor-dashboard-page .badge-soft-primary { background: #eff6ff; color: #1d4ed8; }
+.supervisor-dashboard-page .badge-soft-warning { background: #fff7ed; color: #c2410c; }
+.supervisor-dashboard-page .badge-soft-success { background: #ecfdf5; color: #15803d; }
+.supervisor-dashboard-page .badge-soft-danger { background: #fef2f2; color: #dc2626; }
+.supervisor-dashboard-page .badge-soft-secondary { background: #f1f5f9; color: #475569; }
 
 .supervisor-dashboard-page .score-pill {
     display: inline-flex;
@@ -1036,6 +627,56 @@
     margin-bottom: 8px;
 }
 
+.supervisor-dashboard-page .custom-pagination-wrap {
+    padding: 18px 20px 24px;
+    border-top: 1px solid #eef2f7;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.supervisor-dashboard-page .custom-pagination {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.supervisor-dashboard-page .custom-page-item {
+    min-width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    background: #fff;
+    color: #334155;
+    font-weight: 700;
+    font-size: 13px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+    padding: 0 14px;
+}
+
+.supervisor-dashboard-page .custom-page-item:hover {
+    text-decoration: none;
+    color: #1b00ff;
+    border-color: #c7d2fe;
+    background: #eef2ff;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 22px rgba(27, 0, 255, 0.10);
+}
+
+.supervisor-dashboard-page .custom-page-item.active {
+    background: linear-gradient(135deg, #1b00ff, #4338ca);
+    color: #fff;
+    border-color: transparent;
+    box-shadow: 0 12px 24px rgba(27, 0, 255, 0.22);
+}
+
 @media (max-width: 991px) {
     .supervisor-dashboard-page .hero-title {
         font-size: 28px;
@@ -1062,3 +703,412 @@
     }
 }
 </style>
+
+<div class="pd-ltr-20 xs-pd-20-10 supervisor-dashboard-page">
+    <div class="min-height-200px">
+
+        <div class="super-hero-card mb-4">
+            <div class="row align-items-center">
+                <div class="col-xl-8 col-lg-7">
+                    <div class="hero-content">
+                        <div class="hero-eyebrow">Supervisor Control Center</div>
+                        <h2 class="hero-title">Welcome back, {{ $user->name }}</h2>
+                        <p class="hero-text">
+                            Monitor assigned projects, review scan outcomes, track your approvals,
+                            and manage revision workflows from one professional dashboard.
+                        </p>
+
+                        <div class="hero-actions">
+                            <a href="{{ route('supervisor.projects.index') }}" class="hero-btn hero-btn-primary">
+                                <i class="fa fa-folder-open mr-2"></i> My Projects
+                            </a>
+                            <a href="{{ route('supervisor.projects.pending') }}" class="hero-btn hero-btn-outline">
+                                <i class="fa fa-clock-o mr-2"></i> Pending Reviews
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-4 col-lg-5 mt-4 mt-lg-0">
+                    <div class="hero-summary-card">
+                        <div class="hero-summary-head">
+                            <span>Review Performance</span>
+                            <span class="hero-summary-badge">{{ $totalProjects }} Projects</span>
+                        </div>
+
+                        <div class="hero-summary-score">
+                            <div class="score-number">{{ $avgScanScore }}</div>
+                            <div class="score-label">Avg. Scan Score</div>
+                        </div>
+
+                        <div class="hero-summary-metrics">
+                            <div class="metric-item">
+                                <span>Pending</span>
+                                <strong>{{ $pendingReviews }}</strong>
+                            </div>
+                            <div class="metric-item">
+                                <span>Approved</span>
+                                <strong>{{ $approvedProjects }}</strong>
+                            </div>
+                            <div class="metric-item">
+                                <span>Revisions</span>
+                                <strong>{{ $revisionRequests }}</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-xl-3 col-md-6 mb-3">
+                <div class="kpi-card kpi-primary">
+                    <div class="kpi-icon">
+                        <i class="fa fa-folder-open"></i>
+                    </div>
+                    <div class="kpi-info">
+                        <div class="kpi-label">Total Projects</div>
+                        <div class="kpi-value">{{ $totalProjects }}</div>
+                        <div class="kpi-sub">Projects visible to you</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-3">
+                <div class="kpi-card kpi-warning">
+                    <div class="kpi-icon">
+                        <i class="fa fa-hourglass-half"></i>
+                    </div>
+                    <div class="kpi-info">
+                        <div class="kpi-label">Pending Reviews</div>
+                        <div class="kpi-value">{{ $pendingReviews }}</div>
+                        <div class="kpi-sub">{{ $pendingPercent }}% of total projects</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-3">
+                <div class="kpi-card kpi-success">
+                    <div class="kpi-icon">
+                        <i class="fa fa-check-circle"></i>
+                    </div>
+                    <div class="kpi-info">
+                        <div class="kpi-label">Approved Projects</div>
+                        <div class="kpi-value">{{ $approvedProjects }}</div>
+                        <div class="kpi-sub">{{ $approvedPercent }}% approved</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-3">
+                <div class="kpi-card kpi-danger">
+                    <div class="kpi-icon">
+                        <i class="fa fa-refresh"></i>
+                    </div>
+                    <div class="kpi-info">
+                        <div class="kpi-label">Revision Requests</div>
+                        <div class="kpi-value">{{ $revisionRequests }}</div>
+                        <div class="kpi-sub">{{ $revisionPercent }}% need updates</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-xl-5 mb-3">
+                <div class="dashboard-panel h-100">
+                    <div class="panel-header">
+                        <div>
+                            <h5>Review Distribution</h5>
+                            <p class="mb-0">Overall supervisor decision overview</p>
+                        </div>
+                    </div>
+
+                    <div class="donut-wrap">
+                        <div class="donut-chart"
+                             style="background:
+                                conic-gradient(
+                                    #f59e0b 0% {{ $pendingPercent }}%,
+                                    #22c55e {{ $pendingPercent }}% {{ $pendingPercent + $approvedPercent }}%,
+                                    #ef4444 {{ $pendingPercent + $approvedPercent }}% 100%
+                                );">
+                            <div class="donut-inner">
+                                <div class="donut-total">{{ $totalProjects }}</div>
+                                <div class="donut-label">Projects</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="legend-grid">
+                        <div class="legend-item">
+                            <span class="legend-dot legend-warning"></span>
+                            <div>
+                                <strong>{{ $pendingReviews }}</strong>
+                                <small>Pending</small>
+                            </div>
+                        </div>
+
+                        <div class="legend-item">
+                            <span class="legend-dot legend-success"></span>
+                            <div>
+                                <strong>{{ $approvedProjects }}</strong>
+                                <small>Approved</small>
+                            </div>
+                        </div>
+
+                        <div class="legend-item">
+                            <span class="legend-dot legend-danger"></span>
+                            <div>
+                                <strong>{{ $revisionRequests }}</strong>
+                                <small>Revisions</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-7 mb-3">
+                <div class="dashboard-panel h-100">
+                    <div class="panel-header">
+                        <div>
+                            <h5>Review Status Analytics</h5>
+                            <p class="mb-0">Comparison between pending, approved, and revision states</p>
+                        </div>
+                    </div>
+
+                    <div class="bar-chart-wrap">
+                        <div class="bar-group">
+                            <div class="bar-value">{{ $chartPending }}</div>
+                            <div class="bar-track">
+                                <div class="bar-fill bar-fill-warning" style="height: {{ ($chartPending / $barMax) * 100 }}%;"></div>
+                            </div>
+                            <div class="bar-label">Pending</div>
+                        </div>
+
+                        <div class="bar-group">
+                            <div class="bar-value">{{ $chartApproved }}</div>
+                            <div class="bar-track">
+                                <div class="bar-fill bar-fill-success" style="height: {{ ($chartApproved / $barMax) * 100 }}%;"></div>
+                            </div>
+                            <div class="bar-label">Approved</div>
+                        </div>
+
+                        <div class="bar-group">
+                            <div class="bar-value">{{ $chartRevision }}</div>
+                            <div class="bar-track">
+                                <div class="bar-fill bar-fill-danger" style="height: {{ ($chartRevision / $barMax) * 100 }}%;"></div>
+                            </div>
+                            <div class="bar-label">Revisions</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-xl-6 mb-3">
+                <div class="dashboard-panel h-100">
+                    <div class="panel-header">
+                        <div>
+                            <h5>Review Progress Breakdown</h5>
+                            <p class="mb-0">Current percentages of your review pipeline</p>
+                        </div>
+                    </div>
+
+                    <div class="progress-block">
+                        <div class="progress-row">
+                            <div class="progress-meta">
+                                <span>Pending Reviews</span>
+                                <strong>{{ $pendingPercent }}%</strong>
+                            </div>
+                            <div class="custom-progress">
+                                <div class="custom-progress-bar warning" style="width: {{ $pendingPercent }}%;"></div>
+                            </div>
+                        </div>
+
+                        <div class="progress-row">
+                            <div class="progress-meta">
+                                <span>Approved Projects</span>
+                                <strong>{{ $approvedPercent }}%</strong>
+                            </div>
+                            <div class="custom-progress">
+                                <div class="custom-progress-bar success" style="width: {{ $approvedPercent }}%;"></div>
+                            </div>
+                        </div>
+
+                        <div class="progress-row">
+                            <div class="progress-meta">
+                                <span>Revision Requests</span>
+                                <strong>{{ $revisionPercent }}%</strong>
+                            </div>
+                            <div class="custom-progress">
+                                <div class="custom-progress-bar danger" style="width: {{ $revisionPercent }}%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-6 mb-3">
+                <div class="dashboard-panel h-100">
+                    <div class="panel-header">
+                        <div>
+                            <h5>Scan Pipeline Snapshot</h5>
+                            <p class="mb-0">Scanner status across the recent project list</p>
+                        </div>
+                    </div>
+
+                    <div class="scan-metric-grid">
+                        <div class="scan-metric-card">
+                            <div class="scan-metric-icon scan-blue">
+                                <i class="fa fa-chart-line"></i>
+                            </div>
+                            <div class="scan-metric-text">
+                                <span>Average Score</span>
+                                <strong>{{ $avgScanScore }}</strong>
+                            </div>
+                        </div>
+
+                        <div class="scan-metric-card">
+                            <div class="scan-metric-icon scan-green">
+                                <i class="fa fa-check"></i>
+                            </div>
+                            <div class="scan-metric-text">
+                                <span>Completed Scans</span>
+                                <strong>{{ $completedScan }}</strong>
+                            </div>
+                        </div>
+
+                        <div class="scan-metric-card">
+                            <div class="scan-metric-icon scan-orange">
+                                <i class="fa fa-clock-o"></i>
+                            </div>
+                            <div class="scan-metric-text">
+                                <span>Pending Scans</span>
+                                <strong>{{ $pendingScan }}</strong>
+                            </div>
+                        </div>
+
+                        <div class="scan-metric-card">
+                            <div class="scan-metric-icon scan-red">
+                                <i class="fa fa-times"></i>
+                            </div>
+                            <div class="scan-metric-text">
+                                <span>Failed Scans</span>
+                                <strong>{{ $failedScan }}</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-panel">
+            <div class="panel-header">
+                <div>
+                    <h5>Recent Projects</h5>
+                    <p class="mb-0">Latest projects available in your dashboard</p>
+                </div>
+                <a href="{{ route('supervisor.projects.index') }}" class="panel-action-btn">
+                    View All
+                </a>
+            </div>
+
+            <div class="panel-body p-0">
+                @if($latestProjects->count())
+                    <div class="table-responsive" style="overflow-x: hidden;">
+                        <table class="table dashboard-table mb-0">
+                            <thead>
+                                <tr>
+                                    <th style="width: 60px;">#</th>
+                                    <th style="width: 220px;">Project</th>
+                                    <th style="width: 180px;">Student</th>
+                                    <th style="width: 140px;">Status</th>
+                                    <th style="width: 130px;">Scanner</th>
+                                    <th style="width: 100px;">Score</th>
+                                    <th style="width: 130px;">Updated</th>
+                                    <th class="text-end" style="width: 110px;">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($latestProjects as $project)
+                                    @php
+                                        $statusClass = match(strtolower($project->status ?? '')) {
+                                            'pending', 'scan_requested', 'awaiting_manual_review' => 'badge-soft-warning',
+                                            'approved', 'active', 'published' => 'badge-soft-primary',
+                                            'completed' => 'badge-soft-success',
+                                            'rejected', 'scan_failed', 'failed' => 'badge-soft-danger',
+                                            default => 'badge-soft-secondary',
+                                        };
+
+                                        $scanClass = match(strtolower($project->scanner_status ?? '')) {
+                                            'completed' => 'badge-soft-success',
+                                            'pending' => 'badge-soft-warning',
+                                            'failed' => 'badge-soft-danger',
+                                            default => 'badge-soft-secondary',
+                                        };
+                                    @endphp
+
+                                    <tr>
+                                        <td>{{ $project->project_id }}</td>
+                                        <td>
+                                            <div class="project-cell-title">{{ $project->name ?? 'Untitled Project' }}</div>
+                                            <div class="project-cell-sub">{{ $project->category ?? '—' }}</div>
+                                        </td>
+                                        <td>
+                                            <div class="project-cell-title">{{ $project->student->name ?? 'N/A' }}</div>
+                                            <div class="project-cell-sub">{{ $project->student->email ?? 'No email' }}</div>
+                                        </td>
+                                        <td>
+                                            <span class="badge-soft {{ $statusClass }}">
+                                                {{ ucfirst(str_replace('_', ' ', $project->status ?? 'N/A')) }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="badge-soft {{ $scanClass }}">
+                                                {{ ucfirst(str_replace('_', ' ', $project->scanner_status ?? 'N/A')) }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="score-pill">{{ $project->scan_score ?? '—' }}</div>
+                                        </td>
+                                        <td>
+                                            <div class="project-cell-title">{{ optional($project->updated_at)->format('Y-m-d') ?? '—' }}</div>
+                                            <div class="project-cell-sub">{{ optional($project->updated_at)->format('h:i A') ?? '' }}</div>
+                                        </td>
+                                        <td class="text-end">
+                                            <a href="{{ route('supervisor.projects.show', $project->project_id) }}" class="table-action-btn">
+                                                Open
+                                            </a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+
+                    @if($latestProjects instanceof \Illuminate\Pagination\LengthAwarePaginator && $latestProjects->lastPage() > 1)
+                        <div class="custom-pagination-wrap">
+                            <div class="custom-pagination">
+                                @for($i = 1; $i <= $latestProjects->lastPage(); $i++)
+                                    <a href="{{ $latestProjects->url($i) }}"
+                                       class="custom-page-item {{ $latestProjects->currentPage() == $i ? 'active' : '' }}">
+                                        {{ $i }}
+                                    </a>
+                                @endfor
+                            </div>
+                        </div>
+                    @endif
+                @else
+                    <div class="empty-dashboard-state">
+                        <i class="fa fa-folder-open-o"></i>
+                        <h6>No projects available</h6>
+                        <p class="mb-0">Projects will appear here once they are available for review.</p>
+                    </div>
+                @endif
+            </div>
+        </div>
+
+    </div>
+</div>
+@endsection

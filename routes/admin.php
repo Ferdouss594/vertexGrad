@@ -17,7 +17,7 @@ use App\Http\Controllers\Admin\NotificationController as AdminNotificationContro
 use App\Http\Controllers\Supervisor\SupervisorDashboardController;
 use App\Http\Controllers\Supervisor\SupervisorProjectController;
 use App\Http\Controllers\Supervisor\SupervisorProfileController;
-
+use App\Http\Controllers\Admin\ManagerProjectDecisionController;
 
 // ------------------------
 // Backend Auth (Managers / Supervisors)
@@ -54,7 +54,11 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:admin'])->group(functi
     Route::post('investors/{investor}/restore', [InvestorController::class, 'restore'])->name('investors.restore');
     Route::delete('investors/{investor}/force-delete', [InvestorController::class, 'forceDelete'])->name('investors.forceDelete');
     Route::resource('investors', InvestorController::class)->parameters(['investors' => 'investor']);
-
+Route::middleware(['role:Manager'])->prefix('projects/final-decisions')->name('projects.final-decisions.')->group(function () {
+    Route::get('/', [ManagerProjectDecisionController::class, 'index'])->name('index');
+    Route::get('/{project}', [ManagerProjectDecisionController::class, 'show'])->name('show');
+    Route::post('/{project}/store', [ManagerProjectDecisionController::class, 'storeDecision'])->name('store');
+});
     // Projects
     Route::resource('projects', AdminProjectController::class);
 
@@ -123,6 +127,9 @@ Route::prefix('manager')->name('manager.')->middleware(['auth:admin', 'role:Mana
     Route::get('/calendar/events', [CalendarController::class, 'getEvents']);
     Route::post('/calendar/add-event', [CalendarController::class, 'addEvent']);
     Route::post('/calendar/delete-events', [CalendarController::class, 'deleteEvents']);
+     Route::get('/manager/sync', [ManagerController::class, 'sync'])->name('manager.sync');
+    Route::get('/migrate-managers', [ManagerController::class, 'migrateUsersToManagers'])->name('manager.migrate');
+    Route::resource('manager', ManagerController::class);
 });
 
 // ------------------------
@@ -149,8 +156,46 @@ Route::prefix('admin/supervisor')
         Route::get('/projects/approved', [SupervisorProjectController::class, 'approved'])->name('projects.approved');
         Route::get('/projects/revisions', [SupervisorProjectController::class, 'revisions'])->name('projects.revisions');
         Route::get('/projects/{project}', [SupervisorProjectController::class, 'show'])->name('projects.show');
-        Route::post('/projects/{project}/review', [SupervisorProjectController::class, 'submitReview'])->name('projects.review');
+        
 
         Route::get('/profile', [SupervisorProfileController::class, 'index'])->name('profile.index');
         Route::post('/profile', [SupervisorProfileController::class, 'update'])->name('profile.update');
+       // ===============================
+// System Verification
+// ===============================
+Route::post('/projects/{project}/system-verification',
+    [SupervisorProjectController::class, 'updateSystemVerification']
+)->name('projects.system-verification.update');
+
+
+// ===============================
+// Meetings
+// ===============================
+Route::post('/projects/meetings/store', [SupervisorProjectController::class, 'storeMeeting'])
+    ->name('projects.meetings.store');
+
+Route::post('/projects/{project}/meetings/{meeting}/status',
+    [SupervisorProjectController::class, 'updateMeetingStatus']
+)->name('projects.meetings.status');
+// Meetings Pages
+Route::get('/meetings', [SupervisorProjectController::class, 'meetingsIndex'])->name('meetings.index');
+Route::get('/meetings/upcoming', [SupervisorProjectController::class, 'meetingsUpcoming'])->name('meetings.upcoming');
+Route::get('/meetings/completed', [SupervisorProjectController::class, 'meetingsCompleted'])->name('meetings.completed');
+Route::get('/meetings/create', [SupervisorProjectController::class, 'meetingsCreate'])->name('meetings.create');
+Route::get('/requests', [SupervisorProjectController::class, 'requestsIndex'])->name('requests.index');
+Route::get('/requests/pending', [SupervisorProjectController::class, 'requestsPending'])->name('requests.pending');
+Route::get('/requests/completed', [SupervisorProjectController::class, 'requestsCompleted'])->name('requests.completed');
+
+Route::post('/projects/{project}/requests/store', [SupervisorProjectController::class, 'storeRequest'])
+    ->name('projects.requests.store');
+
+Route::post('/requests/{requestItem}/status', [SupervisorProjectController::class, 'updateRequestStatus'])
+    ->name('requests.status');
+    Route::post('/projects/{project}/evaluation', [SupervisorProjectController::class, 'storeEvaluation'])
+    ->name('projects.evaluation.store');
+    Route::get('/file/{id}', function ($id) {
+    $file = \App\Models\ProjectRequestResponse::findOrFail($id);
+
+    return response()->file(storage_path('app/public/' . $file->attachment_path));
+})->name('file.view');;
     });

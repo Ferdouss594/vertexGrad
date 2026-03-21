@@ -13,21 +13,73 @@ class SupervisorDashboardController extends Controller
         $user = auth('admin')->user();
         abort_unless($user && $user->role === 'Supervisor', 403);
 
-        $baseQuery = Project::query()->where('supervisor_id', $user->id);
+        /*
+        |--------------------------------------------------------------------------
+        | Base query for dashboard
+        |--------------------------------------------------------------------------
+        | حالياً نعرض كل المشاريع للمشرف حتى يقدر يراجع ويقيّم.
+        | إذا رجعت لاحقاً لنظام المشاريع المخصصة فقط للمشرف،
+        | فقط أضف:
+        | ->where('supervisor_id', $user->id)
+        |--------------------------------------------------------------------------
+        */
+        $projectsQuery = Project::with(['student', 'supervisor']);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Stats
+        |--------------------------------------------------------------------------
+        */
+        $totalProjects = (clone $projectsQuery)->count();
+
+        $pendingReviews = (clone $projectsQuery)
+            ->where(function ($query) {
+                $query->whereIn('status', [
+                    'pending',
+                    'awaiting_manual_review',
+                    'scan_requested'
+                ])->orWhereNull('supervisor_status')
+                  ->orWhereIn('supervisor_status', ['pending', 'under_review']);
+            })
+            ->count();
+
+        $approvedProjects = (clone $projectsQuery)
+            ->where(function ($query) {
+                $query->where('supervisor_status', 'approved')
+                      ->orWhere('supervisor_decision', 'approved')
+                      ->orWhere('status', 'approved');
+            })
+            ->count();
+
+        $revisionRequested = (clone $projectsQuery)
+            ->where(function ($query) {
+                $query->where('supervisor_status', 'revision_requested')
+                      ->orWhere('supervisor_decision', 'revision_requested');
+            })
+            ->count();
 
         $stats = [
-            'total_projects'      => (clone $baseQuery)->count(),
-            'pending_reviews'     => (clone $baseQuery)->whereIn('status', ['pending', 'awaiting_manual_review', 'scan_requested'])->count(),
-            'approved_projects'   => (clone $baseQuery)->where('status', 'approved')->count(),
-            'revision_requested'  => (clone $baseQuery)->where('supervisor_status', 'revision_requested')->count(),
+            'total_projects'     => $totalProjects,
+            'pending_reviews'    => $pendingReviews,
+            'approved_projects'  => $approvedProjects,
+            'revision_requested' => $revisionRequested,
         ];
 
-        $latestProjects = Project::with(['student', 'supervisor'])
-            ->where('supervisor_id', $user->id)
+        /*
+        |--------------------------------------------------------------------------
+        | Latest projects with pagination
+        |--------------------------------------------------------------------------
+        | مهم جداً: استخدم paginate بدل get عشان تظهر أرقام الصفحات 1 2 3
+        |--------------------------------------------------------------------------
+        */
+        $latestProjects = (clone $projectsQuery)
             ->latest('updated_at')
-            ->take(8)
-            ->get();
+            ->paginate(8);
 
-        return view('supervisor.dashboard', compact('user', 'stats', 'latestProjects'));
+        return view('supervisor.dashboard', compact(
+            'user',
+            'stats',
+            'latestProjects'
+        ));
     }
 }

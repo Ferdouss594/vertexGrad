@@ -157,6 +157,11 @@ Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(functi
 Route::post('projects/{project}/start-scan', [\App\Http\Controllers\Admin\ProjectController::class, 'startScan'])
     ->name('projects.startScan');
 } );
+Route::middleware(['auth:web'])->group(function () {
+    Route::post('/student/requests/{requestItem}/respond', [\App\Http\Controllers\Frontend\AcademicDashboardController::class, 'respondToRequest'])
+        ->name('student.requests.respond');
+});
+
 // DEBUG
 // ------------------------
 Route::get('/_debug/auth', function () {

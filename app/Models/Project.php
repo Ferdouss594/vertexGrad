@@ -48,6 +48,21 @@ class Project extends Model implements HasMedia
         'is_featured',
         'tags',
         'status_history',
+
+        // System verification
+        'frontend_url',
+        'backend_url',
+        'api_health_url',
+        'admin_panel_url',
+        'demo_account',
+        'demo_password',
+        'deployment_notes',
+
+        // Final decision fields
+        'final_decision',
+        'final_notes',
+        'final_decided_at',
+        'final_decided_by',
     ];
 
     protected $casts = [
@@ -58,6 +73,7 @@ class Project extends Model implements HasMedia
         'scanned_at' => 'datetime',
         'start_date' => 'datetime',
         'end_date' => 'datetime',
+        'final_decided_at' => 'datetime',
     ];
 
     public function getRouteKeyName()
@@ -89,6 +105,11 @@ class Project extends Model implements HasMedia
         return $this->belongsTo(User::class, 'investor_id');
     }
 
+    public function finalDecisionMaker()
+    {
+        return $this->belongsTo(User::class, 'final_decided_by');
+    }
+
     public function tasks()
     {
         return $this->hasMany(ProjectTask::class, 'project_id', 'project_id');
@@ -115,5 +136,26 @@ class Project extends Model implements HasMedia
     {
         return $this->investors()
             ->wherePivot('status', 'approved');
+    }
+
+    public function meetings()
+    {
+        return $this->hasMany(\App\Models\ProjectMeeting::class, 'project_id', 'project_id');
+    }
+
+    public function requests()
+    {
+        return $this->hasMany(\App\Models\ProjectRequest::class, 'project_id', 'project_id');
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(\App\Models\ProjectReview::class, 'project_id', 'project_id');
+    }
+
+    public function approvedReviews()
+    {
+        return $this->hasMany(\App\Models\ProjectReview::class, 'project_id', 'project_id')
+            ->where('decision', 'approved');
     }
 }
