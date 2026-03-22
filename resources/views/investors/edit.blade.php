@@ -3,86 +3,76 @@
 @section('title', 'Edit Investor')
 
 @section('content')
-<h1>Edit Investor</h1>
+<style>
+    .investor-edit-page .page-header-card {
+        background: linear-gradient(135deg, #0d1b4c 0%, #1b00ff 100%);
+        border-radius: 20px;
+        padding: 28px 30px;
+        color: #fff;
+        box-shadow: 0 12px 30px rgba(27, 0, 255, 0.18);
+        margin-bottom: 24px;
+    }
 
-@if(session('error'))
-<div class="alert alert-danger">{{ session('error') }}</div>
-@endif
+    .investor-edit-page .page-header-card h3 {
+        margin: 0;
+        font-weight: 700;
+        color: #fff;
+    }
 
-@if($errors->any())
-<div class="alert alert-danger">
-    <ul>
-        @foreach($errors->all() as $error)
-            <li>{{ $error }}</li>
-        @endforeach
-    </ul>
-</div>
-@endif
+    .investor-edit-page .page-header-card p {
+        margin: 8px 0 0;
+        opacity: 0.9;
+    }
 
-<form action="{{ route('investors.update', $investor->user) }}" method="POST">
-    @csrf
-    @method('PUT')
+    .investor-edit-page .content-card {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 10px 25px rgba(15, 23, 42, 0.06);
+        border: 1px solid #edf2f7;
+        overflow: hidden;
+    }
 
-    
+    .investor-edit-page .content-card-body {
+        padding: 24px;
+    }
+</style>
 
-    <div class="row">
-        {{-- User Info --}}
-        <div class="col-md-6 mb-3">
-            <label>Name</label>
-            <input type="text" name="name" value="{{ old('name', $investor->user->name) }}" class="form-control" required>
+<div class="pd-ltr-20 xs-pd-20-10 investor-edit-page">
+    <div class="min-height-200px">
+
+        @if(session('error'))
+            <div class="alert alert-danger border-0 shadow-sm" style="border-radius: 14px;">
+                {{ session('error') }}
+            </div>
+        @endif
+
+        @if ($errors->any())
+            <div class="alert alert-danger border-0 shadow-sm" style="border-radius: 14px;">
+                <strong>Please fix the following errors:</strong>
+                <ul class="mb-0 mt-2">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        <div class="page-header-card">
+            <h3>Edit Investor</h3>
+            <p>Update investor account information, profile details, business data, and financial preferences professionally.</p>
         </div>
 
-        <div class="col-md-6 mb-3">
-            <label>Email</label>
-            <input type="email" name="email" value="{{ old('email', $investor->user->email) }}" class="form-control" required>
+        <div class="content-card">
+            <div class="content-card-body">
+                <form action="{{ route('admin.investors.update', $investor->user_id) }}" method="POST">
+                    @csrf
+                    @method('PUT')
+
+                    @include('investors._form', ['investor' => $investor])
+                </form>
+            </div>
         </div>
 
-        <div class="col-md-6 mb-3">
-            <label>Status</label>
-            <select name="status" class="form-control" required>
-                <option value="Active" {{ old('status', $investor->user->status) == 'Active' ? 'selected' : '' }}>Active</option>
-                <option value="Inactive" {{ old('status', $investor->user->status) == 'Inactive' ? 'selected' : '' }}>Inactive</option>
-            </select>
-        </div>
-
-        {{-- Investor Info --}}
-        <div class="col-md-6 mb-3">
-            <label>Company</label>
-            <input type="text" name="company" value="{{ old('company', $investor->company) }}" class="form-control">
-        </div>
-
-        <div class="col-md-6 mb-3">
-            <label>Position</label>
-            <input type="text" name="position" value="{{ old('position', $investor->position) }}" class="form-control">
-        </div>
-
-        <div class="col-md-6 mb-3">
-            <label>Investment Type</label>
-            <input type="text" name="investment_type" value="{{ old('investment_type', $investor->investment_type) }}" class="form-control">
-        </div>
-
-        <div class="col-md-6 mb-3">
-            <label>Budget</label>
-            <input type="number" step="0.01" name="budget" value="{{ old('budget', $investor->budget) }}" class="form-control">
-        </div>
-
-        <div class="col-md-6 mb-3">
-            <label>Source</label>
-            <input type="text" name="source" value="{{ old('source', $investor->source) }}" class="form-control">
-        </div>
-
-        <div class="col-md-6 mb-3">
-            <label>Phone</label>
-            <input type="text" name="phone" value="{{ old('phone', $investor->phone) }}" class="form-control">
-        </div>
-
-        <div class="col-md-12 mb-3">
-            <label>Notes</label>
-            <textarea name="notes" class="form-control">{{ old('notes', $investor->notes) }}</textarea>
-        </div>
     </div>
-
-    <button type="submit" class="btn btn-primary">Update Investor</button>
-    <a href="{{ route('investors.index') }}" class="btn btn-secondary">Cancel</a>
-</form>
+</div>
 @endsection

@@ -1,14 +1,32 @@
 <?php
+
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class InvestorActivity extends Model
 {
-    protected $fillable = ['investor_id','user_id','action','meta'];
+    use HasFactory;
 
-    protected $casts = ['meta' => 'array'];
+    protected $fillable = [
+        'investor_id',
+        'user_id',
+        'action',
+        'meta',
+    ];
 
-    public function investor() { return $this->belongsTo(Investor::class); }
-    public function user() { return $this->belongsTo(\App\Models\User::class); }
+    protected $casts = [
+        'meta' => 'array',
+    ];
+
+    public function investor()
+    {
+        return $this->belongsTo(Investor::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
