@@ -662,72 +662,90 @@
         <div class="sidebar-menu">
             <ul id="accordion-menu">
 
-                <li class="menu-title">
-                    <span class="mtext">SUPERVISOR PANEL</span>
-                </li>
+               @php
+    $user = auth('admin')->user();
 
-                <li>
-                    <a href="{{ route('supervisor.dashboard') }}">
-                        <span class="micon bi bi-house-door-fill"></span>
-                        <span class="mtext">Dashboard</span>
-                    </a>
-                </li>
+    $canReviewProjects = $user && $user->hasPermission('review_projects');
+    $canViewMeetings = $user && $user->hasPermission('view_meetings');
+    $canManageMeetings = $user && $user->hasPermission('manage_meetings');
+    $canViewRequests = $user && $user->hasPermission('view_requests');
+@endphp
 
-                <li class="dropdown-parent">
-                    <a href="javascript:void(0);" class="menu-dropdown-trigger">
-                        <span class="micon bi bi-folder-fill"></span>
-                        <span class="mtext">Projects</span>
-                        <span class="menu-arrow"><i class="fa fa-chevron-down"></i></span>
-                    </a>
-                    <ul class="submenu">
-                        <li><a href="{{ route('supervisor.projects.index') }}">All Projects</a></li>
-                        <li><a href="{{ route('supervisor.projects.pending') }}">Pending Reviews</a></li>
-                        <li><a href="{{ route('supervisor.projects.approved') }}">Approved Projects</a></li>
-                        <li><a href="{{ route('supervisor.projects.revisions') }}">Revision Requests</a></li>
-                    </ul>
-                </li>
+<li class="menu-title">
+    <span class="mtext">SUPERVISOR PANEL</span>
+</li>
 
-                <li class="dropdown-parent">
-                    <a href="javascript:void(0);" class="menu-dropdown-trigger">
-                        <span class="micon bi bi-calendar-event"></span>
-                        <span class="mtext">Meetings</span>
-                        <span class="menu-arrow"><i class="fa fa-chevron-down"></i></span>
-                    </a>
-                    <ul class="submenu">
-                        <li><a href="{{ route('supervisor.meetings.index') }}">All Meetings</a></li>
-                        <li><a href="{{ route('supervisor.meetings.upcoming') }}">Upcoming Meetings</a></li>
-                        <li><a href="{{ route('supervisor.meetings.completed') }}">Completed Meetings</a></li>
-                        <li><a href="{{ route('supervisor.meetings.create') }}">Create Meeting</a></li>
-                    </ul>
-                </li>
+<li>
+    <a href="{{ route('supervisor.dashboard') }}">
+        <span class="micon bi bi-house-door-fill"></span>
+        <span class="mtext">Dashboard</span>
+    </a>
+</li>
 
-                <li class="dropdown-parent">
-                    <a href="javascript:void(0);" class="menu-dropdown-trigger">
-                        <span class="micon fa fa-send"></span>
-                        <span class="mtext">Requests</span>
-                        <span class="menu-arrow"><i class="fa fa-chevron-down"></i></span>
-                    </a>
-                    <ul class="submenu">
-                        <li><a href="{{ route('supervisor.requests.index') }}">All Requests</a></li>
-                        <li><a href="{{ route('supervisor.requests.pending') }}">Pending Requests</a></li>
-                        <li><a href="{{ route('supervisor.requests.completed') }}">Completed Requests</a></li>
-                    </ul>
-                </li>
+@if($canReviewProjects)
+<li class="dropdown-parent">
+    <a href="javascript:void(0);" class="menu-dropdown-trigger">
+        <span class="micon bi bi-folder-fill"></span>
+        <span class="mtext">Projects</span>
+        <span class="menu-arrow"><i class="fa fa-chevron-down"></i></span>
+    </a>
+    <ul class="submenu">
+        <li><a href="{{ route('supervisor.projects.index') }}">All Projects</a></li>
+        <li><a href="{{ route('supervisor.projects.pending') }}">Pending Reviews</a></li>
+        <li><a href="{{ route('supervisor.projects.approved') }}">Approved Projects</a></li>
+        <li><a href="{{ route('supervisor.projects.revisions') }}">Revision Requests</a></li>
+    </ul>
+</li>
+@endif
 
-                <li class="menu-title">
-                    <span class="mtext">ACCOUNT</span>
-                </li>
+@if($canViewMeetings)
+<li class="dropdown-parent">
+    <a href="javascript:void(0);" class="menu-dropdown-trigger">
+        <span class="micon bi bi-calendar-event"></span>
+        <span class="mtext">Meetings</span>
+        <span class="menu-arrow"><i class="fa fa-chevron-down"></i></span>
+    </a>
+    <ul class="submenu">
+        <li><a href="{{ route('supervisor.meetings.index') }}">All Meetings</a></li>
+        <li><a href="{{ route('supervisor.meetings.upcoming') }}">Upcoming Meetings</a></li>
+        <li><a href="{{ route('supervisor.meetings.completed') }}">Completed Meetings</a></li>
 
-                <li>
-                    <a href="{{ route('supervisor.profile.index') }}">
-                        <span class="micon bi bi-person-lines-fill"></span>
-                        <span class="mtext">Profile Settings</span>
-                    </a>
-                </li>
+        @if($canManageMeetings)
+        <li><a href="{{ route('supervisor.meetings.create') }}">Create Meeting</a></li>
+        @endif
+    </ul>
+</li>
+@endif
 
-            </ul>
-        </div>
-    </div>
+@if($canViewRequests)
+<li class="dropdown-parent">
+    <a href="javascript:void(0);" class="menu-dropdown-trigger">
+        <span class="micon fa fa-send"></span>
+        <span class="mtext">Requests</span>
+        <span class="menu-arrow"><i class="fa fa-chevron-down"></i></span>
+    </a>
+    <ul class="submenu">
+        <li><a href="{{ route('supervisor.requests.index') }}">All Requests</a></li>
+        <li><a href="{{ route('supervisor.requests.pending') }}">Pending Requests</a></li>
+        <li><a href="{{ route('supervisor.requests.completed') }}">Completed Requests</a></li>
+    </ul>
+</li>
+@endif
+
+<li class="menu-title">
+    <span class="mtext">ACCOUNT</span>
+</li>
+
+<li>
+    <a href="{{ route('supervisor.profile.index') }}">
+        <span class="micon bi bi-person-lines-fill"></span>
+        <span class="mtext">Profile Settings</span>
+    </a>
+</li>
+
+</ul>
+</div>
+</div>
 </div>
 
 <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>

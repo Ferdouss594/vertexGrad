@@ -18,7 +18,13 @@ use App\Http\Controllers\Supervisor\SupervisorDashboardController;
 use App\Http\Controllers\Supervisor\SupervisorProjectController;
 use App\Http\Controllers\Supervisor\SupervisorProfileController;
 use App\Http\Controllers\Admin\ManagerProjectDecisionController;
+use App\Http\Controllers\Admin\PermissionManagementController;
 
+Route::middleware(['auth:admin', 'role:Manager'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/permissions', [PermissionManagementController::class, 'index'])->name('permissions.index');
+    Route::get('/permissions/{user}', [PermissionManagementController::class, 'show'])->name('permissions.show');
+    Route::post('/permissions/{user}/sync', [PermissionManagementController::class, 'sync'])->name('permissions.sync');
+});
 // ------------------------
 // Backend Auth (Managers / Supervisors)
 // ------------------------

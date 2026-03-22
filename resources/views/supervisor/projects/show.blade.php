@@ -103,6 +103,14 @@
     $finalDemoAccount = old('demo_account', $project->demo_account ?: $parsedSystemResponse['demo_account']);
     $finalDemoPassword = old('demo_password', $project->demo_password ?: $parsedSystemResponse['demo_password']);
     $finalDeploymentNotes = old('deployment_notes', $project->deployment_notes ?: $parsedSystemResponse['deployment_notes']);
+
+    $user = auth()->user();
+    $canSystemVerification = $user && $user->hasPermission('manage_system_verification');
+    $canEvaluateProjects   = $user && $user->hasPermission('evaluate_projects');
+    $canViewRequests       = $user && $user->hasPermission('view_requests');
+    $canManageRequests     = $user && $user->hasPermission('manage_requests');
+    $canViewMeetings       = $user && $user->hasPermission('view_meetings');
+    $canManageMeetings     = $user && $user->hasPermission('manage_meetings');
 @endphp
 
 <style>
@@ -536,6 +544,7 @@
         </div>
     </div>
 
+    @if($canSystemVerification)
     {{-- SYSTEM VERIFICATION --}}
     <div class="card section-card">
         <div class="card-header">
@@ -658,7 +667,9 @@
             @endif
         </div>
     </div>
+    @endif
 
+    @if($canEvaluateProjects)
     {{-- SUPERVISOR EVALUATION --}}
     <div class="card section-card">
         <div class="card-header">
@@ -777,7 +788,9 @@
 
         </div>
     </div>
+    @endif
 
+    @if($canViewRequests || $canManageRequests)
     {{-- REQUESTS TO STUDENT --}}
     <div class="card section-card">
         <div class="card-header">
@@ -785,6 +798,7 @@
         </div>
         <div class="card-body">
 
+            @if($canManageRequests)
             <div class="template-helper">
                 Use a quick template to auto-fill the request form. The <strong>System Request</strong> template asks the student for the core technical system details needed for verification.
             </div>
@@ -855,6 +869,7 @@
             </form>
 
             <hr>
+            @endif
 
             <h5 class="mb-3">Student Requests</h5>
 
@@ -879,6 +894,7 @@
                         {!! nl2br(e($requestItem->description ?: 'No description provided.')) !!}
                     </div>
 
+                    @if($canManageRequests)
                     <div class="request-actions">
                         <form method="POST" action="{{ route('supervisor.requests.status', $requestItem->id) }}">
                             @csrf
@@ -902,6 +918,13 @@
                             {{ ucfirst($requestItem->status ?? 'pending') }}
                         </span>
                     </div>
+                    @else
+                    <div class="request-actions">
+                        <span class="badge bg-light text-dark border align-self-center">
+                            {{ ucfirst($requestItem->status ?? 'pending') }}
+                        </span>
+                    </div>
+                    @endif
 
                     @if($requestItem->latestResponse)
                         <button type="button"
@@ -1058,7 +1081,9 @@
             @endforelse
         </div>
     </div>
+    @endif
 
+    @if($canViewMeetings || $canManageMeetings)
     {{-- MEETINGS --}}
     <div class="card section-card">
         <div class="card-header">
@@ -1066,6 +1091,7 @@
         </div>
         <div class="card-body">
 
+            @if($canManageMeetings)
             <form method="POST" action="{{ route('supervisor.projects.meetings.store') }}" class="mb-4">
                 @csrf
                 <input type="hidden" name="project_id" value="{{ $project->project_id }}">
@@ -1113,6 +1139,7 @@
             </form>
 
             <hr>
+            @endif
 
             <h5 class="mb-3">Scheduled Meetings</h5>
 
@@ -1133,6 +1160,7 @@
                         <div class="text-muted mb-3">{{ $meeting->notes }}</div>
                     @endif
 
+                    @if($canManageMeetings)
                     <div class="meeting-actions">
                         <form method="POST" action="{{ route('supervisor.projects.meetings.status', ['project' => $project->project_id, 'meeting' => $meeting->id]) }}">
                             @csrf
@@ -1156,12 +1184,20 @@
                             {{ ucfirst($meeting->status) }}
                         </span>
                     </div>
+                    @else
+                    <div class="meeting-actions">
+                        <span class="badge bg-light text-dark border align-self-center">
+                            {{ ucfirst($meeting->status) }}
+                        </span>
+                    </div>
+                    @endif
                 </div>
             @empty
                 <p class="text-muted mb-0">No meetings scheduled yet.</p>
             @endforelse
         </div>
     </div>
+    @endif
 
     {{-- PROJECT OVERVIEW --}}
     <div class="card section-card">

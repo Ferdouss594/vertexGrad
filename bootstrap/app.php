@@ -12,16 +12,12 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-
-        // ✅ Alias Middleware
         $middleware->alias([
+            'permission' => \App\Http\Middleware\CheckPermission::class,
             'role' => \App\Http\Middleware\RoleMiddleware::class,
         ]);
 
-        // ✅ FIX: Redirect guests correctly based on URL area
         $middleware->redirectGuestsTo(function ($request) {
-
-            // Treat ALL of these as dashboard/admin area
             if (
                 $request->is('admin*') ||
                 $request->is('manager*') ||

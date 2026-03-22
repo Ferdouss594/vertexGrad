@@ -12,32 +12,94 @@ class User extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable;
 
     protected $fillable = [
-    'username',
-    'name',
-    'email',
-    'password',
-    'role',
-    'status',
-    'gender',
-    'city',
-    'state',
+        'username',
+        'name',
+        'email',
+        'password',
+        'role',
+        'status',
+        'gender',
+        'city',
+        'state',
 
-    // 🔥 tracking fields
-    'last_login',
-    'last_activity',
-    'login_ip',
-    'device',
-    'browser',
-    'os',
-    
-];
+        // tracking fields
+        'last_login',
+        'last_activity',
+        'login_ip',
+        'device',
+        'browser',
+        'os',
+    ];
 
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    // 🔹 العلاقات حسب الدور
+    protected $casts = [
+        'last_login' => 'datetime',
+        'last_activity' => 'datetime',
+    ];
+
+    /*
+    |--------------------------------------------------------------------------
+    | Main Role/Permission Relations
+    |--------------------------------------------------------------------------
+    */
+
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class, 'role_user')->withTimestamps();
+    }
+
+    public function permissions()
+    {
+        return $this->belongsToMany(Permission::class, 'permission_user')->withTimestamps();
+    }
+
+    public function hasRole(string $role): bool
+    {
+        if ($this->role === $role) {
+            return true;
+        }
+
+        return $this->roles()->where('name', $role)->exists()
+            || $this->roles()->where('slug', strtolower($role))->exists();
+    }
+
+    public function hasAnyRole(array $roles): bool
+    {
+        if (in_array($this->role, $roles, true)) {
+            return true;
+        }
+
+        return $this->roles()
+            ->where(function ($query) use ($roles) {
+                $query->whereIn('name', $roles)
+                    ->orWhereIn('slug', array_map('strtolower', $roles));
+            })
+            ->exists();
+    }
+
+    public function hasPermission(string $permission): bool
+    {
+        // 1) Direct user permissions
+        if ($this->permissions()->where('slug', $permission)->exists()) {
+            return true;
+        }
+
+        // 2) Role-based permissions
+        return $this->roles()->whereHas('permissions', function ($query) use ($permission) {
+            $query->where('slug', $permission);
+        })->exists();
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Role-based profile relations
+    |--------------------------------------------------------------------------
+    */
+
     public function student()
     {
         return $this->hasOne(Student::class);
@@ -53,12 +115,16 @@ class User extends Authenticatable
         return $this->hasOne(Manager::class);
     }
 
-   
+    public function investor()
+    {
+        return $this->hasOne(Investor::class);
+    }
 
-    // public function notifications()
-    // {
-    //     return $this->belongsToMany(Notification::class, 'notification_user')->withTimestamps();
-    // }
+    /*
+    |--------------------------------------------------------------------------
+    | Messages
+    |--------------------------------------------------------------------------
+    */
 
     public function messages()
     {
@@ -69,77 +135,75 @@ class User extends Authenticatable
     {
         return $this->hasMany(Message::class, 'receiver_id');
     }
-    // 🔹 تشفير كلمة المرور تلقائيًا عند الحفظ
-// protected function setPasswordAttribute($value)
-// {
-//     // If the value is already a valid hash, do NOT hash it again.
-//     if (\Illuminate\Support\Facades\Hash::needsRehash($value)) {
-//         $this->attributes['password'] = bcrypt($value);
-//     } else {
-//         $this->attributes['password'] = $value;
-//     }
-// }
-// Inside User.php
 
-protected $casts = [
-    'last_login' => 'datetime',
-    'last_activity' => 'datetime',
-];
-public function investor()
-{
-    return $this->hasOne(Investor::class);
-}
+    /*
+    |--------------------------------------------------------------------------
+    | Projects
+    |--------------------------------------------------------------------------
+    */
 
-
-public function projects()
+    public function projects()
     {
         return $this->hasMany(Project::class, 'student_id');
     }
 
-protected static function booted()
-{
-    static::saved(function ($user) {
-        if (! $user->wasRecentlyCreated && ! $user->wasChanged('role')) {
-            return;
-        }
+    public function projectReviews()
+    {
+        return $this->hasMany(\App\Models\ProjectReview::class, 'supervisor_id', 'id');
+    }
 
-        $role = $user->role;
+    /*
+    |--------------------------------------------------------------------------
+    | Investments
+    |--------------------------------------------------------------------------
+    */
 
-        $roleModels = [
-            'Manager'    => \App\Models\Manager::class,
-            'Investor'   => \App\Models\Investor::class,
-            'Student'    => \App\Models\Student::class,
-            'Supervisor' => \App\Models\Supervisor::class,
-        ];
+    public function investments()
+    {
+        return $this->belongsToMany(
+            Project::class,
+            'project_investments',
+            'investor_id',
+            'project_id',
+            'id',
+            'project_id'
+        )->withPivot('status', 'amount', 'message')->withTimestamps();
+    }
 
-        foreach ($roleModels as $roleName => $modelClass) {
-            if ($role === $roleName) {
-                $modelClass::firstOrCreate(['user_id' => $user->id]);
-            } else {
-                $modelClass::where('user_id', $user->id)->delete();
+    public function investedProjects()
+    {
+        return $this->belongsToMany(Project::class, 'investor_project', 'investor_id', 'project_id');
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Auto-create related role models
+    |--------------------------------------------------------------------------
+    */
+
+    protected static function booted()
+    {
+        static::saved(function ($user) {
+            if (! $user->wasRecentlyCreated && ! $user->wasChanged('role')) {
+                return;
             }
-        }
-    });
-}
 
-public function investments()
-{
-    return $this->belongsToMany(
-        Project::class,
-        'project_investments',
-        'investor_id',
-        'project_id',
-        'id',
-        'project_id'
-    )->withPivot('status', 'amount', 'message')->withTimestamps();
-}
-public function projectReviews()
-{
-    return $this->hasMany(\App\Models\ProjectReview::class, 'supervisor_id', 'id');
-}
+            $role = $user->role;
 
-public function investedProjects()
-{
-    return $this->belongsToMany(Project::class, 'investor_project', 'investor_id', 'project_id');
-}
+            $roleModels = [
+                'Manager'    => \App\Models\Manager::class,
+                'Investor'   => \App\Models\Investor::class,
+                'Student'    => \App\Models\Student::class,
+                'Supervisor' => \App\Models\Supervisor::class,
+            ];
+
+            foreach ($roleModels as $roleName => $modelClass) {
+                if ($role === $roleName) {
+                    $modelClass::firstOrCreate(['user_id' => $user->id]);
+                } else {
+                    $modelClass::where('user_id', $user->id)->delete();
+                }
+            }
+        });
+    }
 }

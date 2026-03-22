@@ -435,6 +435,10 @@ document.addEventListener('DOMContentLoaded', function () {
         <span class="micon bi bi-check2-square"></span>
         <span class="mtext">reports</span>
     </a>
+    <a href="{{ route('admin.permissions.index') }}" class="dropdown-toggle no-arrow">
+        <span class="micon bi bi-check2-square"></span>
+        <span class="mtext">reports</span>
+    </a>
 </li>
             </ul>
         </div>
