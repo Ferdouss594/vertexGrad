@@ -199,3 +199,31 @@ Route::post('/requests/{requestItem}/status', [SupervisorProjectController::clas
     return response()->file(storage_path('app/public/' . $file->attachment_path));
 })->name('file.view');;
     });
+    use App\Http\Controllers\Admin\ReportController;
+
+Route::prefix('admin')->name('admin.')->middleware(['auth:admin'])->group(function () {
+    Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+    Route::post('/reports/preview', [ReportController::class, 'preview'])->name('reports.preview');
+    Route::post('/reports/export/pdf', [ReportController::class, 'exportPdf'])->name('reports.export.pdf');
+    Route::post('/reports/export/excel', [ReportController::class, 'exportExcel'])->name('reports.export.excel');
+});
+Route::prefix('admin')->name('admin.')->middleware(['auth:admin'])->group(function () {
+    Route::get('/reports/templates', [ReportController::class, 'templates'])->name('reports.templates');
+    Route::post('/reports/templates/save', [ReportController::class, 'saveTemplate'])->name('reports.templates.save');
+    Route::get('/reports/templates/{template}/run', [ReportController::class, 'runTemplate'])->name('reports.templates.run');
+    Route::delete('/reports/templates/{template}', [ReportController::class, 'deleteTemplate'])->name('reports.templates.delete');
+    Route::get('/reports/scheduled', [ReportController::class, 'scheduled'])->name('reports.scheduled');
+Route::post('/reports/scheduled', [ReportController::class, 'storeScheduled'])->name('reports.scheduled.store');
+Route::patch('/reports/scheduled/{scheduledReport}/toggle', [ReportController::class, 'toggleScheduled'])->name('reports.scheduled.toggle');
+Route::delete('/reports/scheduled/{scheduledReport}', [ReportController::class, 'deleteScheduled'])->name('reports.scheduled.delete');
+Route::post('/reports/scheduled/{scheduledReport}/run-now', [ReportController::class, 'runNow'])
+    ->name('reports.scheduled.run-now');
+    Route::get('/reports/history', [ReportController::class, 'history'])
+    ->name('reports.history');
+
+Route::get('/reports/history/{reportExport}/download', [ReportController::class, 'downloadExport'])
+    ->name('reports.history.download');
+
+Route::delete('/reports/history/{reportExport}', [ReportController::class, 'deleteExport'])
+    ->name('reports.history.delete');
+});

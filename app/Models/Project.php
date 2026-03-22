@@ -158,4 +158,10 @@ class Project extends Model implements HasMedia
         return $this->hasMany(\App\Models\ProjectReview::class, 'project_id', 'project_id')
             ->where('decision', 'approved');
     }
+    
+
+
+
+
+
 }

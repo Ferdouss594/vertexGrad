@@ -425,16 +425,15 @@ document.addEventListener('DOMContentLoaded', function () {
                     </a>
                 </li>
 
-                <li>
-                    <a href="{{ route('admin.reports.platform') }}" class="dropdown-toggle no-arrow">
-                        <span class="micon bi bi-file-earmark-bar-graph-fill"></span>
-                        <span class="mtext">Platform Reports</span>
-                    </a>
-                </li>
+                
                 <li>
     <a href="{{ route('admin.projects.final-decisions.index') }}" class="dropdown-toggle no-arrow">
         <span class="micon bi bi-check2-square"></span>
         <span class="mtext">Final Decisions</span>
+    </a>
+    <a href="{{ route('admin.reports.index') }}" class="dropdown-toggle no-arrow">
+        <span class="micon bi bi-check2-square"></span>
+        <span class="mtext">reports</span>
     </a>
 </li>
             </ul>

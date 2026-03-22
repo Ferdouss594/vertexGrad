@@ -126,6 +126,11 @@
         color: #334155;
     }
 
+    .manager-decision-page .badge-new-project {
+        background: #dbeafe;
+        color: #1d4ed8;
+    }
+
     .manager-decision-page .detail-grid .item {
         padding: 14px 0;
         border-bottom: 1px dashed #e5e7eb;
@@ -195,6 +200,55 @@
         font-weight: 700;
         padding: 10px 16px;
     }
+
+    .manager-decision-page .project-alert {
+        border-radius: 18px;
+        border: 0;
+        box-shadow: 0 12px 30px rgba(37, 99, 235, 0.10);
+        background: linear-gradient(135deg, #dbeafe 0%, #eff6ff 100%);
+        color: #1e3a8a;
+        margin-bottom: 22px;
+        padding: 18px 20px;
+    }
+
+    .manager-decision-page .project-alert-icon {
+        width: 46px;
+        height: 46px;
+        border-radius: 14px;
+        background: #2563eb;
+        color: #fff;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        flex-shrink: 0;
+    }
+
+    .manager-decision-page .project-alert-title {
+        font-size: 15px;
+        font-weight: 800;
+        margin-bottom: 4px;
+        color: #1e3a8a;
+    }
+
+    .manager-decision-page .project-alert-text {
+        font-size: 14px;
+        margin-bottom: 0;
+        color: #1e40af;
+    }
+
+    .manager-decision-page .project-alert-badge {
+        background: #2563eb;
+        color: #fff;
+        padding: 8px 14px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 800;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        white-space: nowrap;
+    }
 </style>
 
 <div class="container-fluid manager-decision-page">
@@ -215,6 +269,29 @@
         </div>
     @endif
 
+    @if(isset($projectAddedNotification) && $projectAddedNotification)
+        <div class="project-alert d-flex justify-content-between align-items-center flex-wrap" style="gap: 16px;">
+            <div class="d-flex align-items-center" style="gap: 14px;">
+                <div class="project-alert-icon">
+                    <i class="fas fa-folder-plus"></i>
+                </div>
+
+                <div>
+                    <div class="project-alert-title">
+                        New Project Notification
+                    </div>
+                    <p class="project-alert-text">
+                        This project was recently added and needs management review and final decision.
+                    </p>
+                </div>
+            </div>
+
+            <div>
+                <span class="project-alert-badge">New Project</span>
+            </div>
+        </div>
+    @endif
+
     <div class="hero-card">
         <div class="d-flex justify-content-between align-items-start flex-wrap" style="gap: 16px;">
             <div>
@@ -225,6 +302,12 @@
             </div>
 
             <div class="d-flex flex-wrap" style="gap: 10px;">
+                @if(isset($projectAddedNotification) && $projectAddedNotification)
+                    <span class="badge-soft badge-new-project">
+                        New Project Added
+                    </span>
+                @endif
+
                 <span class="badge-soft {{ $statusClass }}">
                     Project Status: {{ ucfirst(str_replace('_', ' ', $project->status ?? 'draft')) }}
                 </span>
@@ -367,7 +450,12 @@
 
                         <div class="decision-form-box mb-3">
                             <label>Manager Notes</label>
-                            <textarea name="final_notes" rows="6" class="form-control" placeholder="Write the final management justification, summary of supervisor evaluations, and final publication/revision/rejection rationale...">{{ old('final_notes', $project->final_notes) }}</textarea>
+                            <textarea
+                                name="final_notes"
+                                rows="6"
+                                class="form-control"
+                                placeholder="Write the final management justification, summary of supervisor evaluations, and final publication/revision/rejection rationale..."
+                            >{{ old('final_notes', $project->final_notes) }}</textarea>
                         </div>
 
                         <button type="submit" class="btn btn-primary action-btn">
