@@ -29,21 +29,23 @@ use App\Http\Controllers\Admin\InvestorMeetingController;
 use App\Http\Controllers\Admin\InvestorContractController;
 use App\Http\Controllers\Admin\InvestorEmailController;
 use App\Http\Controllers\Admin\InvestorPreferenceController;
+use App\Http\Controllers\Admin\InvestorReminderController;
+use App\Http\Controllers\Admin\InvestorCalendarController;
 
 use App\Http\Controllers\Report\PlatformReportController;
 
 use App\Http\Controllers\Supervisor\SupervisorDashboardController;
 use App\Http\Controllers\Supervisor\SupervisorProjectController;
 use App\Http\Controllers\Supervisor\SupervisorProfileController;
-use App\Http\Controllers\Admin\InvestorReminderController;
-use App\Http\Controllers\Admin\InvestorCalendarController;
+
+// Add this only if this controller really exists in your project
+use App\Http\Controllers\Manager\ManagerProjectDecisionController;
 
 /*
 |--------------------------------------------------------------------------
 | Admin Authentication
 |--------------------------------------------------------------------------
 */
-use App\Http\Controllers\Admin\ManagerProjectDecisionController;
 
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login.show');
@@ -79,10 +81,6 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:admin'])->group(functi
     Route::get('students/{id}/status/{status}', [StudentController::class, 'updateStatus'])
         ->name('students.status');
 
-
-
-Route::get('/investor-calendar', [InvestorCalendarController::class, 'index'])
-    ->name('investor-calendar.index');
     /*
     |--------------------------------------------------------------------------
     | Investors
@@ -116,25 +114,6 @@ Route::get('/investor-calendar', [InvestorCalendarController::class, 'index'])
     Route::delete('investors/{investor}/force-delete', [InvestorController::class, 'forceDelete'])
         ->name('investors.forceDelete');
 
-
-
-Route::get('investors/{investor}/reminders', [InvestorReminderController::class, 'index'])
-    ->name('investors.reminders.index');
-
-Route::get('investors/{investor}/reminders/create', [InvestorReminderController::class, 'create'])
-    ->name('investors.reminders.create');
-
-Route::post('investors/{investor}/reminders', [InvestorReminderController::class, 'store'])
-    ->name('investors.reminders.store');
-
-Route::get('investors/{investor}/reminders/{reminder}/edit', [InvestorReminderController::class, 'edit'])
-    ->name('investors.reminders.edit');
-
-Route::put('investors/{investor}/reminders/{reminder}', [InvestorReminderController::class, 'update'])
-    ->name('investors.reminders.update');
-
-Route::delete('investors/{investor}/reminders/{reminder}', [InvestorReminderController::class, 'destroy'])
-    ->name('investors.reminders.destroy');
     /*
     |--------------------------------------------------------------------------
     | Single Investor Report
@@ -178,7 +157,6 @@ Route::delete('investors/{investor}/reminders/{reminder}', [InvestorReminderCont
 
     Route::post('investors/{investor}/email', [InvestorEmailController::class, 'store'])
         ->name('investors.email.store');
-        
 
     /*
     |--------------------------------------------------------------------------
@@ -228,6 +206,29 @@ Route::delete('investors/{investor}/reminders/{reminder}', [InvestorReminderCont
 
     /*
     |--------------------------------------------------------------------------
+    | Investor Reminders
+    |--------------------------------------------------------------------------
+    */
+    Route::get('investors/{investor}/reminders', [InvestorReminderController::class, 'index'])
+        ->name('investors.reminders.index');
+
+    Route::get('investors/{investor}/reminders/create', [InvestorReminderController::class, 'create'])
+        ->name('investors.reminders.create');
+
+    Route::post('investors/{investor}/reminders', [InvestorReminderController::class, 'store'])
+        ->name('investors.reminders.store');
+
+    Route::get('investors/{investor}/reminders/{reminder}/edit', [InvestorReminderController::class, 'edit'])
+        ->name('investors.reminders.edit');
+
+    Route::put('investors/{investor}/reminders/{reminder}', [InvestorReminderController::class, 'update'])
+        ->name('investors.reminders.update');
+
+    Route::delete('investors/{investor}/reminders/{reminder}', [InvestorReminderController::class, 'destroy'])
+        ->name('investors.reminders.destroy');
+
+    /*
+    |--------------------------------------------------------------------------
     | Main Investors Resource
     |--------------------------------------------------------------------------
     */
@@ -258,26 +259,31 @@ Route::delete('investors/{investor}/reminders/{reminder}', [InvestorReminderCont
 
     /*
     |--------------------------------------------------------------------------
+    | Investor Calendar Dashboard
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/investor-calendar', [InvestorCalendarController::class, 'index'])
+        ->name('investor-calendar.index');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Final Decisions
+    |--------------------------------------------------------------------------
+    */
+    Route::middleware(['role:Manager'])
+        ->prefix('projects/final-decisions')
+        ->name('projects.final-decisions.')
+        ->group(function () {
+            Route::get('/', [ManagerProjectDecisionController::class, 'index'])->name('index');
+            Route::get('/{project}', [ManagerProjectDecisionController::class, 'show'])->name('show');
+            Route::post('/{project}/store', [ManagerProjectDecisionController::class, 'storeDecision'])->name('store');
+        });
+
+    /*
+    |--------------------------------------------------------------------------
     | Projects
     |--------------------------------------------------------------------------
     */
-    // Investors
-    Route::put('investors/{user}', [InvestorController::class, 'update'])->name('investors.update');
-    Route::post('investors/{investor}/notes', [InvestorController::class, 'storeNote'])->name('investors.notes.store');
-    Route::delete('investors/{investor}/notes/{note}', [InvestorController::class, 'deleteNote'])->name('investors.notes.delete');
-    Route::post('investors/{investor}/files', [InvestorController::class, 'uploadFile'])->name('investors.files.upload');
-    Route::delete('investors/{investor}/files/{file}', [InvestorController::class, 'deleteFile'])->name('investors.files.delete');
-    Route::post('investors/import', [InvestorController::class, 'import'])->name('investors.import');
-    Route::get('investors/export/{format?}', [InvestorController::class, 'export'])->name('investors.export');
-    Route::post('investors/{investor}/restore', [InvestorController::class, 'restore'])->name('investors.restore');
-    Route::delete('investors/{investor}/force-delete', [InvestorController::class, 'forceDelete'])->name('investors.forceDelete');
-    Route::resource('investors', InvestorController::class)->parameters(['investors' => 'investor']);
-Route::middleware(['role:Manager'])->prefix('projects/final-decisions')->name('projects.final-decisions.')->group(function () {
-    Route::get('/', [ManagerProjectDecisionController::class, 'index'])->name('index');
-    Route::get('/{project}', [ManagerProjectDecisionController::class, 'show'])->name('show');
-    Route::post('/{project}/store', [ManagerProjectDecisionController::class, 'storeDecision'])->name('store');
-});
-    // Projects
     Route::resource('projects', AdminProjectController::class);
 
     Route::post('projects/{project}/approve', [AdminProjectController::class, 'approve'])
@@ -361,21 +367,10 @@ Route::prefix('manager')->name('manager.')->middleware(['auth:admin', 'role:Mana
     Route::get('/calendar/events', [CalendarController::class, 'getEvents']);
     Route::post('/calendar/add-event', [CalendarController::class, 'addEvent']);
     Route::post('/calendar/delete-events', [CalendarController::class, 'deleteEvents']);
-     Route::get('/manager/sync', [ManagerController::class, 'sync'])->name('manager.sync');
-    Route::get('/migrate-managers', [ManagerController::class, 'migrateUsersToManagers'])->name('manager.migrate');
-    Route::resource('manager', ManagerController::class);
-});
 
-/*
-|--------------------------------------------------------------------------
-| Manager Sync & Migration
-|--------------------------------------------------------------------------
-*/
-
-Route::middleware(['auth:admin', 'role:Manager'])->group(function () {
-    Route::get('/manager/sync', [ManagerController::class, 'sync'])->name('manager.sync');
-    Route::get('/migrate-managers', [ManagerController::class, 'migrateUsersToManagers'])->name('manager.migrate');
-    Route::resource('manager', ManagerController::class);
+    Route::get('/sync', [ManagerController::class, 'sync'])->name('sync');
+    Route::get('/migrate-managers', [ManagerController::class, 'migrateUsersToManagers'])->name('migrate');
+    Route::resource('/', ManagerController::class)->parameters(['' => 'manager']);
 });
 
 /*
@@ -396,74 +391,17 @@ Route::prefix('admin/supervisor')
         Route::get('/projects/approved', [SupervisorProjectController::class, 'approved'])->name('projects.approved');
         Route::get('/projects/revisions', [SupervisorProjectController::class, 'revisions'])->name('projects.revisions');
         Route::get('/projects/{project}', [SupervisorProjectController::class, 'show'])->name('projects.show');
-        
+        Route::post('/projects/{project}/review', [SupervisorProjectController::class, 'submitReview'])->name('projects.review');
+
+        Route::post('/projects/{project}/system-verification', [SupervisorProjectController::class, 'updateSystemVerification'])
+            ->name('projects.system-verification.update');
+
+        Route::post('/projects/meetings/store', [SupervisorProjectController::class, 'storeMeeting'])
+            ->name('projects.meetings.store');
+
+        Route::post('/projects/{project}/meetings/{meeting}/status', [SupervisorProjectController::class, 'updateMeetingStatus'])
+            ->name('projects.meetings.status');
 
         Route::get('/profile', [SupervisorProfileController::class, 'index'])->name('profile.index');
         Route::post('/profile', [SupervisorProfileController::class, 'update'])->name('profile.update');
-       // ===============================
-// System Verification
-// ===============================
-Route::post('/projects/{project}/system-verification',
-    [SupervisorProjectController::class, 'updateSystemVerification']
-)->name('projects.system-verification.update');
-
-
-// ===============================
-// Meetings
-// ===============================
-Route::post('/projects/meetings/store', [SupervisorProjectController::class, 'storeMeeting'])
-    ->name('projects.meetings.store');
-
-Route::post('/projects/{project}/meetings/{meeting}/status',
-    [SupervisorProjectController::class, 'updateMeetingStatus']
-)->name('projects.meetings.status');
-// Meetings Pages
-Route::get('/meetings', [SupervisorProjectController::class, 'meetingsIndex'])->name('meetings.index');
-Route::get('/meetings/upcoming', [SupervisorProjectController::class, 'meetingsUpcoming'])->name('meetings.upcoming');
-Route::get('/meetings/completed', [SupervisorProjectController::class, 'meetingsCompleted'])->name('meetings.completed');
-Route::get('/meetings/create', [SupervisorProjectController::class, 'meetingsCreate'])->name('meetings.create');
-Route::get('/requests', [SupervisorProjectController::class, 'requestsIndex'])->name('requests.index');
-Route::get('/requests/pending', [SupervisorProjectController::class, 'requestsPending'])->name('requests.pending');
-Route::get('/requests/completed', [SupervisorProjectController::class, 'requestsCompleted'])->name('requests.completed');
-
-Route::post('/projects/{project}/requests/store', [SupervisorProjectController::class, 'storeRequest'])
-    ->name('projects.requests.store');
-
-Route::post('/requests/{requestItem}/status', [SupervisorProjectController::class, 'updateRequestStatus'])
-    ->name('requests.status');
-    Route::post('/projects/{project}/evaluation', [SupervisorProjectController::class, 'storeEvaluation'])
-    ->name('projects.evaluation.store');
-    Route::get('/file/{id}', function ($id) {
-    $file = \App\Models\ProjectRequestResponse::findOrFail($id);
-
-    return response()->file(storage_path('app/public/' . $file->attachment_path));
-})->name('file.view');;
     });
-    use App\Http\Controllers\Admin\ReportController;
-
-Route::prefix('admin')->name('admin.')->middleware(['auth:admin'])->group(function () {
-    Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
-    Route::post('/reports/preview', [ReportController::class, 'preview'])->name('reports.preview');
-    Route::post('/reports/export/pdf', [ReportController::class, 'exportPdf'])->name('reports.export.pdf');
-    Route::post('/reports/export/excel', [ReportController::class, 'exportExcel'])->name('reports.export.excel');
-});
-Route::prefix('admin')->name('admin.')->middleware(['auth:admin'])->group(function () {
-    Route::get('/reports/templates', [ReportController::class, 'templates'])->name('reports.templates');
-    Route::post('/reports/templates/save', [ReportController::class, 'saveTemplate'])->name('reports.templates.save');
-    Route::get('/reports/templates/{template}/run', [ReportController::class, 'runTemplate'])->name('reports.templates.run');
-    Route::delete('/reports/templates/{template}', [ReportController::class, 'deleteTemplate'])->name('reports.templates.delete');
-    Route::get('/reports/scheduled', [ReportController::class, 'scheduled'])->name('reports.scheduled');
-Route::post('/reports/scheduled', [ReportController::class, 'storeScheduled'])->name('reports.scheduled.store');
-Route::patch('/reports/scheduled/{scheduledReport}/toggle', [ReportController::class, 'toggleScheduled'])->name('reports.scheduled.toggle');
-Route::delete('/reports/scheduled/{scheduledReport}', [ReportController::class, 'deleteScheduled'])->name('reports.scheduled.delete');
-Route::post('/reports/scheduled/{scheduledReport}/run-now', [ReportController::class, 'runNow'])
-    ->name('reports.scheduled.run-now');
-    Route::get('/reports/history', [ReportController::class, 'history'])
-    ->name('reports.history');
-
-Route::get('/reports/history/{reportExport}/download', [ReportController::class, 'downloadExport'])
-    ->name('reports.history.download');
-
-Route::delete('/reports/history/{reportExport}', [ReportController::class, 'deleteExport'])
-    ->name('reports.history.delete');
-});
