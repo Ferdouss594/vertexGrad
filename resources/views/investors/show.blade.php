@@ -3,102 +3,727 @@
 @section('title', 'Investor Details')
 
 @section('content')
-<h1>Investor Details</h1>
+<style>
+    .investor-show-page .page-header-card {
+        background: linear-gradient(135deg, #0d1b4c 0%, #1b00ff 100%);
+        border-radius: 22px;
+        padding: 30px 32px;
+        color: #fff;
+        box-shadow: 0 14px 34px rgba(27, 0, 255, 0.18);
+        margin-bottom: 24px;
+    }
 
-<div class="card mb-3">
-    <div class="card-header">
-        Investor Overview
-    </div>
-    <div class="card-body">
-        <ul class="nav nav-tabs" id="investorTabs" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="basic-tab" data-bs-toggle="tab" data-bs-target="#basic" type="button" role="tab">
-                    Basic Info
-                </button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="notes-tab" data-bs-toggle="tab" data-bs-target="#notes" type="button" role="tab">
-                    Notes
-                </button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="files-tab" data-bs-toggle="tab" data-bs-target="#files" type="button" role="tab">
-                    Files
-                </button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="activities-tab" data-bs-toggle="tab" data-bs-target="#activities" type="button" role="tab">
-                    Activities
-                </button>
-            </li>
-        </ul>
+    .investor-show-page .page-header-card h3 {
+        margin: 0;
+        font-weight: 800;
+        color: #fff;
+        font-size: 30px;
+    }
 
-        <div class="tab-content mt-3" id="investorTabsContent">
-            <!-- ================= Basic Info ================= -->
-            <div class="tab-pane fade show active" id="basic" role="tabpanel">
-                <p><strong>Name:</strong> {{ $investor->user?->name ?? '—' }}</p>
-                <p><strong>Email:</strong> {{ $investor->user?->email ?? '—' }}</p>
-                <p><strong>Status:</strong> {{ $investor->user?->status ?? '—' }}</p>
-                <p><strong>Company:</strong> {{ $investor->company ?? '—' }}</p>
-                <p><strong>Position:</strong> {{ $investor->position ?? '—' }}</p>
-                <p><strong>Investment Type:</strong> {{ $investor->investment_type ?? '—' }}</p>
-                <p><strong>Budget:</strong> {{ $investor->budget ?? '—' }}</p>
-                <p><strong>Source:</strong> {{ $investor->source ?? '—' }}</p>
-                <p><strong>Phone:</strong> {{ $investor->phone ?? '—' }}</p>
+    .investor-show-page .page-header-card p {
+        margin: 10px 0 0;
+        opacity: 0.92;
+        font-size: 15px;
+    }
+
+    .investor-show-page .info-card,
+    .investor-show-page .section-card {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 10px 25px rgba(15, 23, 42, 0.06);
+        border: 1px solid #edf2f7;
+        overflow: hidden;
+        height: 100%;
+    }
+
+    .investor-show-page .section-header {
+        padding: 18px 22px;
+        border-bottom: 1px solid #eef2f7;
+        font-weight: 700;
+        color: #0f172a;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+    }
+
+    .investor-show-page .section-header .title-wrap {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .investor-show-page .section-body {
+        padding: 22px;
+    }
+
+    .investor-show-page .info-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+    }
+
+    .investor-show-page .info-item {
+        background: #f8fafc;
+        border: 1px solid #edf2f7;
+        border-radius: 16px;
+        padding: 16px;
+    }
+
+    .investor-show-page .info-label {
+        font-size: 12px;
+        font-weight: 700;
+        color: #64748b;
+        margin-bottom: 6px;
+        text-transform: uppercase;
+        letter-spacing: .3px;
+    }
+
+    .investor-show-page .info-value {
+        font-size: 15px;
+        font-weight: 700;
+        color: #0f172a;
+        word-break: break-word;
+    }
+
+    .investor-show-page .badge-soft {
+        display: inline-block;
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: .2px;
+        white-space: nowrap;
+    }
+
+    .investor-show-page .badge-status-active,
+    .investor-show-page .badge-funding-approved {
+        background: #ecfdf5;
+        color: #15803d;
+    }
+
+    .investor-show-page .badge-status-inactive,
+    .investor-show-page .badge-funding-rejected {
+        background: #fef2f2;
+        color: #dc2626;
+    }
+
+    .investor-show-page .badge-funding-requested {
+        background: #eff6ff;
+        color: #1d4ed8;
+    }
+
+    .investor-show-page .badge-funding-interested {
+        background: #fff7ed;
+        color: #c2410c;
+    }
+
+    .investor-show-page .badge-default {
+        background: #f1f5f9;
+        color: #475569;
+    }
+
+    .investor-show-page .list-clean {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .investor-show-page .list-clean li {
+        padding: 14px 0;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .investor-show-page .list-clean li:last-child {
+        border-bottom: none;
+    }
+
+    .investor-show-page .record-title {
+        font-weight: 700;
+        color: #0f172a;
+        margin-bottom: 4px;
+    }
+
+    .investor-show-page .record-meta {
+        font-size: 12px;
+        color: #64748b;
+    }
+
+    .investor-show-page .record-text {
+        color: #334155;
+        margin-top: 6px;
+        line-height: 1.7;
+        word-break: break-word;
+    }
+
+    .investor-show-page .modern-table {
+        margin-bottom: 0;
+        width: 100%;
+        table-layout: auto;
+    }
+
+    .investor-show-page .modern-table thead th {
+        background: #f8fafc;
+        color: #334155;
+        font-weight: 700;
+        border-bottom: 1px solid #e2e8f0;
+        padding: 12px 10px;
+        font-size: 13px;
+        white-space: nowrap;
+    }
+
+    .investor-show-page .modern-table tbody td {
+        padding: 12px 10px;
+        border-color: #f1f5f9;
+        font-size: 13px;
+        vertical-align: middle;
+    }
+
+    .investor-show-page .modern-table tbody tr:hover {
+        background: #fafcff;
+    }
+
+    .investor-show-page .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+        color: #64748b;
+    }
+
+    .investor-show-page .empty-state i {
+        font-size: 38px;
+        color: #cbd5e1;
+        margin-bottom: 10px;
+    }
+
+    .investor-show-page .btn-back {
+        background: #fff;
+        border: 1px solid #dbe4f0;
+        color: #0f172a;
+        border-radius: 12px;
+        padding: 10px 16px;
+        font-weight: 700;
+        text-decoration: none;
+    }
+
+    .investor-show-page .btn-back:hover {
+        text-decoration: none;
+        color: #0f172a;
+        background: #f8fafc;
+    }
+
+    .investor-show-page .btn-edit,
+    .investor-show-page .btn-primary-custom {
+        background: linear-gradient(135deg, #1b00ff, #4f46e5);
+        color: #fff;
+        border: none;
+        border-radius: 12px;
+        padding: 10px 16px;
+        font-weight: 700;
+        text-decoration: none;
+    }
+
+    .investor-show-page .btn-edit:hover,
+    .investor-show-page .btn-primary-custom:hover {
+        color: #fff;
+        text-decoration: none;
+        opacity: 0.95;
+    }
+
+    .investor-show-page .btn-outline-danger-custom {
+        border-radius: 10px;
+        font-size: 12px;
+        font-weight: 600;
+        padding: 6px 10px;
+    }
+
+    .investor-show-page .form-control {
+        border-radius: 12px;
+        border: 1px solid #dbe4f0;
+        box-shadow: none;
+    }
+
+    .investor-show-page .name-link {
+        text-decoration: none;
+        color: #0f172a;
+        font-weight: 700;
+    }
+
+    .investor-show-page .name-link:hover {
+        color: #1b00ff;
+        text-decoration: none;
+    }
+
+    .investor-show-page .mini-summary-card {
+        background: #f8fafc;
+        border: 1px solid #edf2f7;
+        border-radius: 16px;
+        padding: 16px;
+        height: 100%;
+    }
+
+    @media (max-width: 991px) {
+        .investor-show-page .info-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="pd-ltr-20 xs-pd-20-10 investor-show-page">
+    <div class="min-height-200px">
+
+        @if(session('success'))
+            <div class="alert alert-success border-0 shadow-sm" style="border-radius: 14px;">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div class="alert alert-danger border-0 shadow-sm" style="border-radius: 14px;">
+                {{ session('error') }}
+            </div>
+        @endif
+
+        @php
+            $statusClass = match($investor->user?->status) {
+                'active' => 'badge-status-active',
+                'inactive' => 'badge-status-inactive',
+                default => 'badge-default',
+            };
+
+            $fundingStats = [
+                'interested' => $projectInvestments->where('pivot.status', 'interested')->count(),
+                'requested' => $projectInvestments->where('pivot.status', 'requested')->count(),
+                'approved' => $projectInvestments->where('pivot.status', 'approved')->count(),
+                'rejected' => $projectInvestments->where('pivot.status', 'rejected')->count(),
+            ];
+        @endphp
+
+        <div class="page-header-card">
+            <div class="d-flex justify-content-between align-items-center flex-wrap" style="gap: 15px;">
+                <div>
+                    <h3>{{ $investor->user?->name ?? 'Investor Details' }}</h3>
+                    <p>Complete investor profile, funding behavior, notes, files, and timeline activity.</p>
+                </div>
+
+                <div class="d-flex flex-wrap" style="gap: 10px;">
+                    <a href="{{ route('admin.investors.index') }}" class="btn-back">
+                        <i class="fa fa-arrow-left mr-1"></i> Back
+                    </a>
+
+                    <a href="{{ route('admin.investment-requests.index', ['search' => $investor->user?->email]) }}" class="btn-back">
+                        <i class="fa fa-hand-holding-usd mr-1"></i> Requests
+                    </a>
+                    <a href="{{ route('admin.investors.report', $investor->user_id) }}" class="btn-back">
+    <i class="fa fa-chart-bar mr-1"></i> Report
+</a>
+
+<a href="{{ route('admin.investors.meetings.index', $investor->user_id) }}" class="btn-back">
+    <i class="fa fa-calendar-alt mr-1"></i> Meetings
+</a>
+
+<a href="{{ route('admin.investors.contracts.index', $investor->user_id) }}" class="btn-back">
+    <i class="fa fa-file-contract mr-1"></i> Contracts
+</a>
+<a href="{{ route('admin.investors.email.create', $investor->user_id) }}" class="btn-back">
+    <i class="fa fa-envelope mr-1"></i> Email
+</a>
+<a href="{{ route('admin.investors.preferences.edit', $investor->user_id) }}" class="btn-back">
+    <i class="fa fa-sliders-h mr-1"></i> Preferences
+</a>
+<a href="{{ route('admin.investors.reminders.index', $investor->user_id) }}" class="btn-back">
+    <i class="fa fa-bell mr-1"></i> Reminders
+</a>
+<a href="{{ route('admin.investors.notify.create',$investor->user_id) }}" class="btn-back">
+    <i class="fa fa-bell mr-1"></i> Notify
+</a>
+                    <a href="{{ route('admin.investors.edit', $investor->user_id) }}" class="btn-edit">
+                        <i class="fa fa-pencil-alt mr-1"></i> Edit Investor
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-xl-8 mb-4">
+                <div class="info-card">
+                    <div class="section-header">
+                        <div class="title-wrap">
+                            <i class="fa fa-id-card"></i>
+                            <span>Investor Overview</span>
+                        </div>
+                    </div>
+
+                    <div class="section-body">
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="info-label">Full Name</div>
+                                <div class="info-value">{{ $investor->user?->name ?? '—' }}</div>
+                            </div>
+
+                            <div class="info-item">
+                                <div class="info-label">Email</div>
+                                <div class="info-value">{{ $investor->user?->email ?? '—' }}</div>
+                            </div>
+
+                            <div class="info-item">
+                                <div class="info-label">Status</div>
+                                <div class="info-value">
+                                    <span class="badge-soft {{ $statusClass }}">
+                                        {{ ucfirst($investor->user?->status ?? '—') }}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="info-item">
+                                <div class="info-label">Phone</div>
+                                <div class="info-value">{{ $investor->phone ?? '—' }}</div>
+                            </div>
+
+                            <div class="info-item">
+                                <div class="info-label">Company</div>
+                                <div class="info-value">{{ $investor->company ?? '—' }}</div>
+                            </div>
+
+                            <div class="info-item">
+                                <div class="info-label">Position</div>
+                                <div class="info-value">{{ $investor->position ?? '—' }}</div>
+                            </div>
+
+                            <div class="info-item">
+                                <div class="info-label">Investment Type</div>
+                                <div class="info-value">{{ $investor->investment_type ?? '—' }}</div>
+                            </div>
+
+                            <div class="info-item">
+                                <div class="info-label">Budget</div>
+                                <div class="info-value">
+                                    {{ $investor->budget !== null ? '$' . number_format($investor->budget, 2) : '—' }}
+                                </div>
+                            </div>
+
+                            <div class="info-item">
+                                <div class="info-label">Source</div>
+                                <div class="info-value">{{ $investor->source ?? '—' }}</div>
+                            </div>
+
+                            <div class="info-item">
+                                <div class="info-label">Registered On</div>
+                                <div class="info-value">{{ optional($investor->created_at)->format('Y-m-d h:i A') ?? '—' }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <!-- ================= Notes ================= -->
-            <div class="tab-pane fade" id="notes" role="tabpanel">
-                @if($investor->notes->count() > 0)
-                    <ul class="list-group">
-                        @foreach($investor->notes as $note)
-                            <li class="list-group-item">
-                                <strong>{{ $note->user?->name ?? 'Unknown' }}:</strong>
-                                {{ $note->note }}
-                                <small class="text-muted float-end">{{ $note->created_at->format('Y-m-d H:i') }}</small>
-                            </li>
-                        @endforeach
-                    </ul>
-                @else
-                    <p>No notes available.</p>
-                @endif
+            <div class="col-xl-4 mb-4">
+                <div class="section-card">
+                    <div class="section-header">
+                        <div class="title-wrap">
+                            <i class="fa fa-chart-line"></i>
+                            <span>Quick Summary</span>
+                        </div>
+                    </div>
+
+                    <div class="section-body">
+                        <div class="mini-summary-card mb-3">
+                            <div class="info-label">Notes Count</div>
+                            <div class="info-value">{{ $investor->investorNotes->count() }}</div>
+                        </div>
+
+                        <div class="mini-summary-card mb-3">
+                            <div class="info-label">Files Count</div>
+                            <div class="info-value">{{ $investor->files->count() }}</div>
+                        </div>
+
+                        <div class="mini-summary-card mb-3">
+                            <div class="info-label">Activities Count</div>
+                            <div class="info-value">{{ $investor->activities->count() }}</div>
+                        </div>
+
+                        <div class="mini-summary-card">
+                            <div class="info-label">Funding Records</div>
+                            <div class="info-value">{{ $projectInvestments->count() }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-xl-3 col-md-6 mb-3">
+                <div class="info-item">
+                    <div class="info-label">Interested</div>
+                    <div class="info-value">{{ $fundingStats['interested'] }}</div>
+                </div>
             </div>
 
-            <!-- ================= Files ================= -->
-            <div class="tab-pane fade" id="files" role="tabpanel">
-                @if($investor->files->count() > 0)
-                    <ul class="list-group">
-                        @foreach($investor->files as $file)
-                            <li class="list-group-item">
-                                <a href="{{ asset('storage/' . $file->path) }}" target="_blank">{{ $file->filename }}</a>
-                                <small class="text-muted float-end">{{ $file->created_at->format('Y-m-d H:i') }}</small>
-                            </li>
-                        @endforeach
-                    </ul>
-                @else
-                    <p>No files uploaded.</p>
-                @endif
+            <div class="col-xl-3 col-md-6 mb-3">
+                <div class="info-item">
+                    <div class="info-label">Requested</div>
+                    <div class="info-value">{{ $fundingStats['requested'] }}</div>
+                </div>
             </div>
 
-            <!-- ================= Activities ================= -->
-            <div class="tab-pane fade" id="activities" role="tabpanel">
-                @if($investor->activities->count() > 0)
-                    <ul class="list-group">
-                        @foreach($investor->activities as $activity)
-                            <li class="list-group-item">
-                                <strong>{{ $activity->user?->name ?? 'System' }}</strong> 
-                                {{ $activity->action }}
-                                <small class="text-muted float-end">{{ $activity->created_at->format('Y-m-d H:i') }}</small>
-                            </li>
-                        @endforeach
-                    </ul>
+            <div class="col-xl-3 col-md-6 mb-3">
+                <div class="info-item">
+                    <div class="info-label">Approved</div>
+                    <div class="info-value">{{ $fundingStats['approved'] }}</div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-3">
+                <div class="info-item">
+                    <div class="info-label">Rejected</div>
+                    <div class="info-value">{{ $fundingStats['rejected'] }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-card mb-4">
+            <div class="section-header">
+                <div class="title-wrap">
+                    <i class="fa fa-hand-holding-usd"></i>
+                    <span>Funding / Project Investments</span>
+                </div>
+            </div>
+
+            <div class="section-body p-0">
+                @if($projectInvestments->count() > 0)
+                    <div class="table-responsive">
+                        <table class="table modern-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Project</th>
+                                    <th>Student</th>
+                                    <th>Status</th>
+                                    <th>Amount</th>
+                                    <th>Message</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($projectInvestments as $project)
+                                    @php
+                                        $fundingClass = match($project->pivot->status) {
+                                            'approved' => 'badge-funding-approved',
+                                            'rejected' => 'badge-funding-rejected',
+                                            'requested' => 'badge-funding-requested',
+                                            'interested' => 'badge-funding-interested',
+                                            default => 'badge-default',
+                                        };
+                                    @endphp
+                                    <tr>
+                                        <td>{{ $loop->iteration }}</td>
+
+                                        <td>
+                                            @if($project)
+                                                <a href="{{ route('admin.projects.show', $project->project_id) }}"
+                                                   class="name-link">
+                                                    {{ $project->name ?? 'Untitled Project' }}
+                                                </a>
+                                                <div class="record-meta">
+                                                    Project ID: {{ $project->project_id ?? '—' }}
+                                                </div>
+                                            @else
+                                                —
+                                            @endif
+                                        </td>
+
+                                        <td>{{ optional($project->student)->name ?? '—' }}</td>
+
+                                        <td>
+                                            <span class="badge-soft {{ $fundingClass }}">
+                                                {{ ucfirst($project->pivot->status ?? '—') }}
+                                            </span>
+                                        </td>
+
+                                        <td>
+                                            {{ $project->pivot->amount !== null ? '$' . number_format($project->pivot->amount, 2) : '—' }}
+                                        </td>
+
+                                        <td style="max-width: 260px;">
+                                            <div style="word-break: break-word; line-height:1.6;">
+                                                {{ $project->pivot->message ?: '—' }}
+                                            </div>
+                                        </td>
+
+                                        <td>
+                                            {{ optional($project->pivot->created_at)->format('Y-m-d h:i A') ?? '—' }}
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 @else
-                    <p>No activities recorded.</p>
+                    <div class="empty-state">
+                        <i class="fa fa-hand-holding-usd"></i>
+                        <div>No funding activity found for this investor.</div>
+                    </div>
                 @endif
             </div>
         </div>
+
+        <div class="row">
+            <div class="col-xl-4 mb-4">
+                <div class="section-card h-100">
+                    <div class="section-header">
+                        <div class="title-wrap">
+                            <i class="fa fa-sticky-note"></i>
+                            <span>Notes</span>
+                        </div>
+                    </div>
+
+                    <div class="section-body">
+                        <form action="{{ route('admin.investors.notes.store', $investor->user_id) }}" method="POST" class="mb-4">
+                            @csrf
+                            <div class="mb-3">
+                                <label class="form-label" style="font-weight:700;">Add Note</label>
+                                <textarea name="note" rows="4" class="form-control" placeholder="Write a note about this investor..."></textarea>
+                            </div>
+
+                            <button type="submit" class="btn-primary-custom">
+                                <i class="fa fa-plus mr-1"></i> Add Note
+                            </button>
+                        </form>
+
+                        @if($investor->investorNotes->count() > 0)
+                            <ul class="list-clean">
+                                @foreach($investor->investorNotes as $note)
+                                    <li>
+                                        <div class="record-title">{{ $note->user?->name ?? 'Unknown User' }}</div>
+                                        <div class="record-meta">{{ $note->created_at?->format('Y-m-d h:i A') }}</div>
+                                        <div class="record-text">{{ $note->note }}</div>
+
+<form action="{{ route('admin.investors.notes.delete', ['investor' => $investor->user_id, 'note' => $note->id]) }}"
+      method="POST"
+      style="margin-top:8px;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit"
+                                                    class="btn btn-sm btn-outline-danger btn-outline-danger-custom"
+                                                    onclick="return confirm('Delete this note?')">
+                                                Delete
+                                            </button>
+                                        </form>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        @else
+                            <div class="empty-state">
+                                <i class="fa fa-sticky-note"></i>
+                                <div>No notes available.</div>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-4 mb-4">
+                <div class="section-card h-100">
+                    <div class="section-header">
+                        <div class="title-wrap">
+                            <i class="fa fa-folder-open"></i>
+                            <span>Files</span>
+                        </div>
+                    </div>
+
+                    <div class="section-body">
+                        <form action="{{ route('admin.investors.files.upload', $investor->user_id) }}" method="POST" enctype="multipart/form-data" class="mb-4">
+                            @csrf
+                            <div class="mb-3">
+                                <label class="form-label" style="font-weight:700;">Upload File</label>
+                                <input type="file" name="file" class="form-control">
+                            </div>
+
+                            <button type="submit" class="btn-primary-custom">
+                                <i class="fa fa-upload mr-1"></i> Upload File
+                            </button>
+                        </form>
+
+                        @if($investor->files->count() > 0)
+                            <ul class="list-clean">
+                                @foreach($investor->files as $file)
+                                    <li>
+                                        <div class="record-title">
+                                            <a href="{{ asset('storage/' . $file->path) }}" target="_blank" class="name-link">
+                                                {{ $file->filename }}
+                                            </a>
+                                        </div>
+
+                                        <div class="record-meta">
+                                            Uploaded: {{ $file->created_at?->format('Y-m-d h:i A') }}
+                                        </div>
+
+                                        <div class="record-meta">
+                                            Size: {{ isset($file->size) ? number_format($file->size / 1024, 2) . ' KB' : '—' }}
+                                        </div>
+
+                                        <form action="{{ route('admin.investors.files.delete', ['investor' => $investor->user_id, 'file' => $file->id]) }}"
+                                              method="POST"
+                                              style="margin-top:8px;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit"
+                                                    class="btn btn-sm btn-outline-danger btn-outline-danger-custom"
+                                                    onclick="return confirm('Delete this file?')">
+                                                Delete
+                                            </button>
+                                        </form>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        @else
+                            <div class="empty-state">
+                                <i class="fa fa-folder-open"></i>
+                                <div>No files uploaded.</div>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-4 mb-4">
+                <div class="section-card h-100">
+                    <div class="section-header">
+                        <div class="title-wrap">
+                            <i class="fa fa-history"></i>
+                            <span>Activities</span>
+                        </div>
+                    </div>
+
+                    <div class="section-body">
+                        @if($investor->activities->count() > 0)
+                            <ul class="list-clean">
+                                @foreach($investor->activities as $activity)
+                                    <li>
+                                        <div class="record-title">{{ $activity->user?->name ?? 'System' }}</div>
+                                        <div class="record-meta">{{ $activity->created_at?->format('Y-m-d h:i A') }}</div>
+
+                                        <div class="record-text">
+                                            {{ ucfirst(str_replace('_', ' ', $activity->action)) }}
+
+                                            @if($activity->meta)
+                                                <div class="record-meta mt-1">
+                                                    {{ json_encode($activity->meta) }}
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        @else
+                            <div class="empty-state">
+                                <i class="fa fa-history"></i>
+                                <div>No activities recorded.</div>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
-
-<a href="{{ route('investors.index') }}" class="btn btn-secondary">Back</a>
 @endsection

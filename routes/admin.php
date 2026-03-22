@@ -2,60 +2,264 @@
 
 use Illuminate\Support\Facades\Route;
 
+/*
+|--------------------------------------------------------------------------
+| Controllers
+|--------------------------------------------------------------------------
+*/
+
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\Manager\UserApproveController;
-use App\Http\Controllers\Manager\UserController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\ManagerController;
 
+use App\Http\Controllers\Manager\UserApproveController;
+use App\Http\Controllers\Manager\UserController;
+
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\InvestorController;
-use App\Http\Controllers\Admin\ProjectController as AdminProjectController;
 use App\Http\Controllers\ProjectTaskController;
-use App\Http\Controllers\Report\PlatformReportController;
+
+use App\Http\Controllers\Admin\ProjectController as AdminProjectController;
 use App\Http\Controllers\Admin\NotificationController as AdminNotificationController;
+use App\Http\Controllers\Admin\InvestmentRequestController;
+use App\Http\Controllers\Admin\InvestorReportController;
+use App\Http\Controllers\Admin\InvestorSingleReportController;
+use App\Http\Controllers\Admin\InvestorCommunicationController;
+use App\Http\Controllers\Admin\InvestorMeetingController;
+use App\Http\Controllers\Admin\InvestorContractController;
+use App\Http\Controllers\Admin\InvestorEmailController;
+use App\Http\Controllers\Admin\InvestorPreferenceController;
+
+use App\Http\Controllers\Report\PlatformReportController;
+
 use App\Http\Controllers\Supervisor\SupervisorDashboardController;
 use App\Http\Controllers\Supervisor\SupervisorProjectController;
 use App\Http\Controllers\Supervisor\SupervisorProfileController;
+use App\Http\Controllers\Admin\InvestorReminderController;
+use App\Http\Controllers\Admin\InvestorCalendarController;
 
+/*
+|--------------------------------------------------------------------------
+| Admin Authentication
+|--------------------------------------------------------------------------
+*/
 
-// ------------------------
-// Backend Auth (Managers / Supervisors)
-// ------------------------
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login.show');
     Route::post('/login', [AuthController::class, 'login'])->name('login.post');
+
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
     Route::get('/register', [AuthController::class, 'showRegister'])->name('register.show');
     Route::post('/register', [AuthController::class, 'register'])->name('register.post');
 });
 
-// ------------------------
-// Backend Profile + Admin CRUD
-// ------------------------
+/*
+|--------------------------------------------------------------------------
+| Authenticated Admin Area
+|--------------------------------------------------------------------------
+*/
+
 Route::prefix('admin')->name('admin.')->middleware(['auth:admin'])->group(function () {
 
-    // Profile
+    /*
+    |--------------------------------------------------------------------------
+    | Profile
+    |--------------------------------------------------------------------------
+    */
     Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
 
-    // Students
+    /*
+    |--------------------------------------------------------------------------
+    | Students
+    |--------------------------------------------------------------------------
+    */
     Route::resource('students', StudentController::class);
-    Route::get('students/{id}/status/{status}', [StudentController::class, 'updateStatus'])->name('students.status');
+    Route::get('students/{id}/status/{status}', [StudentController::class, 'updateStatus'])
+        ->name('students.status');
 
-    // Investors
-    Route::put('investors/{user}', [InvestorController::class, 'update'])->name('investors.update');
-    Route::post('investors/{investor}/notes', [InvestorController::class, 'storeNote'])->name('investors.notes.store');
-    Route::delete('investors/{investor}/notes/{note}', [InvestorController::class, 'deleteNote'])->name('investors.notes.delete');
-    Route::post('investors/{investor}/files', [InvestorController::class, 'uploadFile'])->name('investors.files.upload');
-    Route::delete('investors/{investor}/files/{file}', [InvestorController::class, 'deleteFile'])->name('investors.files.delete');
-    Route::post('investors/import', [InvestorController::class, 'import'])->name('investors.import');
-    Route::get('investors/export/{format?}', [InvestorController::class, 'export'])->name('investors.export');
-    Route::post('investors/{investor}/restore', [InvestorController::class, 'restore'])->name('investors.restore');
-    Route::delete('investors/{investor}/force-delete', [InvestorController::class, 'forceDelete'])->name('investors.forceDelete');
-    Route::resource('investors', InvestorController::class)->parameters(['investors' => 'investor']);
 
-    // Projects
+
+Route::get('/investor-calendar', [InvestorCalendarController::class, 'index'])
+    ->name('investor-calendar.index');
+    /*
+    |--------------------------------------------------------------------------
+    | Investors
+    |--------------------------------------------------------------------------
+    */
+
+    // Notes
+    Route::post('investors/{investor}/notes', [InvestorController::class, 'storeNote'])
+        ->name('investors.notes.store');
+
+    Route::delete('investors/{investor}/notes/{note}', [InvestorController::class, 'deleteNote'])
+        ->name('investors.notes.delete');
+
+    // Files
+    Route::post('investors/{investor}/files', [InvestorController::class, 'uploadFile'])
+        ->name('investors.files.upload');
+
+    Route::delete('investors/{investor}/files/{file}', [InvestorController::class, 'deleteFile'])
+        ->name('investors.files.delete');
+
+    // Import / Export / Archive
+    Route::post('investors/import', [InvestorController::class, 'import'])
+        ->name('investors.import');
+
+    Route::get('investors/export/{format?}', [InvestorController::class, 'export'])
+        ->name('investors.export');
+
+    Route::post('investors/{investor}/restore', [InvestorController::class, 'restore'])
+        ->name('investors.restore');
+
+    Route::delete('investors/{investor}/force-delete', [InvestorController::class, 'forceDelete'])
+        ->name('investors.forceDelete');
+
+
+
+Route::get('investors/{investor}/reminders', [InvestorReminderController::class, 'index'])
+    ->name('investors.reminders.index');
+
+Route::get('investors/{investor}/reminders/create', [InvestorReminderController::class, 'create'])
+    ->name('investors.reminders.create');
+
+Route::post('investors/{investor}/reminders', [InvestorReminderController::class, 'store'])
+    ->name('investors.reminders.store');
+
+Route::get('investors/{investor}/reminders/{reminder}/edit', [InvestorReminderController::class, 'edit'])
+    ->name('investors.reminders.edit');
+
+Route::put('investors/{investor}/reminders/{reminder}', [InvestorReminderController::class, 'update'])
+    ->name('investors.reminders.update');
+
+Route::delete('investors/{investor}/reminders/{reminder}', [InvestorReminderController::class, 'destroy'])
+    ->name('investors.reminders.destroy');
+    /*
+    |--------------------------------------------------------------------------
+    | Single Investor Report
+    |--------------------------------------------------------------------------
+    */
+    Route::get('investors/{investor}/report', [InvestorSingleReportController::class, 'show'])
+        ->name('investors.report');
+
+    Route::get('investors/{investor}/report/export', [InvestorSingleReportController::class, 'export'])
+        ->name('investors.report.export');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Investor Manual Notification
+    |--------------------------------------------------------------------------
+    */
+    Route::get('investors/{investor}/notify', [InvestorCommunicationController::class, 'create'])
+        ->name('investors.notify.create');
+
+    Route::post('investors/{investor}/notify', [InvestorCommunicationController::class, 'store'])
+        ->name('investors.notify.store');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Investor Preferences
+    |--------------------------------------------------------------------------
+    */
+    Route::get('investors/{investor}/preferences', [InvestorPreferenceController::class, 'edit'])
+        ->name('investors.preferences.edit');
+
+    Route::put('investors/{investor}/preferences', [InvestorPreferenceController::class, 'update'])
+        ->name('investors.preferences.update');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Investor Email
+    |--------------------------------------------------------------------------
+    */
+    Route::get('investors/{investor}/email', [InvestorEmailController::class, 'create'])
+        ->name('investors.email.create');
+
+    Route::post('investors/{investor}/email', [InvestorEmailController::class, 'store'])
+        ->name('investors.email.store');
+        
+
+    /*
+    |--------------------------------------------------------------------------
+    | Investor Meetings
+    |--------------------------------------------------------------------------
+    */
+    Route::get('investors/{investor}/meetings', [InvestorMeetingController::class, 'index'])
+        ->name('investors.meetings.index');
+
+    Route::get('investors/{investor}/meetings/create', [InvestorMeetingController::class, 'create'])
+        ->name('investors.meetings.create');
+
+    Route::post('investors/{investor}/meetings', [InvestorMeetingController::class, 'store'])
+        ->name('investors.meetings.store');
+
+    Route::get('investors/{investor}/meetings/{meeting}/edit', [InvestorMeetingController::class, 'edit'])
+        ->name('investors.meetings.edit');
+
+    Route::put('investors/{investor}/meetings/{meeting}', [InvestorMeetingController::class, 'update'])
+        ->name('investors.meetings.update');
+
+    Route::delete('investors/{investor}/meetings/{meeting}', [InvestorMeetingController::class, 'destroy'])
+        ->name('investors.meetings.destroy');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Investor Contracts
+    |--------------------------------------------------------------------------
+    */
+    Route::get('investors/{investor}/contracts', [InvestorContractController::class, 'index'])
+        ->name('investors.contracts.index');
+
+    Route::get('investors/{investor}/contracts/create', [InvestorContractController::class, 'create'])
+        ->name('investors.contracts.create');
+
+    Route::post('investors/{investor}/contracts', [InvestorContractController::class, 'store'])
+        ->name('investors.contracts.store');
+
+    Route::get('investors/{investor}/contracts/{contract}/edit', [InvestorContractController::class, 'edit'])
+        ->name('investors.contracts.edit');
+
+    Route::put('investors/{investor}/contracts/{contract}', [InvestorContractController::class, 'update'])
+        ->name('investors.contracts.update');
+
+    Route::delete('investors/{investor}/contracts/{contract}', [InvestorContractController::class, 'destroy'])
+        ->name('investors.contracts.destroy');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Main Investors Resource
+    |--------------------------------------------------------------------------
+    */
+    Route::resource('investors', InvestorController::class)
+        ->parameters(['investors' => 'investor']);
+
+    /*
+    |--------------------------------------------------------------------------
+    | Investment Requests
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/investment-requests', [InvestmentRequestController::class, 'index'])
+        ->name('investment-requests.index');
+
+    Route::patch('/investment-requests/{investmentRequest}/status', [InvestmentRequestController::class, 'updateStatus'])
+        ->name('investment-requests.update-status');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Investor Reports (Global)
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/investor-reports', [InvestorReportController::class, 'index'])
+        ->name('investor-reports.index');
+
+    Route::get('/investor-reports/export', [InvestorReportController::class, 'export'])
+        ->name('investor-reports.export');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Projects
+    |--------------------------------------------------------------------------
+    */
     Route::resource('projects', AdminProjectController::class);
 
     Route::post('projects/{project}/approve', [AdminProjectController::class, 'approve'])
@@ -64,24 +268,28 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:admin'])->group(functi
     Route::post('projects/{project}/reject', [AdminProjectController::class, 'reject'])
         ->name('projects.reject');
 
-     Route::post('projects/{project}/funding-requests/{user}/approve',
-    [AdminProjectController::class, 'approveInvestor'])
-    ->name('projects.investors.approve');
+    Route::post('projects/{project}/funding-requests/{user}/approve', [AdminProjectController::class, 'approveInvestor'])
+        ->name('projects.investors.approve');
 
-Route::post('projects/{project}/funding-requests/{user}/reject',
-    [AdminProjectController::class, 'rejectInvestor'])
-    ->name('projects.investors.reject');
+    Route::post('projects/{project}/funding-requests/{user}/reject', [AdminProjectController::class, 'rejectInvestor'])
+        ->name('projects.investors.reject');
 
-
-    // Project Tasks
+    /*
+    |--------------------------------------------------------------------------
+    | Project Tasks
+    |--------------------------------------------------------------------------
+    */
     Route::prefix('projects/{project}')->group(function () {
         Route::post('tasks', [ProjectTaskController::class, 'store'])->name('projects.tasks.store');
         Route::put('tasks/{task}', [ProjectTaskController::class, 'update'])->name('projects.tasks.update');
         Route::delete('tasks/{task}', [ProjectTaskController::class, 'destroy'])->name('projects.tasks.destroy');
-        
     });
 
-    // Admin Notifications
+    /*
+    |--------------------------------------------------------------------------
+    | Admin Notifications
+    |--------------------------------------------------------------------------
+    */
     Route::get('notifications', [AdminNotificationController::class, 'index'])
         ->name('notifications.index');
 
@@ -94,24 +302,36 @@ Route::post('projects/{project}/funding-requests/{user}/reject',
     Route::post('notifications/mark-all-read', [AdminNotificationController::class, 'markAllRead'])
         ->name('notifications.markAllRead');
 
-    // Reports
+    /*
+    |--------------------------------------------------------------------------
+    | Platform Reports
+    |--------------------------------------------------------------------------
+    */
     Route::prefix('reports')->name('reports.')->group(function () {
         Route::get('platform', [PlatformReportController::class, 'index'])->name('platform');
+
         Route::get('investors/excel', [PlatformReportController::class, 'exportInvestorsExcel'])->name('investors.excel');
         Route::get('investors/pdf', [PlatformReportController::class, 'exportInvestorsPdf'])->name('investors.pdf');
+
         Route::get('students/excel', [PlatformReportController::class, 'exportStudentsExcel'])->name('students.excel');
         Route::get('students/pdf', [PlatformReportController::class, 'exportStudentsPdf'])->name('students.pdf');
+
         Route::get('projects/excel', [PlatformReportController::class, 'exportProjectsExcel'])->name('projects.excel');
         Route::get('projects/pdf', [PlatformReportController::class, 'exportProjectsPdf'])->name('projects.pdf');
     });
 });
 
-// ------------------------
-// Manager Area (Role: Manager)
-// ------------------------
+/*
+|--------------------------------------------------------------------------
+| Manager Area
+|--------------------------------------------------------------------------
+*/
+
 Route::prefix('manager')->name('manager.')->middleware(['auth:admin', 'role:Manager'])->group(function () {
     Route::get('/dashboard', [UserApproveController::class, 'dashboard'])->name('dashboard');
+
     Route::get('/pending-users', [UserApproveController::class, 'pendingUsers'])->name('pending.users');
+
     Route::post('/approve-direct/{user}', [UserApproveController::class, 'approveDirect'])->name('users.approve-direct');
     Route::post('/reject/{user}', [UserController::class, 'reject'])->name('users.reject');
 
@@ -125,18 +345,24 @@ Route::prefix('manager')->name('manager.')->middleware(['auth:admin', 'role:Mana
     Route::post('/calendar/delete-events', [CalendarController::class, 'deleteEvents']);
 });
 
-// ------------------------
-// Manager Sync & Migration
-// ------------------------
+/*
+|--------------------------------------------------------------------------
+| Manager Sync & Migration
+|--------------------------------------------------------------------------
+*/
+
 Route::middleware(['auth:admin', 'role:Manager'])->group(function () {
     Route::get('/manager/sync', [ManagerController::class, 'sync'])->name('manager.sync');
     Route::get('/migrate-managers', [ManagerController::class, 'migrateUsersToManagers'])->name('manager.migrate');
     Route::resource('manager', ManagerController::class);
 });
 
-// ------------------------
-// Supervisor Area (Role: Supervisor)
-// ------------------------
+/*
+|--------------------------------------------------------------------------
+| Supervisor Area
+|--------------------------------------------------------------------------
+*/
+
 Route::prefix('admin/supervisor')
     ->name('supervisor.')
     ->middleware(['auth:admin', 'role:Supervisor'])

@@ -8,8 +8,8 @@ use App\Models\InvestorNote;
 use App\Models\InvestorFile;
 use App\Models\InvestorActivity;
 use Illuminate\Http\Request;
-use App\Http\Requests\StoreInvestorRequest;
 use App\Http\Requests\UpdateInvestorRequest;
+use App\Http\Requests\StoreInvestorRequest;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
@@ -18,178 +18,258 @@ use App\Exports\InvestorsExport;
 
 class InvestorController extends Controller
 {
-    // =================== قائمة المستثمرين ===================
-    public function index(Request $request)
-    {
-        $query = User::where('role', 'Investor');
+public function index(Request $request)
+{
+    $view = $request->get('view', 'active');
 
-        if ($request->filled('search')) {
-            $s = $request->search;
-            $query->where(function ($q) use ($s) {
-                $q->where('name', 'like', "%{$s}%")
-                  ->orWhere('email', 'like', "%{$s}%")
-                  ->orWhere('username', 'like', "%{$s}%");
-            });
-        }
+    $query = User::query()
+        ->where('role', 'Investor')
+->with([
+    'investor' => function ($q) {
+        $q->withTrashed()
+          ->with(['investmentRequests' => function ($q2) {
+$q2->with('project')
+   ->select('id', 'investor_id', 'project_id', 'status', 'created_at');          }]);
+    }
+]);
 
-        if ($request->filled('city')) {
-            $query->where('city', $request->city);
-        }
-
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
-
-        $sortBy  = $request->get('sort_by', 'created_at');
-        $sortDir = $request->get('sort_dir', 'desc');
-
-        $investors = $query->orderBy($sortBy, $sortDir)
-            ->paginate(15)
-            ->withQueryString();
-
-        $stats = [
-            'total'    => User::where('role', 'Investor')->count(),
-            'active'   => User::where('role', 'Investor')->where('status', 'active')->count(),
-            'inactive' => User::where('role', 'Investor')->where('status', 'inactive')->count(),
-            'budget'   => Investor::sum('budget'),
-            'archived' => 0,
-        ];
-
-        return view('investors.index', compact('investors', 'stats'));
+    if ($view === 'archived') {
+        $query->whereIn('id', Investor::onlyTrashed()->pluck('user_id'));
+    } elseif ($view === 'active') {
+        $query->whereIn('id', Investor::query()->whereNull('deleted_at')->pluck('user_id'));
+    } elseif ($view === 'all') {
+        $query->whereIn('id', Investor::withTrashed()->pluck('user_id'));
     }
 
-    // =================== صفحة إضافة مستثمر ===================
+    if ($request->filled('search')) {
+        $s = $request->search;
+        $query->where(function ($q) use ($s) {
+            $q->where('name', 'like', "%{$s}%")
+                ->orWhere('email', 'like', "%{$s}%")
+                ->orWhere('username', 'like', "%{$s}%");
+        });
+    }
+
+    if ($request->filled('city')) {
+        $query->where('city', $request->city);
+    }
+
+    if ($request->filled('status')) {
+        $query->where('status', $request->status);
+    }
+
+    $sortBy  = $request->get('sort_by', 'created_at');
+    $sortDir = $request->get('sort_dir', 'desc');
+    $perPage = (int) $request->get('per_page', 10);
+
+    $allowedSorts = ['created_at', 'name', 'email', 'status'];
+    if (!in_array($sortBy, $allowedSorts)) {
+        $sortBy = 'created_at';
+    }
+
+    $sortDir = strtolower($sortDir) === 'asc' ? 'asc' : 'desc';
+
+    $investors = $query->orderBy($sortBy, $sortDir)
+        ->paginate($perPage)
+        ->withQueryString();
+
+    $activeInvestorUserIds = Investor::query()
+        ->whereNull('deleted_at')
+        ->pluck('user_id');
+
+    $archivedInvestorUserIds = Investor::onlyTrashed()
+        ->pluck('user_id');
+
+    $topCompany = Investor::query()
+        ->whereNull('deleted_at')
+        ->select('company', DB::raw('COUNT(*) as total'))
+        ->whereNotNull('company')
+        ->where('company', '!=', '')
+        ->groupBy('company')
+        ->orderByDesc('total')
+        ->first();
+
+    $stats = [
+        'total' => Investor::count(),
+
+        'active' => User::where('role', 'Investor')
+            ->where('status', 'active')
+            ->whereIn('id', $activeInvestorUserIds)
+            ->count(),
+
+        'inactive' => User::where('role', 'Investor')
+            ->where('status', 'inactive')
+            ->whereIn('id', $activeInvestorUserIds)
+            ->count(),
+
+        'budget' => Investor::whereNull('deleted_at')->sum('budget'),
+
+        'archived' => $archivedInvestorUserIds->count(),
+
+        'top_company' => $topCompany,
+    ];
+
+    return view('investors.index', compact('investors', 'stats', 'view'));
+}
+
     public function create()
     {
         return view('investors.create');
     }
 
-    // =================== حفظ مستثمر جديد ===================
     public function store(StoreInvestorRequest $request)
     {
         try {
-            DB::transaction(function () use ($request, &$investor) {
-                // إنشاء المستخدم
-                $user = User::create([
-                    'username' => $request->username,
-                    'name'     => $request->name,
-                    'email'    => $request->email,
-                    'password' => bcrypt($request->password), // تشفير كلمة السر
-                    'role'     => 'Investor',
-                    'status'   => $request->status ?? 'Active',
-                    'gender'   => $request->gender,
-                    'city'     => $request->city,
-                    'state'    => $request->state,
-                ]);
+            DB::beginTransaction();
 
-                // إنشاء بيانات المستثمر المرتبطة بالمستخدم
-                $investor = $user->investor()->create([
+            $user = User::create([
+                'username' => $request->username,
+                'name'     => $request->name,
+                'email'    => $request->email,
+                'password' => bcrypt($request->password),
+                'role'     => 'Investor',
+                'status'   => $request->status ?? 'active',
+                'gender'   => $request->gender,
+                'city'     => $request->city,
+                'state'    => $request->state,
+            ]);
+
+            $investor = $user->investor()->updateOrCreate(
+                ['user_id' => $user->id],
+                [
+                    'phone'           => $request->phone,
                     'company'         => $request->company,
                     'position'        => $request->position,
                     'investment_type' => $request->investment_type,
                     'budget'          => $request->budget,
                     'source'          => $request->source,
                     'notes'           => $request->notes,
-                ]);
+                    'status'          => $request->status ?? 'active',
+                ]
+            );
 
-                // تسجيل النشاط
-                InvestorActivity::create([
-                    'investor_id' => $investor->id,
-                    'user_id'     => auth()->id(),
-                    'action'      => 'created',
-                    'meta'        => ['name' => $user->name],
-                ]);
-            });
+            InvestorActivity::create([
+                'investor_id' => $investor->id,
+                'user_id'     => auth('admin')->id(),
+                'action'      => 'created',
+                'meta'        => ['name' => $user->name],
+            ]);
 
-            return redirect()->route('investors.index')
-                ->with('success', 'تم إنشاء المستثمر بنجاح');
+            DB::commit();
 
+            return redirect()->route('admin.investors.index')
+                ->with('success', 'Investor created successfully.');
         } catch (\Exception $e) {
+            DB::rollBack();
             return back()->withInput()->with('error', $e->getMessage());
         }
     }
 
-    // =================== عرض مستثمر ===================
-    public function show( Investor $investor)
+    public function show(Investor $investor)
     {
-           $investor->load('user', 'notes.user', 'files', 'activities.user'); 
-        return view('investors.show', compact('investor'));
+        $investor->load([
+            'user',
+            'investorNotes.user',
+            'files',
+            'activities.user',
+        ]);
+
+        $projectInvestments = $investor->user
+            ? $investor->user->investments()
+                ->with('student')
+                ->orderByPivot('created_at', 'desc')
+                ->get()
+            : collect();
+
+        return view('investors.show', compact('investor', 'projectInvestments'));
     }
 
-    // =================== صفحة تعديل المستثمر ===================
     public function edit(Investor $investor)
     {
-        // تحميل العلاقة مع Investor
+        $investor->load('user');
+
         return view('investors.edit', compact('investor'));
     }
 
-    // =================== تحديث بيانات المستثمر والمستخدم ===================
-  public function update(Request $request, Investor $investor)
-{
-    $data = $request->validate([
-        'name'  => 'required|string|max:150',
-        'email' => 'required|email|unique:users,email,' . $investor->user_id,
-        'status'=> 'required|string|in:Active,Inactive',
-        'phone' => 'nullable|string|max:50',
-        'company' => 'nullable|string|max:150',
-        'position' => 'nullable|string|max:150',
-        'investment_type' => 'nullable|string|max:100',
-        'budget' => 'nullable|numeric',
-        'source' => 'nullable|string|max:100',
-    ]);
-
-    DB::transaction(function() use ($investor, $data) {
-        // تحديث بيانات المستخدم
-        $investor->user()->update([
-            'name'   => $data['name'],
-            'email'  => $data['email'],
-            'status' => $data['status'],
+public function update(UpdateInvestorRequest $request, Investor $investor)    {
+        $data = $request->validate([
+            'username'         => 'nullable|string|max:150|unique:users,username,' . $investor->user_id,
+            'name'             => 'required|string|max:150',
+            'email'            => 'required|email|unique:users,email,' . $investor->user_id,
+            'status'           => 'required|string|in:active,inactive',
+            'gender'           => 'nullable|string|in:male,female',
+            'city'             => 'nullable|string|max:150',
+            'state'            => 'nullable|string|max:150',
+            'phone'            => 'nullable|string|max:50',
+            'company'          => 'nullable|string|max:150',
+            'position'         => 'nullable|string|max:150',
+            'investment_type'  => 'nullable|string|max:100',
+            'budget'           => 'nullable|numeric|min:0',
+            'source'           => 'nullable|string|max:100',
+            'notes'            => 'nullable|string',
         ]);
 
-        // تحديث أو إنشاء بيانات المستثمر
-        $investor->update([
-            'phone'           => $data['phone'] ?? null,
-            'company'         => $data['company'] ?? null,
-            'position'        => $data['position'] ?? null,
-            'investment_type' => $data['investment_type'] ?? null,
-            'budget'          => $data['budget'] ?? 0,
-            'source'          => $data['source'] ?? null,
-        ]);
-    });
+        DB::transaction(function () use ($investor, $data) {
+            $investor->user()->update([
+                'username' => $data['username'] ?? $investor->user->username,
+                'name'     => $data['name'],
+                'email'    => $data['email'],
+                'status'   => $data['status'],
+                'gender'   => $data['gender'] ?? null,
+                'city'     => $data['city'] ?? null,
+                'state'    => $data['state'] ?? null,
+            ]);
 
-    return redirect()->route('investors.index')->with('success', 'تم تحديث المستثمر بنجاح.');
-}
+            $investor->update([
+                'phone'           => $data['phone'] ?? null,
+                'company'         => $data['company'] ?? null,
+                'position'        => $data['position'] ?? null,
+                'investment_type' => $data['investment_type'] ?? null,
+                'budget'          => $data['budget'] ?? null,
+                'source'          => $data['source'] ?? null,
+                'notes'           => $data['notes'] ?? null,
+                'status'          => $data['status'],
+            ]);
+
+            $investor->activities()->create([
+                'user_id' => auth('admin')->id(),
+                'action'  => 'updated',
+            ]);
+        });
+
+        return redirect()->route('admin.investors.show', $investor->user_id)
+            ->with('success', 'Investor updated successfully.');
+    }
 
     public function destroy(Investor $investor)
     {
-        $investor->delete();
-
         $investor->activities()->create([
-            'user_id' => auth()->id(),
-            'action'  => 'deleted',
+            'user_id' => auth('admin')->id(),
+            'action'  => 'archived',
         ]);
 
-        return redirect()->route('investors.index')->with('success', 'تم أرشفة المستثمر');
+        $investor->delete();
+
+        return redirect()->route('admin.investors.index', ['view' => 'active'])
+            ->with('success', 'Investor archived successfully.');
     }
 
-    // =================== استعادة ===================
-    public function restore($id)
+    public function restore(Investor $investor)
     {
-        $investor = Investor::withTrashed()->findOrFail($id);
         $investor->restore();
 
         $investor->activities()->create([
-            'user_id' => auth()->id(),
+            'user_id' => auth('admin')->id(),
             'action'  => 'restored',
         ]);
 
-        return back()->with('success', 'تم استعادة المستثمر');
+        return redirect()->route('admin.investors.index', ['view' => 'archived'])
+            ->with('success', 'Investor restored successfully.');
     }
 
-    // =================== حذف نهائي ===================
-    public function forceDelete($id)
+    public function forceDelete(Investor $investor)
     {
-        $investor = Investor::withTrashed()->findOrFail($id);
+        $investor->load('files');
 
         foreach ($investor->files as $file) {
             Storage::disk('public')->delete($file->path);
@@ -197,79 +277,89 @@ class InvestorController extends Controller
 
         $investor->forceDelete();
 
-        return redirect()->route('investors.index')->with('success', 'تم حذف المستثمر نهائيًا');
+        return redirect()->route('admin.investors.index', ['view' => 'archived'])
+            ->with('success', 'Investor permanently deleted.');
     }
 
-    // =================== الملاحظات ===================
-    public function storeNote(Request $request, Investor $investor)
-    {
-        $request->validate(['note' => 'required|string']);
+public function storeNote(Request $request, Investor $investor)
+{
+    $request->validate([
+        'note' => 'required|string',
+    ]);
 
-        $note = $investor->notes()->create([
-            'user_id' => auth()->id(),
-            'note'    => $request->note,
-        ]);
+    $note = $investor->investorNotes()->create([
+        'user_id' => auth('admin')->id(),
+        'note'    => $request->note,
+    ]);
 
-        $investor->activities()->create([
-            'user_id' => auth()->id(),
-            'action'  => 'note_added',
-            'meta'    => ['note_id' => $note->id],
-        ]);
+    $investor->activities()->create([
+        'user_id' => auth('admin')->id(),
+        'action'  => 'note_added',
+        'meta'    => ['note_id' => $note->id],
+    ]);
 
-        return response()->json(['status' => 'success', 'note' => $note->load('user')]);
-    }
+    return redirect()
+        ->route('admin.investors.show', $investor->user_id)
+        ->with('success', 'Note added successfully.');
+}
 
-    public function deleteNote(Investor $investor, InvestorNote $note)
-    {
-        $note->delete();
+public function deleteNote(Investor $investor, InvestorNote $note)
+{
+    $note->delete();
 
-        $investor->activities()->create([
-            'user_id' => auth()->id(),
-            'action'  => 'note_deleted',
-        ]);
+    $investor->activities()->create([
+        'user_id' => auth('admin')->id(),
+        'action'  => 'note_deleted',
+    ]);
 
-        return response()->json(['status' => 'success']);
-    }
+    return redirect()
+        ->route('admin.investors.show', $investor->user_id)
+        ->with('success', 'Note deleted successfully.');
+}
 
-    // =================== الملفات ===================
-    public function uploadFile(Request $request, Investor $investor)
-    {
-        $request->validate(['file' => 'required|file|max:51200']);
+public function uploadFile(Request $request, Investor $investor)
+{
+    $request->validate([
+        'file' => 'required|file|max:51200',
+    ]);
 
-        $file = $request->file('file');
-        $path = $file->store('investors/' . $investor->id, 'public');
+    $file = $request->file('file');
+    $path = $file->store('investors/' . $investor->id, 'public');
 
-        $record = $investor->files()->create([
-            'filename'    => $file->getClientOriginalName(),
-            'path'        => $path,
-            'mime'        => $file->getClientMimeType(),
-            'size'        => $file->getSize(),
-            'uploaded_by' => auth()->id(),
-        ]);
+    $record = $investor->files()->create([
+        'filename'    => $file->getClientOriginalName(),
+        'path'        => $path,
+        'mime'        => $file->getClientMimeType(),
+        'size'        => $file->getSize(),
+        'uploaded_by' => auth('admin')->id(),
+    ]);
 
-        $investor->activities()->create([
-            'user_id' => auth()->id(),
-            'action'  => 'file_uploaded',
-            'meta'    => ['file_id' => $record->id],
-        ]);
+    $investor->activities()->create([
+        'user_id' => auth('admin')->id(),
+        'action'  => 'file_uploaded',
+        'meta'    => ['file_id' => $record->id],
+    ]);
 
-        return response()->json(['status' => 'success', 'file' => $record]);
-    }
+    return redirect()
+        ->route('admin.investors.show', $investor->user_id)
+        ->with('success', 'File uploaded successfully.');
+}
 
-    public function deleteFile(Investor $investor, InvestorFile $file)
-    {
-        Storage::disk('public')->delete($file->path);
-        $file->delete();
+public function deleteFile(Investor $investor, InvestorFile $file)
+{
+    Storage::disk('public')->delete($file->path);
+    $file->delete();
 
-        $investor->activities()->create([
-            'user_id' => auth()->id(),
-            'action'  => 'file_deleted',
-        ]);
+    $investor->activities()->create([
+        'user_id' => auth('admin')->id(),
+        'action'  => 'file_deleted',
+    ]);
 
-        return response()->json(['status' => 'success']);
-    }
+    return redirect()
+        ->route('admin.investors.show', $investor->user_id)
+        ->with('success', 'File deleted successfully.');
+}
 
-    // =================== تصدير / استيراد ===================
     public function export($format = 'xlsx')
     {
         $fileName = 'investors_' . now()->format('Ymd_His') . '.' . $format;
@@ -278,10 +368,12 @@ class InvestorController extends Controller
 
     public function import(Request $request)
     {
-        $request->validate(['file' => 'required|file']);
+        $request->validate([
+            'file' => 'required|file',
+        ]);
 
         Excel::import(new InvestorsImport, $request->file('file'));
 
-        return back()->with('success', 'تم استيراد المستثمرين');
+        return back()->with('success', 'Investors imported successfully.');
     }
 }
