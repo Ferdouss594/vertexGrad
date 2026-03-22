@@ -315,6 +315,74 @@
         color: #cbd5e1;
     }
 
+    .projects-page .custom-pagination-wrap {
+        padding: 18px 20px 24px;
+        border-top: 1px solid #eef2f7;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .projects-page .custom-pagination {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .projects-page .custom-page-item {
+        min-width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        border: 1px solid #e2e8f0;
+        background: #fff;
+        color: #334155;
+        font-weight: 700;
+        font-size: 13px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        transition: all 0.25s ease;
+        box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+        padding: 0 14px;
+    }
+
+    .projects-page .custom-page-item:hover {
+        text-decoration: none;
+        color: #1b00ff;
+        border-color: #c7d2fe;
+        background: #eef2ff;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 22px rgba(27, 0, 255, 0.10);
+    }
+
+    .projects-page .custom-page-item.active {
+        background: linear-gradient(135deg, #1b00ff, #4338ca);
+        color: #fff;
+        border-color: transparent;
+        box-shadow: 0 12px 24px rgba(27, 0, 255, 0.22);
+    }
+
+    .projects-page .custom-page-item.dots {
+        border: none;
+        background: transparent;
+        box-shadow: none;
+        min-width: auto;
+        padding: 0 4px;
+        color: #94a3b8;
+        cursor: default;
+    }
+
+    .projects-page .custom-page-item.dots:hover {
+        transform: none;
+        background: transparent;
+        color: #94a3b8;
+        box-shadow: none;
+        border: none;
+    }
+
     @media (max-width: 1400px) {
         .projects-page .modern-table thead th,
         .projects-page .modern-table tbody td {
@@ -531,9 +599,16 @@
                 </table>
             </div>
 
-            @if(method_exists($projects, 'links'))
-                <div class="p-3">
-                    {{ $projects->links() }}
+            @if($projects instanceof \Illuminate\Pagination\LengthAwarePaginator && $projects->lastPage() > 1)
+                <div class="custom-pagination-wrap">
+                    <div class="custom-pagination">
+                        @for($i = 1; $i <= $projects->lastPage(); $i++)
+                            <a href="{{ $projects->url($i) }}"
+                               class="custom-page-item {{ $projects->currentPage() == $i ? 'active' : '' }}">
+                                {{ $i }}
+                            </a>
+                        @endfor
+                    </div>
                 </div>
             @endif
         </div>
