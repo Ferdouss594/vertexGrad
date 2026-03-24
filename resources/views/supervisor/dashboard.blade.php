@@ -25,9 +25,16 @@
     $chartRevision = max($revisionRequests, 0);
 
     $barMax = max($chartPending, $chartApproved, $chartRevision, 1);
+
+    $featuredAnnouncement = isset($announcements) && $announcements->count() ? $announcements->first() : null;
+    $otherAnnouncements = isset($announcements) && $announcements->count() > 1 ? $announcements->slice(1, 4) : collect();
 @endphp
 
 <style>
+.supervisor-dashboard-page {
+    color: var(--text, #0f172a);
+}
+
 .supervisor-dashboard-page .super-hero-card {
     background: linear-gradient(135deg, #081f5c 0%, #1b00ff 55%, #4338ca 100%);
     border-radius: 26px;
@@ -202,15 +209,163 @@
     color: #fff;
 }
 
+/* =========================
+   Announcements
+========================= */
+.supervisor-dashboard-page .announcement-main-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 26px;
+    padding: 28px 28px 24px;
+    background: var(--announcement-bg, linear-gradient(135deg, rgba(27, 0, 255, 0.08), rgba(6, 182, 212, 0.06)));
+    border: 1px solid var(--announcement-border, rgba(27, 0, 255, 0.14));
+    box-shadow: var(--card-shadow, 0 18px 45px rgba(15, 23, 42, 0.06));
+    color: var(--announcement-text, var(--text, #0f172a));
+}
+
+.supervisor-dashboard-page .announcement-main-card::before {
+    content: "";
+    position: absolute;
+    top: -55px;
+    right: -45px;
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.10);
+    pointer-events: none;
+}
+
+.supervisor-dashboard-page .announcement-main-card::after {
+    content: "";
+    position: absolute;
+    bottom: -60px;
+    left: -40px;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+    pointer-events: none;
+}
+
+.supervisor-dashboard-page .announcement-main-content {
+    position: relative;
+    z-index: 2;
+}
+
+.supervisor-dashboard-page .announcement-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.supervisor-dashboard-page .announcement-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    border: 1px solid var(--border, #dbe3ef);
+    background: rgba(255,255,255,0.55);
+    color: var(--text, #0f172a);
+    backdrop-filter: blur(8px);
+}
+
+html[data-theme="dark"] .supervisor-dashboard-page .announcement-badge {
+    background: rgba(255,255,255,0.08);
+    color: var(--text, #e5eefc);
+}
+
+.supervisor-dashboard-page .announcement-badge.pinned {
+    background: rgba(245, 158, 11, 0.12);
+    border-color: rgba(245, 158, 11, 0.24);
+    color: #d97706;
+}
+
+html[data-theme="dark"] .supervisor-dashboard-page .announcement-badge.pinned {
+    color: #fbbf24;
+}
+
+.supervisor-dashboard-page .announcement-badge.expire {
+    background: rgba(239, 68, 68, 0.10);
+    border-color: rgba(239, 68, 68, 0.18);
+    color: #dc2626;
+}
+
+html[data-theme="dark"] .supervisor-dashboard-page .announcement-badge.expire {
+    color: #fca5a5;
+}
+
+.supervisor-dashboard-page .announcement-title {
+    font-size: 28px;
+    font-weight: 800;
+    line-height: 1.25;
+    margin-bottom: 10px;
+    color: var(--text, #0f172a);
+}
+
+html[data-theme="dark"] .supervisor-dashboard-page .announcement-title {
+    color: var(--text, #e5eefc);
+}
+
+.supervisor-dashboard-page .announcement-text {
+    font-size: 14px;
+    line-height: 1.95;
+    color: var(--text-soft, #64748b);
+    max-width: 980px;
+    margin-bottom: 0;
+}
+
+.supervisor-dashboard-page .announcement-grid {
+    margin-top: 16px;
+}
+
+.supervisor-dashboard-page .announcement-mini-card {
+    height: 100%;
+    border-radius: 20px;
+    border: 1px solid var(--border, #edf2f7);
+    background: var(--surface, #fff);
+    box-shadow: var(--soft-shadow, 0 10px 24px rgba(15, 23, 42, 0.05));
+    padding: 18px;
+}
+
+.supervisor-dashboard-page .announcement-mini-title {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--text, #0f172a);
+    margin-bottom: 8px;
+    line-height: 1.5;
+}
+
+.supervisor-dashboard-page .announcement-mini-text {
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--text-soft, #64748b);
+    margin-bottom: 12px;
+}
+
+.supervisor-dashboard-page .announcement-mini-meta {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-soft, #64748b);
+}
+
+/* =========================
+   KPI
+========================= */
 .supervisor-dashboard-page .kpi-card {
     border-radius: 22px;
     padding: 22px;
     display: flex;
     align-items: center;
     gap: 18px;
-    background: #fff;
-    border: 1px solid #edf2f7;
-    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.06);
+    background: var(--surface, #fff);
+    border: 1px solid var(--border, #edf2f7);
+    box-shadow: var(--card-shadow, 0 12px 28px rgba(15, 23, 42, 0.06));
     height: 100%;
     transition: .25s ease;
 }
@@ -238,7 +393,7 @@
 .supervisor-dashboard-page .kpi-danger .kpi-icon { background: linear-gradient(135deg, #dc2626, #ef4444); }
 
 .supervisor-dashboard-page .kpi-label {
-    color: #64748b;
+    color: var(--text-soft, #64748b);
     font-size: 13px;
     font-weight: 700;
     margin-bottom: 6px;
@@ -247,22 +402,25 @@
 .supervisor-dashboard-page .kpi-value {
     font-size: 30px;
     font-weight: 800;
-    color: #0f172a;
+    color: var(--text, #0f172a);
     line-height: 1;
     margin-bottom: 7px;
 }
 
 .supervisor-dashboard-page .kpi-sub {
-    color: #94a3b8;
+    color: var(--text-soft, #94a3b8);
     font-size: 12px;
     font-weight: 600;
 }
 
+/* =========================
+   Panels
+========================= */
 .supervisor-dashboard-page .dashboard-panel {
-    background: #fff;
+    background: var(--surface, #fff);
     border-radius: 24px;
-    border: 1px solid #edf2f7;
-    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.06);
+    border: 1px solid var(--border, #edf2f7);
+    box-shadow: var(--card-shadow, 0 12px 28px rgba(15, 23, 42, 0.06));
     overflow: hidden;
 }
 
@@ -278,28 +436,28 @@
 .supervisor-dashboard-page .panel-header h5 {
     margin: 0;
     font-weight: 800;
-    color: #0f172a;
+    color: var(--text, #0f172a);
 }
 
 .supervisor-dashboard-page .panel-header p {
-    color: #64748b;
+    color: var(--text-soft, #64748b);
     font-size: 13px;
 }
 
 .supervisor-dashboard-page .panel-action-btn {
     border-radius: 12px;
     padding: 9px 14px;
-    background: #eef2ff;
-    color: #1b00ff;
+    background: color-mix(in srgb, var(--primary, #1b00ff) 10%, transparent);
+    color: var(--primary, #1b00ff);
     text-decoration: none;
     font-weight: 700;
     font-size: 13px;
 }
 
 .supervisor-dashboard-page .panel-action-btn:hover {
-    color: #1b00ff;
+    color: var(--primary, #1b00ff);
     text-decoration: none;
-    background: #e0e7ff;
+    background: color-mix(in srgb, var(--primary, #1b00ff) 16%, transparent);
 }
 
 .supervisor-dashboard-page .donut-wrap {
@@ -322,8 +480,8 @@
     width: 138px;
     height: 138px;
     border-radius: 50%;
-    background: #fff;
-    box-shadow: inset 0 0 0 1px #e2e8f0;
+    background: var(--surface, #fff);
+    box-shadow: inset 0 0 0 1px var(--border, #e2e8f0);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -333,14 +491,14 @@
 .supervisor-dashboard-page .donut-total {
     font-size: 34px;
     font-weight: 800;
-    color: #0f172a;
+    color: var(--text, #0f172a);
     line-height: 1;
 }
 
 .supervisor-dashboard-page .donut-label {
     margin-top: 6px;
     font-size: 13px;
-    color: #64748b;
+    color: var(--text-soft, #64748b);
     font-weight: 700;
 }
 
@@ -355,19 +513,19 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    background: #f8fafc;
+    background: var(--surface-2, #f8fafc);
     border-radius: 16px;
     padding: 12px;
 }
 
 .supervisor-dashboard-page .legend-item strong {
     display: block;
-    color: #0f172a;
+    color: var(--text, #0f172a);
     font-size: 17px;
 }
 
 .supervisor-dashboard-page .legend-item small {
-    color: #64748b;
+    color: var(--text-soft, #64748b);
     font-weight: 600;
 }
 
@@ -400,14 +558,14 @@
 .supervisor-dashboard-page .bar-value {
     font-size: 18px;
     font-weight: 800;
-    color: #0f172a;
+    color: var(--text, #0f172a);
     margin-bottom: 10px;
 }
 
 .supervisor-dashboard-page .bar-track {
     height: 200px;
     border-radius: 18px;
-    background: #f1f5f9;
+    background: var(--surface-2, #f1f5f9);
     position: relative;
     display: flex;
     align-items: end;
@@ -428,7 +586,7 @@
     margin-top: 12px;
     font-size: 13px;
     font-weight: 700;
-    color: #475569;
+    color: var(--text-soft, #475569);
 }
 
 .supervisor-dashboard-page .progress-block {
@@ -448,13 +606,13 @@
     align-items: center;
     justify-content: space-between;
     margin-bottom: 10px;
-    color: #0f172a;
+    color: var(--text, #0f172a);
     font-weight: 700;
 }
 
 .supervisor-dashboard-page .custom-progress {
     height: 14px;
-    background: #edf2f7;
+    background: var(--surface-2, #edf2f7);
     border-radius: 999px;
     overflow: hidden;
 }
@@ -476,13 +634,13 @@
 }
 
 .supervisor-dashboard-page .scan-metric-card {
-    border: 1px solid #edf2f7;
+    border: 1px solid var(--border, #edf2f7);
     border-radius: 18px;
     padding: 16px;
     display: flex;
     align-items: center;
     gap: 14px;
-    background: #fbfdff;
+    background: color-mix(in srgb, var(--surface, #fff) 92%, var(--primary, #1b00ff) 8%);
 }
 
 .supervisor-dashboard-page .scan-metric-icon {
@@ -505,26 +663,30 @@
 .supervisor-dashboard-page .scan-metric-text span {
     display: block;
     font-size: 12px;
-    color: #64748b;
+    color: var(--text-soft, #64748b);
     font-weight: 700;
     margin-bottom: 3px;
 }
 
 .supervisor-dashboard-page .scan-metric-text strong {
     font-size: 24px;
-    color: #0f172a;
+    color: var(--text, #0f172a);
     font-weight: 800;
 }
 
+/* =========================
+   Table
+========================= */
 .supervisor-dashboard-page .dashboard-table {
     width: 100%;
     table-layout: fixed;
+    background: transparent;
 }
 
 .supervisor-dashboard-page .dashboard-table thead th {
-    background: #f8fafc;
-    border-bottom: 1px solid #e2e8f0;
-    color: #334155;
+    background: var(--surface-2, #f8fafc);
+    border-bottom: 1px solid var(--border, #e2e8f0);
+    color: var(--text-soft, #334155);
     font-size: 13px;
     font-weight: 800;
     padding: 14px 16px;
@@ -534,17 +696,18 @@
 .supervisor-dashboard-page .dashboard-table tbody td {
     padding: 16px;
     vertical-align: middle;
-    border-color: #f1f5f9;
+    border-color: color-mix(in srgb, var(--border, #f1f5f9) 72%, transparent);
     overflow: hidden;
+    background: transparent;
 }
 
 .supervisor-dashboard-page .dashboard-table tbody tr:hover {
-    background: #fafcff;
+    background: color-mix(in srgb, var(--primary, #1b00ff) 3%, transparent);
 }
 
 .supervisor-dashboard-page .project-cell-title {
     font-weight: 700;
-    color: #0f172a;
+    color: var(--text, #0f172a);
     line-height: 1.4;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -553,7 +716,7 @@
 
 .supervisor-dashboard-page .project-cell-sub {
     font-size: 12px;
-    color: #64748b;
+    color: var(--text-soft, #64748b);
     margin-top: 4px;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -575,6 +738,12 @@
 .supervisor-dashboard-page .badge-soft-danger { background: #fef2f2; color: #dc2626; }
 .supervisor-dashboard-page .badge-soft-secondary { background: #f1f5f9; color: #475569; }
 
+html[data-theme="dark"] .supervisor-dashboard-page .badge-soft-primary { background: rgba(59,130,246,.12); color: #93c5fd; }
+html[data-theme="dark"] .supervisor-dashboard-page .badge-soft-warning { background: rgba(245,158,11,.12); color: #fcd34d; }
+html[data-theme="dark"] .supervisor-dashboard-page .badge-soft-success { background: rgba(34,197,94,.12); color: #86efac; }
+html[data-theme="dark"] .supervisor-dashboard-page .badge-soft-danger { background: rgba(239,68,68,.12); color: #fca5a5; }
+html[data-theme="dark"] .supervisor-dashboard-page .badge-soft-secondary { background: rgba(148,163,184,.12); color: #cbd5e1; }
+
 .supervisor-dashboard-page .score-pill {
     display: inline-flex;
     align-items: center;
@@ -586,6 +755,11 @@
     color: #1e40af;
     font-weight: 800;
     font-size: 13px;
+}
+
+html[data-theme="dark"] .supervisor-dashboard-page .score-pill {
+    background: rgba(59,130,246,.14);
+    color: #93c5fd;
 }
 
 .supervisor-dashboard-page .table-action-btn {
@@ -611,25 +785,25 @@
 .supervisor-dashboard-page .empty-dashboard-state {
     padding: 55px 20px;
     text-align: center;
-    color: #64748b;
+    color: var(--text-soft, #64748b);
 }
 
 .supervisor-dashboard-page .empty-dashboard-state i {
     font-size: 44px;
-    color: #cbd5e1;
+    color: color-mix(in srgb, var(--text-soft, #cbd5e1) 45%, transparent);
     margin-bottom: 14px;
 }
 
 .supervisor-dashboard-page .empty-dashboard-state h6 {
     font-size: 18px;
-    color: #0f172a;
+    color: var(--text, #0f172a);
     font-weight: 700;
     margin-bottom: 8px;
 }
 
 .supervisor-dashboard-page .custom-pagination-wrap {
     padding: 18px 20px 24px;
-    border-top: 1px solid #eef2f7;
+    border-top: 1px solid color-mix(in srgb, var(--border, #eef2f7) 80%, transparent);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -647,9 +821,9 @@
     min-width: 42px;
     height: 42px;
     border-radius: 12px;
-    border: 1px solid #e2e8f0;
-    background: #fff;
-    color: #334155;
+    border: 1px solid var(--border, #e2e8f0);
+    background: var(--surface, #fff);
+    color: var(--text-soft, #334155);
     font-weight: 700;
     font-size: 13px;
     display: inline-flex;
@@ -663,9 +837,9 @@
 
 .supervisor-dashboard-page .custom-page-item:hover {
     text-decoration: none;
-    color: #1b00ff;
+    color: var(--primary, #1b00ff);
     border-color: #c7d2fe;
-    background: #eef2ff;
+    background: color-mix(in srgb, var(--primary, #1b00ff) 8%, transparent);
     transform: translateY(-2px);
     box-shadow: 0 10px 22px rgba(27, 0, 255, 0.10);
 }
@@ -700,6 +874,10 @@
 
     .supervisor-dashboard-page .bar-track {
         height: 120px;
+    }
+
+    .supervisor-dashboard-page .announcement-title {
+        font-size: 22px;
     }
 }
 </style>
@@ -759,6 +937,75 @@
                 </div>
             </div>
         </div>
+
+        {{-- Announcements --}}
+        @if($featuredAnnouncement)
+            <div class="announcement-main-card mb-4">
+                <div class="announcement-main-content">
+                    <div class="announcement-badges">
+                        <span class="announcement-badge">
+                            <i class="fa fa-bullhorn"></i>
+                            Announcement
+                        </span>
+
+                        @if($featuredAnnouncement->is_pinned)
+                            <span class="announcement-badge pinned">
+                                <i class="fa fa-thumb-tack"></i>
+                                Pinned
+                            </span>
+                        @endif
+
+                        @if($featuredAnnouncement->expires_at)
+                            <span class="announcement-badge expire">
+                                <i class="fa fa-clock-o"></i>
+                                Until {{ $featuredAnnouncement->expires_at->format('M d, Y • h:i A') }}
+                            </span>
+                        @endif
+                    </div>
+
+                    <div class="announcement-title">
+                        {{ $featuredAnnouncement->title }}
+                    </div>
+
+                    <p class="announcement-text">
+                        {{ $featuredAnnouncement->body }}
+                    </p>
+                </div>
+            </div>
+
+            @if($otherAnnouncements->count())
+                <div class="row announcement-grid mb-4">
+                    @foreach($otherAnnouncements as $announcement)
+                        <div class="col-xl-4 col-md-6 mb-3">
+                            <div class="announcement-mini-card">
+                                <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
+                                    <div class="announcement-mini-title">
+                                        {{ $announcement->title }}
+                                    </div>
+
+                                    @if($announcement->is_pinned)
+                                        <span class="announcement-badge pinned" style="padding: 6px 10px; font-size: 10px;">
+                                            <i class="fa fa-thumb-tack"></i>
+                                            Pinned
+                                        </span>
+                                    @endif
+                                </div>
+
+                                <div class="announcement-mini-text">
+                                    {{ \Illuminate\Support\Str::limit($announcement->body, 170) }}
+                                </div>
+
+                                @if($announcement->expires_at)
+                                    <div class="announcement-mini-meta">
+                                        Visible until {{ $announcement->expires_at->format('M d, Y • h:i A') }}
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @endif
+        @endif
 
         <div class="row mb-4">
             <div class="col-xl-3 col-md-6 mb-3">

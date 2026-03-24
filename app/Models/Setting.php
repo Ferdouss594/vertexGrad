@@ -6,21 +6,29 @@ use Illuminate\Database\Eloquent\Model;
 
 class Setting extends Model
 {
-    protected $fillable = ['key', 'value'];
+    protected $fillable = [
+        'group',
+        'key',
+        'label',
+        'value',
+        'type',
+        'description',
+        'is_public',
+        'options',
+    ];
 
-    public $timestamps = true;
+    protected $casts = [
+        'is_public' => 'boolean',
+        'options'   => 'array',
+    ];
 
-    /**
-     * قراءة قيمة الإعداد بسهولة
-     */
-    public static function get($key, $default = null)
+    public function getCastedValueAttribute(): mixed
     {
-        $setting = static::where('key', $key)->first();
-        return $setting ? $setting->value : $default;
-    }
-
-    public static function set($key, $value)
-    {
-        return static::updateOrCreate(['key' => $key], ['value' => $value]);
+        return match ($this->type) {
+            'boolean' => filter_var($this->value, FILTER_VALIDATE_BOOLEAN),
+            'number'  => is_numeric($this->value) ? $this->value + 0 : $this->value,
+            'json'    => $this->value ? json_decode($this->value, true) : [],
+            default   => $this->value,
+        };
     }
 }

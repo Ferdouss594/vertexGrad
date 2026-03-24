@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="utf-8" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -7,31 +7,100 @@
     <title>@yield('title', 'VertexGrad - Supervisor Panel')</title>
 
     <link rel="apple-touch-icon" href="{{ asset('vendors/images/apple-touch-icon.png') }}" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="icon" href="{{ asset('vendors/images/VertexGrad_logod.png') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
 
     <link rel="stylesheet" href="{{ asset('vendors/styles/core.css') }}" />
     <link rel="stylesheet" href="{{ asset('vendors/styles/icon-font.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('src/plugins/datatables/css/dataTables.bootstrap4.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('src/plugins/datatables/css/responsive.bootstrap4.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('vendors/styles/style.css') }}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    @php
+        use App\Models\Announcement;
+
+        $adminUser = auth('admin')->user();
+
+        $layoutAnnouncements = Announcement::published()
+            ->where(function ($query) {
+                $query->where('audience', 'all')
+                      ->orWhere('audience', 'supervisors');
+            })
+            ->ordered()
+            ->take(3)
+            ->get();
+
+        $unreadCount = $adminUser ? $adminUser->unreadNotifications()->count() : 0;
+        $latestNotifications = $adminUser
+            ? $adminUser->notifications()->latest()->take(5)->get()
+            : collect();
+    @endphp
 
     <style>
         :root {
-            --sup-primary: #1b00ff;
-            --sup-primary-2: #4338ca;
-            --sup-dark: #0f172a;
-            --sup-dark-2: #111827;
-            --sup-slate: #64748b;
-            --sup-border: rgba(255,255,255,.08);
-            --sup-card: rgba(255,255,255,.05);
-            --sup-glow: 0 16px 40px rgba(27, 0, 255, .18);
+            --bg: #f5f7fb;
+            --bg-soft: #eef2f8;
+            --surface: #ffffff;
+            --surface-2: #f8fafc;
+            --text: #0f172a;
+            --text-soft: #64748b;
+            --border: #dbe3ef;
+            --primary: #1b00ff;
+            --primary-2: #4338ca;
+            --accent: #06b6d4;
+            --success: #16a34a;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --sidebar: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+            --sidebar-text: #1e293b;
+            --sidebar-muted: #64748b;
+            --sidebar-hover: rgba(27, 0, 255, 0.08);
+            --header-bg: rgba(255, 255, 255, 0.9);
+            --header-border: #e9eef7;
+            --card-shadow: 0 18px 45px rgba(15, 23, 42, 0.06);
+            --soft-shadow: 0 10px 24px rgba(15, 23, 42, 0.05);
+            --announcement-bg: linear-gradient(135deg, rgba(27, 0, 255, 0.08), rgba(6, 182, 212, 0.06));
+            --announcement-border: rgba(27, 0, 255, 0.14);
+            --announcement-text: #0f172a;
+        }
+
+        html[data-theme="dark"] {
+            --bg: #0b1220;
+            --bg-soft: #111827;
+            --surface: #111827;
+            --surface-2: #0f172a;
+            --text: #e5eefc;
+            --text-soft: #94a3b8;
+            --border: rgba(255, 255, 255, 0.08);
+            --primary: #6d5dfc;
+            --primary-2: #8b5cf6;
+            --accent: #22d3ee;
+            --success: #22c55e;
+            --warning: #fbbf24;
+            --danger: #f87171;
+            --sidebar: radial-gradient(circle at top left, rgba(109,93,252,.20), transparent 28%), linear-gradient(180deg, #0b1120 0%, #0f172a 48%, #111827 100%);
+            --sidebar-text: #dbe7ff;
+            --sidebar-muted: #94a3b8;
+            --sidebar-hover: rgba(255, 255, 255, 0.08);
+            --header-bg: rgba(15, 23, 42, 0.85);
+            --header-border: rgba(255, 255, 255, 0.08);
+            --card-shadow: 0 18px 45px rgba(0, 0, 0, 0.22);
+            --soft-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+            --announcement-bg: linear-gradient(135deg, rgba(109, 93, 252, 0.14), rgba(34, 211, 238, 0.09));
+            --announcement-border: rgba(109, 93, 252, 0.22);
+            --announcement-text: #e5eefc;
+        }
+
+        * {
+            transition: background-color .22s ease, border-color .22s ease, color .22s ease, box-shadow .22s ease;
         }
 
         body {
             font-family: 'Inter', sans-serif;
-            background: #f5f7fb;
+            background: var(--bg);
+            color: var(--text);
         }
 
         body.page-transition {
@@ -41,6 +110,10 @@
 
         body.page-transition.fade-out {
             opacity: 0;
+        }
+
+        a {
+            text-decoration: none;
         }
 
         #flash-messages {
@@ -62,7 +135,9 @@
         .main-container {
             opacity: 0;
             transform: translateY(8px);
-            padding-top: 90px;
+            padding-top: 96px;
+            min-height: 100vh;
+            background: var(--bg);
         }
 
         .main-container.loaded {
@@ -70,24 +145,22 @@
             transform: translateY(0);
         }
 
-        /* =========================
-           HEADER
-        ========================= */
+        /* Header */
         .header {
             position: fixed;
             top: 0;
             left: 280px;
             right: 0;
             height: 78px;
-            background: rgba(255, 255, 255, 0.9);
+            background: var(--header-bg);
             backdrop-filter: blur(14px);
-            border-bottom: 1px solid #e9eef7;
+            border-bottom: 1px solid var(--header-border);
             display: flex;
             align-items: center;
             justify-content: space-between;
             padding: 0 24px;
             z-index: 1200;
-            box-shadow: 0 8px 30px rgba(15, 23, 42, .04);
+            box-shadow: var(--soft-shadow);
         }
 
         .left-side-bar.closed + .mobile-menu-overlay + .main-container + .header,
@@ -104,38 +177,57 @@
 
         .menu-icon,
         .search-toggle-icon,
-        .dashboard-setting {
+        .dashboard-setting,
+        .theme-toggle-btn {
             width: 44px;
             height: 44px;
             border-radius: 14px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            background: #f7f9ff;
-            color: #334155;
+            background: var(--surface);
+            color: var(--text);
             cursor: pointer;
             transition: all .2s ease;
-            border: 1px solid #e6ebf5;
+            border: 1px solid var(--border);
             text-decoration: none;
+            box-shadow: var(--soft-shadow);
         }
 
         .menu-icon:hover,
         .search-toggle-icon:hover,
-        .dashboard-setting:hover {
-            background: #eef2ff;
-            color: var(--sup-primary);
+        .dashboard-setting:hover,
+        .theme-toggle-btn:hover {
+            background: var(--bg-soft);
+            color: var(--primary);
             transform: translateY(-1px);
         }
 
+        .theme-toggle-btn i {
+            font-size: 18px;
+        }
+
+        .theme-toggle-btn .theme-icon-dark {
+            display: none;
+        }
+
+        html[data-theme="dark"] .theme-toggle-btn .theme-icon-light {
+            display: none;
+        }
+
+        html[data-theme="dark"] .theme-toggle-btn .theme-icon-dark {
+            display: inline-block;
+        }
+
         .user-info-dropdown .dropdown-toggle {
-            background: #fff;
-            border: 1px solid #e6ebf5;
+            background: var(--surface);
+            border: 1px solid var(--border);
             padding: 8px 12px;
             border-radius: 16px;
             text-decoration: none;
-            color: #0f172a;
+            color: var(--text);
             font-weight: 600;
-            box-shadow: 0 10px 20px rgba(15,23,42,.04);
+            box-shadow: var(--soft-shadow);
         }
 
         .user-info-dropdown .dropdown-toggle::after {
@@ -144,23 +236,26 @@
 
         .user-info-dropdown .dropdown-menu,
         .header-right .dropdown-menu {
-            border: 1px solid #edf2f7;
+            border: 1px solid var(--border);
             border-radius: 18px;
-            box-shadow: 0 20px 45px rgba(15, 23, 42, .12);
+            box-shadow: var(--card-shadow);
             overflow: hidden;
+            background: var(--surface);
         }
 
-        .header-right .dropdown-menu .dropdown-item {
+        .header-right .dropdown-menu .dropdown-item,
+        .user-info-dropdown .dropdown-menu .dropdown-item {
+            color: var(--text);
             transition: .2s ease;
         }
 
-        .header-right .dropdown-menu .dropdown-item:hover {
-            background: #f8fbff;
+        .header-right .dropdown-menu .dropdown-item:hover,
+        .user-info-dropdown .dropdown-menu .dropdown-item:hover {
+            background: var(--bg-soft);
+            color: var(--primary);
         }
 
-        /* =========================
-           NOTIFICATION BELL
-        ========================= */
+        /* Notification bell */
         .notification-trigger {
             position: relative;
             width: 46px;
@@ -169,20 +264,20 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #ffffff, #f8fbff);
-            border: 1px solid #e6ebf5;
-            color: #334155;
-            box-shadow: 0 10px 22px rgba(15, 23, 42, .05);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text);
+            box-shadow: var(--soft-shadow);
             transition: all .22s ease;
             text-decoration: none;
         }
 
         .notification-trigger:hover {
             transform: translateY(-1px);
-            color: var(--sup-primary);
-            background: #eef2ff;
-            border-color: #dbe4ff;
-            box-shadow: 0 14px 28px rgba(27, 0, 255, .10);
+            color: var(--primary);
+            background: var(--bg-soft);
+            border-color: var(--border);
+            box-shadow: var(--card-shadow);
         }
 
         .notification-trigger i {
@@ -205,17 +300,18 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            border: 2px solid #fff;
+            border: 2px solid var(--surface);
             box-shadow: 0 8px 18px rgba(220, 38, 38, .28);
         }
 
         .notification-panel {
             width: 360px;
             max-width: 360px;
-            border: 1px solid #edf2f7;
+            border: 1px solid var(--border);
             border-radius: 18px;
-            box-shadow: 0 20px 45px rgba(15, 23, 42, .12);
+            box-shadow: var(--card-shadow);
             overflow: hidden;
+            background: var(--surface);
         }
 
         .notification-panel-header {
@@ -223,27 +319,27 @@
             justify-content: space-between;
             align-items: center;
             padding: 14px 16px;
-            border-bottom: 1px solid #eef2f7;
-            background: #fff;
+            border-bottom: 1px solid var(--border);
+            background: var(--surface);
         }
 
         .notification-panel-title {
             margin: 0;
             font-size: 15px;
             font-weight: 800;
-            color: #0f172a;
+            color: var(--text);
         }
 
         .notification-panel-count {
             font-size: 12px;
-            color: #64748b;
+            color: var(--text-soft);
             font-weight: 600;
         }
 
         .notification-panel-body {
             max-height: 330px;
             overflow-y: auto;
-            background: #fff;
+            background: var(--surface);
         }
 
         .notification-item-btn {
@@ -252,25 +348,25 @@
             text-align: left;
             padding: 14px 16px;
             border: 0;
-            background: #fff;
-            border-bottom: 1px solid #f1f5f9;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
             transition: .2s ease;
         }
 
         .notification-item-btn:hover {
-            background: #f8fbff;
+            background: var(--bg-soft);
         }
 
         .notification-item-btn.unread {
-            background: #f8faff;
+            background: color-mix(in srgb, var(--surface) 88%, var(--primary) 12%);
         }
 
         .notification-item-icon {
             width: 34px;
             height: 34px;
             border-radius: 12px;
-            background: #eef2ff;
-            color: var(--sup-primary);
+            background: color-mix(in srgb, var(--primary) 12%, transparent);
+            color: var(--primary);
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -281,66 +377,62 @@
         .notification-item-title {
             font-size: 13px;
             font-weight: 800;
-            color: #0f172a;
+            color: var(--text);
             margin-bottom: 3px;
         }
 
         .notification-item-message {
             font-size: 12px;
-            color: #64748b;
+            color: var(--text-soft);
             line-height: 1.5;
         }
 
         .notification-item-time {
             font-size: 11px;
-            color: #94a3b8;
+            color: var(--text-soft);
             margin-top: 6px;
         }
 
         .notification-panel-footer {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            border-top: 1px solid #eef2f7;
-            background: #fff;
+            border-top: 1px solid var(--border);
+            background: var(--surface);
         }
 
         .notification-footer-btn {
             border: 0;
-            background: #fff;
+            background: var(--surface);
             padding: 12px;
             font-size: 13px;
             font-weight: 700;
-            color: #334155;
+            color: var(--text);
             text-decoration: none;
             text-align: center;
             transition: .2s ease;
         }
 
         .notification-footer-btn:hover {
-            background: #f8fbff;
-            color: var(--sup-primary);
+            background: var(--bg-soft);
+            color: var(--primary);
         }
 
         .notification-footer-btn + .notification-footer-btn {
-            border-left: 1px solid #eef2f7;
+            border-left: 1px solid var(--border);
         }
 
-        /* =========================
-           SIDEBAR
-        ========================= */
+        /* Sidebar */
         .left-side-bar {
             position: fixed;
             top: 0;
             left: 0;
             width: 280px;
             height: 100vh;
-            background:
-                radial-gradient(circle at top left, rgba(67,56,202,.22), transparent 28%),
-                linear-gradient(180deg, #0b1120 0%, #0f172a 48%, #111827 100%);
-            border-right: 1px solid rgba(255,255,255,.05);
+            background: var(--sidebar);
+            border-right: 1px solid var(--border);
             z-index: 1300;
             overflow: hidden;
-            box-shadow: 18px 0 45px rgba(253, 254, 255, 0.28);
+            box-shadow: 18px 0 45px rgba(15, 23, 42, 0.10);
         }
 
         .left-side-bar.closed {
@@ -354,20 +446,23 @@
             align-items: center;
             justify-content: space-between;
             padding: 0 20px;
-            border-bottom: 1px solid rgba(255,255,255,.06);
+            border-bottom: 1px solid var(--border);
         }
 
-        .brand-logo a {
+        .brand-logo-link {
             display: flex;
             align-items: center;
             min-height: 60px;
         }
 
-        .brand-logo img {
-            max-height: 42px;
-            width: auto;
+        .brand-main-logo {
+            display: block !important;
+            max-height: 46px !important;
+            width: auto !important;
             object-fit: contain;
-            filter: drop-shadow(0 6px 18px rgba(255,255,255,.08));
+            opacity: 1 !important;
+            visibility: visible !important;
+            filter: none !important;
         }
 
         .close-sidebar {
@@ -377,15 +472,16 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            background: rgba(255,255,255,.06);
-            color: #1c3c65;
+            background: color-mix(in srgb, var(--surface) 88%, var(--primary) 12%);
+            color: var(--text);
             cursor: pointer;
             transition: .2s ease;
+            border: 1px solid var(--border);
         }
 
         .close-sidebar:hover {
-            background: rgba(255,255,255,.12);
-            color: #fff;
+            background: var(--bg-soft);
+            color: var(--primary);
         }
 
         .menu-block {
@@ -400,7 +496,7 @@
         }
 
         .menu-block::-webkit-scrollbar-thumb {
-            background: rgba(255,255,255,.12);
+            background: color-mix(in srgb, var(--text-soft) 30%, transparent);
             border-radius: 20px;
         }
 
@@ -415,10 +511,11 @@
         }
 
         .sidebar-menu .menu-title .mtext {
-            color: rgba(24, 32, 103, 0.42) !important;
-            font-size: 17px;
+            color: var(--sidebar-muted) !important;
+            font-size: 12px;
             font-weight: 800;
             letter-spacing: .14em;
+            text-transform: uppercase;
         }
 
         .sidebar-menu li {
@@ -433,7 +530,7 @@
             min-height: 52px;
             padding: 13px 16px;
             border-radius: 16px;
-            color: #122236;
+            color: var(--sidebar-text);
             text-decoration: none;
             font-weight: 600;
             transition: all .22s ease;
@@ -448,21 +545,22 @@
             justify-content: center;
             align-items: center;
             font-size: 18px;
-            color: #38498d;
+            color: var(--sidebar-text);
+            opacity: .85;
         }
 
         .sidebar-menu li > a:hover,
         .sidebar-menu li.active > a {
-            background: linear-gradient(135deg, rgba(255,255,255,.09), rgba(255,255,255,.04));
-            border-color: rgba(255,255,255,.08);
-            color: #273e9b;
+            background: var(--sidebar-hover);
+            border-color: var(--border);
+            color: var(--primary);
             transform: translateX(3px);
-            box-shadow: inset 0 1px 0 rgba(255,255,255,.04), 0 10px 25px rgba(0,0,0,.18);
+            box-shadow: var(--soft-shadow);
         }
 
         .sidebar-menu li > a:hover .micon,
         .sidebar-menu li.active > a .micon {
-            color: #332b93;
+            color: var(--primary);
         }
 
         .sidebar-menu li > a .menu-arrow {
@@ -477,8 +575,7 @@
         }
 
         .sidebar-menu .dropdown-parent > a {
-            background: linear-gradient(135deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
-            border: 1px solid rgba(255,255,255,.05);
+            border: 1px solid transparent;
         }
 
         .sidebar-menu .submenu {
@@ -487,8 +584,8 @@
             margin-left: 10px;
             padding: 10px;
             border-radius: 18px;
-            background: rgba(255,255,255,.04);
-            border: 1px solid rgba(255,255,255,.05);
+            background: color-mix(in srgb, var(--surface) 94%, var(--primary) 6%);
+            border: 1px solid var(--border);
             box-shadow: inset 0 1px 0 rgba(255,255,255,.03);
         }
 
@@ -509,7 +606,7 @@
             min-height: 46px;
             padding: 11px 14px 11px 42px;
             font-size: 14px;
-            color: #cbd5e1;
+            color: var(--sidebar-text);
             border-radius: 14px;
             background: transparent;
         }
@@ -523,16 +620,33 @@
             height: 8px;
             border-radius: 50%;
             transform: translateY(-50%);
-            background: linear-gradient(135deg, #60a5fa, #8b5cf6);
+            background: linear-gradient(135deg, var(--primary), var(--accent));
             box-shadow: 0 0 0 4px rgba(96,165,250,.12);
         }
 
         .sidebar-menu .submenu a:hover,
         .sidebar-menu .submenu li.active a {
-            background: linear-gradient(135deg, rgba(27,0,255,.18), rgba(67,56,202,.15));
-            color: #e6d6d6;
+            background: color-mix(in srgb, var(--primary) 12%, transparent);
+            color: var(--primary);
             border-color: transparent;
             transform: translateX(2px);
+        }
+
+        html[data-theme="light"] .sidebar-menu .submenu,
+        html[data-theme="light"] .sidebar-menu .submenu li,
+        html[data-theme="light"] .sidebar-menu .submenu li a,
+        html[data-theme="light"] .sidebar-menu .submenu li a .mtext {
+            color: #0f172a !important;
+        }
+
+        html[data-theme="light"] .sidebar-menu .submenu li a {
+            background: transparent !important;
+        }
+
+        html[data-theme="light"] .sidebar-menu .submenu li a:hover,
+        html[data-theme="light"] .sidebar-menu .submenu li.active a {
+            color: var(--primary) !important;
+            background: rgba(27, 0, 255, 0.08) !important;
         }
 
         .mobile-menu-overlay {
@@ -551,25 +665,177 @@
             visibility: visible;
         }
 
+        /* Right sidebar */
         .right-sidebar {
-            background: #fff;
-            border-left: 1px solid #edf2f7;
+            position: fixed;
+            top: 0;
+            right: -340px;
+            width: 320px;
+            height: 100vh;
+            z-index: 1400;
+            background: var(--surface);
+            border-left: 1px solid var(--border);
             box-shadow: -16px 0 45px rgba(15,23,42,.08);
+            transition: right 0.25s ease;
+        }
+
+        .right-sidebar.open {
+            right: 0;
         }
 
         .right-sidebar .sidebar-title {
             padding: 24px 20px;
-            border-bottom: 1px solid #eef2f7;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .right-sidebar .sidebar-title h3 {
+            color: var(--text);
+        }
+
+        .right-sidebar .sidebar-title span {
+            color: var(--text-soft);
         }
 
         .right-sidebar .close-sidebar {
-            background: #f8fafc;
-            color: #334155;
+            background: var(--bg-soft);
+            color: var(--text);
         }
 
         .right-sidebar .close-sidebar:hover {
-            background: #eef2ff;
-            color: var(--sup-primary);
+            background: color-mix(in srgb, var(--primary) 10%, var(--surface));
+            color: var(--primary);
+        }
+
+        .theme-setting-card {
+            border: 1px solid var(--border);
+            background: var(--surface-2);
+            border-radius: 22px;
+            padding: 18px;
+            margin-bottom: 18px;
+        }
+
+        .theme-setting-title {
+            font-size: 13px;
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: .12em;
+        }
+
+        .theme-btn-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .theme-choice-btn {
+            flex: 1;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text);
+            padding: 12px 14px;
+            border-radius: 16px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .theme-choice-btn.active {
+            background: linear-gradient(135deg, var(--primary), var(--primary-2));
+            color: #fff;
+            border-color: transparent;
+            box-shadow: 0 14px 30px rgba(27, 0, 255, .18);
+        }
+
+        /* Announcement helpers */
+        .announcement-banner {
+            background: var(--announcement-bg);
+            border: 1px solid var(--announcement-border);
+            border-radius: 28px;
+            padding: 22px 24px;
+            color: var(--announcement-text);
+            box-shadow: var(--card-shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .announcement-banner::before {
+            content: "";
+            position: absolute;
+            top: -35px;
+            right: -35px;
+            width: 130px;
+            height: 130px;
+            background: rgba(255,255,255,.08);
+            border-radius: 999px;
+            pointer-events: none;
+        }
+
+        .announcement-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            border: 1px solid var(--border);
+            background: color-mix(in srgb, var(--surface) 90%, var(--primary) 10%);
+            color: var(--text);
+        }
+
+        .announcement-badge.pinned {
+            background: rgba(245, 158, 11, 0.10);
+            border-color: rgba(245, 158, 11, 0.22);
+            color: #f59e0b;
+        }
+
+        .announcement-title {
+            font-size: 22px;
+            font-weight: 900;
+            margin-top: 12px;
+            margin-bottom: 8px;
+            color: var(--text);
+        }
+
+        .announcement-text {
+            font-size: 14px;
+            line-height: 1.8;
+            color: var(--text-soft);
+            margin-bottom: 0;
+        }
+
+        .announcement-meta {
+            margin-top: 12px;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-soft);
+        }
+
+        .announcement-card {
+            border: 1px solid var(--border);
+            background: var(--surface);
+            border-radius: 22px;
+            padding: 18px;
+            box-shadow: var(--soft-shadow);
+            height: 100%;
+        }
+
+        .announcement-card-title {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        .announcement-card-text {
+            font-size: 13px;
+            line-height: 1.7;
+            color: var(--text-soft);
+            margin-bottom: 0;
         }
 
         @keyframes fadeSlideDown {
@@ -606,6 +872,11 @@
     </style>
 
     <script>
+        (function () {
+            const savedTheme = localStorage.getItem('supervisor-theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        })();
+
         function showToast(message, type = 'success') {
             const flashDiv = document.getElementById('flash-messages');
             if (!flashDiv) return;
@@ -623,34 +894,16 @@
                 setTimeout(() => toast.remove(), 250);
             }, 4000);
         }
-
-        document.addEventListener('DOMContentLoaded', function () {
-            @if(session('success'))
-                showToast(@json(session('success')), 'success');
-            @endif
-
-            @if(session('error'))
-                showToast(@json(session('error')), 'danger');
-            @endif
-        });
     </script>
 </head>
 <body class="page-transition">
 
 <div id="flash-messages"></div>
 
-@php
-    $adminUser = auth('admin')->user();
-    $unreadCount = $adminUser ? $adminUser->unreadNotifications()->count() : 0;
-    $latestNotifications = $adminUser
-        ? $adminUser->notifications()->latest()->take(5)->get()
-        : collect();
-@endphp
-
 <div class="left-side-bar" id="supervisorSidebar">
     <div class="brand-logo">
-        <a href="{{ route('supervisor.dashboard') }}">
-            <img src="{{ asset('vendors/images/VertexGrad_logod.png') }}" alt="Logo" class="dark-logo" />
+        <a href="{{ route('supervisor.dashboard') }}" class="brand-logo-link">
+            <img src="{{ asset('vendors/images/VertexGrad_logod.png') }}" alt="VertexGrad Logo" class="brand-main-logo" />
         </a>
 
         <div class="close-sidebar" id="sidebarCloseBtn">
@@ -662,90 +915,89 @@
         <div class="sidebar-menu">
             <ul id="accordion-menu">
 
-               @php
-    $user = auth('admin')->user();
+                @php
+                    $user = auth('admin')->user();
 
-    $canReviewProjects = $user && $user->hasPermission('review_projects');
-    $canViewMeetings = $user && $user->hasPermission('view_meetings');
-    $canManageMeetings = $user && $user->hasPermission('manage_meetings');
-    $canViewRequests = $user && $user->hasPermission('view_requests');
-@endphp
+                    $canReviewProjects = $user && $user->hasPermission('review_projects');
+                    $canViewMeetings = $user && $user->hasPermission('view_meetings');
+                    $canManageMeetings = $user && $user->hasPermission('manage_meetings');
+                    $canViewRequests = $user && $user->hasPermission('view_requests');
+                @endphp
 
-<li class="menu-title">
-    <span class="mtext">SUPERVISOR PANEL</span>
-</li>
+                <li class="menu-title">
+                    <span class="mtext">SUPERVISOR PANEL</span>
+                </li>
 
-<li>
-    <a href="{{ route('supervisor.dashboard') }}">
-        <span class="micon bi bi-house-door-fill"></span>
-        <span class="mtext">Dashboard</span>
-    </a>
-</li>
+                <li>
+                    <a href="{{ route('supervisor.dashboard') }}">
+                        <span class="micon bi bi-house-door-fill"></span>
+                        <span class="mtext">Dashboard</span>
+                    </a>
+                </li>
 
-@if($canReviewProjects)
-<li class="dropdown-parent">
-    <a href="javascript:void(0);" class="menu-dropdown-trigger">
-        <span class="micon bi bi-folder-fill"></span>
-        <span class="mtext">Projects</span>
-        <span class="menu-arrow"><i class="fa fa-chevron-down"></i></span>
-    </a>
-    <ul class="submenu">
-        <li><a href="{{ route('supervisor.projects.index') }}">All Projects</a></li>
-        <li><a href="{{ route('supervisor.projects.pending') }}">Pending Reviews</a></li>
-        <li><a href="{{ route('supervisor.projects.approved') }}">Approved Projects</a></li>
-        <li><a href="{{ route('supervisor.projects.revisions') }}">Revision Requests</a></li>
-    </ul>
-</li>
-@endif
+                @if($canReviewProjects)
+                <li class="dropdown-parent">
+                    <a href="javascript:void(0);" class="menu-dropdown-trigger">
+                        <span class="micon bi bi-folder-fill"></span>
+                        <span class="mtext">Projects</span>
+                        <span class="menu-arrow"><i class="fa fa-chevron-down"></i></span>
+                    </a>
+                    <ul class="submenu">
+                        <li><a href="{{ route('supervisor.projects.index') }}">All Projects</a></li>
+                        <li><a href="{{ route('supervisor.projects.pending') }}">Pending Reviews</a></li>
+                        <li><a href="{{ route('supervisor.projects.approved') }}">Approved Projects</a></li>
+                        <li><a href="{{ route('supervisor.projects.revisions') }}">Revision Requests</a></li>
+                    </ul>
+                </li>
+                @endif
 
-@if($canViewMeetings)
-<li class="dropdown-parent">
-    <a href="javascript:void(0);" class="menu-dropdown-trigger">
-        <span class="micon bi bi-calendar-event"></span>
-        <span class="mtext">Meetings</span>
-        <span class="menu-arrow"><i class="fa fa-chevron-down"></i></span>
-    </a>
-    <ul class="submenu">
-        <li><a href="{{ route('supervisor.meetings.index') }}">All Meetings</a></li>
-        <li><a href="{{ route('supervisor.meetings.upcoming') }}">Upcoming Meetings</a></li>
-        <li><a href="{{ route('supervisor.meetings.completed') }}">Completed Meetings</a></li>
+                @if($canViewMeetings)
+                <li class="dropdown-parent">
+                    <a href="javascript:void(0);" class="menu-dropdown-trigger">
+                        <span class="micon bi bi-calendar-event"></span>
+                        <span class="mtext">Meetings</span>
+                        <span class="menu-arrow"><i class="fa fa-chevron-down"></i></span>
+                    </a>
+                    <ul class="submenu">
+                        <li><a href="{{ route('supervisor.meetings.index') }}">All Meetings</a></li>
+                        <li><a href="{{ route('supervisor.meetings.upcoming') }}">Upcoming Meetings</a></li>
+                        <li><a href="{{ route('supervisor.meetings.completed') }}">Completed Meetings</a></li>
+                        @if($canManageMeetings)
+                        <li><a href="{{ route('supervisor.meetings.create') }}">Create Meeting</a></li>
+                        @endif
+                    </ul>
+                </li>
+                @endif
 
-        @if($canManageMeetings)
-        <li><a href="{{ route('supervisor.meetings.create') }}">Create Meeting</a></li>
-        @endif
-    </ul>
-</li>
-@endif
+                @if($canViewRequests)
+                <li class="dropdown-parent">
+                    <a href="javascript:void(0);" class="menu-dropdown-trigger">
+                        <span class="micon fa fa-send"></span>
+                        <span class="mtext">Requests</span>
+                        <span class="menu-arrow"><i class="fa fa-chevron-down"></i></span>
+                    </a>
+                    <ul class="submenu">
+                        <li><a href="{{ route('supervisor.requests.index') }}">All Requests</a></li>
+                        <li><a href="{{ route('supervisor.requests.pending') }}">Pending Requests</a></li>
+                        <li><a href="{{ route('supervisor.requests.completed') }}">Completed Requests</a></li>
+                    </ul>
+                </li>
+                @endif
 
-@if($canViewRequests)
-<li class="dropdown-parent">
-    <a href="javascript:void(0);" class="menu-dropdown-trigger">
-        <span class="micon fa fa-send"></span>
-        <span class="mtext">Requests</span>
-        <span class="menu-arrow"><i class="fa fa-chevron-down"></i></span>
-    </a>
-    <ul class="submenu">
-        <li><a href="{{ route('supervisor.requests.index') }}">All Requests</a></li>
-        <li><a href="{{ route('supervisor.requests.pending') }}">Pending Requests</a></li>
-        <li><a href="{{ route('supervisor.requests.completed') }}">Completed Requests</a></li>
-    </ul>
-</li>
-@endif
+                <li class="menu-title">
+                    <span class="mtext">ACCOUNT</span>
+                </li>
 
-<li class="menu-title">
-    <span class="mtext">ACCOUNT</span>
-</li>
+                <li>
+                    <a href="{{ route('supervisor.profile.index') }}">
+                        <span class="micon bi bi-person-lines-fill"></span>
+                        <span class="mtext">Profile Settings</span>
+                    </a>
+                </li>
 
-<li>
-    <a href="{{ route('supervisor.profile.index') }}">
-        <span class="micon bi bi-person-lines-fill"></span>
-        <span class="mtext">Profile Settings</span>
-    </a>
-</li>
-
-</ul>
-</div>
-</div>
+            </ul>
+        </div>
+    </div>
 </div>
 
 <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
@@ -757,7 +1009,13 @@
     </div>
 
     <div class="header-right d-flex align-items-center gap-2">
-        <a href="javascript:;" class="dashboard-setting" data-toggle="right-sidebar">
+
+        <button type="button" class="theme-toggle-btn" id="themeToggleBtn" title="Toggle theme">
+            <i class="fas fa-moon theme-icon-light"></i>
+            <i class="fas fa-sun theme-icon-dark"></i>
+        </button>
+
+        <a href="javascript:void(0);" class="dashboard-setting" id="rightSidebarToggleBtn" title="Layout settings">
             <i class="dw dw-settings2"></i>
         </a>
 
@@ -846,7 +1104,7 @@
                     </a>
                 </li>
                 <li>
-                    <a class="dropdown-item" href="#">
+                    <a class="dropdown-item" href="javascript:void(0);">
                         <i class="bi bi-gear"></i> Settings
                     </a>
                 </li>
@@ -866,33 +1124,72 @@
     </div>
 </div>
 
-<div class="right-sidebar">
+<div class="right-sidebar" id="rightSidebarPanel">
     <div class="sidebar-title">
-        <h3 class="weight-600 font-16 text-blue">
+        <h3 class="weight-600 font-16">
             Layout Settings
             <span class="btn-block font-weight-400 font-12">User Interface Settings</span>
         </h3>
-        <div class="close-sidebar" data-toggle="right-sidebar-close">
+        <div class="close-sidebar" id="rightSidebarCloseBtn">
             <i class="icon-copy ion-close-round"></i>
         </div>
     </div>
 
     <div class="right-sidebar-body customscroll">
-        <div class="right-sidebar-body-content">
-            <h4 class="weight-600 font-18 pb-10">Header Background</h4>
-            <div class="sidebar-btn-group pb-30 mb-10">
-                <a href="javascript:void(0);" class="btn btn-outline-primary header-white active">White</a>
-                <a href="javascript:void(0);" class="btn btn-outline-primary header-dark">Dark</a>
+        <div class="right-sidebar-body-content p-3">
+
+            <div class="theme-setting-card">
+                <div class="theme-setting-title">Theme Mode</div>
+                <div class="theme-btn-group">
+                    <button type="button" class="theme-choice-btn" id="themeLightBtn">Light</button>
+                    <button type="button" class="theme-choice-btn" id="themeDarkBtn">Dark</button>
+                </div>
             </div>
 
-            <h4 class="weight-600 font-18 pb-10">Sidebar Background</h4>
-            <div class="sidebar-btn-group pb-30 mb-10">
-                <a href="javascript:void(0);" class="btn btn-outline-primary sidebar-light">White</a>
-                <a href="javascript:void(0);" class="btn btn-outline-primary sidebar-dark active">Dark</a>
+            <div class="theme-setting-card">
+                <div class="theme-setting-title">Announcements</div>
+
+                @if($layoutAnnouncements->count())
+                    <div class="d-flex flex-column gap-3">
+                        @foreach($layoutAnnouncements as $announcement)
+                            <div class="announcement-card">
+                                <div class="d-flex align-items-start justify-content-between gap-2 mb-2">
+                                    <div class="announcement-card-title">
+                                        {{ $announcement->title }}
+                                    </div>
+
+                                    @if($announcement->is_pinned)
+                                        <span class="announcement-badge pinned" style="padding:6px 10px; font-size:10px;">
+                                            <i class="fas fa-thumbtack"></i>
+                                            Pinned
+                                        </span>
+                                    @endif
+                                </div>
+
+                                <p class="announcement-card-text">
+                                    {{ \Illuminate\Support\Str::limit($announcement->body, 120) }}
+                                </p>
+
+                                @if($announcement->expires_at)
+                                    <div class="announcement-meta">
+                                        Until {{ $announcement->expires_at->format('M d, Y • h:i A') }}
+                                    </div>
+                                @endif
+                            </div>
+                        @endforeach
+                    </div>
+                @else
+                    <div class="announcement-card">
+                        <div class="announcement-card-title">No announcements</div>
+                        <p class="announcement-card-text mb-0">
+                            There are no active announcements right now.
+                        </p>
+                    </div>
+                @endif
             </div>
 
-            <div class="reset-options pt-30 text-center">
-                <button class="btn btn-danger" id="reset-settings">Reset Settings</button>
+            <div class="reset-options pt-2 text-center">
+                <button class="btn btn-danger" id="reset-settings" type="button">Reset Theme</button>
             </div>
         </div>
     </div>
@@ -914,135 +1211,238 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" defer></script>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const sidebar = document.getElementById('supervisorSidebar');
-        const toggleBtn = document.getElementById('sidebarToggleBtn');
-        const closeBtn = document.getElementById('sidebarCloseBtn');
-        const overlay = document.getElementById('mobileMenuOverlay');
-        const main = document.querySelector('.main-container');
+document.addEventListener('DOMContentLoaded', function () {
+    @if(session('success'))
+        showToast(@json(session('success')), 'success');
+    @endif
 
-        if (main) {
-            requestAnimationFrame(() => {
-                main.classList.add('loaded');
-            });
+    @if(session('error'))
+        showToast(@json(session('error')), 'danger');
+    @endif
+
+    const html = document.documentElement;
+    const body = document.body;
+
+    const sidebar = document.getElementById('supervisorSidebar');
+    const toggleBtn = document.getElementById('sidebarToggleBtn');
+    const closeBtn = document.getElementById('sidebarCloseBtn');
+    const overlay = document.getElementById('mobileMenuOverlay');
+    const main = document.querySelector('.main-container');
+
+    const rightSidebar = document.getElementById('rightSidebarPanel');
+    const rightSidebarToggleBtn = document.getElementById('rightSidebarToggleBtn');
+    const rightSidebarCloseBtn = document.getElementById('rightSidebarCloseBtn');
+
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+    const themeLightBtn = document.getElementById('themeLightBtn');
+    const themeDarkBtn = document.getElementById('themeDarkBtn');
+    const resetBtn = document.getElementById('reset-settings');
+
+    if (main) {
+        requestAnimationFrame(() => {
+            main.classList.add('loaded');
+        });
+    }
+
+    function applyTheme(theme) {
+        html.setAttribute('data-theme', theme);
+        localStorage.setItem('supervisor-theme', theme);
+        syncThemeButtons();
+    }
+
+    function syncThemeButtons() {
+        const currentTheme = html.getAttribute('data-theme') || 'light';
+
+        if (themeLightBtn && themeDarkBtn) {
+            themeLightBtn.classList.toggle('active', currentTheme === 'light');
+            themeDarkBtn.classList.toggle('active', currentTheme === 'dark');
         }
+    }
 
-        function openSidebarMobile() {
-            sidebar.classList.add('mobile-open');
-            overlay.classList.add('active');
-        }
+    function openRightSidebarPanel() {
+        if (!rightSidebar) return;
+        rightSidebar.classList.add('open');
+    }
 
-        function closeSidebarMobile() {
-            sidebar.classList.remove('mobile-open');
-            overlay.classList.remove('active');
-        }
+    function closeRightSidebarPanel() {
+        if (!rightSidebar) return;
+        rightSidebar.classList.remove('open');
+    }
 
-        function toggleSidebarDesktop() {
-            sidebar.classList.toggle('closed');
-            document.body.classList.toggle('sidebar-collapsed');
-        }
+    function toggleRightSidebarPanel() {
+        if (!rightSidebar) return;
+        rightSidebar.classList.toggle('open');
+    }
 
-        if (toggleBtn) {
-            toggleBtn.addEventListener('click', function () {
-                if (window.innerWidth <= 991) {
-                    if (sidebar.classList.contains('mobile-open')) {
-                        closeSidebarMobile();
-                    } else {
-                        openSidebarMobile();
-                    }
-                } else {
-                    toggleSidebarDesktop();
-                }
-            });
-        }
+    function openSidebarMobile() {
+        if (!sidebar || !overlay) return;
+        sidebar.classList.add('mobile-open');
+        overlay.classList.add('active');
+    }
 
-        if (closeBtn) {
-            closeBtn.addEventListener('click', function () {
-                if (window.innerWidth <= 991) {
+    function closeSidebarMobile() {
+        if (!sidebar || !overlay) return;
+        sidebar.classList.remove('mobile-open');
+        overlay.classList.remove('active');
+    }
+
+    function toggleSidebarDesktop() {
+        if (!sidebar) return;
+        sidebar.classList.toggle('closed');
+        body.classList.toggle('sidebar-collapsed');
+    }
+
+    if (themeToggleBtn) {
+        themeToggleBtn.addEventListener('click', function () {
+            const currentTheme = html.getAttribute('data-theme') || 'light';
+            applyTheme(currentTheme === 'light' ? 'dark' : 'light');
+        });
+    }
+
+    if (themeLightBtn) {
+        themeLightBtn.addEventListener('click', function () {
+            applyTheme('light');
+            closeRightSidebarPanel();
+        });
+    }
+
+    if (themeDarkBtn) {
+        themeDarkBtn.addEventListener('click', function () {
+            applyTheme('dark');
+            closeRightSidebarPanel();
+        });
+    }
+
+    if (resetBtn) {
+        resetBtn.addEventListener('click', function () {
+            applyTheme('light');
+            closeRightSidebarPanel();
+        });
+    }
+
+    syncThemeButtons();
+
+    if (rightSidebarToggleBtn) {
+        rightSidebarToggleBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            toggleRightSidebarPanel();
+        });
+    }
+
+    if (rightSidebarCloseBtn) {
+        rightSidebarCloseBtn.addEventListener('click', function () {
+            closeRightSidebarPanel();
+        });
+    }
+
+    if (toggleBtn) {
+        toggleBtn.addEventListener('click', function () {
+            if (window.innerWidth <= 991) {
+                if (sidebar && sidebar.classList.contains('mobile-open')) {
                     closeSidebarMobile();
                 } else {
-                    toggleSidebarDesktop();
+                    openSidebarMobile();
                 }
-            });
-        }
+            } else {
+                toggleSidebarDesktop();
+            }
+        });
+    }
 
-        if (overlay) {
-            overlay.addEventListener('click', closeSidebarMobile);
-        }
+    if (closeBtn) {
+        closeBtn.addEventListener('click', function () {
+            if (window.innerWidth <= 991) {
+                closeSidebarMobile();
+            } else {
+                toggleSidebarDesktop();
+            }
+        });
+    }
 
-        document.querySelectorAll('.dropdown-parent').forEach(function (parent) {
-            const link = parent.querySelector('a');
-            let closeTimer = null;
+    if (overlay) {
+        overlay.addEventListener('click', function () {
+            closeSidebarMobile();
+            closeRightSidebarPanel();
+        });
+    }
 
-            link.addEventListener('click', function (e) {
-                e.preventDefault();
+    document.querySelectorAll('.dropdown-parent').forEach(function (parent) {
+        const link = parent.querySelector('a');
+        let closeTimer = null;
 
-                const isOpen = parent.classList.contains('open');
+        if (!link) return;
 
-                document.querySelectorAll('.dropdown-parent').forEach(function (item) {
+        link.addEventListener('click', function (e) {
+            e.preventDefault();
+
+            const isOpen = parent.classList.contains('open');
+
+            document.querySelectorAll('.dropdown-parent').forEach(function (item) {
+                if (item !== parent) {
                     item.classList.remove('open');
-                });
+                }
+            });
 
-                if (!isOpen) {
-                    parent.classList.add('open');
+            if (!isOpen) {
+                parent.classList.add('open');
 
-                    closeTimer = setTimeout(function () {
-                        parent.classList.remove('open');
-                    }, 10000);
-                } else {
+                closeTimer = setTimeout(function () {
                     parent.classList.remove('open');
-                }
-            });
-
-            parent.addEventListener('mouseenter', function () {
-                if (closeTimer) {
-                    clearTimeout(closeTimer);
-                }
-            });
-
-            parent.addEventListener('mouseleave', function () {
-                if (parent.classList.contains('open')) {
-                    closeTimer = setTimeout(function () {
-                        parent.classList.remove('open');
-                    }, 10000);
-                }
-            });
+                }, 10000);
+            } else {
+                parent.classList.remove('open');
+            }
         });
 
-        const bell = document.getElementById('admin-notification-bell');
-        if (bell) {
-            const countUrl = bell.dataset.countUrl;
-            const badge = document.getElementById('adminUnreadBadge');
-            const unreadText = document.getElementById('adminUnreadText');
+        parent.addEventListener('mouseenter', function () {
+            if (closeTimer) clearTimeout(closeTimer);
+        });
 
-            function refreshUnreadCount() {
-                fetch(countUrl, {
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'Accept': 'application/json'
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    const count = data.count ?? 0;
-
-                    if (unreadText) unreadText.textContent = count;
-
-                    if (badge) {
-                        if (count > 0) {
-                            badge.classList.remove('d-none');
-                            badge.textContent = count > 9 ? '9+' : count;
-                        } else {
-                            badge.classList.add('d-none');
-                        }
-                    }
-                })
-                .catch(() => {});
+        parent.addEventListener('mouseleave', function () {
+            if (parent.classList.contains('open')) {
+                closeTimer = setTimeout(function () {
+                    parent.classList.remove('open');
+                }, 10000);
             }
-
-            setInterval(refreshUnreadCount, 30000);
-        }
+        });
     });
+
+    const bell = document.getElementById('admin-notification-bell');
+    if (bell) {
+        const countUrl = bell.dataset.countUrl;
+        const badge = document.getElementById('adminUnreadBadge');
+        const unreadText = document.getElementById('adminUnreadText');
+
+        function refreshUnreadCount() {
+            fetch(countUrl, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                const count = data.count ?? 0;
+
+                if (unreadText) {
+                    unreadText.textContent = count;
+                }
+
+                if (badge) {
+                    if (count > 0) {
+                        badge.classList.remove('d-none');
+                        badge.textContent = count > 9 ? '9+' : count;
+                    } else {
+                        badge.classList.add('d-none');
+                    }
+                }
+            })
+            .catch(() => {});
+        }
+
+        setInterval(refreshUnreadCount, 30000);
+    }
+});
 </script>
 
 @stack('scripts')

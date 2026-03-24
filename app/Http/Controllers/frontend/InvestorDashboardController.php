@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Announcement;
 use App\Models\Project;
 
 class InvestorDashboardController extends Controller
@@ -77,11 +78,20 @@ class InvestorDashboardController extends Controller
             'approved_count'   => $myInvestments->where('pivot.status', 'approved')->count(),
         ];
 
+        $announcements = Announcement::published()
+            ->where(function ($query) {
+                $query->where('audience', 'all')
+                      ->orWhere('audience', 'investors');
+            })
+            ->ordered()
+            ->get();
+
         return view('frontend.dashboard.investor', compact(
             'myInvestments',
             'totalDeployed',
             'suggestedProjects',
-            'marketplaceStats'
+            'marketplaceStats',
+            'announcements'
         ));
     }
 

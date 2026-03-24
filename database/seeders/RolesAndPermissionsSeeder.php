@@ -109,6 +109,7 @@ class RolesAndPermissionsSeeder extends Seeder
             ['name' => 'View Investors', 'slug' => 'view_investors', 'group' => 'investors', 'description' => 'Can view investors'],
             ['name' => 'Edit Investors', 'slug' => 'edit_investors', 'group' => 'investors', 'description' => 'Can edit investor data'],
             ['name' => 'Manage Investor Notes', 'slug' => 'manage_investor_notes', 'group' => 'investors', 'description' => 'Can manage investor notes'],
+            ['name' => 'View Audit Logs', 'slug' => 'view_audit_logs', 'group' => 'audit', 'description' => 'Can view audit logs'],
         ];
 
         foreach ($permissions as $permissionData) {

@@ -33,6 +33,99 @@
             </div>
         </header>
 
+        {{-- Announcements --}}
+        @if(isset($announcements) && $announcements->count())
+            @php
+                $featuredAnnouncement = $announcements->first();
+                $otherAnnouncements = $announcements->slice(1);
+            @endphp
+
+            <section id="announcementSection" class="mb-8">
+                <div class="relative overflow-hidden rounded-[2rem] border border-cyan-400/20 bg-gradient-to-r from-cyan-500/10 via-slate-900/90 to-slate-900/90 backdrop-blur-xl shadow-[0_18px_50px_rgba(0,224,255,0.08)]">
+                    <div class="absolute inset-0 pointer-events-none">
+                        <div class="absolute -top-12 -right-12 w-44 h-44 bg-cyan-400/10 rounded-full blur-3xl"></div>
+                        <div class="absolute -bottom-12 -left-12 w-44 h-44 bg-primary/10 rounded-full blur-3xl"></div>
+                    </div>
+
+                    <div class="relative z-10 p-5 md:p-7">
+                        <div class="flex items-start gap-4">
+                            <div class="hidden sm:flex w-14 h-14 rounded-2xl border border-cyan-400/20 bg-cyan-400/10 text-cyan-300 items-center justify-center shrink-0">
+                                <i class="fas fa-bullhorn text-lg"></i>
+                            </div>
+
+                            <div class="flex-1 min-w-0">
+                                <div class="flex flex-wrap items-center gap-2 mb-3">
+                                    <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/5 text-light/70 border border-white/10 text-[11px] font-black uppercase tracking-[0.16em]">
+                                        Announcement
+                                    </span>
+
+                                    @if($featuredAnnouncement->is_pinned)
+                                        <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-amber-400/10 text-amber-300 border border-amber-400/20 text-[11px] font-black uppercase tracking-[0.16em]">
+                                            <i class="fas fa-thumbtack text-[10px]"></i>
+                                            Pinned
+                                        </span>
+                                    @endif
+
+                                    @if($featuredAnnouncement->expires_at)
+                                        <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-red-500/10 text-red-200 border border-red-500/20 text-[11px] font-black uppercase tracking-[0.16em]">
+                                            <i class="fas fa-hourglass-half text-[10px]"></i>
+                                            Until {{ $featuredAnnouncement->expires_at->format('M d, Y • h:i A') }}
+                                        </span>
+                                    @endif
+                                </div>
+
+                                <h2 class="text-xl md:text-2xl font-black text-light leading-tight mb-2">
+                                    {{ $featuredAnnouncement->title }}
+                                </h2>
+
+                                <p class="text-light/70 text-sm md:text-[15px] leading-7 max-w-4xl">
+                                    {{ $featuredAnnouncement->body }}
+                                </p>
+                            </div>
+
+                            <button type="button"
+                                    onclick="dismissAnnouncements()"
+                                    class="shrink-0 w-11 h-11 rounded-2xl border border-white/10 bg-white/5 hover:bg-white/10 text-light/50 hover:text-light transition flex items-center justify-center">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+
+                        @if($otherAnnouncements->count())
+                            <div class="mt-5 pt-5 border-t border-white/10">
+                                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                                    @foreach($otherAnnouncements as $announcement)
+                                        <div class="rounded-[1.5rem] border border-white/10 bg-white/5 hover:bg-white/[0.07] transition p-4">
+                                            <div class="flex items-start justify-between gap-3 mb-2">
+                                                <h3 class="text-light font-bold text-base leading-snug">
+                                                    {{ $announcement->title }}
+                                                </h3>
+
+                                                @if($announcement->is_pinned)
+                                                    <span class="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-amber-400/10 text-amber-300 border border-amber-400/20 shrink-0">
+                                                        <i class="fas fa-thumbtack text-[11px]"></i>
+                                                    </span>
+                                                @endif
+                                            </div>
+
+                                            <p class="text-light/55 text-sm leading-6">
+                                                {{ \Illuminate\Support\Str::limit($announcement->body, 160) }}
+                                            </p>
+
+                                            @if($announcement->expires_at)
+                                                <div class="mt-3 text-[11px] text-red-200/90 font-semibold">
+                                                    Visible until {{ $announcement->expires_at->format('M d, Y • h:i A') }}
+                                                </div>
+                                            @endif
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            </section>
+        @endif
+
         @if(session('success'))
             <div class="max-w-6xl mx-auto px-4 mb-6">
                 <div class="p-4 rounded-xl border border-green-500/40 bg-green-500/10 text-green-200">
@@ -666,6 +759,18 @@
 
 <script>
     let currentRequestMode = 'normal';
+
+    function dismissAnnouncements() {
+        const section = document.getElementById('announcementSection');
+        if (section) {
+            section.style.transition = 'all 0.25s ease';
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(-8px)';
+            setTimeout(() => {
+                section.remove();
+            }, 250);
+        }
+    }
 
     function openVideoModal(url){
         const modal = document.getElementById('videoModal');

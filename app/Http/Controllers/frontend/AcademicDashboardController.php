@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Announcement;
 use App\Models\Project;
 use App\Models\ProjectRequest;
 use App\Models\ProjectRequestResponse;
@@ -70,6 +71,14 @@ class AcademicDashboardController extends Controller
                 : collect();
         }
 
+        $announcements = Announcement::published()
+            ->where(function ($query) {
+                $query->where('audience', 'all')
+                      ->orWhere('audience', 'students');
+            })
+            ->ordered()
+            ->get();
+
         return view('frontend.dashboard.academic', compact(
             'user',
             'projects',
@@ -78,7 +87,8 @@ class AcademicDashboardController extends Controller
             'currentImages',
             'currentVideoUrl',
             'currentRequests',
-            'currentMeetings'
+            'currentMeetings',
+            'announcements'
         ));
     }
 

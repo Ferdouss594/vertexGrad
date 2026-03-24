@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Supervisor;
 
 use App\Http\Controllers\Controller;
+use App\Models\Announcement;
 use App\Models\Project;
 use Illuminate\Http\Request;
 
@@ -15,12 +16,7 @@ class SupervisorDashboardController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | Base query for dashboard
-        |--------------------------------------------------------------------------
-        | حالياً نعرض كل المشاريع للمشرف حتى يقدر يراجع ويقيّم.
-        | إذا رجعت لاحقاً لنظام المشاريع المخصصة فقط للمشرف،
-        | فقط أضف:
-        | ->where('supervisor_id', $user->id)
+        | Base query
         |--------------------------------------------------------------------------
         */
         $projectsQuery = Project::with(['student', 'supervisor']);
@@ -67,19 +63,31 @@ class SupervisorDashboardController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | Latest projects with pagination
-        |--------------------------------------------------------------------------
-        | مهم جداً: استخدم paginate بدل get عشان تظهر أرقام الصفحات 1 2 3
+        | Latest projects
         |--------------------------------------------------------------------------
         */
         $latestProjects = (clone $projectsQuery)
             ->latest('updated_at')
             ->paginate(8);
 
+        /*
+        |--------------------------------------------------------------------------
+        | Announcements (🔥 الجديد)
+        |--------------------------------------------------------------------------
+        */
+        $announcements = Announcement::published()
+            ->where(function ($query) {
+                $query->where('audience', 'all')
+                      ->orWhere('audience', 'supervisors');
+            })
+            ->ordered()
+            ->get();
+
         return view('supervisor.dashboard', compact(
             'user',
             'stats',
-            'latestProjects'
+            'latestProjects',
+            'announcements'
         ));
     }
 }

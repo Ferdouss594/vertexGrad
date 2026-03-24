@@ -7,6 +7,7 @@ use App\Models\ProjectInvestment;
 use Illuminate\Http\Request;
 use App\Notifications\FundingRequestApprovedNotification;
 use App\Notifications\FundingRequestRejectedNotification;
+use App\Services\AuditLogService;
 
 class InvestmentRequestController extends Controller
 {
@@ -62,6 +63,20 @@ class InvestmentRequestController extends Controller
             'amount'     => ProjectInvestment::where('status', 'approved')->sum('amount'),
         ];
 
+        AuditLogService::log(
+            event: 'viewed',
+            description: 'Viewed investment requests index',
+            category: 'investment_request',
+            properties: [
+                'filter_status' => $request->status,
+                'search' => $request->search,
+                'sort_by' => $sortBy,
+                'per_page' => $perPage,
+                'results_count' => $investmentRequests->count(),
+                'total_requests' => $stats['total'],
+            ]
+        );
+
         return view('admin.investment-requests.index', compact('investmentRequests', 'stats'));
     }
 
@@ -70,6 +85,10 @@ class InvestmentRequestController extends Controller
         $data = $request->validate([
             'status' => 'required|in:interested,requested,approved,rejected',
         ]);
+
+        $investmentRequest->load(['investor', 'project']);
+
+        $oldValues = $this->auditInvestmentPayload($investmentRequest);
 
         $oldStatus = $investmentRequest->status;
         $newStatus = $data['status'];
@@ -82,11 +101,43 @@ class InvestmentRequestController extends Controller
             'status' => $newStatus,
         ]);
 
+        $investmentRequest->refresh();
         $investmentRequest->load(['investor', 'project']);
+
+        AuditLogService::log(
+            event: 'status_updated',
+            description: 'Updated investment request status from ' . $oldStatus . ' to ' . $newStatus,
+            category: 'investment_request',
+            subject: $investmentRequest->project,
+            oldValues: $oldValues,
+            newValues: $this->auditInvestmentPayload($investmentRequest),
+            properties: [
+                'investment_request_id' => $investmentRequest->id,
+                'project_id' => $investmentRequest->project_id,
+                'project_name' => $investmentRequest->project->name ?? null,
+                'investor_id' => $investmentRequest->investor_id,
+                'investor_name' => $investmentRequest->investor->name ?? null,
+                'amount' => $investmentRequest->amount,
+                'message' => $investmentRequest->message,
+            ]
+        );
 
         if ($newStatus === 'approved' && $investmentRequest->investor && $investmentRequest->project) {
             $investmentRequest->investor->notify(
                 new FundingRequestApprovedNotification($investmentRequest->project)
+            );
+
+            AuditLogService::log(
+                event: 'notification_sent',
+                description: 'Sent funding approval notification to investor for project: ' . ($investmentRequest->project->name ?? 'Unknown Project'),
+                category: 'investment_request_notification',
+                subject: $investmentRequest->project,
+                properties: [
+                    'investment_request_id' => $investmentRequest->id,
+                    'investor_id' => $investmentRequest->investor_id,
+                    'investor_name' => $investmentRequest->investor->name ?? null,
+                    'notification_type' => 'FundingRequestApprovedNotification',
+                ]
             );
         }
 
@@ -94,8 +145,35 @@ class InvestmentRequestController extends Controller
             $investmentRequest->investor->notify(
                 new FundingRequestRejectedNotification($investmentRequest->project)
             );
+
+            AuditLogService::log(
+                event: 'notification_sent',
+                description: 'Sent funding rejection notification to investor for project: ' . ($investmentRequest->project->name ?? 'Unknown Project'),
+                category: 'investment_request_notification',
+                subject: $investmentRequest->project,
+                properties: [
+                    'investment_request_id' => $investmentRequest->id,
+                    'investor_id' => $investmentRequest->investor_id,
+                    'investor_name' => $investmentRequest->investor->name ?? null,
+                    'notification_type' => 'FundingRequestRejectedNotification',
+                ]
+            );
         }
 
         return back()->with('success', 'Investment request status updated successfully.');
+    }
+
+    protected function auditInvestmentPayload(ProjectInvestment $investmentRequest): array
+    {
+        return [
+            'id' => $investmentRequest->id,
+            'project_id' => $investmentRequest->project_id,
+            'investor_id' => $investmentRequest->investor_id,
+            'status' => $investmentRequest->status,
+            'amount' => $investmentRequest->amount,
+            'message' => $investmentRequest->message,
+            'created_at' => $investmentRequest->created_at,
+            'updated_at' => $investmentRequest->updated_at,
+        ];
     }
 }

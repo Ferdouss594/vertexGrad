@@ -23,10 +23,6 @@
         :root {
             --vg-primary: #1b00ff;
             --vg-primary-dark: #1400c8;
-            --vg-header-start: #081534;
-            --vg-header-end: #1200b8;
-            --vg-sidebar-start: #061127;
-            --vg-sidebar-end: #0b1d49;
             --vg-bg: #f3f6fb;
             --vg-surface: #ffffff;
             --vg-surface-soft: #f8fafc;
@@ -37,6 +33,43 @@
             --vg-shadow-md: 0 16px 36px rgba(15, 23, 42, 0.10);
             --sidebar-width: 290px;
             --header-height: 76px;
+
+            /* الوضع الافتراضي الأبيض */
+            --vg-header-bg: #ffffff;
+            --vg-header-color: #18243a;
+            --vg-header-btn-bg: #f8fafc;
+            --vg-header-btn-border: #e2e8f0;
+            --vg-sidebar-bg: #ffffff;
+            --vg-sidebar-color: #18243a;
+            --vg-sidebar-muted: #7b8aa0;
+            --vg-sidebar-hover: #f2f6fc;
+            --vg-sidebar-active-bg: rgba(27, 0, 255, 0.08);
+            --vg-sidebar-active-color: #1b00ff;
+            --vg-sidebar-border: #edf2f7;
+            --vg-sidebar-bottom-bg: #fbfdff;
+            --vg-sidebar-card-bg: #f8fafc;
+            --vg-sidebar-card-border: #e2e8f0;
+            --vg-header-shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
+            --vg-sidebar-shadow: 8px 0 26px rgba(15, 23, 42, 0.08);
+        }
+
+        body.dark-theme {
+            --vg-header-bg: linear-gradient(135deg, #081534 0%, #1200b8 100%);
+            --vg-header-color: #ffffff;
+            --vg-header-btn-bg: rgba(255,255,255,0.12);
+            --vg-header-btn-border: rgba(255,255,255,0.10);
+            --vg-sidebar-bg: linear-gradient(180deg, #061127 0%, #0b1d49 100%);
+            --vg-sidebar-color: rgba(255,255,255,0.84);
+            --vg-sidebar-muted: rgba(255,255,255,0.46);
+            --vg-sidebar-hover: rgba(255,255,255,0.10);
+            --vg-sidebar-active-bg: linear-gradient(90deg, rgba(27,0,255,0.36) 0%, rgba(79,70,229,0.18) 100%);
+            --vg-sidebar-active-color: #ffffff;
+            --vg-sidebar-border: rgba(255,255,255,0.07);
+            --vg-sidebar-bottom-bg: rgba(255,255,255,0.02);
+            --vg-sidebar-card-bg: rgba(255,255,255,0.05);
+            --vg-sidebar-card-border: rgba(255,255,255,0.07);
+            --vg-header-shadow: 0 10px 28px rgba(9, 16, 45, 0.18);
+            --vg-sidebar-shadow: 8px 0 26px rgba(10, 16, 39, 0.18);
         }
 
         html, body {
@@ -65,7 +98,6 @@
         .header,
         .left-side-bar,
         .main-container,
-        .right-sidebar,
         .footer {
             box-sizing: border-box;
         }
@@ -89,9 +121,10 @@
             align-items: center;
             justify-content: space-between;
             padding: 0 24px;
-            background: linear-gradient(135deg, var(--vg-header-start) 0%, var(--vg-header-end) 100%) !important;
-            border: 0 !important;
-            box-shadow: 0 10px 28px rgba(9, 16, 45, 0.18);
+            background: var(--vg-header-bg) !important;
+            border-bottom: 1px solid var(--vg-border) !important;
+            box-shadow: var(--vg-header-shadow);
+            transition: all 0.25s ease;
         }
 
         body.sidebar-closed .header {
@@ -122,10 +155,11 @@
             z-index: 1001;
             display: flex !important;
             flex-direction: column;
-            background: linear-gradient(180deg, var(--vg-sidebar-start) 0%, var(--vg-sidebar-end) 100%) !important;
-            box-shadow: 8px 0 26px rgba(10, 16, 39, 0.18);
+            background: var(--vg-sidebar-bg) !important;
+            box-shadow: var(--vg-sidebar-shadow);
             overflow: hidden;
             transition: transform 0.25s ease, opacity 0.25s ease !important;
+            border-right: 1px solid var(--vg-sidebar-border);
         }
 
         .main-container {
@@ -141,27 +175,6 @@
             padding: 0 22px;
         }
 
-        .right-sidebar {
-            position: fixed !important;
-            top: 0;
-            right: 0;
-            width: 320px;
-            max-width: 100%;
-            height: 100vh;
-            background: #fff;
-            border-left: 1px solid var(--vg-border);
-            box-shadow: -10px 0 24px rgba(15, 23, 42, 0.06);
-            z-index: 1200;
-            transform: translateX(320px);
-            opacity: 0;
-            transition: transform 0.25s ease, opacity 0.25s ease !important;
-        }
-
-        .right-sidebar.open {
-            transform: translateX(0);
-            opacity: 1;
-        }
-
         .header-left,
         .header-right {
             display: flex;
@@ -171,36 +184,36 @@
 
         .header-left .menu-icon,
         .header-left .search-toggle-icon,
-        .header-right .dashboard-setting,
-        .header-right .header-circle-btn {
+        .header-right .header-circle-btn,
+        .theme-switch-btn {
             width: 42px;
             height: 42px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             border-radius: 13px;
-            background: rgba(255,255,255,0.12);
-            border: 1px solid rgba(255,255,255,0.10);
-            color: #fff;
+            background: var(--vg-header-btn-bg);
+            border: 1px solid var(--vg-header-btn-border);
+            color: var(--vg-header-color);
             cursor: pointer;
             transition: all 0.18s ease;
             flex-shrink: 0;
+            text-decoration: none;
         }
 
         .header-left .menu-icon:hover,
         .header-left .search-toggle-icon:hover,
-        .header-right .dashboard-setting:hover,
-        .header-right .header-circle-btn:hover {
-            background: rgba(255,255,255,0.18);
+        .header-right .header-circle-btn:hover,
+        .theme-switch-btn:hover {
             transform: translateY(-1px);
         }
 
         .user-info-dropdown .dropdown-toggle {
             padding: 6px 10px 6px 8px;
             border-radius: 15px;
-            border: 1px solid rgba(255,255,255,0.10);
-            background: rgba(255,255,255,0.12);
-            color: #fff !important;
+            border: 1px solid var(--vg-header-btn-border);
+            background: var(--vg-header-btn-bg);
+            color: var(--vg-header-color) !important;
             text-decoration: none;
             display: flex;
             align-items: center;
@@ -208,7 +221,7 @@
 
         .user-info-dropdown .dropdown-toggle::after {
             margin-left: 10px;
-            color: #fff;
+            color: var(--vg-header-color);
         }
 
         .left-side-bar .brand-logo {
@@ -218,7 +231,7 @@
             justify-content: space-between;
             gap: 12px;
             padding: 18px 18px 16px;
-            border-bottom: 1px solid rgba(255,255,255,0.07);
+            border-bottom: 1px solid var(--vg-sidebar-border);
             flex-shrink: 0;
         }
 
@@ -244,15 +257,14 @@
             align-items: center;
             justify-content: center;
             border-radius: 10px;
-            color: rgba(255,255,255,0.82);
+            color: var(--vg-sidebar-color);
             cursor: pointer;
             transition: all 0.18s ease;
             flex-shrink: 0;
         }
 
         .left-side-bar .close-sidebar:hover {
-            background: rgba(255,255,255,0.08);
-            color: #fff;
+            background: var(--vg-sidebar-hover);
         }
 
         .menu-block {
@@ -278,7 +290,7 @@
             font-weight: 800;
             letter-spacing: 0.08em;
             text-transform: uppercase;
-            color: rgba(255,255,255,0.44);
+            color: var(--vg-sidebar-muted);
         }
 
         #accordion-menu {
@@ -305,7 +317,7 @@
             min-height: 52px !important;
             padding: 14px 14px !important;
             border-radius: 14px !important;
-            color: rgba(255,255,255,0.84) !important;
+            color: var(--vg-sidebar-color) !important;
             text-decoration: none !important;
             font-weight: 600 !important;
             font-size: 14px !important;
@@ -323,8 +335,7 @@
         }
 
         #accordion-menu li a:hover {
-            background: rgba(255,255,255,0.10) !important;
-            color: #fff !important;
+            background: var(--vg-sidebar-hover) !important;
             transform: translateX(2px);
         }
 
@@ -360,16 +371,16 @@
         #accordion-menu li a.active,
         #accordion-menu li a.current,
         #accordion-menu li a[aria-expanded="true"] {
-            background: linear-gradient(90deg, rgba(27,0,255,0.36) 0%, rgba(79,70,229,0.18) 100%) !important;
-            color: #fff !important;
-            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05);
+            background: var(--vg-sidebar-active-bg) !important;
+            color: var(--vg-sidebar-active-color) !important;
+            box-shadow: inset 0 0 0 1px rgba(27,0,255,0.05);
         }
 
         .sidebar-bottom {
             margin-top: auto;
             padding: 14px 12px 16px;
-            border-top: 1px solid rgba(255,255,255,0.07);
-            background: rgba(255,255,255,0.02);
+            border-top: 1px solid var(--vg-sidebar-border);
+            background: var(--vg-sidebar-bottom-bg);
             flex-shrink: 0;
         }
 
@@ -378,14 +389,14 @@
             font-weight: 800;
             letter-spacing: 0.08em;
             text-transform: uppercase;
-            color: rgba(255,255,255,0.46);
+            color: var(--vg-sidebar-muted);
             margin-bottom: 10px;
             padding: 0 6px;
         }
 
         .sidebar-account-card {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.07);
+            background: var(--vg-sidebar-card-bg);
+            border: 1px solid var(--vg-sidebar-card-border);
             border-radius: 16px;
             padding: 12px;
         }
@@ -402,14 +413,14 @@
             height: 40px;
             border-radius: 50%;
             object-fit: cover;
-            border: 2px solid rgba(255,255,255,0.14);
+            border: 2px solid rgba(148,163,184,0.18);
             flex-shrink: 0;
         }
 
         .sidebar-account-name {
             font-size: 13px;
             font-weight: 700;
-            color: #fff;
+            color: var(--vg-sidebar-color);
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -418,7 +429,7 @@
         .sidebar-account-role {
             margin-top: 2px;
             font-size: 11px;
-            color: rgba(255,255,255,0.60);
+            color: var(--vg-sidebar-muted);
         }
 
         .sidebar-account-links {
@@ -434,7 +445,7 @@
             min-height: 42px;
             padding: 10px 12px;
             border-radius: 12px;
-            color: rgba(255,255,255,0.84);
+            color: var(--vg-sidebar-color);
             text-decoration: none;
             font-weight: 600;
             font-size: 13px;
@@ -442,8 +453,7 @@
         }
 
         .sidebar-account-links a:hover {
-            background: rgba(255,255,255,0.08);
-            color: #fff;
+            background: var(--vg-sidebar-hover);
         }
 
         .dropdown-menu {
@@ -585,9 +595,9 @@
     </div>
 
     <div class="header-right">
-        <a href="javascript:;" class="dashboard-setting" data-toggle="right-sidebar" title="Layout settings">
-            <i class="dw dw-settings2"></i>
-        </a>
+        <button type="button" class="theme-switch-btn" id="themeSwitchBtn" title="Change theme">
+            <i class="bi bi-moon-stars-fill" id="themeSwitchIcon"></i>
+        </button>
 
         <div class="dropdown" id="admin-notification-bell" data-count-url="{{ route('admin.notifications.count') }}">
             <a class="dropdown-toggle position-relative d-inline-flex align-items-center justify-content-center text-decoration-none header-circle-btn"
@@ -682,13 +692,13 @@
                      width="34"
                      height="34"
                      alt="User Avatar"
-                     style="object-fit: cover; border: 2px solid rgba(255,255,255,0.15);">
+                     style="object-fit: cover; border: 2px solid rgba(148,163,184,0.18);">
 
                 <div class="d-none d-md-block text-start">
-                    <div style="font-size: 13px; font-weight: 700; color: #fff; line-height: 1.2;">
+                    <div style="font-size: 13px; font-weight: 700; color: var(--vg-header-color); line-height: 1.2;">
                         {{ $adminUser ? $adminUser->name : 'Guest' }}
                     </div>
-                    <div style="font-size: 11px; color: rgba(255,255,255,0.72); line-height: 1.2;">
+                    <div style="font-size: 11px; color: var(--vg-text-muted); line-height: 1.2;">
                         Administrator
                     </div>
                 </div>
@@ -711,38 +721,6 @@
             <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" class="d-none">
                 @csrf
             </form>
-        </div>
-    </div>
-</div>
-
-<div class="right-sidebar">
-    <div class="sidebar-title px-4 py-3" style="border-bottom: 1px solid var(--vg-border);">
-        <div class="d-flex justify-content-between align-items-start gap-3">
-            <div>
-                <h3 class="mb-1 fw-bold" style="font-size: 16px; color: var(--vg-primary);">Layout Settings</h3>
-                <div class="small" style="color: var(--vg-text-muted);">User interface preferences</div>
-            </div>
-            <div class="close-sidebar" data-toggle="right-sidebar-close" style="cursor: pointer;">
-                <i class="icon-copy ion-close-round"></i>
-            </div>
-        </div>
-    </div>
-
-    <div class="right-sidebar-body customscroll">
-        <div class="right-sidebar-body-content p-4">
-            <h4 class="fw-bold mb-3" style="font-size: 15px; color: var(--vg-text);">Header</h4>
-            <div class="sidebar-btn-group d-flex gap-2 pb-4 mb-2">
-                <a href="javascript:void(0);" class="btn btn-outline-primary active">Dark Blue</a>
-            </div>
-
-            <h4 class="fw-bold mb-3" style="font-size: 15px; color: var(--vg-text);">Sidebar</h4>
-            <div class="sidebar-btn-group d-flex gap-2 pb-4 mb-2">
-                <a href="javascript:void(0);" class="btn btn-outline-primary active">Deep Blue</a>
-            </div>
-
-            <div class="pt-3 text-center">
-                <button class="btn btn-danger px-4" id="reset-settings">Reset Settings</button>
-            </div>
         </div>
     </div>
 </div>
@@ -843,17 +821,41 @@
                     </a>
                 </li>
 
-                
-                <li>
-    <a href="{{ route('admin.projects.final-decisions.index') }}" class="dropdown-toggle no-arrow">
-        <span class="micon bi bi-check2-square"></span>
-        <span class="mtext">Final Decisions</span>
-    </a>
-    <a href="{{ route('admin.reports.index') }}" class="dropdown-toggle no-arrow">
-        <span class="micon bi bi-check2-square"></span>
-        <span class="mtext">reports</span>
-    </a>
-</li>
+                @if(Route::has('admin.projects.final-decisions.index'))
+                    <li>
+                        <a href="{{ route('admin.projects.final-decisions.index') }}"
+                           class="dropdown-toggle no-arrow {{ request()->routeIs('admin.projects.final-decisions.*') ? 'active' : '' }}">
+                            <span class="micon bi bi-check2-square"></span>
+                            <span class="mtext">Final Decisions</span>
+                        </a>
+                    </li>
+                @endif
+
+                @if(Route::has('admin.reports.index'))
+                    <li>
+                        <a href="{{ route('admin.reports.index') }}"
+                           class="dropdown-toggle no-arrow {{ request()->routeIs('admin.reports.index') ? 'active' : '' }}">
+                            <span class="micon bi bi-bar-chart-line-fill"></span>
+                            <span class="mtext">Reports</span>
+                        </a>
+                        <a href="{{ route('admin.permissions.index') }}"
+                           class="dropdown-toggle no-arrow {{ request()->routeIs('admin.reports.index') ? 'active' : '' }}">
+                            <span class="micon bi bi-bar-chart-line-fill"></span>
+                            <span class="mtext">permissions</span>
+                        </a>
+                        <a href="{{ route('admin.announcements.index') }}"
+                           class="dropdown-toggle no-arrow {{ request()->routeIs('admin.reports.index') ? 'active' : '' }}">
+                            <span class="micon bi bi-bar-chart-line-fill"></span>
+                            <span class="mtext">announcements</span>
+                        </a>
+                        <a href="{{ route('admin.audit-logs.index') }}"
+                           class="dropdown-toggle no-arrow {{ request()->routeIs('admin.reports.index') ? 'active' : '' }}">
+                            <span class="micon bi bi-bar-chart-line-fill"></span>
+                            <span class="mtext">Audit Center</span>
+                        </a>
+
+                    </li>
+                @endif
             </ul>
 
             <div class="sidebar-bottom">
@@ -949,7 +951,17 @@ document.addEventListener('DOMContentLoaded', function () {
 document.addEventListener('DOMContentLoaded', function () {
     const body = document.body;
     const sidebar = document.querySelector('.left-side-bar');
-    const rightSidebar = document.querySelector('.right-sidebar');
+    const themeSwitchBtn = document.getElementById('themeSwitchBtn');
+    const themeSwitchIcon = document.getElementById('themeSwitchIcon');
+
+    const savedTheme = localStorage.getItem('vertex-theme');
+
+    if (savedTheme === 'dark') {
+        body.classList.add('dark-theme');
+        if (themeSwitchIcon) {
+            themeSwitchIcon.className = 'bi bi-sun-fill';
+        }
+    }
 
     function openLeftSidebar() {
         if (!sidebar) return;
@@ -973,6 +985,22 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    function toggleTheme() {
+        body.classList.toggle('dark-theme');
+
+        if (body.classList.contains('dark-theme')) {
+            localStorage.setItem('vertex-theme', 'dark');
+            if (themeSwitchIcon) {
+                themeSwitchIcon.className = 'bi bi-sun-fill';
+            }
+        } else {
+            localStorage.setItem('vertex-theme', 'light');
+            if (themeSwitchIcon) {
+                themeSwitchIcon.className = 'bi bi-moon-stars-fill';
+            }
+        }
+    }
+
     document.querySelectorAll('[data-toggle="left-sidebar-toggle"]').forEach(function (btn) {
         btn.addEventListener('click', function (e) {
             e.preventDefault();
@@ -987,20 +1015,11 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    document.querySelectorAll('[data-toggle="right-sidebar"]').forEach(function (btn) {
-        btn.addEventListener('click', function (e) {
-            e.preventDefault();
-            if (!rightSidebar) return;
-            rightSidebar.classList.add('open');
+    if (themeSwitchBtn) {
+        themeSwitchBtn.addEventListener('click', function () {
+            toggleTheme();
         });
-    });
-
-    document.querySelectorAll('[data-toggle="right-sidebar-close"]').forEach(function (btn) {
-        btn.addEventListener('click', function () {
-            if (!rightSidebar) return;
-            rightSidebar.classList.remove('open');
-        });
-    });
+    }
 
     if (window.innerWidth <= 991) {
         closeLeftSidebar();
