@@ -89,6 +89,32 @@ class SettingSeeder extends Seeder
                 'is_public' => false,
             ],
 
+    [
+        'group' => 'appearance',
+        'key' => 'default_theme',
+        'label' => 'Default Theme',
+        'value' => 'light',
+        'type' => 'select',
+        'options' => ['light', 'dark'],
+        'description' => 'Default theme for the platform.',
+    ],
+    [
+        'group' => 'appearance',
+        'key' => 'enable_theme_switcher',
+        'label' => 'Enable Theme Switcher',
+        'value' => '1',
+        'type' => 'boolean',
+        'description' => 'Allow users to switch between light and dark mode.',
+    ],
+    [
+        'group' => 'appearance',
+        'key' => 'auto_close_sidebar_mobile',
+        'label' => 'Auto Close Sidebar on Mobile',
+        'value' => '1',
+        'type' => 'boolean',
+        'description' => 'Automatically close sidebar on mobile devices.',
+    ],
+
             // Audit
             [
                 'group' => 'audit',
@@ -178,6 +204,33 @@ class SettingSeeder extends Seeder
                 'options' => ['light', 'dark'],
                 'is_public' => true,
             ],
+            [
+    'group' => 'branding',
+    'key' => 'platform_logo',
+    'label' => 'Platform Logo',
+    'value' => '',
+    'type' => 'image',
+    'description' => 'Main platform logo used in the system.',
+    'is_public' => true,
+],
+[
+    'group' => 'branding',
+    'key' => 'platform_favicon',
+    'label' => 'Platform Favicon',
+    'value' => '',
+    'type' => 'image',
+    'description' => 'Browser tab icon.',
+    'is_public' => true,
+],
+[
+    'group' => 'branding',
+    'key' => 'admin_logo',
+    'label' => 'Admin Panel Logo',
+    'value' => '',
+    'type' => 'image',
+    'description' => 'Logo used in admin sidebar/header.',
+    'is_public' => true,
+],
         ];
 
         foreach ($settings as $setting) {

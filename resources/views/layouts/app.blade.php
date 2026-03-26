@@ -4,10 +4,15 @@
     <meta charset="utf-8" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-    <title>@yield('title', 'VertexGrad - Dashboard')</title>
 
-    <link rel="apple-touch-icon" href="{{ asset('vendors/images/apple-touch-icon.png') }}" />
-    <link rel="icon" href="{{ asset('vendors/images/VertexGrad_logod.png') }}">
+    <title>{{ setting('platform_name', 'VertexGrad') }} - @yield('title', 'Dashboard')</title>
+
+    <link rel="apple-touch-icon"
+          href="{{ setting('platform_logo') ? asset('storage/' . setting('platform_logo')) : asset('vendors/images/apple-touch-icon.png') }}" />
+
+    <link rel="icon"
+          href="{{ setting('platform_favicon') ? asset('storage/' . setting('platform_favicon')) : asset('vendors/images/VertexGrad_logod.png') }}">
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('vendors/styles/core.css') }}" />
@@ -34,7 +39,6 @@
             --sidebar-width: 290px;
             --header-height: 76px;
 
-            /* الوضع الافتراضي الأبيض */
             --vg-header-bg: #ffffff;
             --vg-header-color: #18243a;
             --vg-header-btn-bg: #f8fafc;
@@ -706,7 +710,7 @@
 
             <ul class="dropdown-menu dropdown-menu-end border-0" style="min-width: 230px;">
                 <li><a class="dropdown-item d-flex align-items-center gap-2" href="{{ route('admin.profile') }}"><i class="bi bi-person"></i><span>Profile</span></a></li>
-                <li><a class="dropdown-item d-flex align-items-center gap-2" href="#"><i class="bi bi-gear"></i><span>Settings</span></a></li>
+                <li><a class="dropdown-item d-flex align-items-center gap-2" href="{{ route('admin.settings.index') }}"><i class="bi bi-gear"></i><span>Settings</span></a></li>
                 <li><hr class="dropdown-divider my-2"></li>
                 <li>
                     <a class="dropdown-item d-flex align-items-center gap-2 text-danger"
@@ -728,7 +732,9 @@
 <div class="left-side-bar">
     <div class="brand-logo">
         <a href="{{ route('manager.dashboard') }}" class="sidebar-logo-link">
-            <img src="{{ asset('vendors/images/VertexGrad_logod.png') }}" alt="VertexGrad Logo" class="sidebar-logo-img" />
+            <img src="{{ setting('admin_logo') ? asset('storage/' . setting('admin_logo')) : (setting('platform_logo') ? asset('storage/' . setting('platform_logo')) : asset('vendors/images/VertexGrad_logod.png')) }}"
+                 alt="{{ setting('platform_name', 'VertexGrad') }}"
+                 class="sidebar-logo-img" />
         </a>
 
         <div class="close-sidebar" data-toggle="left-sidebar-close" title="Close sidebar">
@@ -834,26 +840,50 @@
                 @if(Route::has('admin.reports.index'))
                     <li>
                         <a href="{{ route('admin.reports.index') }}"
-                           class="dropdown-toggle no-arrow {{ request()->routeIs('admin.reports.index') ? 'active' : '' }}">
+                           class="dropdown-toggle no-arrow {{ request()->routeIs('admin.reports.*') ? 'active' : '' }}">
                             <span class="micon bi bi-bar-chart-line-fill"></span>
                             <span class="mtext">Reports</span>
                         </a>
+                    </li>
+                @endif
+
+                @if(Route::has('admin.permissions.index'))
+                    <li>
                         <a href="{{ route('admin.permissions.index') }}"
-                           class="dropdown-toggle no-arrow {{ request()->routeIs('admin.reports.index') ? 'active' : '' }}">
-                            <span class="micon bi bi-bar-chart-line-fill"></span>
-                            <span class="mtext">permissions</span>
+                           class="dropdown-toggle no-arrow {{ request()->routeIs('admin.permissions.*') ? 'active' : '' }}">
+                            <span class="micon bi bi-shield-lock-fill"></span>
+                            <span class="mtext">Permissions</span>
                         </a>
+                    </li>
+                @endif
+
+                @if(Route::has('admin.announcements.index'))
+                    <li>
                         <a href="{{ route('admin.announcements.index') }}"
-                           class="dropdown-toggle no-arrow {{ request()->routeIs('admin.reports.index') ? 'active' : '' }}">
-                            <span class="micon bi bi-bar-chart-line-fill"></span>
-                            <span class="mtext">announcements</span>
+                           class="dropdown-toggle no-arrow {{ request()->routeIs('admin.announcements.*') ? 'active' : '' }}">
+                            <span class="micon bi bi-megaphone-fill"></span>
+                            <span class="mtext">Announcements</span>
                         </a>
+                    </li>
+                @endif
+
+                @if(Route::has('admin.audit-logs.index'))
+                    <li>
                         <a href="{{ route('admin.audit-logs.index') }}"
-                           class="dropdown-toggle no-arrow {{ request()->routeIs('admin.reports.index') ? 'active' : '' }}">
-                            <span class="micon bi bi-bar-chart-line-fill"></span>
+                           class="dropdown-toggle no-arrow {{ request()->routeIs('admin.audit-logs.*') ? 'active' : '' }}">
+                            <span class="micon bi bi-clipboard-data-fill"></span>
                             <span class="mtext">Audit Center</span>
                         </a>
+                    </li>
+                @endif
 
+                @if(Route::has('settings.index'))
+                    <li>
+                        <a href="{{ route('admin.settings.index') }}"
+                           class="dropdown-toggle no-arrow {{ request()->routeIs('settings.*') ? 'active' : '' }}">
+                            <span class="micon bi bi-gear-fill"></span>
+                            <span class="mtext">Settings</span>
+                        </a>
                     </li>
                 @endif
             </ul>
@@ -877,7 +907,7 @@
                             <span class="micon bi bi-person-circle"></span>
                             <span class="mtext">Profile</span>
                         </a>
-                        <a href="#">
+                        <a href="{{ route('admin.settings.index') }}">
                             <span class="micon bi bi-gear"></span>
                             <span class="mtext">Settings</span>
                         </a>
@@ -894,8 +924,8 @@
     </div>
 
     <div class="app-footer">
-        <div><strong>VertexGrad</strong> Manager Panel</div>
-        <div>Professional management for students, projects, investors, and requests.</div>
+        <div><strong>{{ setting('platform_name', 'VertexGrad') }}</strong> Manager Panel</div>
+        <div>{{ setting('platform_tagline', 'Professional management for students, projects, investors, and requests.') }}</div>
     </div>
 </div>
 

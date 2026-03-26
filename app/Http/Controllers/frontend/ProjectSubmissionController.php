@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use App\Http\Requests\Frontend\SubmitProjectStep1Request;
 use App\Http\Requests\Frontend\SubmitProjectFinalRequest;
@@ -187,6 +188,7 @@ class ProjectSubmissionController extends Controller
         $this->ensureGuestOrStudent();
 
         $projectData = session()->get('project_data');
+
         if (!$projectData) {
             return redirect()
                 ->route('project.submit.step1')
@@ -213,7 +215,7 @@ class ProjectSubmissionController extends Controller
         if (!$projectData) {
             return redirect()
                 ->route('project.submit.step1')
-                ->with('error', 'Session expired.');
+                ->with('error', 'انتهت الجلسة، يرجى إعادة تعبئة بيانات المشروع.');
         }
 
         $userData = null;
@@ -224,14 +226,14 @@ class ProjectSubmissionController extends Controller
             if (!$userData) {
                 return redirect()
                     ->route('project.submit.step4')
-                    ->with('error', 'Account data missing.');
+                    ->with('error', 'بيانات الحساب غير موجودة، يرجى إكمال الخطوة الرابعة.');
             }
         }
 
         try {
             DB::beginTransaction();
 
-            // 1) Create user if guest
+            // 1) Create student account if guest
             if (!auth('web')->check()) {
                 $username = strstr($userData['email'], '@', true);
 
@@ -240,7 +242,7 @@ class ProjectSubmissionController extends Controller
                 }
 
                 $user = User::create([
-                    'name' => $projectData['student_name'] ?? $projectData['project_title'],
+                    'name' => $projectData['student_name'] ?? $projectData['project_title'] ?? 'Student',
                     'username' => $username,
                     'email' => $userData['email'],
                     'password' => Hash::make($userData['password']),
@@ -253,81 +255,109 @@ class ProjectSubmissionController extends Controller
 
             $student = auth('web')->user();
 
-            // 2) Create main platform project
-            $project = Project::create([
-                'name' => $projectData['project_title'],
-                'description' => $projectData['abstract'],
-                'category' => $projectData['discipline'],
-                'budget' => $projectData['requested_amount'] ?? null,
-                'student_id' => $student->id,
-                'status' => 'scan_requested',
-                'scanner_status' => 'pending',
-                'scan_score' => null,
-                'scan_report' => null,
-                'scanned_at' => null,
-            ]);
-
-            // 3) Send to scanner platform
-            $response = Http::withHeaders([
-                'X-INTEGRATION-SECRET' => env('SCANNER_INTEGRATION_SECRET'),
-                'Accept' => 'application/json',
-                'Content-Type' => 'application/json',
-            ])->post(env('SCANNER_INTEGRATION_URL'), [
-                'name' => $project->name,
-                'platform_project_id' => $project->project_id,
-                'student_id' => $student->id,
-                'student_name' => $projectData['student_name'] ?? $student->name,
-                'student_email' => $student->email,
-                'callback_url' => env('SCANNER_CALLBACK_URL'),
-            ]);
-
-            if (!$response->successful()) {
-                throw new \Exception('Failed to connect to scanner platform.');
+            if (!$student) {
+                throw new \Exception('تعذر تحديد حساب الطالب بعد تسجيل الدخول.');
             }
 
-            $payload = $response->json();
-            $scannerData = $payload['data'] ?? [];
+            // 2) Save project in main platform first
+            $project = Project::create($this->buildProjectPayload($projectData, $student->id));
 
-            if (!($payload['success'] ?? false)) {
-                throw new \Exception($payload['message'] ?? 'Scanner integration failed.');
+            // 3) Try scanner integration
+            try {
+                $scannerRequestPayload = [
+                    'name' => $project->name,
+                    'platform_project_id' => $project->project_id,
+                    'student_id' => $student->id,
+                    'student_name' => $projectData['student_name'] ?? $student->name,
+                    'student_email' => $student->email,
+                    'callback_url' => env('SCANNER_CALLBACK_URL'),
+                ];
+
+                $response = Http::connectTimeout(5)
+                    ->timeout(15)
+                    ->withHeaders([
+                        'X-INTEGRATION-SECRET' => env('SCANNER_INTEGRATION_SECRET'),
+                        'Accept' => 'application/json',
+                        'Content-Type' => 'application/json',
+                    ])
+                    ->post(env('SCANNER_INTEGRATION_URL'), $scannerRequestPayload);
+
+                if (!$response->successful()) {
+                    throw new \Exception('Scanner HTTP request failed with status ' . $response->status());
+                }
+
+                $payload = $response->json();
+                $scannerData = $payload['data'] ?? [];
+
+                if (!($payload['success'] ?? false)) {
+                    throw new \Exception($payload['message'] ?? 'Scanner integration failed.');
+                }
+
+                if (empty($scannerData['scanner_project_id']) || empty($scannerData['token'])) {
+                    throw new \Exception('Scanner response missing scanner_project_id or token.');
+                }
+
+                $this->appendProjectHistory($project, [
+                    'action' => 'scanner_request_created',
+                    'message' => 'Technical scan request created successfully.',
+                    'at' => now()->toDateTimeString(),
+                ]);
+
+                $project->update([
+                    'scanner_project_id' => $scannerData['scanner_project_id'],
+                    'scanner_status' => 'pending',
+                    'status' => 'scan_requested',
+                ]);
+
+                DB::commit();
+
+                $this->notifyManagersProjectSubmitted($project);
+
+                if ($student) {
+                    $student->notify(new ProjectPendingNotification($project));
+                }
+
+                session()->forget(['project_data', 'user_data']);
+
+                $scanUrl = rtrim(env('SCANNER_PUBLIC_BASE_URL'), '/') . '/?project_token=' . urlencode($scannerData['token']);
+
+                return redirect()->away($scanUrl);
+
+            } catch (\Throwable $scannerException) {
+                Log::warning('Scanner platform unavailable during project submission', [
+                    'project_id' => $project->project_id,
+                    'student_id' => $student->id,
+                    'message' => $scannerException->getMessage(),
+                ]);
+
+                $this->appendProjectHistory($project, [
+                    'action' => 'scanner_unavailable',
+                    'message' => 'Scanner platform unavailable at submission time. Project saved for later follow-up.',
+                    'error' => $scannerException->getMessage(),
+                    'at' => now()->toDateTimeString(),
+                ]);
+
+                $project->update([
+                    'scanner_status' => 'failed',
+                    'status' => 'scan_requested',
+                ]);
+
+                DB::commit();
+
+                $this->notifyManagersProjectSubmitted($project);
+
+                session()->forget(['project_data', 'user_data']);
+
+                return redirect('/dashboard/academic')->with(
+                    'warning',
+                    'تم حفظ معلومات مشروعك بنجاح، لكن منصة الفحص في وضع الصيانة حاليًا. سيتم التواصل معك قريبًا بعد استئناف الخدمة.'
+                );
             }
 
-            if (empty($scannerData['scanner_project_id']) || empty($scannerData['token'])) {
-                throw new \Exception('Scanner response missing required data.');
-            }
-
-            // 4) Update project with scanner link
-            $project->update([
-                'scanner_project_id' => $scannerData['scanner_project_id'],
-                'scanner_status' => 'pending',
-            ]);
-
-            // 5) Notify managers that project entered scan stage
-            $managers = User::where('role', 'Manager')
-                ->where('status', 'active')
-                ->get();
-
-            if ($managers->count()) {
-                Notification::send($managers, new ProjectSubmittedNotification($project));
-            }
-
-            // 6) Notify student
-            if ($student) {
-                $student->notify(new ProjectPendingNotification($project));
-            }
-
-            DB::commit();
-
-            session()->forget(['project_data', 'user_data']);
-
-            $scanUrl = rtrim(env('SCANNER_PUBLIC_BASE_URL'), '/') . '/?project_token=' . urlencode($scannerData['token']);
-
-            return redirect()->away($scanUrl);
-
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             DB::rollBack();
 
-            \Log::error('submitFinal / start scan failed', [
+            Log::error('submitFinal failed', [
                 'message' => $e->getMessage(),
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),
@@ -336,7 +366,7 @@ class ProjectSubmissionController extends Controller
 
             return redirect()
                 ->route('project.submit.confirm')
-                ->with('error', 'DEBUG: ' . $e->getMessage() . ' | File: ' . $e->getFile() . ' | Line: ' . $e->getLine());
+                ->with('error', 'تعذر إكمال إرسال المشروع الآن. يرجى المحاولة مرة أخرى. سبب الخطأ: ' . $e->getMessage());
         }
     }
 
@@ -361,11 +391,93 @@ class ProjectSubmissionController extends Controller
         return redirect()->route('project.submit.step1');
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | HELPERS
+    |--------------------------------------------------------------------------
+    */
+
+    private function buildProjectPayload(array $projectData, int $studentId): array
+    {
+        return [
+            // Step 1
+            'name' => $projectData['project_title'] ?? null,
+            'description' => $projectData['abstract'] ?? null,
+            'category' => $projectData['discipline'] ?? null,
+            'project_type' => $projectData['project_type'] ?? null,
+            'project_nature' => $projectData['project_nature'] ?? null,
+            'problem_statement' => $projectData['problem_statement'] ?? null,
+            'target_beneficiaries' => $projectData['target_beneficiaries'] ?? null,
+
+            // Step 2
+            'student_name' => $projectData['student_name'] ?? null,
+            'academic_level' => $projectData['academic_level'] ?? null,
+            'supervisor_name' => $projectData['supervisor_name'] ?? null,
+            'supervisor_title' => $projectData['supervisor_title'] ?? null,
+            'university_name' => $projectData['university_name'] ?? null,
+            'college_name' => $projectData['college_name'] ?? null,
+            'department' => $projectData['department'] ?? null,
+            'governorate' => $projectData['governorate'] ?? null,
+
+            // Step 3
+            'is_feasible' => $projectData['is_feasible'] ?? null,
+            'local_implementation' => $projectData['local_implementation'] ?? null,
+            'expected_impact' => $projectData['expected_impact'] ?? null,
+            'community_benefit' => $projectData['community_benefit'] ?? null,
+            'needs_funding' => $projectData['needs_funding'] ?? null,
+            'budget' => $projectData['requested_amount'] ?? null,
+            'duration_months' => $projectData['duration_months'] ?? null,
+            'support_type' => $projectData['support_type'] ?? null,
+            'budget_breakdown' => $projectData['budget_breakdown'] ?? null,
+
+            // Milestones
+            'milestone_1' => $projectData['milestone_1'] ?? null,
+            'milestone_1_month' => $projectData['milestone_1_month'] ?? null,
+            'milestone_2' => $projectData['milestone_2'] ?? null,
+            'milestone_2_month' => $projectData['milestone_2_month'] ?? null,
+            'milestone_3' => $projectData['milestone_3'] ?? null,
+            'milestone_3_month' => $projectData['milestone_3_month'] ?? null,
+
+            // System
+            'student_id' => $studentId,
+            'status' => 'scan_requested',
+            'scanner_status' => 'pending',
+            'scan_score' => null,
+            'scan_report' => null,
+            'scanned_at' => null,
+        ];
+    }
+
+    private function appendProjectHistory(Project $project, array $entry): void
+    {
+        $history = $project->status_history;
+
+        if (!is_array($history)) {
+            $history = [];
+        }
+
+        $history[] = $entry;
+
+        $project->update([
+            'status_history' => $history,
+        ]);
+    }
+
+    private function notifyManagersProjectSubmitted(Project $project): void
+    {
+        $managers = User::where('role', 'Manager')
+            ->where('status', 'active')
+            ->get();
+
+        if ($managers->count()) {
+            Notification::send($managers, new ProjectSubmittedNotification($project));
+        }
+    }
+
     private function ensureGuestOrStudent()
     {
         if (auth('web')->check() && auth('web')->user()->role !== 'Student') {
             abort(403, 'Only students can submit projects.');
         }
     }
-   
 }

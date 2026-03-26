@@ -42,6 +42,8 @@ use App\Http\Controllers\Admin\ManagerProjectDecisionController;
 use App\Http\Controllers\Admin\PermissionManagementController;
 use App\Http\Controllers\Admin\AnnouncementController;
 use App\Http\Controllers\Admin\AuditLogController;
+use App\Http\Controllers\Admin\SettingController;
+
 
 Route::middleware(['auth:admin', 'role:Manager'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/permissions', [PermissionManagementController::class, 'index'])->name('permissions.index');
@@ -378,6 +380,19 @@ Route::get('audit-logs/export/pdf', [AuditLogController::class, 'exportPdf'])
     ->name('audit.export.pdf')
     ->middleware('permission:view_audit_logs');
 
+  /*
+    |--------------------------------------------------------------------------
+    | Settings
+    |--------------------------------------------------------------------------
+    */
+Route::get('settings', [SettingController::class, 'index'])
+    ->name('settings.index')
+    ->middleware('permission:manage_settings');
+
+Route::post('settings', [SettingController::class, 'update'])
+    ->name('settings.update')
+    ->middleware('permission:manage_settings');
+    
     /*
     |--------------------------------------------------------------------------
     | Platform Reports

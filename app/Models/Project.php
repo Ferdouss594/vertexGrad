@@ -20,27 +20,70 @@ class Project extends Model implements HasMedia
     protected $primaryKey = 'project_id';
 
     protected $fillable = [
+
+        // ========================
+        // Step 1
+        // ========================
         'name',
         'description',
         'category',
+        'project_type',
+        'project_nature',
+        'problem_statement',
+        'target_beneficiaries',
+
+        // ========================
+        // Step 2
+        // ========================
+        'student_name',
+        'academic_level',
+        'supervisor_name',
+        'supervisor_title',
+        'university_name',
+        'college_name',
+        'department',
+        'governorate',
+
+        // ========================
+        // Step 3
+        // ========================
+        'is_feasible',
+        'local_implementation',
+        'expected_impact',
+        'community_benefit',
+        'needs_funding',
+        'budget',
+        'duration_months',
+        'support_type',
+        'budget_breakdown',
+
+        // ========================
+        // Milestones
+        // ========================
+        'milestone_1',
+        'milestone_1_month',
+        'milestone_2',
+        'milestone_2_month',
+        'milestone_3',
+        'milestone_3_month',
+
+        // ========================
+        // System fields
+        // ========================
         'status',
         'upload_token',
 
-        // Scanner sync fields
         'scanner_status',
         'scanner_project_id',
         'scan_score',
         'scan_report',
         'scanned_at',
 
-        // Ownership / relations
         'student_id',
         'supervisor_id',
         'manager_id',
         'investor_id',
 
-        // Project business fields
-        'budget',
         'start_date',
         'end_date',
         'priority',
@@ -49,7 +92,6 @@ class Project extends Model implements HasMedia
         'tags',
         'status_history',
 
-        // System verification
         'frontend_url',
         'backend_url',
         'api_health_url',
@@ -58,7 +100,6 @@ class Project extends Model implements HasMedia
         'demo_password',
         'deployment_notes',
 
-        // Final decision fields
         'final_decision',
         'final_notes',
         'final_decided_at',
@@ -158,10 +199,4 @@ class Project extends Model implements HasMedia
         return $this->hasMany(\App\Models\ProjectReview::class, 'project_id', 'project_id')
             ->where('decision', 'approved');
     }
-    
-
-
-
-
-
 }
