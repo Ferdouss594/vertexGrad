@@ -1,36 +1,23 @@
-@php
-    $design = config('design');
-    $darkBg = $design['colors']['dark'];
-    $primaryColor = $design['colors']['primary'];
-    $btnPrimaryClass = $design['classes']['btn_base'] . ' ' . $design['classes']['btn_primary'];
-    $cardBg = '#1E293B';
-@endphp
-
 @extends('frontend.layouts.app')
 
 @section('content')
-<div class="min-h-screen py-16" style="background-color: {{ $darkBg }};">
-    <div class="w-full max-w-4xl mx-auto p-10 rounded-2xl border border-primary/30
-                shadow-[0_0_50px_rgba(30,227,247,0.2)]"
-         style="background-color: {{ $cardBg }};">
+<div class="min-h-screen py-16 bg-theme-bg transition-colors duration-300">
+    <div class="w-full max-w-4xl mx-auto p-10 rounded-2xl theme-panel shadow-brand-soft">
 
-        {{-- Progress --}}
         <div class="mb-8">
-            <h3 class="text-xl font-semibold text-light mb-2">Step 1 of 5: Project Information</h3>
-            <div class="h-2 bg-dark rounded-full overflow-hidden">
-                <div class="h-full bg-primary" style="width: 20%;"></div>
+            <h3 class="text-xl font-semibold text-theme-text mb-2">Step 1 of 5: Project Information</h3>
+            <div class="h-2 bg-theme-surface-2 rounded-full overflow-hidden">
+                <div class="h-full bg-brand-accent" style="width: 20%;"></div>
             </div>
         </div>
 
-        {{-- Heading --}}
-        <h2 class="text-4xl font-bold text-light mb-2">Project Basic Information</h2>
-        <p class="text-lg text-light/70 mb-10">
+        <h2 class="text-4xl font-bold text-theme-text mb-2">Project Basic Information</h2>
+        <p class="text-lg text-theme-muted mb-10">
             Enter the basic details that define your project and explain its main idea clearly.
         </p>
 
-        {{-- Validation Errors --}}
         @if ($errors->any())
-            <div class="mb-6 p-4 rounded-lg bg-red-500/20 border border-red-500/40 text-red-200 text-sm">
+            <div class="mb-6 p-4 rounded-lg bg-red-500/10 border border-red-500/40 text-red-600 text-sm">
                 <ul class="list-disc list-inside space-y-1">
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
@@ -42,10 +29,9 @@
         <form action="{{ route('project.submit.step1.post') }}" method="POST" class="space-y-8">
             @csrf
 
-            {{-- Project Title --}}
             <div>
-                <label for="project_title" class="block text-sm font-medium text-light/80 mb-2">
-                    Project Title <span class="text-primary">*</span>
+                <label for="project_title" class="block text-sm font-medium text-theme-muted mb-2">
+                    Project Title <span class="text-brand-accent">*</span>
                 </label>
                 <input
                     type="text"
@@ -54,14 +40,13 @@
                     required
                     value="{{ old('project_title', session('project_data.project_title')) }}"
                     placeholder="e.g., Smart Irrigation System for Water Saving"
-                    class="w-full p-3 rounded-lg border border-primary/30 bg-dark text-light placeholder-light/50 focus:ring-primary focus:border-primary"
+                    class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface-2 text-theme-text placeholder:text-theme-muted focus:ring-0 focus:border-brand-accent"
                 >
             </div>
 
-            {{-- Abstract --}}
             <div>
-                <label for="abstract" class="block text-sm font-medium text-light/80 mb-2">
-                    Project Summary <span class="text-primary">*</span>
+                <label for="abstract" class="block text-sm font-medium text-theme-muted mb-2">
+                    Project Summary <span class="text-brand-accent">*</span>
                 </label>
                 <textarea
                     id="abstract"
@@ -69,20 +54,19 @@
                     required
                     rows="6"
                     placeholder="Write a clear summary of the project idea, its purpose, and what it aims to achieve..."
-                    class="w-full p-3 rounded-lg border border-primary/30 bg-dark text-light placeholder-light/50 focus:ring-primary focus:border-primary"
+                    class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface-2 text-theme-text placeholder:text-theme-muted focus:ring-0 focus:border-brand-accent"
                 >{{ old('abstract', session('project_data.abstract')) }}</textarea>
             </div>
 
-            {{-- Discipline --}}
             <div>
-                <label for="discipline" class="block text-sm font-medium text-light/80 mb-2">
-                    Primary Discipline <span class="text-primary">*</span>
+                <label for="discipline" class="block text-sm font-medium text-theme-muted mb-2">
+                    Primary Discipline <span class="text-brand-accent">*</span>
                 </label>
                 <select
                     id="discipline"
                     name="discipline"
                     required
-                    class="w-full p-3 rounded-lg border border-primary/30 bg-dark text-light focus:ring-primary focus:border-primary"
+                    class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface-2 text-theme-text focus:ring-0 focus:border-brand-accent"
                 >
                     <option value="" disabled {{ old('discipline', session('project_data.discipline')) ? '' : 'selected' }}>
                         Select the project discipline
@@ -100,16 +84,15 @@
                 </select>
             </div>
 
-            {{-- Project Type --}}
             <div>
-                <label for="project_type" class="block text-sm font-medium text-light/80 mb-2">
-                    Project Type <span class="text-primary">*</span>
+                <label for="project_type" class="block text-sm font-medium text-theme-muted mb-2">
+                    Project Type <span class="text-brand-accent">*</span>
                 </label>
                 <select
                     id="project_type"
                     name="project_type"
                     required
-                    class="w-full p-3 rounded-lg border border-primary/30 bg-dark text-light focus:ring-primary focus:border-primary"
+                    class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface-2 text-theme-text focus:ring-0 focus:border-brand-accent"
                 >
                     <option value="" disabled {{ old('project_type', session('project_data.project_type')) ? '' : 'selected' }}>
                         Select project type
@@ -125,10 +108,9 @@
                 </select>
             </div>
 
-            {{-- Problem Statement --}}
             <div>
-                <label for="problem_statement" class="block text-sm font-medium text-light/80 mb-2">
-                    Problem Statement <span class="text-primary">*</span>
+                <label for="problem_statement" class="block text-sm font-medium text-theme-muted mb-2">
+                    Problem Statement <span class="text-brand-accent">*</span>
                 </label>
                 <textarea
                     id="problem_statement"
@@ -136,14 +118,13 @@
                     required
                     rows="4"
                     placeholder="What problem does the project solve?"
-                    class="w-full p-3 rounded-lg border border-primary/30 bg-dark text-light placeholder-light/50 focus:ring-primary focus:border-primary"
+                    class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface-2 text-theme-text placeholder:text-theme-muted focus:ring-0 focus:border-brand-accent"
                 >{{ old('problem_statement', session('project_data.problem_statement')) }}</textarea>
             </div>
 
-            {{-- Target Beneficiaries --}}
             <div>
-                <label for="target_beneficiaries" class="block text-sm font-medium text-light/80 mb-2">
-                    Target Beneficiaries <span class="text-primary">*</span>
+                <label for="target_beneficiaries" class="block text-sm font-medium text-theme-muted mb-2">
+                    Target Beneficiaries <span class="text-brand-accent">*</span>
                 </label>
                 <input
                     type="text"
@@ -152,20 +133,19 @@
                     required
                     value="{{ old('target_beneficiaries', session('project_data.target_beneficiaries')) }}"
                     placeholder="e.g., Students, hospitals, farmers, universities, companies"
-                    class="w-full p-3 rounded-lg border border-primary/30 bg-dark text-light placeholder-light/50 focus:ring-primary focus:border-primary"
+                    class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface-2 text-theme-text placeholder:text-theme-muted focus:ring-0 focus:border-brand-accent"
                 >
             </div>
 
-            {{-- Project Nature --}}
             <div>
-                <label for="project_nature" class="block text-sm font-medium text-light/80 mb-2">
-                    Project Nature <span class="text-primary">*</span>
+                <label for="project_nature" class="block text-sm font-medium text-theme-muted mb-2">
+                    Project Nature <span class="text-brand-accent">*</span>
                 </label>
                 <select
                     id="project_nature"
                     name="project_nature"
                     required
-                    class="w-full p-3 rounded-lg border border-primary/30 bg-dark text-light focus:ring-primary focus:border-primary"
+                    class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface-2 text-theme-text focus:ring-0 focus:border-brand-accent"
                 >
                     <option value="" disabled {{ old('project_nature', session('project_data.project_nature')) ? '' : 'selected' }}>
                         Select project nature
@@ -176,11 +156,10 @@
                 </select>
             </div>
 
-            {{-- Actions --}}
             <div class="flex justify-end pt-4">
                 <button
                     type="submit"
-                    class="{{ $btnPrimaryClass }} text-lg py-3 px-8 shadow-neon_sm"
+                    class="inline-flex items-center justify-center rounded-lg px-8 py-3 text-lg font-semibold bg-brand-accent text-white hover:bg-brand-accent-strong transition duration-300 shadow-brand-soft"
                 >
                     Save & Continue <i class="fas fa-arrow-right ml-2"></i>
                 </button>

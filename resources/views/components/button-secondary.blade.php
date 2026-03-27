@@ -1,31 +1,25 @@
-{{-- Secondary Button Component (Outline/Ghost Style) --}}
-{{-- Usage: <x-button-secondary href="/submit" class="text-xl">Submit Project</x-button-secondary> --}}
+{{-- Secondary Button Component (Outline / Ghost Style) --}}
 
 @props(['href' => null, 'type' => 'button', 'disabled' => false])
 
 @php
-    $designClasses = config('design.classes');
-    
-    // Combine the structural base classes and the secondary color/outline classes
-    $combinedClasses = $designClasses['btn_base'] . ' ' . $designClasses['btn_secondary'];
+    $baseClasses = 'inline-flex items-center justify-center font-semibold rounded-lg text-lg px-6 py-3 whitespace-nowrap transition duration-300 ease-in-out border';
+    $enabledClasses = 'border-brand-accent text-theme-text hover:bg-brand-accent hover:text-white';
+    $disabledClasses = 'pointer-events-none opacity-50 cursor-not-allowed bg-theme-surface-2 border-theme-border text-theme-muted';
 
-    // Add disabled styling (consistent with x-button-primary)
-    $disabledClasses = 'disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none disabled:bg-cardLight disabled:border-light/50 disabled:text-light/50';
-
-    $finalClasses = $combinedClasses . ' ' . $disabledClasses;
+    $finalClasses = $baseClasses . ' ' . ($disabled ? $disabledClasses : $enabledClasses);
 @endphp
 
 @if($href)
-    <a href="{{ $href }}"
-        @if($disabled) aria-disabled="true" @endif
-        {{-- Merge ensures any extra classes passed (e.g., text-xl) are appended --}}
-        {{ $attributes->merge(['class' => $finalClasses]) }}>
+    <a href="{{ $disabled ? 'javascript:void(0)' : $href }}"
+       @if($disabled) aria-disabled="true" @endif
+       {{ $attributes->merge(['class' => $finalClasses]) }}>
         {{ $slot }}
     </a>
 @else
     <button type="{{ $type }}"
-        @if($disabled) disabled @endif
-        {{ $attributes->merge(['class' => $finalClasses]) }}>
+            @if($disabled) disabled @endif
+            {{ $attributes->merge(['class' => $finalClasses]) }}>
         {{ $slot }}
     </button>
 @endif

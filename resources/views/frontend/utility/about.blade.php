@@ -10,54 +10,70 @@
 @section('content')
 
 <div class="min-h-screen py-20" style="background-color: {{ $darkBg }};">
-    <div class="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        <header class="text-center mb-12">
+        <header class="text-center mb-16">
             <h1 class="text-6xl font-extrabold text-light mb-4">
-                Our <span class="text-primary">Mission</span>
+                The VertexGrad <span class="text-primary">Process</span>
             </h1>
             <p class="text-xl text-light/80 max-w-3xl mx-auto">
-                Connecting academic brilliance with institutional capital to accelerate global innovation.
+                Connecting world-class research to institutional funding in four clear stages.
             </p>
         </header>
 
-        {{-- Mission & Vision Section --}}
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
-            <div class="bg-cardLight/70 p-8 rounded-xl border border-primary/30 shadow-lg">
-                <i class="fas fa-rocket text-4xl text-primary mb-3"></i>
-                <h3 class="text-3xl font-semibold text-light mb-3">The Vision</h3>
-                <p class="text-light/80 leading-relaxed">
-                    We envision a world where the most groundbreaking university research—in quantum computing, sustainable energy, and biotech—never stalls due to funding gaps. VertexGrad is the catalyst that transforms research into market reality.
-                </p>
-            </div>
-            <div class="bg-cardLight/70 p-8 rounded-xl border border-primary/30 shadow-lg">
-                <i class="fas fa-shield-alt text-4xl text-primary mb-3"></i>
-                <h3 class="text-3xl font-semibold text-light mb-3">Our Commitment</h3>
-                <p class="text-light/80 leading-relaxed">
-                    We commit to rigorous, unbiased vetting. Our platform is built on transparency and security, ensuring that investors receive high-quality, pre-screened deals and academics maintain full IP protection during the process.
-                </p>
-            </div>
-        </div>
-
-        {{-- Team Section (Placeholder) --}}
-        <div class="text-center">
-            <h2 class="text-5xl font-bold text-light mb-8">Meet the Founders</h2>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
-                {{-- Placeholder for You --}}
-                <div class="bg-dark/70 p-6 rounded-xl border border-light/20">
-                    <div class="h-24 w-24 rounded-full bg-primary/30 mx-auto mb-4"></div> 
-                    <h4 class="text-2xl font-semibold text-light">A. Front-end Architect</h4>
-                    <p class="text-primary/70">Co-Founder, Design & UX</p>
-                </div>
-                {{-- Placeholder for Your Friend --}}
-                <div class="bg-dark/70 p-6 rounded-xl border border-light/20">
-                    <div class="h-24 w-24 rounded-full bg-primary/30 mx-auto mb-4"></div>
-                    <h4 class="text-2xl font-semibold text-light">B. Back-end Engineer</h4>
-                    <p class="text-primary/70">Co-Founder, Core Systems & API</p>
+        {{-- Process Timeline --}}
+        <div class="space-y-12 relative">
+            <div class="absolute left-1/2 w-0.5 bg-primary/30 h-full transform -translate-x-1/2"></div>
+            
+            {{-- Step 1: Submission --}}
+            <div class="relative flex justify-start md:justify-around items-center">
+                <div class="hidden md:block w-5/12"></div>
+                <div class="absolute w-8 h-8 rounded-full bg-primary border-4 border-dark z-10 left-1/2 transform -translate-x-1/2 flex items-center justify-center text-light font-bold">1</div>
+                <div class="w-full md:w-5/12 bg-cardLight/70 p-6 rounded-xl border border-primary/30 shadow-lg ml-10 md:ml-0 md:mr-10">
+                    <h3 class="text-2xl font-semibold text-light mb-2">Academic Submission</h3>
+                    <p class="text-light/80">
+                        Researchers submit detailed proposals, IP forms, and team bios through our guided 4-step process. Submissions are saved as drafts and kept confidential.
+                    </p>
                 </div>
             </div>
-        </div>
 
+            {{-- Step 2: Vetting --}}
+            <div class="relative flex justify-end md:justify-around items-center">
+                <div class="absolute w-8 h-8 rounded-full bg-primary border-4 border-dark z-10 left-1/2 transform -translate-x-1/2 flex items-center justify-center text-light font-bold">2</div>
+                <div class="w-full md:w-5/12 bg-cardLight/70 p-6 rounded-xl border border-primary/30 shadow-lg mr-10 md:mr-0 md:ml-10 order-2 md:order-1">
+                    <h3 class="text-2xl font-semibold text-light mb-2">Expert Vetting & Diligence</h3>
+                    <p class="text-light/80">
+                        Our administrative team and third-party specialists review feasibility, market potential, and legal compliance (IP clearance, institutional sign-off).
+                    </p>
+                </div>
+                <div class="hidden md:block w-5/12 order-1 md:order-2"></div>
+            </div>
+
+            {{-- Step 3: Exposure --}}
+            <div class="relative flex justify-start md:justify-around items-center">
+                <div class="hidden md:block w-5/12"></div>
+                <div class="absolute w-8 h-8 rounded-full bg-primary border-4 border-dark z-10 left-1/2 transform -translate-x-1/2 flex items-center justify-center text-light font-bold">3</div>
+                <div class="w-full md:w-5/12 bg-cardLight/70 p-6 rounded-xl border border-primary/30 shadow-lg ml-10 md:ml-0 md:mr-10">
+                    <h3 class="text-2xl font-semibold text-light mb-2">Investor Exposure</h3>
+                    <p class="text-light/80">
+                        Vetted projects are added to the Investment Pipeline, visible only to verified and accredited Investor Accounts based on their stated investment mandate.
+                    </p>
+                </div>
+            </div>
+            
+            {{-- Step 4: Funding --}}
+            <div class="relative flex justify-end md:justify-around items-center">
+                <div class="absolute w-8 h-8 rounded-full bg-primary border-4 border-dark z-10 left-1/2 transform -translate-x-1/2 flex items-center justify-center text-light font-bold">4</div>
+                <div class="w-full md:w-5/12 bg-cardLight/70 p-6 rounded-xl border border-primary/30 shadow-lg mr-10 md:mr-0 md:ml-10 order-2 md:order-1">
+                    <h3 class="text-2xl font-semibold text-light mb-2">Deal Finalization</h3>
+                    <p class="text-light/80">
+                        Investors express interest, initiating a confidential Due Diligence period leading to direct negotiation and final investment agreement outside the platform.
+                    </p>
+                </div>
+                <div class="hidden md:block w-5/12 order-1 md:order-2"></div>
+            </div>
+        </div>
+        
     </div>
 </div>
 @endsection

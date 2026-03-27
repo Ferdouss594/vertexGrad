@@ -1,42 +1,47 @@
 {{-- x-alert.blade.php --}}
-{{-- Usage: <x-alert type="success" message="Project successfully submitted for review."/> --}}
+{{-- Usage: <x-alert type="success" message="Project successfully submitted for review." /> --}}
 {{-- Usage: <x-alert type="error">Could not process investment request.</x-alert> --}}
 
 @props(['type' => 'info', 'message' => null])
 
 @php
-    $designClasses = config('design.classes');
-    $transitionBase = $designClasses['transition_base'];
-    
-    // Define color schemes based on alert type
     $schemes = [
-        'success' => ['bg' => 'bg-green-600/10', 'border' => 'border-green-400', 'text' => 'text-green-400', 'icon' => 'fas fa-check-circle'],
-        'error'   => ['bg' => 'bg-red-600/10', 'border' => 'border-red-400', 'text' => 'text-red-400', 'icon' => 'fas fa-times-circle'],
-        // Use primary theme color for info
-        'info'    => ['bg' => 'bg-primary/10', 'border' => 'border-primary', 'text' => 'text-primary', 'icon' => 'fas fa-info-circle'],
-        'warning' => ['bg' => 'bg-yellow-600/10', 'border' => 'border-yellow-400', 'text' => 'text-yellow-400', 'icon' => 'fas fa-exclamation-triangle'],
+        'success' => [
+            'wrapper' => 'bg-green-500/10 border-green-400/40',
+            'icon' => 'fas fa-check-circle text-green-500',
+            'text' => 'text-theme-text',
+        ],
+        'error' => [
+            'wrapper' => 'bg-red-500/10 border-red-400/40',
+            'icon' => 'fas fa-times-circle text-red-500',
+            'text' => 'text-theme-text',
+        ],
+        'info' => [
+            'wrapper' => 'bg-brand-accent-soft border-brand-accent',
+            'icon' => 'fas fa-info-circle text-brand-accent',
+            'text' => 'text-theme-text',
+        ],
+        'warning' => [
+            'wrapper' => 'bg-yellow-500/10 border-yellow-400/40',
+            'icon' => 'fas fa-exclamation-triangle text-yellow-500',
+            'text' => 'text-theme-text',
+        ],
     ];
 
     $scheme = $schemes[$type] ?? $schemes['info'];
-    $icon = $scheme['icon'];
 @endphp
 
-<div 
-    {{ $attributes->merge(['class' => "p-4 rounded-lg border-l-4 {$scheme['bg']} {$scheme['border']} shadow-lg {$transitionBase}"]) }} 
+<div
+    {{ $attributes->merge(['class' => "p-4 rounded-lg border-l-4 shadow-brand-soft transition duration-300 {$scheme['wrapper']}"]) }}
     role="alert"
 >
     <div class="flex items-start">
-        {{-- Icon --}}
-        <div class="flex-shrink-0 mr-3 text-xl {$scheme['text']}">
-            <i class="{{ $icon }}"></i>
-        </div>
-        
-        {{-- Content --}}
-        <div class="text-light text-sm font-medium">
-            {{ $message ?? $slot }}
+        <div class="flex-shrink-0 mr-3 text-xl">
+            <i class="{{ $scheme['icon'] }}"></i>
         </div>
 
-        {{-- Optional: Close button --}}
-        {{-- You would integrate Alpine/JS here to hide the alert --}}
+        <div class="{{ $scheme['text'] }} text-sm font-medium">
+            {{ $message ?? $slot }}
+        </div>
     </div>
 </div>

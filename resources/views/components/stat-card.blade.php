@@ -3,19 +3,9 @@
 
 @props(['title', 'value', 'icon' => null, 'difference' => null])
 
-@php
-    $designClasses = config('design.classes');
-    $transitionBase = $designClasses['transition_base'];
-
-    // Stat Card uses cardLight, often paired with an ambient neon glow
-    $cardClasses = $designClasses['card']; 
-@endphp
-
-<div {{ $attributes->merge(['class' => "{$cardClasses} p-6 space-y-3"]) }}>
+<div {{ $attributes->merge(['class' => 'theme-panel rounded-xl p-6 space-y-3 transition duration-300 hover:shadow-neon_md']) }}>
     <div class="flex items-center justify-between">
-        
-        {{-- Icon Container (Neon Accent Border) --}}
-        <div class="w-10 h-10 rounded-full flex items-center justify-center bg-primary/10 border border-primary/50 text-primary text-lg">
+        <div class="w-10 h-10 rounded-full flex items-center justify-center bg-brand-accent-soft border border-brand-accent text-brand-accent text-lg">
             @if ($icon)
                 <i class="{{ $icon }}"></i>
             @else
@@ -23,20 +13,18 @@
             @endif
         </div>
 
-        {{-- Difference/Change (Optional) --}}
         @if ($difference)
             @php
-                // Example: green for positive, red for negative
                 $isPositive = str_contains($difference, '+');
-                $diffClass = $isPositive ? 'text-green-400' : 'text-red-400';
+                $diffClass = $isPositive ? 'text-green-500' : 'text-red-500';
             @endphp
             <span class="text-xs font-semibold {{ $diffClass }}">{{ $difference }}</span>
         @endif
     </div>
 
-    {{-- Value: High-Impact Gradient --}}
-    <p class="text-4xl font-extrabold {{ $designClasses['text_gradient'] }} tracking-tight">{{ $value }}</p>
+    <p class="text-4xl font-extrabold tracking-tight text-theme-text">
+        <span class="text-brand-accent">{{ $value }}</span>
+    </p>
 
-    {{-- Title: Muted Label --}}
-    <h4 class="text-sm font-medium text-light/70 uppercase tracking-wider">{{ $title }}</h4>
+    <h4 class="text-sm font-medium text-theme-muted uppercase tracking-wider">{{ $title }}</h4>
 </div>

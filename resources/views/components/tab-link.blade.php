@@ -3,18 +3,14 @@
 @props(['target', 'label', 'active' => false])
 
 @php
-    $designClasses = config('design.classes');
-    $transitionBase = $designClasses['transition_base'];
-    
-    // Determine the styling based on whether the link is the currently active tab
-    $activeClasses = $active 
-        ? 'border-primary text-primary shadow-neon_md' 
-        : 'border-transparent text-light/70 hover:text-primary hover:border-primary/50';
+    $activeClasses = $active
+        ? 'border-brand-accent text-brand-accent'
+        : 'border-transparent text-theme-muted hover:text-brand-accent hover:border-brand-accent/50';
 @endphp
 
-<a 
-    href="#{{ $target }}" 
-    class="py-3 px-1 border-b-2 font-semibold text-lg whitespace-nowrap {{ $activeClasses }} {{ $transitionBase }}"
+<a
+    href="#{{ $target }}"
+    class="py-3 px-1 border-b-2 font-semibold text-lg whitespace-nowrap transition duration-300 {{ $activeClasses }}"
     data-tab-target="{{ $target }}"
     role="tab"
     aria-controls="{{ $target }}"

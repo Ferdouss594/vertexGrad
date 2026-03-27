@@ -1,59 +1,91 @@
 @extends('frontend.layouts.app')
 
 @section('content')
+<div class="min-h-screen pt-28 pb-12 bg-theme-bg transition-colors duration-300">
+    <div class="{{ config('design.classes.container') }}">
 
-<div class="container py-10">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+            <div>
+                <h1 class="text-4xl font-extrabold text-theme-text">
+                    My <span class="text-brand-accent">Investments</span>
+                </h1>
+                <p class="text-theme-muted mt-2">
+                    Track your interested, requested, and approved project activity.
+                </p>
+            </div>
+        </div>
 
-<h2 class="text-3xl font-bold mb-6">My Investments</h2>
+        <div class="theme-panel rounded-3xl overflow-hidden shadow-brand-soft">
+            @if($projects->count())
+                <div class="overflow-x-auto">
+                    <table class="min-w-full">
+                        <thead class="bg-theme-surface-2 border-b border-theme-border">
+                            <tr>
+                                <th class="text-left px-6 py-4 text-xs font-black uppercase tracking-widest text-theme-muted">Project</th>
+                                <th class="text-left px-6 py-4 text-xs font-black uppercase tracking-widest text-theme-muted">Student</th>
+                                <th class="text-left px-6 py-4 text-xs font-black uppercase tracking-widest text-theme-muted">Status</th>
+                                <th class="text-left px-6 py-4 text-xs font-black uppercase tracking-widest text-theme-muted">Amount</th>
+                                <th class="text-left px-6 py-4 text-xs font-black uppercase tracking-widest text-theme-muted">Date</th>
+                            </tr>
+                        </thead>
 
-<table class="table table-bordered">
+                        <tbody>
+                            @foreach($projects as $project)
+                                @php
+                                    $status = strtolower($project->pivot->status ?? 'interested');
+                                    $statusClasses = match($status) {
+                                        'approved' => 'bg-green-500/10 text-green-600 border-green-500/20',
+                                        'requested' => 'bg-yellow-500/10 text-yellow-700 border-yellow-500/20',
+                                        'rejected' => 'bg-red-500/10 text-red-600 border-red-500/20',
+                                        default => 'bg-brand-accent-soft text-brand-accent border-brand-accent/20',
+                                    };
+                                @endphp
 
-<thead>
-<tr>
-<th>Project</th>
-<th>Student</th>
-<th>Status</th>
-<th>Amount</th>
-<th>Date</th>
-</tr>
-</thead>
+                                <tr class="border-b border-theme-border last:border-b-0">
+                                    <td class="px-6 py-5">
+                                        <a href="{{ route('frontend.projects.show', $project) }}"
+                                           class="font-bold text-theme-text hover:text-brand-accent transition">
+                                            {{ $project->name }}
+                                        </a>
+                                    </td>
 
-<tbody>
+                                    <td class="px-6 py-5 text-theme-muted">
+                                        {{ $project->student->name ?? '-' }}
+                                    </td>
 
-@foreach($projects as $project)
+                                    <td class="px-6 py-5">
+                                        <span class="inline-flex items-center px-3 py-1 rounded-xl text-[11px] font-black uppercase tracking-widest border {{ $statusClasses }}">
+                                            {{ ucfirst($project->pivot->status) }}
+                                        </span>
+                                    </td>
 
-<tr>
+                                    <td class="px-6 py-5 font-bold text-theme-text">
+                                        ${{ number_format($project->pivot->amount ?? 0) }}
+                                    </td>
 
-<td>
-<a href="{{ route('frontend.projects.show',$project) }}">
-{{ $project->name }}
-</a>
-</td>
+                                    <td class="px-6 py-5 text-theme-muted">
+                                        {{ $project->pivot->created_at->format('d M Y') }}
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @else
+                <div class="p-12 text-center">
+                    <div class="w-20 h-20 mx-auto rounded-full bg-brand-accent-soft text-brand-accent flex items-center justify-center mb-4">
+                        <i class="fas fa-briefcase text-3xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-theme-text mb-2">No investments yet</h3>
+                    <p class="text-theme-muted mb-6">You have not interacted with any projects yet.</p>
+                    <a href="{{ route('frontend.projects.index') }}"
+                       class="inline-flex items-center justify-center rounded-lg px-6 py-3 font-semibold bg-brand-accent text-white hover:bg-brand-accent-strong transition duration-300 shadow-brand-soft">
+                        Explore Projects
+                    </a>
+                </div>
+            @endif
+        </div>
 
-<td>
-{{ $project->student->name ?? '-' }}
-</td>
-
-<td>
-{{ ucfirst($project->pivot->status) }}
-</td>
-
-<td>
-${{ number_format($project->pivot->amount ?? 0) }}
-</td>
-
-<td>
-{{ $project->pivot->created_at->format('d M Y') }}
-</td>
-
-</tr>
-
-@endforeach
-
-</tbody>
-
-</table>
-
+    </div>
 </div>
-
 @endsection

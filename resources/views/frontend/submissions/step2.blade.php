@@ -1,37 +1,23 @@
-@php
-    $design = config('design');
-    $darkBg = $design['colors']['dark'];
-    $primaryColor = $design['colors']['primary'];
-    $btnPrimaryClass = $design['classes']['btn_base'] . ' ' . $design['classes']['btn_primary'];
-    $btnSecondaryClass = $design['classes']['btn_base'] . ' ' . $design['classes']['btn_secondary'];
-    $cardBg = '#1E293B';
-@endphp
-
 @extends('frontend.layouts.app')
 
 @section('content')
-<div class="min-h-screen py-16" style="background-color: {{ $darkBg }};">
-    <div class="w-full max-w-4xl mx-auto p-10 rounded-2xl border border-primary/30
-                shadow-[0_0_50px_rgba(30,227,247,0.2)]"
-         style="background-color: {{ $cardBg }};">
+<div class="min-h-screen py-16 bg-theme-bg transition-colors duration-300">
+    <div class="w-full max-w-4xl mx-auto p-10 rounded-2xl theme-panel shadow-brand-soft">
 
-        {{-- Progress --}}
         <div class="mb-8">
-            <h3 class="text-xl font-semibold text-light mb-2">Step 2 of 5: Academic Information</h3>
-            <div class="h-2 bg-dark rounded-full overflow-hidden">
-                <div class="h-full bg-primary" style="width: 40%;"></div>
+            <h3 class="text-xl font-semibold text-theme-text mb-2">Step 2 of 5: Academic Information</h3>
+            <div class="h-2 bg-theme-surface-2 rounded-full overflow-hidden">
+                <div class="h-full bg-brand-accent" style="width: 40%;"></div>
             </div>
         </div>
 
-        {{-- Heading --}}
-        <h2 class="text-4xl font-bold text-light mb-2">Academic and Institutional Information</h2>
-        <p class="text-lg text-light/70 mb-10">
+        <h2 class="text-4xl font-bold text-theme-text mb-2">Academic and Institutional Information</h2>
+        <p class="text-lg text-theme-muted mb-10">
             Enter the academic details related to the project, including the student, supervisor, and institution.
         </p>
 
-        {{-- Validation Errors --}}
         @if ($errors->any())
-            <div class="mb-6 p-4 rounded-lg bg-red-500/20 border border-red-500/40 text-red-200 text-sm">
+            <div class="mb-6 p-4 rounded-lg bg-red-500/10 border border-red-500/40 text-red-600 text-sm">
                 <ul class="list-disc list-inside space-y-1">
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
@@ -43,14 +29,13 @@
         <form action="{{ route('project.submit.step2.post') }}" method="POST" class="space-y-8">
             @csrf
 
-            {{-- Student Information --}}
-            <div class="border border-light/10 p-6 rounded-lg bg-dark/50">
-                <h4 class="text-2xl font-semibold text-primary mb-4">Student Information</h4>
+            <div class="border border-theme-border p-6 rounded-lg bg-theme-surface-2">
+                <h4 class="text-2xl font-semibold text-brand-accent mb-4">Student Information</h4>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label for="student_name" class="block text-sm font-medium text-light/80 mb-2">
-                            Student Full Name <span class="text-primary">*</span>
+                        <label for="student_name" class="block text-sm font-medium text-theme-muted mb-2">
+                            Student Full Name <span class="text-brand-accent">*</span>
                         </label>
                         <input
                             type="text"
@@ -58,19 +43,19 @@
                             name="student_name"
                             required
                             value="{{ old('student_name', session('project_data.student_name')) }}"
-                            class="w-full p-3 rounded-lg border border-primary/30 bg-dark text-light focus:ring-primary focus:border-primary"
+                            class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface text-theme-text focus:ring-0 focus:border-brand-accent"
                         >
                     </div>
 
                     <div>
-                        <label for="academic_level" class="block text-sm font-medium text-light/80 mb-2">
-                            Academic Level <span class="text-primary">*</span>
+                        <label for="academic_level" class="block text-sm font-medium text-theme-muted mb-2">
+                            Academic Level <span class="text-brand-accent">*</span>
                         </label>
                         <select
                             id="academic_level"
                             name="academic_level"
                             required
-                            class="w-full p-3 rounded-lg border border-primary/30 bg-dark text-light focus:ring-primary focus:border-primary"
+                            class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface text-theme-text focus:ring-0 focus:border-brand-accent"
                         >
                             <option value="" disabled {{ old('academic_level', session('project_data.academic_level')) ? '' : 'selected' }}>
                                 Select academic level
@@ -85,14 +70,13 @@
                 </div>
             </div>
 
-            {{-- Supervisor Information --}}
-            <div class="border border-light/10 p-6 rounded-lg bg-dark/50">
-                <h4 class="text-2xl font-semibold text-primary mb-4">Supervisor Information</h4>
+            <div class="border border-theme-border p-6 rounded-lg bg-theme-surface-2">
+                <h4 class="text-2xl font-semibold text-brand-accent mb-4">Supervisor Information</h4>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label for="supervisor_name" class="block text-sm font-medium text-light/80 mb-2">
-                            Supervisor Name <span class="text-primary">*</span>
+                        <label for="supervisor_name" class="block text-sm font-medium text-theme-muted mb-2">
+                            Supervisor Name <span class="text-brand-accent">*</span>
                         </label>
                         <input
                             type="text"
@@ -100,13 +84,13 @@
                             name="supervisor_name"
                             required
                             value="{{ old('supervisor_name', session('project_data.supervisor_name')) }}"
-                            class="w-full p-3 rounded-lg border border-primary/30 bg-dark text-light focus:ring-primary focus:border-primary"
+                            class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface text-theme-text focus:ring-0 focus:border-brand-accent"
                         >
                     </div>
 
                     <div>
-                        <label for="supervisor_title" class="block text-sm font-medium text-light/80 mb-2">
-                            Supervisor Title / Position <span class="text-primary">*</span>
+                        <label for="supervisor_title" class="block text-sm font-medium text-theme-muted mb-2">
+                            Supervisor Title / Position <span class="text-brand-accent">*</span>
                         </label>
                         <input
                             type="text"
@@ -115,20 +99,19 @@
                             required
                             value="{{ old('supervisor_title', session('project_data.supervisor_title')) }}"
                             placeholder="e.g., الدكتور / المهندس / الأستاذ المشارك"
-                            class="w-full p-3 rounded-lg border border-primary/30 bg-dark text-light focus:ring-primary focus:border-primary"
+                            class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface text-theme-text focus:ring-0 focus:border-brand-accent"
                         >
                     </div>
                 </div>
             </div>
 
-            {{-- Institution Information --}}
-            <div class="border border-light/10 p-6 rounded-lg bg-dark/50">
-                <h4 class="text-2xl font-semibold text-primary mb-4">Institution Information</h4>
+            <div class="border border-theme-border p-6 rounded-lg bg-theme-surface-2">
+                <h4 class="text-2xl font-semibold text-brand-accent mb-4">Institution Information</h4>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label for="university_name" class="block text-sm font-medium text-light/80 mb-2">
-                            University / Institution <span class="text-primary">*</span>
+                        <label for="university_name" class="block text-sm font-medium text-theme-muted mb-2">
+                            University / Institution <span class="text-brand-accent">*</span>
                         </label>
                         <input
                             type="text"
@@ -136,13 +119,13 @@
                             name="university_name"
                             required
                             value="{{ old('university_name', session('project_data.university_name')) }}"
-                            class="w-full p-3 rounded-lg border border-primary/30 bg-dark text-light focus:ring-primary focus:border-primary"
+                            class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface text-theme-text focus:ring-0 focus:border-brand-accent"
                         >
                     </div>
 
                     <div>
-                        <label for="college_name" class="block text-sm font-medium text-light/80 mb-2">
-                            College / Faculty <span class="text-primary">*</span>
+                        <label for="college_name" class="block text-sm font-medium text-theme-muted mb-2">
+                            College / Faculty <span class="text-brand-accent">*</span>
                         </label>
                         <input
                             type="text"
@@ -150,13 +133,13 @@
                             name="college_name"
                             required
                             value="{{ old('college_name', session('project_data.college_name')) }}"
-                            class="w-full p-3 rounded-lg border border-primary/30 bg-dark text-light focus:ring-primary focus:border-primary"
+                            class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface text-theme-text focus:ring-0 focus:border-brand-accent"
                         >
                     </div>
 
                     <div>
-                        <label for="department" class="block text-sm font-medium text-light/80 mb-2">
-                            Department / Major <span class="text-primary">*</span>
+                        <label for="department" class="block text-sm font-medium text-theme-muted mb-2">
+                            Department / Major <span class="text-brand-accent">*</span>
                         </label>
                         <input
                             type="text"
@@ -164,19 +147,19 @@
                             name="department"
                             required
                             value="{{ old('department', session('project_data.department')) }}"
-                            class="w-full p-3 rounded-lg border border-primary/30 bg-dark text-light focus:ring-primary focus:border-primary"
+                            class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface text-theme-text focus:ring-0 focus:border-brand-accent"
                         >
                     </div>
 
                     <div>
-                        <label for="governorate" class="block text-sm font-medium text-light/80 mb-2">
-                            Governorate <span class="text-primary">*</span>
+                        <label for="governorate" class="block text-sm font-medium text-theme-muted mb-2">
+                            Governorate <span class="text-brand-accent">*</span>
                         </label>
                         <select
                             id="governorate"
                             name="governorate"
                             required
-                            class="w-full p-3 rounded-lg border border-primary/30 bg-dark text-light focus:ring-primary focus:border-primary"
+                            class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface text-theme-text focus:ring-0 focus:border-brand-accent"
                         >
                             <option value="" disabled {{ old('governorate', session('project_data.governorate')) ? '' : 'selected' }}>
                                 Select governorate
@@ -207,18 +190,17 @@
                 </div>
             </div>
 
-            {{-- Actions --}}
             <div class="flex justify-between pt-4">
                 <a
                     href="{{ route('project.submit.step1') }}"
-                    class="{{ $btnSecondaryClass }} text-lg py-3 px-8 border border-light/30 text-light/80 hover:text-primary"
+                    class="inline-flex items-center justify-center rounded-lg px-8 py-3 text-lg font-semibold border border-brand-accent text-theme-text hover:bg-brand-accent hover:text-white transition duration-300"
                 >
                     <i class="fas fa-arrow-left mr-2"></i> Back
                 </a>
 
                 <button
                     type="submit"
-                    class="{{ $btnPrimaryClass }} text-lg py-3 px-8 shadow-neon_sm"
+                    class="inline-flex items-center justify-center rounded-lg px-8 py-3 text-lg font-semibold bg-brand-accent text-white hover:bg-brand-accent-strong transition duration-300 shadow-brand-soft"
                 >
                     Save & Continue <i class="fas fa-arrow-right ml-2"></i>
                 </button>

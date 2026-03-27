@@ -8,24 +8,45 @@ Alpine.start();
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Global access for any inline scripts in your Blade files
 window.gsap = gsap;
 window.ScrollTrigger = ScrollTrigger;
 
-// The Animation logic for your "Featured Projects"
+const THEME_KEY = 'vertexgrad_theme';
+const DEFAULT_THEME = 'brand';
+const ALLOWED_THEMES = ['brand', 'dark', 'light'];
+
+window.VertexGradUI = {
+    applyTheme(theme) {
+        const selectedTheme = ALLOWED_THEMES.includes(theme) ? theme : DEFAULT_THEME;
+        document.documentElement.setAttribute('data-theme', selectedTheme);
+        localStorage.setItem(THEME_KEY, selectedTheme);
+    },
+
+    getTheme() {
+        const savedTheme = localStorage.getItem(THEME_KEY);
+        return ALLOWED_THEMES.includes(savedTheme) ? savedTheme : DEFAULT_THEME;
+    },
+
+    init() {
+        this.applyTheme(this.getTheme());
+    }
+};
+
 document.addEventListener('DOMContentLoaded', () => {
+    window.VertexGradUI.init();
+
     gsap.utils.toArray('.project-card').forEach((card, i) => {
         gsap.from(card, {
             scrollTrigger: {
                 trigger: card,
-                start: "top bottom-=100",
-                toggleActions: "play none none reverse"
+                start: 'top bottom-=100',
+                toggleActions: 'play none none reverse'
             },
             y: 50,
             opacity: 0,
             duration: 0.8,
-            delay: i * 0.1, // Staggered entrance
-            ease: "power2.out"
+            delay: i * 0.1,
+            ease: 'power2.out'
         });
     });
 });

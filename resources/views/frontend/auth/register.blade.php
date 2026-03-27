@@ -1,26 +1,19 @@
-@php
-    $design = config('design');
-    $darkBg = $design['colors']['dark'];
-    $btnPrimaryClass = $design['classes']['btn_base'] . ' ' . $design['classes']['btn_primary'];
-    $btnSecondaryClass = $design['classes']['btn_base'] . ' ' . $design['classes']['btn_secondary'];
-@endphp
-
 @extends('frontend.layouts.app')
 
 @section('content')
-<div class="min-h-screen flex items-center justify-center py-20" style="background-color: {{ $darkBg }};">
+<div class="min-h-screen flex items-center justify-center py-20 bg-theme-bg transition-colors duration-300">
     <div class="w-full max-w-5xl p-4 lg:p-8 text-center">
-        
-        <h2 class="text-5xl font-extrabold text-light mb-4">
-            Join the <span class="text-primary">VertexGrad</span> Ecosystem
+
+        <h2 class="text-5xl font-extrabold text-theme-text mb-4">
+            Join the <span class="text-brand-accent">VertexGrad</span> Ecosystem
         </h2>
-        <p class="text-xl text-light/70 mb-16 max-w-3xl mx-auto">
+
+        <p class="text-xl text-theme-muted mb-16 max-w-3xl mx-auto">
             Please select the user type that applies to you to continue the registration process.
         </p>
 
-        {{-- 🟢 ADDED: Message/Error Logic --}}
         @if ($errors->any())
-            <div class="max-w-md mx-auto mb-8 p-4 rounded-lg bg-red-500/20 border border-red-500/50 text-red-200 text-sm">
+            <div class="max-w-md mx-auto mb-8 p-4 rounded-lg bg-red-500/10 border border-red-400/40 text-red-500 text-sm">
                 <ul class="list-disc list-inside">
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
@@ -28,39 +21,52 @@
                 </ul>
             </div>
         @endif
-        {{-- 🟢 END MESSAGE LOGIC --}}
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            
-            {{-- Path 1: INVESTOR --}}
-            <a href="{{ route('register.investor') }}" class="p-10 rounded-2xl border border-primary/30 bg-cardLight/50 hover:bg-cardLight/70 transition duration-300 shadow-neon_md block group">
-                <i class="fas fa-hand-holding-usd text-6xl text-primary mb-4 group-hover:drop-shadow-neon_sm"></i>
-                <h3 class="text-3xl font-bold text-light mb-3">Investor / Fund Manager</h3>
-                <p class="text-light/70 mb-6">
+
+            {{-- INVESTOR --}}
+            <a href="{{ route('register.investor') }}"
+               class="p-10 rounded-2xl theme-panel hover:bg-theme-surface-2 transition duration-300 shadow-brand-soft block group">
+                <i class="fas fa-hand-holding-usd text-6xl text-brand-accent mb-4"
+                   style="filter: drop-shadow(0 0 8px var(--brand-accent-glow));"></i>
+
+                <h3 class="text-3xl font-bold text-theme-text mb-3">
+                    Investor / Fund Manager
+                </h3>
+
+                <p class="text-theme-muted mb-6">
                     Gain exclusive access to faculty-vetted project proposals and secure funding opportunities.
                 </p>
-                <span class="{{ $btnPrimaryClass }} !bg-primary/20 text-primary border border-primary group-hover:bg-primary/40">
+
+                <span class="inline-flex items-center justify-center rounded-lg px-6 py-3 font-semibold bg-brand-accent text-white group-hover:bg-brand-accent-strong transition duration-300 shadow-brand-soft">
                     Register as Investor <i class="fas fa-arrow-right ml-2"></i>
                 </span>
             </a>
 
-            {{-- Path 2: ACADEMIC / STUDENT --}}
-            <a href="{{ route('register.academic') }}" class="p-10 rounded-2xl border border-primary/30 bg-cardLight/50 hover:bg-cardLight/70 transition duration-300 shadow-neon_md block group">
-                <i class="fas fa-flask text-6xl text-light/80 mb-4 group-hover:text-primary"></i>
-                <h3 class="text-3xl font-bold text-light mb-3">Academic / Project Creator</h3>
-                <p class="text-light/70 mb-6">
+            {{-- ACADEMIC --}}
+            <a href="{{ route('register.academic') }}"
+               class="p-10 rounded-2xl theme-panel hover:bg-theme-surface-2 transition duration-300 shadow-brand-soft block group">
+                <i class="fas fa-flask text-6xl text-brand-accent mb-4"
+                   style="filter: drop-shadow(0 0 8px var(--brand-accent-glow));"></i>
+
+                <h3 class="text-3xl font-bold text-theme-text mb-3">
+                    Academic / Project Creator
+                </h3>
+
+                <p class="text-theme-muted mb-6">
                     Submit your innovation for rigorous vetting and connect directly with institutional capital.
                 </p>
-                <span class="{{ $btnSecondaryClass }} !border-primary/50 text-light group-hover:text-primary group-hover:border-primary">
+
+                <span class="inline-flex items-center justify-center rounded-lg px-6 py-3 font-semibold border border-brand-accent text-theme-text group-hover:bg-brand-accent group-hover:text-white transition duration-300">
                     Register as Academic <i class="fas fa-rocket ml-2"></i>
                 </span>
             </a>
-            
+
         </div>
 
-        <p class="mt-12 text-center text-light/60 text-sm">
+        <p class="mt-12 text-center text-theme-muted text-sm">
             Already have an account?
-            <a href="{{ route('login.show') }}" class="text-primary hover:text-light font-medium ml-1">
+            <a href="{{ route('login.show') }}" class="text-brand-accent font-medium ml-1">
                 Log In
             </a>
         </p>
