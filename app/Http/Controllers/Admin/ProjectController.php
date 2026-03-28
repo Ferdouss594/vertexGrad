@@ -16,7 +16,15 @@ class ProjectController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Project::with(['student', 'supervisor', 'manager', 'media', 'investors']);
+        $query = Project::with([
+            'student',
+            'supervisor',
+            'manager',
+            'media',
+            'investors',
+            'reviews',
+            'finalDecisionMaker',
+        ]);
 
         if ($request->filled('category')) {
             $query->where('category', $request->category);
@@ -27,9 +35,26 @@ class ProjectController extends Controller
         }
 
         $projects = $query->latest('project_id')->paginate(10)->appends($request->all());
+
         $totalProjects = Project::count();
 
-        return view('projects.index', compact('projects', 'totalProjects'));
+        $completedProjects = Project::where('status', 'completed')->count();
+
+        $pendingProjects = Project::whereIn('status', [
+            'pending',
+            'scan_requested',
+            'awaiting_manual_review',
+        ])->count();
+
+        $avgScore = Project::whereNotNull('scan_score')->avg('scan_score');
+
+        return view('projects.index', compact(
+            'projects',
+            'totalProjects',
+            'completedProjects',
+            'pendingProjects',
+            'avgScore'
+        ));
     }
 
     public function create()
@@ -40,6 +65,39 @@ class ProjectController extends Controller
         $investors = User::where('role', 'Investor')->get();
 
         return view('projects.create', compact('students', 'supervisors', 'managers', 'investors'));
+    }
+
+    public function publish(Project $project)
+    {
+        $user = auth('admin')->user();
+
+        if (! in_array($project->status, ['approved', 'active', 'awaiting_manual_review'])) {
+            return back()->with('error', 'Only approved or active projects can be published.');
+        }
+
+        $oldValues = $this->auditPayload($project);
+
+        $project->update([
+            'status' => 'published',
+            'manager_id' => $project->manager_id ?: $user?->id,
+        ]);
+
+        $project->refresh();
+
+        AuditLogService::log(
+            event: 'published',
+            description: 'Published project: ' . $project->name,
+            category: 'project',
+            subject: $project,
+            oldValues: $oldValues,
+            newValues: $this->auditPayload($project),
+            properties: [
+                'published_by' => $user?->id,
+                'published_by_name' => $user?->name ?? $user?->username,
+            ]
+        );
+
+        return back()->with('success', 'Project published successfully.');
     }
 
     public function store(Request $request)
@@ -105,6 +163,8 @@ class ProjectController extends Controller
             'media',
             'files',
             'investors',
+            'reviews',
+            'finalDecisionMaker',
         ]);
 
         return view('projects.show', compact('project'));

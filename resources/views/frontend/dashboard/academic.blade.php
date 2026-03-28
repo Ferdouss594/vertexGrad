@@ -4,6 +4,22 @@
 @php
     $btnPrimaryClass = 'inline-flex items-center justify-center rounded-2xl px-8 py-4 font-black bg-brand-accent text-white hover:bg-brand-accent-strong transition duration-300 shadow-brand-soft';
     $btnSecondaryClass = 'inline-flex items-center justify-center rounded-2xl px-6 py-3 font-bold border border-brand-accent text-theme-text hover:bg-brand-accent hover:text-white transition duration-300';
+
+    $currentDecision = $currentProject->final_decision ?? null;
+
+    $mediaUploadAllowedStatuses = ['approved', 'active', 'published'];
+    $mediaUploadAllowedDecisions = ['published'];
+
+    $decisionLabel = function ($decision) {
+        return match ($decision) {
+            'published' => 'Published',
+            'revision_requested' => 'Revision Requested',
+            'rejected' => 'Rejected',
+            'pending' => 'Pending',
+            null => null,
+            default => ucfirst(str_replace('_', ' ', $decision)),
+        };
+    };
 @endphp
 
 <div class="min-h-screen pt-28 pb-12 bg-theme-bg transition-colors duration-300">
@@ -146,7 +162,7 @@
             </div>
         @endif
 
-        @if($currentProject && $currentProject->status === 'pending')
+        @if($currentProject && !$currentDecision && $currentProject->status === 'pending')
             <div class="max-w-6xl mx-auto px-4 mb-6">
                 <div class="p-4 rounded-xl border border-yellow-500/40 bg-yellow-500/10 text-yellow-700">
                     Your latest project <strong>"{{ $currentProject->name }}"</strong> has been submitted successfully and is currently <strong>pending manager review</strong>.
@@ -154,7 +170,7 @@
             </div>
         @endif
 
-        @if($currentProject && $currentProject->status === 'rejected')
+        @if($currentProject && $currentDecision === 'rejected')
             <div class="max-w-6xl mx-auto px-4 mb-6">
                 <div class="p-4 rounded-xl border border-red-500/40 bg-red-500/10 text-red-600">
                     Your latest project <strong>"{{ $currentProject->name }}"</strong> was reviewed and rejected.
@@ -162,10 +178,26 @@
             </div>
         @endif
 
-        @if($currentProject && $currentProject->status === 'active')
+        @if($currentProject && $currentDecision === 'revision_requested')
             <div class="max-w-6xl mx-auto px-4 mb-6">
-                <div class="p-4 rounded-xl border border-green-500/40 bg-green-500/10 text-green-600">
-                    Your latest project <strong>"{{ $currentProject->name }}"</strong> has been approved and is now active.
+                <div class="p-4 rounded-xl border border-yellow-500/40 bg-yellow-500/10 text-yellow-700">
+                    Your latest project <strong>"{{ $currentProject->name }}"</strong> requires revision based on the final decision.
+                </div>
+            </div>
+        @endif
+
+        @if($currentProject && $currentDecision === 'published')
+            <div class="max-w-6xl mx-auto px-4 mb-6">
+                <div class="p-4 rounded-xl border border-green-500/40 bg-green-500/10 text-green-700">
+                    Your latest project <strong>"{{ $currentProject->name }}"</strong> has been published successfully.
+                </div>
+            </div>
+        @endif
+
+        @if($currentProject && !$currentDecision && in_array($currentProject->status, $mediaUploadAllowedStatuses))
+            <div class="max-w-6xl mx-auto px-4 mb-6">
+                <div class="p-4 rounded-xl border border-green-500/40 bg-green-500/10 text-green-700">
+                    Your latest project <strong>"{{ $currentProject->name }}"</strong> has been approved. Please upload project images and videos to complete your project presentation.
                 </div>
             </div>
         @endif
@@ -199,14 +231,14 @@
                                 </div>
 
                                 <div class="theme-panel-soft p-4 rounded-2xl">
-                                    <p class="text-theme-muted text-[10px] uppercase font-black mb-1 tracking-widest">Vetting Status</p>
+                                    <p class="text-theme-muted text-[10px] uppercase font-black mb-1 tracking-widest">Final Decision</p>
                                     <div class="flex items-center gap-2 mt-1">
                                         <div class="flex h-2 w-2 relative">
                                             <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-500 opacity-75"></span>
                                             <span class="relative inline-flex rounded-full h-2 w-2 bg-yellow-500"></span>
                                         </div>
                                         <span class="text-lg font-bold text-theme-text italic">
-                                            {{ $currentProject->status == 'pending' ? 'Reviewing' : ucfirst($currentProject->status) }}
+                                            {{ $decisionLabel($currentDecision) ?? ($currentProject->status == 'pending' ? 'Reviewing' : ucfirst($currentProject->status)) }}
                                         </span>
                                     </div>
                                 </div>
@@ -256,12 +288,57 @@
                                 <i class="fas fa-arrow-right group-hover/btn:translate-x-1 transition-transform"></i>
                             </a>
 
-                            <button type="button"
-                                    onclick="openUploadModal('{{ route('projects.media.upload', $currentProject->project_id) }}')"
-                                    class="flex items-center justify-between p-5 bg-theme-surface-2 hover:bg-brand-accent-soft border border-theme-border rounded-2xl transition-all group text-theme-text">
-                                <span class="font-bold text-xs uppercase tracking-wider">Upload Data</span>
-                                <i class="fas fa-upload group-hover:-translate-y-1 transition-transform text-brand-accent"></i>
-                            </button>
+                            @if(in_array($currentDecision, $mediaUploadAllowedDecisions) || (!$currentDecision && in_array($currentProject->status, $mediaUploadAllowedStatuses)))
+                                <button type="button"
+                                        onclick="openUploadModal('{{ route('projects.media.upload', $currentProject->project_id) }}')"
+                                        class="flex items-center justify-between p-5 bg-theme-surface-2 hover:bg-brand-accent-soft border border-theme-border rounded-2xl transition-all group text-theme-text">
+                                    <span class="font-bold text-xs uppercase tracking-wider">Upload Project Media</span>
+                                    <i class="fas fa-upload group-hover:-translate-y-1 transition-transform text-brand-accent"></i>
+                                </button>
+                            @else
+                                <div class="flex items-center justify-between p-2 bg-theme-surface-2 border border-theme-border rounded-2xl text-theme-muted opacity-90">
+                                    <div>
+                                        <span class="block font-bold text-xs uppercase tracking-wider mb-1">Upload Locked</span>
+                                        <span class="text-xs opacity-80">
+                                            Project images and videos can be uploaded after the final decision allows it.
+                                        </span>
+                                    </div>
+                                    <i class="fas fa-lock text-theme-muted"></i>
+                                </div>
+                            @endif
+
+                            @php
+                                $scanState = strtolower((string) ($currentProject->status ?? $currentProject->scanner_status ?? 'draft'));
+                            @endphp
+
+                            @if(in_array($scanState, ['draft', 'scan_failed', 'scan_requested', 'pending', 'rejected']))
+                                <a href="http://127.0.0.1:8000/submit?platform_project_id={{ $currentProject->project_id }}&project_name={{ urlencode($currentProject->name) }}&student_name={{ urlencode($user->name) }}&student_email={{ urlencode($user->email) }}&language={{ urlencode($currentProject->primary_language ?? 'php') }}"
+                                   class="flex items-center justify-between p-2 bg-blue-600 text-white rounded-2xl transition-all hover:bg-blue-700 group">
+                                    <div>
+                                        <span class="block font-black uppercase text-xs tracking-wider">
+                                            Technical Scan
+                                        </span>
+                                        <span class="text-xs opacity-80">
+                                            هل تريد فحص المشروع الآن؟
+                                        </span>
+                                    </div>
+                                    <i class="fas fa-microscope group-hover:scale-110 transition-transform"></i>
+                                </a>
+
+                            @elseif(in_array($scanState, ['scan_completed', 'awaiting_manual_review', 'approved', 'published', 'active']))
+                                <a href="http://127.0.0.1:8000/submit?platform_project_id={{ $currentProject->project_id }}&project_name={{ urlencode($currentProject->name) }}&student_name={{ urlencode($user->name) }}&student_email={{ urlencode($user->email) }}&language={{ urlencode($currentProject->language ?? $currentProject->primary_language ?? 'php') }}"
+                                   class="flex items-center justify-between p-2 bg-green-600 text-white rounded-2xl hover:bg-green-700 transition group">
+                                    <div>
+                                        <span class="block font-black uppercase text-xs tracking-wider">
+                                            Technical Scan
+                                        </span>
+                                        <span class="text-xs opacity-80">
+                                            تم تنفيذ الفحص، افتح مساحة الفحص
+                                        </span>
+                                    </div>
+                                    <i class="fas fa-check-circle group-hover:scale-110 transition-transform"></i>
+                                </a>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -474,6 +551,7 @@
                             $imgCount = $project->getMedia('images')->count();
                             $hasVideo = (bool) $project->getFirstMediaUrl('videos');
                             $active = $project->project_id === $currentProject->project_id;
+                            $projectDecision = $project->final_decision ?? null;
                         @endphp
 
                         <a href="{{ route('dashboard.academic', ['project' => $project->project_id]) }}"
@@ -518,7 +596,9 @@
                                     </div>
                                     <div class="text-theme-muted">
                                         <span>Status:</span>
-                                        <span class="font-bold text-theme-text">{{ $project->status === 'pending' ? 'Reviewing' : $project->status }}</span>
+                                        <span class="font-bold text-theme-text">
+                                            {{ $decisionLabel($projectDecision) ?? ($project->status === 'pending' ? 'Reviewing' : ucfirst($project->status)) }}
+                                        </span>
                                     </div>
                                 </div>
                             </div>

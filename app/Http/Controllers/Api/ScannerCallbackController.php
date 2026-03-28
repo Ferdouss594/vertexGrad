@@ -11,6 +11,14 @@ class ScannerCallbackController extends Controller
 {
     public function handle(Request $request)
     {
+        // 🔒 حماية: التأكد من سر التكامل
+        if ($request->header('X-SCANNER-SECRET') !== env('SCANNER_API_SECRET')) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized'
+            ], 401);
+        }
+
         try {
             Log::info('SCANNER CALLBACK RECEIVED', [
                 'payload' => $request->all(),

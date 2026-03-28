@@ -7,7 +7,7 @@
     .projects-page .page-header-card {
         background: linear-gradient(135deg, #0d1b4c 0%, #1b00ff 100%);
         border-radius: 20px;
-        padding: 28px 30px;
+        padding: 26px 28px;
         color: #fff;
         box-shadow: 0 12px 30px rgba(27, 0, 255, 0.18);
     }
@@ -16,17 +16,19 @@
         margin: 0;
         font-weight: 700;
         color: #fff;
+        font-size: 28px;
     }
 
     .projects-page .page-header-card p {
         margin: 8px 0 0;
         opacity: 0.9;
+        font-size: 14px;
     }
 
     .projects-page .stats-card {
         background: #fff;
         border-radius: 18px;
-        padding: 22px;
+        padding: 20px;
         box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
         border: 1px solid #eef2ff;
         height: 100%;
@@ -39,14 +41,14 @@
     }
 
     .projects-page .stats-icon {
-        width: 52px;
-        height: 52px;
+        width: 48px;
+        height: 48px;
         border-radius: 14px;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        font-size: 20px;
-        margin-bottom: 14px;
+        font-size: 18px;
+        margin-bottom: 12px;
         color: #fff;
     }
 
@@ -56,7 +58,7 @@
     .projects-page .stats-icon.info { background: linear-gradient(135deg, #0891b2, #06b6d4); }
 
     .projects-page .stats-number {
-        font-size: 28px;
+        font-size: 26px;
         font-weight: 800;
         color: #0f172a;
         line-height: 1;
@@ -67,6 +69,7 @@
         color: #64748b;
         font-weight: 600;
         margin-bottom: 0;
+        font-size: 13px;
     }
 
     .projects-page .table-card {
@@ -78,7 +81,7 @@
     }
 
     .projects-page .table-card-header {
-        padding: 20px 24px;
+        padding: 18px 22px;
         border-bottom: 1px solid #eef2f7;
         display: flex;
         justify-content: space-between;
@@ -91,6 +94,7 @@
         margin: 0;
         font-weight: 700;
         color: #0f172a;
+        font-size: 18px;
     }
 
     .projects-page .modern-table {
@@ -102,19 +106,23 @@
     .projects-page .modern-table thead th {
         background: #f8fafc;
         color: #334155;
-        font-weight: 700;
+        font-weight: 800;
         border-bottom: 1px solid #e2e8f0;
-        padding: 12px 10px;
+        padding: 11px 6px;
         vertical-align: middle;
-        white-space: nowrap;
-        font-size: 13px;
+   
+    white-space: normal;
+    line-height: 1.25;
+    text-align: center;
+    font-size: 12px;
+
     }
 
     .projects-page .modern-table tbody td {
-        padding: 12px 10px;
+        padding: 11px 6px;
         vertical-align: middle;
         border-color: #f1f5f9;
-        font-size: 13px;
+        font-size: 16px;
         overflow: hidden;
     }
 
@@ -122,26 +130,28 @@
         background: #fafcff;
     }
 
-    .projects-page .col-id { width: 45px; }
-    .projects-page .col-project { width: 190px; }
-    .projects-page .col-student { width: 150px; }
-    .projects-page .col-status { width: 115px; }
-    .projects-page .col-scan { width: 115px; }
-    .projects-page .col-score { width: 85px; }
-    .projects-page .col-risk { width: 90px; }
-    .projects-page .col-budget { width: 95px; }
-    .projects-page .col-date { width: 110px; }
-    .projects-page .col-actions { width: 175px; }
+    .projects-page .col-id { width: 38px; }
+    .projects-page .col-project { width: 160px; }
+    .projects-page .col-student { width: 130px; }
+    .projects-page .col-scan { width: 92px; }
+    .projects-page .col-score { width: 72px; }
+    .projects-page .col-reviews { width: 95px; }
+    .projects-page .col-supervisor-score { width: 82px; }
+    .projects-page .col-final-decision { width: 108px; }
+    .projects-page .col-budget { width: 78px; }
+    .projects-page .col-date { width: 88px; }
+    .projects-page .col-actions { width: 124px; }
 
     .projects-page .project-name {
         font-weight: 700;
         color: #1e293b;
         text-decoration: none;
         display: block;
-        max-width: 170px;
+        max-width: 140px;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
+        font-size: 12px;
     }
 
     .projects-page .project-name:hover {
@@ -157,54 +167,26 @@
     }
 
     .projects-page .mini-text {
-        font-size: 11px;
+        font-size: 9px;
         color: #64748b;
-        margin-top: 3px;
-        line-height: 1.5;
+        margin-top: 2px;
+        line-height: 1.35;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
     }
 
     .projects-page .badge-soft {
-        display: inline-block;
-        padding: 6px 10px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 5px 8px;
         border-radius: 999px;
-        font-size: 11px;
-        font-weight: 700;
+        font-size: 9px;
+        font-weight: 800;
         letter-spacing: .2px;
         white-space: nowrap;
-    }
-
-    .projects-page .badge-status-pending,
-    .projects-page .badge-status-scan_requested,
-    .projects-page .badge-status-awaiting_manual_review {
-        background: #fff7ed;
-        color: #c2410c;
-    }
-
-    .projects-page .badge-status-active,
-    .projects-page .badge-status-approved,
-    .projects-page .badge-status-published {
-        background: #eff6ff;
-        color: #1d4ed8;
-    }
-
-    .projects-page .badge-status-completed {
-        background: #ecfdf5;
-        color: #15803d;
-    }
-
-    .projects-page .badge-status-rejected,
-    .projects-page .badge-status-scan_failed,
-    .projects-page .badge-status-failed {
-        background: #fef2f2;
-        color: #dc2626;
-    }
-
-    .projects-page .badge-status-default {
-        background: #f1f5f9;
-        color: #475569;
+        max-width: 100%;
     }
 
     .projects-page .badge-scan-completed {
@@ -222,24 +204,62 @@
         color: #dc2626;
     }
 
-    .projects-page .badge-risk-low {
-        background: #ecfdf5;
-        color: #15803d;
+    .projects-page .badge-status-default {
+        background: #f1f5f9;
+        color: #475569;
     }
 
-    .projects-page .badge-risk-medium {
+    .projects-page .badge-final-published {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .projects-page .badge-final-revision {
         background: #fef3c7;
-        color: #b45309;
+        color: #92400e;
     }
 
-    .projects-page .badge-risk-high {
+    .projects-page .badge-final-rejected {
         background: #fee2e2;
-        color: #dc2626;
+        color: #991b1b;
+    }
+
+    .projects-page .badge-final-pending {
+        background: #e2e8f0;
+        color: #334155;
+    }
+
+    .projects-page .review-chip {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 22px;
+        height: 22px;
+        border-radius: 7px;
+        font-weight: 800;
+        font-size: 9px;
+        margin-right: 2px;
+    }
+
+    .projects-page .review-approved {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .projects-page .review-revision {
+        background: #fef3c7;
+        color: #92400e;
+    }
+
+    .projects-page .review-rejected {
+        background: #fee2e2;
+        color: #991b1b;
     }
 
     .projects-page .score-box {
         font-weight: 800;
         color: #0f172a;
+        font-size: 12px;
     }
 
     .projects-page .btn-add {
@@ -247,10 +267,11 @@
         color: #fff;
         border: none;
         border-radius: 12px;
-        padding: 10px 18px;
+        padding: 10px 16px;
         font-weight: 700;
         text-decoration: none;
         box-shadow: 0 10px 20px rgba(27, 0, 255, 0.15);
+        font-size: 13px;
     }
 
     .projects-page .btn-add:hover {
@@ -262,15 +283,15 @@
     .projects-page .action-buttons {
         display: flex;
         align-items: center;
-        gap: 6px;
+        gap: 4px;
         flex-wrap: wrap;
     }
 
     .projects-page .icon-action {
-        width: 34px;
-        height: 34px;
+        width: 28px;
+        height: 28px;
         border: none;
-        border-radius: 10px;
+        border-radius: 9px;
         display: inline-flex;
         align-items: center;
         justify-content: center;
@@ -278,6 +299,7 @@
         text-decoration: none;
         transition: all 0.25s ease;
         box-shadow: 0 6px 14px rgba(15, 23, 42, 0.10);
+        font-size: 11px;
     }
 
     .projects-page .icon-action:hover {
@@ -314,61 +336,78 @@
     }
 
     .projects-page .pagination-wrapper {
-        padding: 20px 24px 24px;
+        padding: 22px 20px 26px;
         border-top: 1px solid #eef2f7;
         background: #fff;
+        text-align: center;
     }
 
     .projects-page .pagination-info {
-        font-size: 13px;
+        font-size: 12px;
         color: #64748b;
-        margin-bottom: 12px;
+        margin-bottom: 14px;
     }
 
-    .projects-page .pagination-wrapper nav {
-        display: flex;
+    .projects-page .clean-pagination {
+        display: inline-flex;
+        align-items: center;
         justify-content: center;
-    }
-
-    .projects-page .pagination {
-        margin-bottom: 0;
-        gap: 6px;
+        gap: 8px;
         flex-wrap: wrap;
     }
 
-    .projects-page .page-item .page-link {
-        border: none;
-        border-radius: 10px;
+    .projects-page .clean-page-link {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        border: 1px solid #dbe4f0;
+        background: #fff;
         color: #334155;
-        padding: 8px 14px;
-        font-weight: 600;
-        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+        font-weight: 800;
+        font-size: 13px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+        transition: all 0.22s ease;
     }
 
-    .projects-page .page-item.active .page-link {
+    .projects-page .clean-page-link:hover {
+        text-decoration: none;
+        color: #1b00ff;
+        border-color: #c7d2fe;
+        background: #f8fafc;
+        transform: translateY(-1px);
+    }
+
+    .projects-page .clean-page-link.active {
         background: linear-gradient(135deg, #1b00ff, #4f46e5);
         color: #fff;
-    }
-
-    .projects-page .page-item.disabled .page-link {
-        color: #94a3b8;
-        background: #f8fafc;
+        border-color: transparent;
+        box-shadow: 0 10px 18px rgba(79, 70, 229, 0.25);
     }
 
     @media (max-width: 1400px) {
         .projects-page .modern-table thead th,
         .projects-page .modern-table tbody td {
-            font-size: 12px;
-            padding: 10px 8px;
+            font-size: 10px;
+            padding: 9px 5px;
         }
 
         .projects-page .project-name {
-            max-width: 150px;
+            max-width: 128px;
+            font-size: 11px;
         }
 
-        .projects-page .col-actions {
-            width: 160px;
+        .projects-page .mini-text {
+            font-size: 8px;
         }
+
+        .projects-page .col-project { width: 150px; }
+        .projects-page .col-student { width: 120px; }
+        .projects-page .col-final-decision { width: 100px; }
+        .projects-page .col-actions { width: 116px; }
     }
 </style>
 
@@ -391,7 +430,7 @@
             <div class="d-flex justify-content-between align-items-center flex-wrap" style="gap: 15px;">
                 <div>
                     <h3>Projects Management</h3>
-                    <p>Professional overview of all submitted projects, scan status, scores, and responsible users.</p>
+                    <p>Clean professional overview of projects, scan results, supervisor reviews, final decisions, and actions.</p>
                 </div>
 
                 <a href="{{ route('admin.projects.create') }}" class="btn-add">
@@ -446,7 +485,7 @@
             <div class="table-card-header">
                 <div>
                     <h5>All Projects</h5>
-                    <small class="text-muted">Compact professional view without horizontal scrolling.</small>
+                    <small class="text-muted">Compact clean view without unnecessary columns.</small>
                 </div>
             </div>
 
@@ -456,11 +495,12 @@
                         <tr>
                             <th class="col-id">#</th>
                             <th class="col-project">Project</th>
-                            <th class="col-student">Student / Team</th>
-                            <th class="col-status">Status</th>
+                           <th class="col-student">Student<br>Team</th>
                             <th class="col-scan">Scan</th>
                             <th class="col-score">Score</th>
-                            <th class="col-risk">Risk</th>
+                            <th class="col-reviews">Reviews</th>
+                            <th class="col-supervisor-score">Supervisor<br>Avg</th>
+                        <th class="col-final-decision">Final<br>Decision</th>
                             <th class="col-budget">Budget</th>
                             <th class="col-date">Created</th>
                             <th class="col-actions">Actions</th>
@@ -470,14 +510,6 @@
                     <tbody>
                         @forelse($projects as $project)
                             @php
-                                $statusClass = match($project->status) {
-                                    'pending', 'scan_requested', 'awaiting_manual_review' => 'badge-status-pending',
-                                    'active', 'approved', 'published' => 'badge-status-active',
-                                    'completed' => 'badge-status-completed',
-                                    'rejected', 'scan_failed', 'failed' => 'badge-status-rejected',
-                                    default => 'badge-status-default',
-                                };
-
                                 $scanClass = match($project->scanner_status) {
                                     'completed' => 'badge-scan-completed',
                                     'failed' => 'badge-scan-failed',
@@ -485,11 +517,23 @@
                                     default => 'badge-status-default',
                                 };
 
-                                $riskClass = match(strtolower($project->risk_level ?? '')) {
-                                    'low' => 'badge-risk-low',
-                                    'medium' => 'badge-risk-medium',
-                                    'high' => 'badge-risk-high',
-                                    default => 'badge-status-default',
+                                $approvedReviews = $project->reviews->where('decision', 'approved')->count();
+                                $revisionReviews = $project->reviews->where('decision', 'revision_requested')->count();
+                                $rejectedReviews = $project->reviews->where('decision', 'rejected')->count();
+                                $supervisorAvgScore = round($project->reviews->whereNotNull('score')->avg('score') ?? 0, 1);
+
+                                $finalDecisionClass = match($project->final_decision) {
+                                    'published' => 'badge-final-published',
+                                    'revision_requested' => 'badge-final-revision',
+                                    'rejected' => 'badge-final-rejected',
+                                    default => 'badge-final-pending',
+                                };
+
+                                $finalDecisionText = match($project->final_decision) {
+                                    'published' => 'Published',
+                                    'revision_requested' => 'Revision Requested',
+                                    'rejected' => 'Rejected',
+                                    default => 'Pending',
                                 };
                             @endphp
 
@@ -500,61 +544,55 @@
                                     <a href="{{ route('admin.projects.show', $project) }}" class="project-name">
                                         {{ $project->name ?? 'Untitled Project' }}
                                     </a>
-                                    <div class="mini-text td-ellipsis">
-                                        ID: {{ $project->project_id ?? $project->id }}
-                                    </div>
-                                    <div class="mini-text td-ellipsis">
-                                        {{ $project->category ?? 'No category' }}
-                                    </div>
+                                    <div class="mini-text td-ellipsis">#{{ $project->project_id ?? $project->id }}</div>
+                                    <div class="mini-text td-ellipsis">{{ $project->category ?? 'No category' }}</div>
                                 </td>
 
                                 <td>
                                     <div class="td-ellipsis">{{ $project->student->name ?? '—' }}</div>
                                     <div class="mini-text td-ellipsis">{{ $project->student->email ?? 'No email' }}</div>
-                                    <div class="mini-text td-ellipsis">Supervisor: {{ $project->supervisor->name ?? '—' }}</div>
-                                    <div class="mini-text td-ellipsis">Manager: {{ $project->manager->name ?? '—' }}</div>
-                                </td>
-
-                                <td>
-                                    <span class="badge-soft {{ $statusClass }}">
-                                        {{ ucfirst(str_replace('_', ' ', $project->status ?? 'unknown')) }}
-                                    </span>
-                                    <div class="mini-text td-ellipsis">
-                                        Investor: {{ $project->investor->name ?? '—' }}
-                                    </div>
+                                    <div class="mini-text td-ellipsis">{{ $project->supervisor->name ?? 'No supervisor' }}</div>
                                 </td>
 
                                 <td>
                                     <span class="badge-soft {{ $scanClass }}">
                                         {{ ucfirst(str_replace('_', ' ', $project->scanner_status ?? 'not scanned')) }}
                                     </span>
-                                    <div class="mini-text td-ellipsis">
-                                        Scanner ID: {{ $project->scanner_project_id ?? '—' }}
-                                    </div>
+                                    <div class="mini-text td-ellipsis">ID: {{ $project->scanner_project_id ?? '—' }}</div>
                                 </td>
 
                                 <td>
                                     <div class="score-box">
                                         {{ $project->scan_score !== null ? number_format($project->scan_score, 2) : '—' }}
                                     </div>
-                                    <div class="mini-text td-ellipsis">
-                                        {{ $project->grade ?? 'No grade' }}
+                                    <div class="mini-text td-ellipsis">{{ $project->grade ?? 'No grade' }}</div>
+                                </td>
+
+                                <td>
+                                    <span class="review-chip review-approved" title="Approved">{{ $approvedReviews }}</span>
+                                    <span class="review-chip review-revision" title="Revision Requested">{{ $revisionReviews }}</span>
+                                    <span class="review-chip review-rejected" title="Rejected">{{ $rejectedReviews }}</span>
+                                </td>
+
+                                <td>
+                                    <div class="score-box">
+                                        {{ $project->reviews->count() ? number_format($supervisorAvgScore, 1) : '—' }}
                                     </div>
                                 </td>
 
                                 <td>
-                                    <span class="badge-soft {{ $riskClass }}">
-                                        {{ $project->risk_level ?? '—' }}
+                                    <span class="badge-soft {{ $finalDecisionClass }}">
+                                        {{ $finalDecisionText }}
                                     </span>
+                                    <div class="mini-text td-ellipsis">{{ $project->finalDecisionMaker->name ?? '—' }}</div>
                                 </td>
 
                                 <td>
-                                    {{ $project->budget !== null ? number_format($project->budget, 2) : '—' }}
+                                    {{ $project->budget !== null ? number_format($project->budget, 0) : '—' }}
                                 </td>
 
                                 <td>
                                     <div>{{ optional($project->created_at)->format('Y-m-d') ?? '—' }}</div>
-                                    <div class="mini-text">{{ optional($project->created_at)->format('h:i A') ?? '' }}</div>
                                 </td>
 
                                 <td>
@@ -602,7 +640,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="10">
+                                <td colspan="11">
                                     <div class="empty-state">
                                         <i class="fa fa-folder-open"></i>
                                         <div>No projects found.</div>
@@ -614,14 +652,21 @@
                 </table>
             </div>
 
-            @if(method_exists($projects, 'links'))
+            @if(method_exists($projects, 'links') && $projects->lastPage() > 1)
                 <div class="pagination-wrapper">
                     <div class="pagination-info">
                         Showing {{ $projects->firstItem() ?? 0 }} to {{ $projects->lastItem() ?? 0 }}
                         of {{ $projects->total() ?? 0 }} projects
                     </div>
 
-                    {{ $projects->onEachSide(1)->links() }}
+                    <div class="clean-pagination">
+                        @for($page = 1; $page <= $projects->lastPage(); $page++)
+                            <a href="{{ $projects->url($page) }}"
+                               class="clean-page-link {{ $projects->currentPage() === $page ? 'active' : '' }}">
+                                {{ $page }}
+                            </a>
+                        @endfor
+                    </div>
                 </div>
             @endif
         </div>

@@ -19,12 +19,12 @@ class ProjectApprovedNotification extends Notification
     public function toDatabase($notifiable)
     {
         return [
-            'title'        => 'Project Approved',
-            'message'      => 'Your project "' . $this->project->name . '" has been approved and is now active.',
+            'title'        => 'Project Approved 🎉',
+            'message'      => 'Congratulations! Your project "' . $this->project->name . '" has been approved. Please upload images and videos for your project to complete it and showcase it professionally.',
             'project_id'   => $this->project->project_id,
             'project_name' => $this->project->name,
-            'url'          => route('frontend.projects.show', $this->project),
-            'icon'         => 'fas fa-check-circle',
+            'url'          => route('frontend.projects.show', $this->project), // أو رابط رفع الميديا
+            'icon'         => 'fas fa-upload',
         ];
     }
 }
