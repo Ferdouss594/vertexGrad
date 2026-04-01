@@ -37,18 +37,29 @@ use App\Http\Controllers\Report\PlatformReportController;
 use App\Http\Controllers\Supervisor\SupervisorDashboardController;
 use App\Http\Controllers\Supervisor\SupervisorProjectController;
 use App\Http\Controllers\Supervisor\SupervisorProfileController;
+use App\Http\Controllers\Supervisor\ContactMessageController as SupervisorContactMessageController;
 
 use App\Http\Controllers\Admin\ManagerProjectDecisionController;
 use App\Http\Controllers\Admin\PermissionManagementController;
 use App\Http\Controllers\Admin\AnnouncementController;
 use App\Http\Controllers\Admin\AuditLogController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\ContactMessageController;
+
 
 
 Route::middleware(['auth:admin', 'role:Manager'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/permissions', [PermissionManagementController::class, 'index'])->name('permissions.index');
     Route::get('/permissions/{user}', [PermissionManagementController::class, 'show'])->name('permissions.show');
     Route::post('/permissions/{user}/sync', [PermissionManagementController::class, 'sync'])->name('permissions.sync');
+        Route::get('/contact-messages', [ContactMessageController::class, 'index'])->name('contact-messages.index');
+    Route::get('/contact-messages/{contactMessage}', [ContactMessageController::class, 'show'])->name('contact-messages.show');
+    Route::patch('/contact-messages/{contactMessage}/status', [ContactMessageController::class, 'updateStatus'])->name('contact-messages.update-status');
+
+    Route::post('/contact-messages/{contactMessage}/reply', [ContactMessageController::class, 'sendReply'])
+    ->name('contact-messages.reply');
+    Route::post('/contact-messages/{contactMessage}/notes', [ContactMessageController::class, 'storeNote'])
+    ->name('contact-messages.notes.store');
 });
 // ------------------------
 // Backend Auth (Managers / Supervisors)
@@ -461,6 +472,17 @@ Route::prefix('admin/supervisor')
 
         Route::get('/profile', [SupervisorProfileController::class, 'index'])->name('profile.index');
         Route::post('/profile', [SupervisorProfileController::class, 'update'])->name('profile.update');
+        Route::get('/profile', [SupervisorProfileController::class, 'index'])->name('profile.index');
+Route::post('/profile', [SupervisorProfileController::class, 'update'])->name('profile.update');
+
+Route::get('/contact-messages', [SupervisorContactMessageController::class, 'index'])->name('contact-messages.index');
+Route::get('/contact-messages/{contactMessage}', [SupervisorContactMessageController::class, 'show'])->name('contact-messages.show');
+Route::patch('/contact-messages/{contactMessage}/status', [SupervisorContactMessageController::class, 'updateStatus'])->name('contact-messages.update-status');
+Route::post('/contact-messages/{contactMessage}/reply', [SupervisorContactMessageController::class, 'sendReply'])->name('contact-messages.reply');
+
+// ===============================
+// System Verification
+// ===============================
        // ===============================
 // System Verification
 // ===============================

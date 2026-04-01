@@ -983,7 +983,14 @@
                     </ul>
                 </li>
                 @endif
-
+@if($user && $user->hasPermission('view_contact_messages'))
+<li class="{{ request()->routeIs('supervisor.contact-messages.*') ? 'active' : '' }}">
+    <a href="{{ route('supervisor.contact-messages.index') }}">
+        <span class="micon bi bi-envelope-paper-fill"></span>
+        <span class="mtext">Contact Messages</span>
+    </a>
+</li>
+@endif
                 <li class="menu-title">
                     <span class="mtext">ACCOUNT</span>
                 </li>

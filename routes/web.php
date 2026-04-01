@@ -12,6 +12,7 @@ use App\Http\Controllers\Frontend\ProjectController as FrontendProjectController
 use App\Http\Controllers\Frontend\NotificationController as FrontNotificationController;
 use App\Http\Controllers\Frontend\InvestorDashboardController;
 use App\Http\Controllers\Frontend\AcademicDashboardController;
+use App\Http\Controllers\Frontend\ContactController;
 use App\Http\Controllers\Admin\ProjectController;
 
 // ------------------------
@@ -118,8 +119,8 @@ Route::post('reset-password', [ResetPasswordController::class, 'reset'])->name('
 Route::prefix('/')->name('utility.')->group(function () {
     Route::get('about', fn() => view('frontend.utility.about'))->name('about');
     Route::get('careers', fn() => view('frontend.utility.careers'))->name('careers');
-    Route::get('contact', fn() => view('frontend.utility.contact'))->name('contact');
-    Route::get('how-it-works', fn() => view('frontend.utility.how-it-works'))->name('how-it-works');
+    Route::get('contact', [ContactController::class, 'index'])->name('contact');
+    Route::post('contact', [ContactController::class, 'store'])->name('contact.store');    Route::get('how-it-works', fn() => view('frontend.utility.how-it-works'))->name('how-it-works');
     Route::get('partnerships', fn() => view('frontend.utility.partnerships'))->name('partnerships');
     Route::get('privacy', fn() => view('frontend.utility.privacy'))->name('privacy');
     Route::get('support', fn() => view('frontend.utility.support'))->name('support');

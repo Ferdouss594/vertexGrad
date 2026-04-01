@@ -818,6 +818,13 @@
                         <span class="mtext">Projects</span>
                     </a>
                 </li>
+<li>
+    <a href="{{ route('admin.contact-messages.index') }}"
+       class="dropdown-toggle no-arrow {{ request()->routeIs('admin.contact-messages.*') ? 'active' : '' }}">
+        <span class="micon bi bi-envelope-paper-fill"></span>
+        <span class="mtext">Contact Messages</span>
+    </a>
+</li>
 
                 <li>
                     <a href="{{ route('manager.calendar.index') }}"
