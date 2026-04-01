@@ -10,11 +10,11 @@
         </div>
 
         <h2 class="text-4xl font-bold text-center text-theme-text mb-2">
-            Sign In to <span class="text-brand-accent">VertexGrad</span>
+            {{ __('frontend.auth.sign_in_to') }} <span class="text-brand-accent">{{ __('frontend.auth.vertexgrad') }}</span>
         </h2>
 
         <p class="text-center text-theme-muted mb-10">
-            Securely access your academic and investment dashboards.
+            {{ __('frontend.auth.login_subtitle') }}
         </p>
 
         @if ($errors->any())
@@ -31,7 +31,7 @@
             @csrf
 
             <div>
-                <label class="block text-sm font-medium text-theme-muted mb-2">Username or Email</label>
+                <label class="block text-sm font-medium text-theme-muted mb-2">{{ __('frontend.auth.username_or_email') }}</label>
                 <input
                     type="text"
                     name="login_id"
@@ -42,7 +42,7 @@
             </div>
 
             <div class="relative">
-                <label class="block text-sm font-medium text-theme-muted mb-2">Password</label>
+                <label class="block text-sm font-medium text-theme-muted mb-2">{{ __('frontend.auth.password') }}</label>
                 <input
                     type="password"
                     id="loginPassword"
@@ -60,15 +60,15 @@
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-theme-muted mb-2">Login As</label>
+                <label class="block text-sm font-medium text-theme-muted mb-2">{{ __('frontend.auth.login_as') }}</label>
                 <select
                     name="role"
                     required
                     class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface-2 text-theme-text focus:ring-0 focus:border-brand-accent"
                 >
-                    <option value="">Select role</option>
-                    <option value="Student">Student</option>
-                    <option value="Investor">Investor</option>
+                    <option value="">{{ __('frontend.auth.select_role') }}</option>
+                    <option value="Student">{{ __('frontend.auth.student') }}</option>
+                    <option value="Investor">{{ __('frontend.auth.investor') }}</option>
                 </select>
             </div>
 
@@ -79,11 +79,11 @@
                         name="remember"
                         class="mr-2 rounded border-theme-border bg-theme-surface-2 text-brand-accent focus:ring-brand-accent"
                     >
-                    Remember Me
+                    {{ __('frontend.auth.remember_me') }}
                 </label>
 
                 <a href="#" class="text-sm text-brand-accent hover:underline">
-                    Forgot Password?
+                    {{ __('frontend.auth.forgot_password_short') }}
                 </a>
             </div>
 
@@ -91,14 +91,14 @@
                 type="submit"
                 class="w-full inline-flex items-center justify-center rounded-lg px-6 py-3 text-lg font-semibold bg-brand-accent text-white hover:bg-brand-accent-strong transition duration-300 shadow-brand-soft"
             >
-                Log In
+                {{ __('frontend.auth.log_in') }}
             </button>
         </form>
 
         <p class="mt-8 text-center text-theme-muted text-sm">
-            Don’t have an account?
+            {{ __('frontend.auth.no_account') }}
             <a href="{{ route('register.show') }}" class="text-brand-accent underline">
-                Register Here
+                {{ __('frontend.auth.register_here') }}
             </a>
         </p>
     </div>

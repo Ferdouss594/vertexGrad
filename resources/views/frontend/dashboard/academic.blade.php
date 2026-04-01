@@ -12,10 +12,10 @@
 
     $decisionLabel = function ($decision) {
         return match ($decision) {
-            'published' => 'Published',
-            'revision_requested' => 'Revision Requested',
-            'rejected' => 'Rejected',
-            'pending' => 'Pending',
+            'published' => __('frontend.academic_dashboard.decision_published'),
+            'revision_requested' => __('frontend.academic_dashboard.decision_revision_requested'),
+            'rejected' => __('frontend.academic_dashboard.decision_rejected'),
+            'pending' => __('frontend.academic_dashboard.decision_pending'),
             null => null,
             default => ucfirst(str_replace('_', ' ', $decision)),
         };
@@ -29,18 +29,18 @@
         <header class="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div class="relative">
                 <h1 class="text-4xl md:text-6xl font-black text-theme-text tracking-tight">
-                    Welcome,
+                    {{ __('frontend.academic_dashboard.welcome') }},
                     <span class="text-brand-accent">{{ explode(' ', $user->name)[0] }}</span>
                 </h1>
                 <p class="text-theme-muted mt-3 flex items-center tracking-[0.2em] uppercase text-xs font-bold">
                     <span class="w-10 h-[2px] bg-brand-accent mr-3"></span>
-                    Researcher Identity: {{ $user->id + 5000 }}
+                    {{ __('frontend.academic_dashboard.researcher_identity') }}: {{ $user->id + 5000 }}
                 </p>
             </div>
 
             <div class="flex items-center gap-3">
                 <a href="{{ route('project.submit.step1') }}" class="{{ $btnPrimaryClass }}">
-                    <i class="fas fa-rocket mr-2"></i> Submit New Research
+                    <i class="fas fa-rocket mr-2"></i> {{ __('frontend.academic_dashboard.submit_new_research') }}
                 </a>
             </div>
         </header>
@@ -63,20 +63,20 @@
                             <div class="flex-1 min-w-0">
                                 <div class="flex flex-wrap items-center gap-2 mb-3">
                                     <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-theme-surface-2 text-theme-muted border border-theme-border text-[11px] font-black uppercase tracking-[0.16em]">
-                                        Announcement
+                                        {{ __('frontend.academic_dashboard.announcement') }}
                                     </span>
 
                                     @if($featuredAnnouncement->is_pinned)
                                         <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-amber-400/10 text-amber-500 border border-amber-400/20 text-[11px] font-black uppercase tracking-[0.16em]">
                                             <i class="fas fa-thumbtack text-[10px]"></i>
-                                            Pinned
+                                            {{ __('frontend.academic_dashboard.pinned') }}
                                         </span>
                                     @endif
 
                                     @if($featuredAnnouncement->expires_at)
                                         <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-red-500/10 text-red-500 border border-red-500/20 text-[11px] font-black uppercase tracking-[0.16em]">
                                             <i class="fas fa-hourglass-half text-[10px]"></i>
-                                            Until {{ $featuredAnnouncement->expires_at->format('M d, Y • h:i A') }}
+                                            {{ __('frontend.academic_dashboard.until') }} {{ $featuredAnnouncement->expires_at->format('M d, Y • h:i A') }}
                                         </span>
                                     @endif
                                 </div>
@@ -120,7 +120,7 @@
 
                                             @if($announcement->expires_at)
                                                 <div class="mt-3 text-[11px] text-red-500 font-semibold">
-                                                    Visible until {{ $announcement->expires_at->format('M d, Y • h:i A') }}
+                                                    {{ __('frontend.academic_dashboard.visible_until') }} {{ $announcement->expires_at->format('M d, Y • h:i A') }}
                                                 </div>
                                             @endif
                                         </div>
@@ -152,7 +152,7 @@
         @if($errors->any())
             <div class="max-w-6xl mx-auto px-4 mb-6">
                 <div class="p-4 rounded-xl border border-red-500/40 bg-red-500/10 text-red-600">
-                    <div class="font-bold mb-2">Please review the following:</div>
+                    <div class="font-bold mb-2">{{ __('frontend.academic_dashboard.please_review_following') }}</div>
                     <ul class="list-disc pl-5 space-y-1 text-sm">
                         @foreach($errors->all() as $error)
                             <li>{{ $error }}</li>
@@ -165,7 +165,7 @@
         @if($currentProject && !$currentDecision && $currentProject->status === 'pending')
             <div class="max-w-6xl mx-auto px-4 mb-6">
                 <div class="p-4 rounded-xl border border-yellow-500/40 bg-yellow-500/10 text-yellow-700">
-                    Your latest project <strong>"{{ $currentProject->name }}"</strong> has been submitted successfully and is currently <strong>pending manager review</strong>.
+                    {!! __('frontend.academic_dashboard.project_pending_review', ['name' => e($currentProject->name)]) !!}
                 </div>
             </div>
         @endif
@@ -173,7 +173,7 @@
         @if($currentProject && $currentDecision === 'rejected')
             <div class="max-w-6xl mx-auto px-4 mb-6">
                 <div class="p-4 rounded-xl border border-red-500/40 bg-red-500/10 text-red-600">
-                    Your latest project <strong>"{{ $currentProject->name }}"</strong> was reviewed and rejected.
+                    {!! __('frontend.academic_dashboard.project_rejected', ['name' => e($currentProject->name)]) !!}
                 </div>
             </div>
         @endif
@@ -181,7 +181,7 @@
         @if($currentProject && $currentDecision === 'revision_requested')
             <div class="max-w-6xl mx-auto px-4 mb-6">
                 <div class="p-4 rounded-xl border border-yellow-500/40 bg-yellow-500/10 text-yellow-700">
-                    Your latest project <strong>"{{ $currentProject->name }}"</strong> requires revision based on the final decision.
+                    {!! __('frontend.academic_dashboard.project_revision_requested', ['name' => e($currentProject->name)]) !!}
                 </div>
             </div>
         @endif
@@ -189,7 +189,7 @@
         @if($currentProject && $currentDecision === 'published')
             <div class="max-w-6xl mx-auto px-4 mb-6">
                 <div class="p-4 rounded-xl border border-green-500/40 bg-green-500/10 text-green-700">
-                    Your latest project <strong>"{{ $currentProject->name }}"</strong> has been published successfully.
+                    {!! __('frontend.academic_dashboard.project_published', ['name' => e($currentProject->name)]) !!}
                 </div>
             </div>
         @endif
@@ -197,7 +197,7 @@
         @if($currentProject && !$currentDecision && in_array($currentProject->status, $mediaUploadAllowedStatuses))
             <div class="max-w-6xl mx-auto px-4 mb-6">
                 <div class="p-4 rounded-xl border border-green-500/40 bg-green-500/10 text-green-700">
-                    Your latest project <strong>"{{ $currentProject->name }}"</strong> has been approved. Please upload project images and videos to complete your project presentation.
+                    {!! __('frontend.academic_dashboard.project_approved_upload_media', ['name' => e($currentProject->name)]) !!}
                 </div>
             </div>
         @endif
@@ -210,7 +210,7 @@
                         <div class="flex-1">
                             <div class="flex items-center gap-3 mb-6 flex-wrap">
                                 <span class="px-4 py-1.5 rounded-xl bg-brand-accent-soft text-brand-accent text-[10px] font-black uppercase tracking-[0.15em] border border-brand-accent">
-                                    {{ $currentProject->category ?? 'Uncategorized' }}
+                                    {{ $currentProject->category ?? __('frontend.academic_dashboard.uncategorized') }}
                                 </span>
                                 <span class="text-theme-muted text-xs font-mono">REF: PRJ-{{ $currentProject->project_id + 1000 }}</span>
                             </div>
@@ -221,24 +221,24 @@
 
                             <div class="grid grid-cols-1 sm:grid-cols-3 gap-8">
                                 <div class="theme-panel-soft p-4 rounded-2xl">
-                                    <p class="text-theme-muted text-[10px] uppercase font-black mb-1 tracking-widest">Target Budget</p>
+                                    <p class="text-theme-muted text-[10px] uppercase font-black mb-1 tracking-widest">{{ __('frontend.academic_dashboard.target_budget') }}</p>
                                     <p class="text-2xl font-bold text-green-600">${{ number_format($currentProject->budget ?? 0) }}</p>
                                 </div>
 
                                 <div class="theme-panel-soft p-4 rounded-2xl">
-                                    <p class="text-theme-muted text-[10px] uppercase font-black mb-1 tracking-widest">Submission Date</p>
+                                    <p class="text-theme-muted text-[10px] uppercase font-black mb-1 tracking-widest">{{ __('frontend.academic_dashboard.submission_date') }}</p>
                                     <p class="text-xl text-theme-text font-semibold">{{ $currentProject->created_at->format('M d, Y') }}</p>
                                 </div>
 
                                 <div class="theme-panel-soft p-4 rounded-2xl">
-                                    <p class="text-theme-muted text-[10px] uppercase font-black mb-1 tracking-widest">Final Decision</p>
+                                    <p class="text-theme-muted text-[10px] uppercase font-black mb-1 tracking-widest">{{ __('frontend.academic_dashboard.final_decision') }}</p>
                                     <div class="flex items-center gap-2 mt-1">
                                         <div class="flex h-2 w-2 relative">
                                             <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-500 opacity-75"></span>
                                             <span class="relative inline-flex rounded-full h-2 w-2 bg-yellow-500"></span>
                                         </div>
                                         <span class="text-lg font-bold text-theme-text italic">
-                                            {{ $decisionLabel($currentDecision) ?? ($currentProject->status == 'pending' ? 'Reviewing' : ucfirst($currentProject->status)) }}
+                                            {{ $decisionLabel($currentDecision) ?? ($currentProject->status == 'pending' ? __('frontend.academic_dashboard.reviewing') : ucfirst($currentProject->status)) }}
                                         </span>
                                     </div>
                                 </div>
@@ -248,10 +248,10 @@
                             <div class="mt-10">
                                 <div class="flex items-center justify-between mb-4">
                                     <h3 class="text-xs font-black text-theme-text uppercase tracking-[0.25em] flex items-center gap-3">
-                                        <i class="fas fa-photo-video text-brand-accent"></i> Media Preview
+                                        <i class="fas fa-photo-video text-brand-accent"></i> {{ __('frontend.academic_dashboard.media_preview') }}
                                     </h3>
                                     <div class="text-xs text-theme-muted font-mono">
-                                        Images: {{ $currentImages->count() }} • Video: {{ $currentVideoUrl ? 'Yes' : 'No' }}
+                                        {{ __('frontend.academic_dashboard.images') }}: {{ $currentImages->count() }} • {{ __('frontend.academic_dashboard.video') }}: {{ $currentVideoUrl ? __('frontend.academic_dashboard.yes') : __('frontend.academic_dashboard.no') }}
                                     </div>
                                 </div>
 
@@ -260,13 +260,13 @@
                                         @foreach($currentImages->take(4) as $m)
                                             <a href="{{ $m->getUrl() }}" target="_blank"
                                                class="relative overflow-hidden rounded-2xl border border-theme-border bg-theme-surface-2 transition">
-                                                <img src="{{ $m->getUrl() }}" class="w-full h-28 object-cover" alt="Project image">
+                                                <img src="{{ $m->getUrl() }}" class="w-full h-28 object-cover" alt="{{ __('frontend.academic_dashboard.project_image') }}">
                                             </a>
                                         @endforeach
                                     </div>
                                 @else
                                     <div class="p-5 rounded-2xl border border-theme-border bg-theme-surface-2 text-theme-muted text-sm">
-                                        No images uploaded yet.
+                                        {{ __('frontend.academic_dashboard.no_images_uploaded') }}
                                     </div>
                                 @endif
 
@@ -274,7 +274,7 @@
                                     <button type="button"
                                             onclick="openVideoModal('{{ $currentVideoUrl }}')"
                                             class="mt-4 w-full flex items-center justify-between p-5 bg-theme-surface-2 hover:bg-brand-accent-soft border border-theme-border rounded-2xl transition-all text-theme-text">
-                                        <span class="font-bold text-xs uppercase tracking-wider">Play Video</span>
+                                        <span class="font-bold text-xs uppercase tracking-wider">{{ __('frontend.academic_dashboard.play_video') }}</span>
                                         <i class="fas fa-play text-brand-accent"></i>
                                     </button>
                                 @endif
@@ -284,7 +284,7 @@
                         <div class="flex flex-col justify-center gap-4 min-w-[260px]">
                             <a href="{{ route('frontend.projects.show', $currentProject->project_id) }}"
                                class="group/btn flex items-center justify-between p-5 bg-brand-accent text-white rounded-2xl transition-all hover:bg-brand-accent-strong">
-                                <span class="font-black uppercase text-xs tracking-wider">Project Portfolio</span>
+                                <span class="font-black uppercase text-xs tracking-wider">{{ __('frontend.academic_dashboard.project_portfolio') }}</span>
                                 <i class="fas fa-arrow-right group-hover/btn:translate-x-1 transition-transform"></i>
                             </a>
 
@@ -292,15 +292,15 @@
                                 <button type="button"
                                         onclick="openUploadModal('{{ route('projects.media.upload', $currentProject->project_id) }}')"
                                         class="flex items-center justify-between p-5 bg-theme-surface-2 hover:bg-brand-accent-soft border border-theme-border rounded-2xl transition-all group text-theme-text">
-                                    <span class="font-bold text-xs uppercase tracking-wider">Upload Project Media</span>
+                                    <span class="font-bold text-xs uppercase tracking-wider">{{ __('frontend.academic_dashboard.upload_project_media') }}</span>
                                     <i class="fas fa-upload group-hover:-translate-y-1 transition-transform text-brand-accent"></i>
                                 </button>
                             @else
                                 <div class="flex items-center justify-between p-2 bg-theme-surface-2 border border-theme-border rounded-2xl text-theme-muted opacity-90">
                                     <div>
-                                        <span class="block font-bold text-xs uppercase tracking-wider mb-1">Upload Locked</span>
+                                        <span class="block font-bold text-xs uppercase tracking-wider mb-1">{{ __('frontend.academic_dashboard.upload_locked') }}</span>
                                         <span class="text-xs opacity-80">
-                                            Project images and videos can be uploaded after the final decision allows it.
+                                            {{ __('frontend.academic_dashboard.upload_locked_text') }}
                                         </span>
                                     </div>
                                     <i class="fas fa-lock text-theme-muted"></i>
@@ -316,10 +316,10 @@
                                    class="flex items-center justify-between p-2 bg-blue-600 text-white rounded-2xl transition-all hover:bg-blue-700 group">
                                     <div>
                                         <span class="block font-black uppercase text-xs tracking-wider">
-                                            Technical Scan
+                                            {{ __('frontend.academic_dashboard.technical_scan') }}
                                         </span>
                                         <span class="text-xs opacity-80">
-                                            هل تريد فحص المشروع الآن؟
+                                            {{ __('frontend.academic_dashboard.scan_now_question') }}
                                         </span>
                                     </div>
                                     <i class="fas fa-microscope group-hover:scale-110 transition-transform"></i>
@@ -330,10 +330,10 @@
                                    class="flex items-center justify-between p-2 bg-green-600 text-white rounded-2xl hover:bg-green-700 transition group">
                                     <div>
                                         <span class="block font-black uppercase text-xs tracking-wider">
-                                            Technical Scan
+                                            {{ __('frontend.academic_dashboard.technical_scan') }}
                                         </span>
                                         <span class="text-xs opacity-80">
-                                            تم تنفيذ الفحص، افتح مساحة الفحص
+                                            {{ __('frontend.academic_dashboard.scan_completed_open_workspace') }}
                                         </span>
                                     </div>
                                     <i class="fas fa-check-circle group-hover:scale-110 transition-transform"></i>
@@ -352,10 +352,10 @@
             <section class="mb-12">
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-xl font-black text-theme-text uppercase tracking-[0.2em] flex items-center gap-3">
-                        <i class="fas fa-inbox text-brand-accent"></i> Supervisor Requests
+                        <i class="fas fa-inbox text-brand-accent"></i> {{ __('frontend.academic_dashboard.supervisor_requests') }}
                     </h2>
                     <div class="text-xs text-theme-muted font-mono">
-                        Total: {{ $currentRequests->count() }}
+                        {{ __('frontend.academic_dashboard.total') }}: {{ $currentRequests->count() }}
                     </div>
                 </div>
 
@@ -387,19 +387,19 @@
                                 </div>
 
                                 <div class="text-theme-muted text-sm leading-relaxed mb-4 whitespace-pre-line">
-                                    {{ $requestItem->description ?: 'No additional details provided.' }}
+                                    {{ $requestItem->description ?: __('frontend.academic_dashboard.no_additional_details') }}
                                 </div>
 
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5 text-sm">
                                     <div class="theme-panel-soft rounded-2xl p-4">
-                                        <div class="text-theme-muted text-[10px] uppercase font-black tracking-widest mb-1">Supervisor</div>
-                                        <div class="text-theme-text font-semibold">{{ $requestItem->supervisor->name ?? 'Supervisor' }}</div>
+                                        <div class="text-theme-muted text-[10px] uppercase font-black tracking-widest mb-1">{{ __('frontend.academic_dashboard.supervisor') }}</div>
+                                        <div class="text-theme-text font-semibold">{{ $requestItem->supervisor->name ?? __('frontend.academic_dashboard.supervisor_fallback') }}</div>
                                     </div>
 
                                     <div class="theme-panel-soft rounded-2xl p-4">
-                                        <div class="text-theme-muted text-[10px] uppercase font-black tracking-widest mb-1">Due Date</div>
+                                        <div class="text-theme-muted text-[10px] uppercase font-black tracking-widest mb-1">{{ __('frontend.academic_dashboard.due_date') }}</div>
                                         <div class="text-theme-text font-semibold">
-                                            {{ $requestItem->due_date ? \Carbon\Carbon::parse($requestItem->due_date)->format('M d, Y') : 'Not specified' }}
+                                            {{ $requestItem->due_date ? \Carbon\Carbon::parse($requestItem->due_date)->format('M d, Y') : __('frontend.academic_dashboard.not_specified') }}
                                         </div>
                                     </div>
                                 </div>
@@ -407,7 +407,7 @@
                                 @if($requestItem->latestResponse)
                                     <div class="mb-5 p-4 rounded-2xl border border-green-500/20 bg-green-500/5">
                                         <div class="text-green-600 text-xs font-black uppercase tracking-[0.15em] mb-2">
-                                            Your Latest Response Sent to Supervisor
+                                            {{ __('frontend.academic_dashboard.latest_response_sent') }}
                                         </div>
 
                                         @if($requestItem->latestResponse->response_text)
@@ -420,14 +420,14 @@
                                             @if($requestItem->latestResponse->response_link)
                                                 <a href="{{ $requestItem->latestResponse->response_link }}" target="_blank"
                                                    class="text-brand-accent text-sm font-bold hover:underline">
-                                                    Open Submitted Link
+                                                    {{ __('frontend.academic_dashboard.open_submitted_link') }}
                                                 </a>
                                             @endif
 
                                             @if($requestItem->latestResponse->attachment_path)
                                                 <a href="{{ asset('storage/' . $requestItem->latestResponse->attachment_path) }}" target="_blank"
                                                    class="text-cyan-600 text-sm font-bold hover:underline">
-                                                    Download Attachment
+                                                    {{ __('frontend.academic_dashboard.download_attachment') }}
                                                 </a>
                                             @endif
                                         </div>
@@ -443,7 +443,7 @@
                                             )"
                                             class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-2xl bg-brand-accent text-white font-black hover:bg-brand-accent-strong transition shadow-brand-soft">
                                         <i class="fas fa-paper-plane"></i>
-                                        {{ $requestItem->latestResponse ? 'Update & Send to Supervisor' : 'Send to Supervisor' }}
+                                        {{ $requestItem->latestResponse ? __('frontend.academic_dashboard.update_and_send') : __('frontend.academic_dashboard.send_to_supervisor') }}
                                     </button>
                                 </div>
                             </div>
@@ -451,7 +451,7 @@
                     </div>
                 @else
                     <div class="theme-panel rounded-[2rem] p-10 text-center text-theme-muted">
-                        No supervisor requests for this project yet.
+                        {{ __('frontend.academic_dashboard.no_supervisor_requests') }}
                     </div>
                 @endif
             </section>
@@ -460,10 +460,10 @@
             <section class="mb-12">
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-xl font-black text-theme-text uppercase tracking-[0.2em] flex items-center gap-3">
-                        <i class="fas fa-calendar-alt text-brand-accent"></i> Meetings & Demo Sessions
+                        <i class="fas fa-calendar-alt text-brand-accent"></i> {{ __('frontend.academic_dashboard.meetings_demo_sessions') }}
                     </h2>
                     <div class="text-xs text-theme-muted font-mono">
-                        Total: {{ $currentMeetings->count() }}
+                        {{ __('frontend.academic_dashboard.total') }}: {{ $currentMeetings->count() }}
                     </div>
                 </div>
 
@@ -495,23 +495,23 @@
 
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5 text-sm">
                                     <div class="theme-panel-soft rounded-2xl p-4">
-                                        <div class="text-theme-muted text-[10px] uppercase font-black tracking-widest mb-1">Meeting Date</div>
+                                        <div class="text-theme-muted text-[10px] uppercase font-black tracking-widest mb-1">{{ __('frontend.academic_dashboard.meeting_date') }}</div>
                                         <div class="text-theme-text font-semibold">
-                                            {{ $meeting->meeting_date ? \Carbon\Carbon::parse($meeting->meeting_date)->format('M d, Y') : 'Not set' }}
+                                            {{ $meeting->meeting_date ? \Carbon\Carbon::parse($meeting->meeting_date)->format('M d, Y') : __('frontend.academic_dashboard.not_set') }}
                                         </div>
                                     </div>
 
                                     <div class="theme-panel-soft rounded-2xl p-4">
-                                        <div class="text-theme-muted text-[10px] uppercase font-black tracking-widest mb-1">Meeting Time</div>
+                                        <div class="text-theme-muted text-[10px] uppercase font-black tracking-widest mb-1">{{ __('frontend.academic_dashboard.meeting_time') }}</div>
                                         <div class="text-theme-text font-semibold">
-                                            {{ $meeting->meeting_time ? \Carbon\Carbon::parse($meeting->meeting_time)->format('h:i A') : 'Not set' }}
+                                            {{ $meeting->meeting_time ? \Carbon\Carbon::parse($meeting->meeting_time)->format('h:i A') : __('frontend.academic_dashboard.not_set') }}
                                         </div>
                                     </div>
                                 </div>
 
                                 @if($meeting->notes)
                                     <div class="mb-4 p-4 rounded-2xl border border-theme-border bg-theme-surface-2">
-                                        <div class="text-theme-muted text-[10px] uppercase font-black tracking-widest mb-2">Meeting Notes</div>
+                                        <div class="text-theme-muted text-[10px] uppercase font-black tracking-widest mb-2">{{ __('frontend.academic_dashboard.meeting_notes') }}</div>
                                         <div class="text-theme-text text-sm whitespace-pre-line">{{ $meeting->notes }}</div>
                                     </div>
                                 @endif
@@ -521,7 +521,7 @@
                                         <a href="{{ $meeting->meeting_link }}" target="_blank"
                                            class="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-green-500 text-white font-black hover:bg-green-600 transition shadow-brand-soft">
                                             <i class="fas fa-video"></i>
-                                            Join Meeting
+                                            {{ __('frontend.academic_dashboard.join_meeting') }}
                                         </a>
                                     @endif
                                 </div>
@@ -530,7 +530,7 @@
                     </div>
                 @else
                     <div class="theme-panel rounded-[2rem] p-10 text-center text-theme-muted">
-                        No meetings scheduled for this project yet.
+                        {{ __('frontend.academic_dashboard.no_meetings') }}
                     </div>
                 @endif
             </section>
@@ -539,9 +539,9 @@
             <section class="mb-12">
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-xl font-black text-theme-text uppercase tracking-[0.2em] flex items-center gap-3">
-                        <i class="fas fa-layer-group text-brand-accent"></i> Your Projects
+                        <i class="fas fa-layer-group text-brand-accent"></i> {{ __('frontend.academic_dashboard.your_projects') }}
                     </h2>
-                    <div class="text-xs text-theme-muted font-mono">Total: {{ $projects->count() }}</div>
+                    <div class="text-xs text-theme-muted font-mono">{{ __('frontend.academic_dashboard.total') }}: {{ $projects->count() }}</div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -558,23 +558,23 @@
                            class="block rounded-[2rem] overflow-hidden transition border {{ $active ? 'border-brand-accent shadow-brand-soft' : 'border-theme-border theme-panel hover:border-brand-accent/40' }}">
                             <div class="h-44 bg-theme-surface-2 relative">
                                 @if($thumb)
-                                    <img src="{{ $thumb }}" class="w-full h-full object-cover" alt="Project thumbnail">
+                                    <img src="{{ $thumb }}" class="w-full h-full object-cover" alt="{{ __('frontend.academic_dashboard.project_thumbnail') }}">
                                 @else
                                     <div class="w-full h-full flex items-center justify-center text-theme-muted">
                                         <div class="text-center">
                                             <i class="fas fa-image text-3xl mb-2"></i>
-                                            <div class="text-xs uppercase tracking-[0.2em] font-black">No Image</div>
+                                            <div class="text-xs uppercase tracking-[0.2em] font-black">{{ __('frontend.academic_dashboard.no_image') }}</div>
                                         </div>
                                     </div>
                                 @endif
 
                                 <div class="absolute top-4 left-4 flex gap-2">
                                     <span class="px-3 py-1 rounded-xl bg-brand-accent-soft text-brand-accent text-[10px] font-black uppercase tracking-[0.15em] border border-brand-accent">
-                                        {{ $project->category ?? 'General' }}
+                                        {{ $project->category ?? __('frontend.academic_dashboard.general') }}
                                     </span>
                                     @if($hasVideo)
                                         <span class="px-3 py-1 rounded-xl bg-theme-surface text-theme-text text-[10px] font-black uppercase tracking-[0.15em] border border-theme-border">
-                                            Video
+                                            {{ __('frontend.academic_dashboard.video') }}
                                         </span>
                                     @endif
                                 </div>
@@ -592,12 +592,12 @@
 
                                 <div class="flex items-center justify-between text-sm">
                                     <div class="text-theme-muted">
-                                        <span>Images:</span> <span class="font-bold text-theme-text">{{ $imgCount }}</span>
+                                        <span>{{ __('frontend.academic_dashboard.images') }}:</span> <span class="font-bold text-theme-text">{{ $imgCount }}</span>
                                     </div>
                                     <div class="text-theme-muted">
-                                        <span>Status:</span>
+                                        <span>{{ __('frontend.academic_dashboard.status') }}:</span>
                                         <span class="font-bold text-theme-text">
-                                            {{ $decisionLabel($projectDecision) ?? ($project->status === 'pending' ? 'Reviewing' : ucfirst($project->status)) }}
+                                            {{ $decisionLabel($projectDecision) ?? ($project->status === 'pending' ? __('frontend.academic_dashboard.reviewing') : ucfirst($project->status)) }}
                                         </span>
                                     </div>
                                 </div>
@@ -611,12 +611,12 @@
                 <div class="w-24 h-24 bg-brand-accent-soft rounded-full flex items-center justify-center mx-auto mb-8 text-brand-accent text-4xl shadow-brand-soft">
                     <i class="fas fa-atom animate-spin-slow"></i>
                 </div>
-                <h2 class="text-3xl font-bold text-theme-text mb-3">No Active Research Found</h2>
+                <h2 class="text-3xl font-bold text-theme-text mb-3">{{ __('frontend.academic_dashboard.no_active_research') }}</h2>
                 <p class="text-theme-muted mb-10 max-w-lg mx-auto leading-relaxed">
-                    Your portal is empty. Take the first step by submitting your academic project.
+                    {{ __('frontend.academic_dashboard.no_active_research_text') }}
                 </p>
                 <a href="{{ route('project.submit.step1') }}" class="{{ $btnPrimaryClass }}">
-                    Start Submission
+                    {{ __('frontend.academic_dashboard.start_submission') }}
                 </a>
             </div>
         @endif
@@ -631,7 +631,7 @@
         <div class="min-h-full flex items-start justify-center px-4 py-10">
             <div class="w-full max-w-4xl theme-panel rounded-[2rem] overflow-hidden">
                 <div class="p-5 border-b border-theme-border flex items-center justify-between">
-                    <div class="text-theme-text font-black">Project Video</div>
+                    <div class="text-theme-text font-black">{{ __('frontend.academic_dashboard.project_video') }}</div>
                     <button class="text-theme-muted hover:text-theme-text" onclick="closeVideoModal()">
                         <i class="fas fa-times"></i>
                     </button>
@@ -654,8 +654,8 @@
             <div class="w-full max-w-2xl theme-panel rounded-[2rem] overflow-hidden">
                 <div class="p-5 border-b border-theme-border flex items-center justify-between">
                     <div>
-                        <div class="text-theme-text font-black">Upload Data</div>
-                        <div class="text-theme-muted text-xs font-mono">Add images/video to this project</div>
+                        <div class="text-theme-text font-black">{{ __('frontend.academic_dashboard.upload_data') }}</div>
+                        <div class="text-theme-muted text-xs font-mono">{{ __('frontend.academic_dashboard.add_images_video') }}</div>
                     </div>
                     <button class="text-theme-muted hover:text-theme-text" onclick="closeUploadModal()">
                         <i class="fas fa-times"></i>
@@ -666,13 +666,13 @@
                     @csrf
 
                     <div class="theme-panel-soft p-4 rounded-2xl">
-                        <label class="block text-sm font-bold text-theme-text mb-2">Add Photos (multiple)</label>
+                        <label class="block text-sm font-bold text-theme-text mb-2">{{ __('frontend.academic_dashboard.add_photos_multiple') }}</label>
                         <input type="file" name="project_photos[]" multiple accept="image/*"
                                class="w-full p-2 rounded-lg border border-theme-border bg-theme-surface text-theme-text">
                     </div>
 
                     <div class="theme-panel-soft p-4 rounded-2xl">
-                        <label class="block text-sm font-bold text-theme-text mb-2">Add Video (single)</label>
+                        <label class="block text-sm font-bold text-theme-text mb-2">{{ __('frontend.academic_dashboard.add_video_single') }}</label>
                         <input type="file" name="project_video" accept="video/*"
                                class="w-full p-2 rounded-lg border border-theme-border bg-theme-surface text-theme-text">
                     </div>
@@ -680,10 +680,10 @@
                     <div class="flex items-center justify-end gap-3 pt-2">
                         <button type="button" onclick="closeUploadModal()"
                                 class="px-6 py-3 rounded-2xl bg-theme-surface-2 hover:bg-brand-accent-soft border border-theme-border text-theme-text font-bold">
-                            Cancel
+                            {{ __('frontend.academic_dashboard.cancel') }}
                         </button>
                         <button type="submit" class="px-6 py-3 rounded-2xl bg-brand-accent text-white font-black hover:bg-brand-accent-strong transition">
-                            Upload Now
+                            {{ __('frontend.academic_dashboard.upload_now') }}
                         </button>
                     </div>
                 </form>
@@ -701,8 +701,8 @@
             <div class="w-full max-w-3xl theme-panel rounded-[2rem] overflow-hidden">
                 <div class="p-5 border-b border-theme-border flex items-center justify-between">
                     <div>
-                        <div class="text-theme-text font-black" id="requestResponseModalTitle">Send Response to Supervisor</div>
-                        <div class="text-theme-muted text-xs font-mono" id="requestResponseModalSubtitle">Submit your text, link, or attachment clearly to the supervisor</div>
+                        <div class="text-theme-text font-black" id="requestResponseModalTitle">{{ __('frontend.academic_dashboard.send_response_to_supervisor') }}</div>
+                        <div class="text-theme-muted text-xs font-mono" id="requestResponseModalSubtitle">{{ __('frontend.academic_dashboard.submit_text_link_attachment') }}</div>
                     </div>
 
                     <button class="text-theme-muted hover:text-theme-text" onclick="closeRequestResponseModal()">
@@ -718,67 +718,67 @@
 
                     <div id="normalRequestFields" class="space-y-5">
                         <div class="theme-panel-soft p-4 rounded-2xl">
-                            <label class="block text-sm font-bold text-theme-text mb-2">Response Text</label>
+                            <label class="block text-sm font-bold text-theme-text mb-2">{{ __('frontend.academic_dashboard.response_text') }}</label>
                             <textarea id="normal_response_text" rows="5"
                                       class="w-full p-3 rounded-xl border border-theme-border bg-theme-surface text-theme-text"
-                                      placeholder="Write your response here..."></textarea>
+                                      placeholder="{{ __('frontend.academic_dashboard.write_response_here') }}"></textarea>
                         </div>
 
                         <div class="theme-panel-soft p-4 rounded-2xl">
-                            <label class="block text-sm font-bold text-theme-text mb-2">Response Link</label>
+                            <label class="block text-sm font-bold text-theme-text mb-2">{{ __('frontend.academic_dashboard.response_link') }}</label>
                             <input type="url" id="normal_response_link"
                                    class="w-full p-3 rounded-xl border border-theme-border bg-theme-surface text-theme-text"
-                                   placeholder="https://github.com/... or drive link ...">
+                                   placeholder="{{ __('frontend.academic_dashboard.response_link_placeholder') }}">
                         </div>
                     </div>
 
                     <div id="systemVerificationFields" class="hidden space-y-5">
                         <div class="bg-brand-accent-soft border border-brand-accent rounded-2xl p-4 text-theme-text text-sm">
-                            Please fill at least <strong>4 important items</strong>. The more details you provide, the easier it will be for the supervisor to verify your project technically.
+                            {!! __('frontend.academic_dashboard.fill_at_least_four') !!}
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div class="theme-panel-soft p-4 rounded-2xl">
-                                <label class="block text-sm font-bold text-theme-text mb-2">Frontend URL</label>
+                                <label class="block text-sm font-bold text-theme-text mb-2">{{ __('frontend.academic_dashboard.frontend_url') }}</label>
                                 <input type="url" id="sv_frontend_url" class="w-full p-3 rounded-xl border border-theme-border bg-theme-surface text-theme-text" placeholder="https://your-frontend.com">
                             </div>
 
                             <div class="theme-panel-soft p-4 rounded-2xl">
-                                <label class="block text-sm font-bold text-theme-text mb-2">Backend URL</label>
+                                <label class="block text-sm font-bold text-theme-text mb-2">{{ __('frontend.academic_dashboard.backend_url') }}</label>
                                 <input type="url" id="sv_backend_url" class="w-full p-3 rounded-xl border border-theme-border bg-theme-surface text-theme-text" placeholder="https://your-backend.com">
                             </div>
 
                             <div class="theme-panel-soft p-4 rounded-2xl">
-                                <label class="block text-sm font-bold text-theme-text mb-2">API Health / API Base URL</label>
+                                <label class="block text-sm font-bold text-theme-text mb-2">{{ __('frontend.academic_dashboard.api_health_url') }}</label>
                                 <input type="url" id="sv_api_health_url" class="w-full p-3 rounded-xl border border-theme-border bg-theme-surface text-theme-text" placeholder="https://api.your-app.com/health">
                             </div>
 
                             <div class="theme-panel-soft p-4 rounded-2xl">
-                                <label class="block text-sm font-bold text-theme-text mb-2">Admin Panel URL</label>
+                                <label class="block text-sm font-bold text-theme-text mb-2">{{ __('frontend.academic_dashboard.admin_panel_url') }}</label>
                                 <input type="url" id="sv_admin_panel_url" class="w-full p-3 rounded-xl border border-theme-border bg-theme-surface text-theme-text" placeholder="https://your-app.com/admin">
                             </div>
 
                             <div class="theme-panel-soft p-4 rounded-2xl">
-                                <label class="block text-sm font-bold text-theme-text mb-2">Demo Account</label>
+                                <label class="block text-sm font-bold text-theme-text mb-2">{{ __('frontend.academic_dashboard.demo_account') }}</label>
                                 <input type="text" id="sv_demo_account" class="w-full p-3 rounded-xl border border-theme-border bg-theme-surface text-theme-text" placeholder="demo@example.com">
                             </div>
 
                             <div class="theme-panel-soft p-4 rounded-2xl">
-                                <label class="block text-sm font-bold text-theme-text mb-2">Demo Password</label>
-                                <input type="text" id="sv_demo_password" class="w-full p-3 rounded-xl border border-theme-border bg-theme-surface text-theme-text" placeholder="Password">
+                                <label class="block text-sm font-bold text-theme-text mb-2">{{ __('frontend.academic_dashboard.demo_password') }}</label>
+                                <input type="text" id="sv_demo_password" class="w-full p-3 rounded-xl border border-theme-border bg-theme-surface text-theme-text" placeholder="{{ __('frontend.academic_dashboard.password_plain') }}">
                             </div>
                         </div>
 
                         <div class="theme-panel-soft p-4 rounded-2xl">
-                            <label class="block text-sm font-bold text-theme-text mb-2">Deployment Notes</label>
+                            <label class="block text-sm font-bold text-theme-text mb-2">{{ __('frontend.academic_dashboard.deployment_notes') }}</label>
                             <textarea id="sv_deployment_notes" rows="5"
                                       class="w-full p-3 rounded-xl border border-theme-border bg-theme-surface text-theme-text"
-                                      placeholder="Hosting notes, ports, environments, setup steps, login instructions, or any important technical information..."></textarea>
+                                      placeholder="{{ __('frontend.academic_dashboard.deployment_notes_placeholder') }}"></textarea>
                         </div>
                     </div>
 
                     <div class="theme-panel-soft p-4 rounded-2xl">
-                        <label class="block text-sm font-bold text-theme-text mb-3">Attachment</label>
+                        <label class="block text-sm font-bold text-theme-text mb-3">{{ __('frontend.academic_dashboard.attachment') }}</label>
 
                         <div class="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
                             <input type="file" name="attachment"
@@ -788,26 +788,26 @@
                                     onclick="submitRequestResponseForm()"
                                     class="px-6 py-3 rounded-xl bg-green-500 text-white font-black hover:bg-green-600 transition-all duration-300 flex items-center justify-center gap-2 shadow-brand-soft">
                                 <i class="fas fa-paper-plane"></i>
-                                Send Now
+                                {{ __('frontend.academic_dashboard.send_now') }}
                             </button>
                         </div>
 
                         <div class="text-theme-muted text-xs mt-2">
-                            Allowed: image, pdf, zip, docs, video, etc.
+                            {{ __('frontend.academic_dashboard.allowed_attachment_types') }}
                         </div>
                     </div>
 
                     <div class="flex items-center justify-end gap-3 pt-2">
                         <button type="button" onclick="closeRequestResponseModal()"
                                 class="px-6 py-3 rounded-2xl bg-theme-surface-2 hover:bg-brand-accent-soft border border-theme-border text-theme-text font-bold">
-                            Cancel
+                            {{ __('frontend.academic_dashboard.cancel') }}
                         </button>
 
                         <button type="button"
                                 onclick="submitRequestResponseForm()"
                                 class="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-brand-accent text-white font-black hover:bg-brand-accent-strong transition shadow-brand-soft">
                             <i class="fas fa-paper-plane"></i>
-                            Send to Supervisor
+                            {{ __('frontend.academic_dashboard.send_to_supervisor') }}
                         </button>
                     </div>
                 </form>
@@ -878,14 +878,14 @@
 
         if (isSystemVerification) {
             currentRequestMode = 'system';
-            titleEl.textContent = 'Complete System Verification Request: ' + title;
-            subtitleEl.textContent = 'Provide the technical system details requested by the supervisor';
+            titleEl.textContent = '{{ __('frontend.academic_dashboard.complete_system_verification_request') }}: ' + title;
+            subtitleEl.textContent = '{{ __('frontend.academic_dashboard.provide_technical_details') }}';
             document.getElementById('normalRequestFields').classList.add('hidden');
             document.getElementById('systemVerificationFields').classList.remove('hidden');
         } else {
             currentRequestMode = 'normal';
-            titleEl.textContent = 'Send Response to Supervisor: ' + title;
-            subtitleEl.textContent = 'Submit your text, link, or attachment clearly to the supervisor';
+            titleEl.textContent = '{{ __('frontend.academic_dashboard.send_response_to_supervisor') }}: ' + title;
+            subtitleEl.textContent = '{{ __('frontend.academic_dashboard.submit_text_link_attachment') }}';
             document.getElementById('normalRequestFields').classList.remove('hidden');
             document.getElementById('systemVerificationFields').classList.add('hidden');
         }
@@ -925,22 +925,22 @@
             const filledCount = importantFields.filter(v => v !== '').length;
 
             if (filledCount < 4) {
-                alert('Please fill at least 4 important system verification fields before sending.');
+                alert('{{ __('frontend.academic_dashboard.fill_four_alert') }}');
                 return;
             }
 
             generatedText.value =
-`System Verification Response
+`{{ __('frontend.academic_dashboard.system_verification_response') }}
 
-Frontend URL: ${frontendUrl || 'Not provided'}
-Backend URL: ${backendUrl || 'Not provided'}
-API Health / API Base URL: ${apiHealthUrl || 'Not provided'}
-Admin Panel URL: ${adminPanelUrl || 'Not provided'}
-Demo Account: ${demoAccount || 'Not provided'}
-Demo Password: ${demoPassword || 'Not provided'}
+{{ __('frontend.academic_dashboard.frontend_url') }}: ${frontendUrl || '{{ __('frontend.academic_dashboard.not_provided') }}'}
+{{ __('frontend.academic_dashboard.backend_url') }}: ${backendUrl || '{{ __('frontend.academic_dashboard.not_provided') }}'}
+{{ __('frontend.academic_dashboard.api_health_url') }}: ${apiHealthUrl || '{{ __('frontend.academic_dashboard.not_provided') }}'}
+{{ __('frontend.academic_dashboard.admin_panel_url') }}: ${adminPanelUrl || '{{ __('frontend.academic_dashboard.not_provided') }}'}
+{{ __('frontend.academic_dashboard.demo_account') }}: ${demoAccount || '{{ __('frontend.academic_dashboard.not_provided') }}'}
+{{ __('frontend.academic_dashboard.demo_password') }}: ${demoPassword || '{{ __('frontend.academic_dashboard.not_provided') }}'}
 
-Deployment Notes:
-${deploymentNotes || 'No deployment notes provided.'}`;
+{{ __('frontend.academic_dashboard.deployment_notes') }}:
+${deploymentNotes || '{{ __('frontend.academic_dashboard.no_deployment_notes') }}'}`;
 
             generatedLink.value = frontendUrl || backendUrl || apiHealthUrl || adminPanelUrl || '';
         } else {

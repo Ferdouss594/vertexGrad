@@ -7,16 +7,16 @@
         <header class="mb-12 flex flex-col md:flex-row md:justify-between md:items-end gap-6">
             <div>
                 <h1 class="text-5xl font-black text-theme-text tracking-tighter uppercase">
-                    Investor <span class="text-brand-accent">Dashboard</span>
+                    {{ __('frontend.investor_dashboard.investor') }} <span class="text-brand-accent">{{ __('frontend.investor_dashboard.dashboard') }}</span>
                 </h1>
                 <p class="text-theme-muted text-xs font-bold tracking-[0.3em] mt-2 uppercase">
-                    Review opportunities, track activity, and explore active research projects
+                    {{ __('frontend.investor_dashboard.subtitle') }}
                 </p>
             </div>
 
             <div class="text-right hidden md:block">
                 <p class="text-theme-muted text-[10px] font-black uppercase tracking-widest">
-                    Total Approved Funding
+                    {{ __('frontend.investor_dashboard.total_approved_funding') }}
                 </p>
                 <p class="text-3xl font-black text-green-600 mt-1">
                     ${{ number_format($totalDeployed) }}
@@ -42,20 +42,20 @@
                             <div class="flex-1 min-w-0">
                                 <div class="flex flex-wrap items-center gap-2 mb-3">
                                     <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-theme-surface-2 text-theme-muted border border-theme-border text-[11px] font-black uppercase tracking-[0.16em]">
-                                        Announcement
+                                        {{ __('frontend.investor_dashboard.announcement') }}
                                     </span>
 
                                     @if($featuredAnnouncement->is_pinned)
                                         <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-amber-400/10 text-amber-500 border border-amber-400/20 text-[11px] font-black uppercase tracking-[0.16em]">
                                             <i class="fas fa-thumbtack text-[10px]"></i>
-                                            Pinned
+                                            {{ __('frontend.investor_dashboard.pinned') }}
                                         </span>
                                     @endif
 
                                     @if($featuredAnnouncement->expires_at)
                                         <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-red-500/10 text-red-500 border border-red-500/20 text-[11px] font-black uppercase tracking-[0.16em]">
                                             <i class="fas fa-hourglass-half text-[10px]"></i>
-                                            Until {{ $featuredAnnouncement->expires_at->format('M d, Y • h:i A') }}
+                                            {{ __('frontend.investor_dashboard.until') }} {{ $featuredAnnouncement->expires_at->format('M d, Y • h:i A') }}
                                         </span>
                                     @endif
                                 </div>
@@ -99,7 +99,7 @@
 
                                             @if($announcement->expires_at)
                                                 <div class="mt-3 text-[11px] text-red-500 font-semibold">
-                                                    Visible until {{ $announcement->expires_at->format('M d, Y • h:i A') }}
+                                                    {{ __('frontend.investor_dashboard.visible_until') }} {{ $announcement->expires_at->format('M d, Y • h:i A') }}
                                                 </div>
                                             @endif
                                         </div>
@@ -119,7 +119,7 @@
                 {{-- MY INTERESTED / APPROVED PROJECTS --}}
                 <section class="theme-panel p-10 rounded-[3rem]">
                     <h3 class="text-xl font-black text-theme-text mb-8 flex items-center uppercase tracking-widest">
-                        <i class="fas fa-briefcase mr-4 text-brand-accent"></i> My Investment Activity
+                        <i class="fas fa-briefcase mr-4 text-brand-accent"></i> {{ __('frontend.investor_dashboard.my_investment_activity') }}
                     </h3>
 
                     <div class="space-y-4">
@@ -147,19 +147,19 @@
                                         </h4>
 
                                         <p class="text-xs text-theme-muted mt-1">
-                                            Lead: {{ $investment->student?->name ?? 'N/A' }}
+                                            {{ __('frontend.investor_dashboard.lead') }}: {{ $investment->student?->name ?? __('frontend.investor_dashboard.not_available') }}
                                         </p>
 
                                         <div class="flex items-center gap-3 mt-2 flex-wrap">
                                             @if($video)
                                                 <span class="text-xs text-brand-accent flex items-center gap-1">
-                                                    <i class="fas fa-video"></i> Video available
+                                                    <i class="fas fa-video"></i> {{ __('frontend.investor_dashboard.video_available') }}
                                                 </span>
                                             @endif
 
                                             @if($investment->getMedia('images')->count() > 1)
                                                 <span class="text-xs text-theme-muted">
-                                                    {{ $investment->getMedia('images')->count() }} images
+                                                    {{ $investment->getMedia('images')->count() }} {{ __('frontend.investor_dashboard.images') }}
                                                 </span>
                                             @endif
                                         </div>
@@ -172,13 +172,13 @@
                                     </span>
 
                                     <p class="text-[10px] text-theme-muted uppercase mt-1">
-                                        Budget: ${{ number_format($investment->budget ?? 0) }}
+                                        {{ __('frontend.investor_dashboard.budget') }}: ${{ number_format($investment->budget ?? 0) }}
                                     </p>
                                 </div>
                             </a>
                         @empty
                             <div class="text-center py-10 text-theme-muted italic text-sm">
-                                You haven't expressed interest in any projects yet.
+                                {{ __('frontend.investor_dashboard.no_interest_yet') }}
                             </div>
                         @endforelse
                     </div>
@@ -188,12 +188,12 @@
                 <section class="theme-panel p-10 rounded-[3rem]">
                     <div class="flex justify-between items-center mb-8">
                         <h3 class="text-xl font-black text-theme-text uppercase tracking-widest">
-                            Suggested for You
+                            {{ __('frontend.investor_dashboard.suggested_for_you') }}
                         </h3>
 
                         <a href="{{ route('frontend.projects.index') }}"
                            class="text-brand-accent text-[10px] font-black hover:underline tracking-widest">
-                            EXPLORE ALL
+                            {{ __('frontend.investor_dashboard.explore_all') }}
                         </a>
                     </div>
 
@@ -225,12 +225,12 @@
 
                                         <div class="flex items-center gap-3 mt-2 flex-wrap">
                                             <span class="text-xs text-theme-muted">
-                                                {{ $deal->student?->name ?? 'Researcher' }}
+                                                {{ $deal->student?->name ?? __('frontend.investor_dashboard.researcher') }}
                                             </span>
 
                                             @if($video)
                                                 <span class="text-xs text-brand-accent flex items-center gap-1">
-                                                    <i class="fas fa-video"></i> Video
+                                                    <i class="fas fa-video"></i> {{ __('frontend.investor_dashboard.video') }}
                                                 </span>
                                             @endif
                                         </div>
@@ -246,7 +246,7 @@
                                                 </div>
 
                                                 <span class="text-xs text-theme-muted">
-                                                    {{ $interestedCount }} interested investor{{ $interestedCount > 1 ? 's' : '' }}
+                                                    {{ $interestedCount }} {{ __('frontend.investor_dashboard.interested_investor_label', ['count' => $interestedCount]) }}
                                                 </span>
                                             </div>
                                         @endif
@@ -259,7 +259,7 @@
                             </a>
                         @empty
                             <div class="text-center py-10 text-theme-muted italic text-sm">
-                                No open investment opportunities right now.
+                                {{ __('frontend.investor_dashboard.no_open_opportunities') }}
                             </div>
                         @endforelse
                     </div>
@@ -269,27 +269,27 @@
             <div class="space-y-8">
                 <div class="theme-panel p-10 rounded-[3rem]">
                     <h3 class="text-theme-text font-black uppercase tracking-widest text-sm mb-6">
-                        Marketplace Overview
+                        {{ __('frontend.investor_dashboard.marketplace_overview') }}
                     </h3>
 
                     <div class="space-y-5 text-sm">
                         <div class="flex justify-between items-center">
-                            <span class="text-theme-muted">Active Projects</span>
+                            <span class="text-theme-muted">{{ __('frontend.investor_dashboard.active_projects') }}</span>
                             <span class="text-brand-accent font-bold">{{ $marketplaceStats['active_projects'] }}</span>
                         </div>
 
                         <div class="flex justify-between items-center">
-                            <span class="text-theme-muted">Interested</span>
+                            <span class="text-theme-muted">{{ __('frontend.investor_dashboard.interested') }}</span>
                             <span class="text-theme-text font-bold">{{ $marketplaceStats['interested_count'] }}</span>
                         </div>
 
                         <div class="flex justify-between items-center">
-                            <span class="text-theme-muted">Funding Requested</span>
+                            <span class="text-theme-muted">{{ __('frontend.investor_dashboard.funding_requested') }}</span>
                             <span class="text-theme-text font-bold">{{ $marketplaceStats['requested_count'] }}</span>
                         </div>
 
                         <div class="flex justify-between items-center">
-                            <span class="text-theme-muted">Approved Investments</span>
+                            <span class="text-theme-muted">{{ __('frontend.investor_dashboard.approved_investments') }}</span>
                             <span class="text-green-600 font-bold">{{ $marketplaceStats['approved_count'] }}</span>
                         </div>
                     </div>
@@ -297,23 +297,23 @@
 
                 <div class="theme-panel p-10 rounded-[3rem]">
                     <h3 class="text-theme-text font-black uppercase tracking-widest text-sm mb-6">
-                        Investor Summary
+                        {{ __('frontend.investor_dashboard.investor_summary') }}
                     </h3>
 
                     <div class="space-y-4 text-xs text-theme-muted leading-relaxed">
                         <p>
-                            <span class="text-brand-accent">Focus:</span>
-                            Review active research projects and track your investment activity from one place.
+                            <span class="text-brand-accent">{{ __('frontend.investor_dashboard.focus') }}:</span>
+                            {{ __('frontend.investor_dashboard.focus_text') }}
                         </p>
 
                         <p>
-                            <span class="text-brand-accent">Status:</span>
-                            Suggested opportunities are based on your previous project interactions when available.
+                            <span class="text-brand-accent">{{ __('frontend.investor_dashboard.status') }}:</span>
+                            {{ __('frontend.investor_dashboard.status_text') }}
                         </p>
 
                         <p>
-                            <span class="text-brand-accent">Action:</span>
-                            You can express interest first, then submit a funding request when ready.
+                            <span class="text-brand-accent">{{ __('frontend.investor_dashboard.action') }}:</span>
+                            {{ __('frontend.investor_dashboard.action_text') }}
                         </p>
                     </div>
                 </div>

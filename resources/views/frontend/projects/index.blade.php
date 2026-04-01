@@ -11,11 +11,11 @@
 
         <header class="mb-12">
             <h1 class="text-5xl font-black text-theme-text tracking-tight">
-                Investment <span class="text-brand-accent">Pipeline</span>
+                {{ __('frontend.pipeline.title_before') }} <span class="text-brand-accent">{{ __('frontend.pipeline.title_highlight') }}</span>
             </h1>
             <p class="text-theme-muted mt-2 uppercase tracking-[0.3em] text-xs font-bold flex items-center">
                 <span class="w-12 h-[1px] bg-brand-accent mr-4"></span>
-                Active Academic Research Opportunities
+                {{ __('frontend.pipeline.subtitle') }}
             </p>
         </header>
 
@@ -24,17 +24,17 @@
             <aside class="lg:col-span-1">
                 <div class="theme-panel p-8 rounded-[2rem] sticky top-32">
                     <h3 class="text-theme-text font-bold mb-6 flex items-center uppercase tracking-widest text-sm">
-                        <i class="fas fa-filter mr-3 text-brand-accent text-xs"></i> Filter
+                        <i class="fas fa-filter mr-3 text-brand-accent text-xs"></i> {{ __('frontend.pipeline.filter') }}
                     </h3>
 
                     <form action="{{ route('frontend.projects.index') }}" method="GET" class="space-y-6">
                         <div>
                             <label class="text-[10px] font-black text-theme-muted uppercase tracking-widest block mb-3">
-                                Discipline
+                                {{ __('frontend.pipeline.discipline') }}
                             </label>
 
                             <select name="category" class="w-full bg-theme-surface-2 border border-theme-border rounded-xl p-3 text-theme-text text-sm focus:border-brand-accent outline-none transition-all">
-                                <option value="">All Fields</option>
+                                <option value="">{{ __('frontend.pipeline.all_fields') }}</option>
                                 @foreach($categories as $category)
                                     <option value="{{ $category }}" {{ request('category') == $category ? 'selected' : '' }}>
                                         {{ $category }}
@@ -45,11 +45,11 @@
 
                         <div>
                             <label class="text-[10px] font-black text-theme-muted uppercase tracking-widest block mb-3">
-                                Max Funding
+                                {{ __('frontend.pipeline.max_funding') }}
                             </label>
 
                             <div class="flex justify-between text-brand-accent font-mono text-xs mb-2">
-                                <span>Selected:</span>
+                                <span>{{ __('frontend.pipeline.selected') }}:</span>
                                 <span>${{ number_format(request('budget_max', 1000000)) }}</span>
                             </div>
 
@@ -67,12 +67,12 @@
 
                         <div class="pt-4 space-y-3">
                             <button type="submit" class="w-full py-4 bg-brand-accent text-white font-black text-xs uppercase tracking-widest rounded-xl hover:bg-brand-accent-strong transition-all shadow-brand-soft">
-                                Update Results
+                                {{ __('frontend.pipeline.update_results') }}
                             </button>
 
                             @if(request()->filled('category') || request()->filled('budget_max'))
                                 <a href="{{ route('frontend.projects.index') }}" class="block text-center text-[10px] font-black text-theme-muted uppercase tracking-widest hover:text-red-500 transition-colors">
-                                    Clear Filters
+                                    {{ __('frontend.pipeline.clear_filters') }}
                                 </a>
                             @endif
                         </div>
@@ -105,7 +105,7 @@
                             <div class="p-8">
                                 <div class="flex justify-between items-start mb-6 gap-4">
                                     <span class="px-3 py-1 bg-brand-accent-soft text-brand-accent text-[10px] font-black rounded-lg border border-brand-accent/20 uppercase tracking-widest">
-                                        {{ $project->category ?? 'General' }}
+                                        {{ $project->category ?? __('frontend.pipeline.general') }}
                                     </span>
 
                                     <span class="text-green-600 font-mono font-bold shrink-0">
@@ -123,12 +123,12 @@
 
                                 <div class="flex items-center gap-3 mb-4 flex-wrap">
                                     <span class="text-xs text-theme-muted font-medium">
-                                        {{ $project->student?->name ?? 'Researcher' }}
+                                        {{ $project->student?->name ?? __('frontend.pipeline.researcher') }}
                                     </span>
 
                                     @if($video)
                                         <span class="text-xs text-brand-accent flex items-center gap-1">
-                                            <i class="fas fa-video"></i> Video
+                                            <i class="fas fa-video"></i> {{ __('frontend.pipeline.video') }}
                                         </span>
                                     @endif
                                 </div>
@@ -144,14 +144,14 @@
                                         </div>
 
                                         <span class="text-xs text-theme-muted">
-                                            {{ $interestedCount }} interested investor{{ $interestedCount > 1 ? 's' : '' }}
+                                            {{ $interestedCount }} {{ trans_choice('frontend.pipeline.interested_investors', $interestedCount) }}
                                         </span>
                                     </div>
                                 @endif
 
                                 <div class="pt-6 border-t border-theme-border flex items-center justify-between gap-3">
                                     <a href="{{ route('frontend.projects.show', $project) }}" class="text-brand-accent hover:text-theme-text transition-colors text-sm font-bold">
-                                        View Details
+                                        {{ __('frontend.pipeline.view_details') }}
                                     </a>
 
                                     @if($isInvestor)
@@ -159,7 +159,7 @@
                                             <form method="POST" action="{{ route('frontend.projects.invest', $project) }}">
                                                 @csrf
                                                 <button type="submit" class="px-4 py-2 bg-brand-accent text-white rounded-xl text-xs font-black uppercase tracking-wider hover:bg-brand-accent-strong transition">
-                                                    Express Interest
+                                                    {{ __('frontend.pipeline.express_interest') }}
                                                 </button>
                                             </form>
                                         @else
@@ -167,7 +167,7 @@
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="px-4 py-2 rounded-xl bg-green-500/10 border border-green-500/20 text-green-600 text-xs font-black uppercase tracking-wider hover:bg-red-500/20 hover:text-red-600 transition">
-                                                    Interested
+                                                    {{ __('frontend.pipeline.interested') }}
                                                 </button>
                                             </form>
                                         @endif
@@ -177,7 +177,7 @@
                         </div>
                     @empty
                         <div class="col-span-full py-20 text-center theme-panel rounded-[2.5rem] border-dashed">
-                            <p class="text-theme-muted italic">No projects currently match these filters.</p>
+                            <p class="text-theme-muted italic">{{ __('frontend.pipeline.no_projects_match') }}</p>
                         </div>
                     @endforelse
                 </div>

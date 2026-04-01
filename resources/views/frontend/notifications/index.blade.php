@@ -1,6 +1,6 @@
 @extends('frontend.layouts.app')
 
-@section('title', 'Notifications')
+@section('title', __('frontend.notifications_page.title'))
 
 @section('content')
 <div class="min-h-screen bg-theme-bg text-theme-text pt-28 pb-10 transition-colors duration-300">
@@ -8,10 +8,10 @@
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
             <div>
                 <h1 class="text-3xl font-extrabold text-theme-text">
-                    <span class="text-brand-accent">Notifications</span>
+                    <span class="text-brand-accent">{{ __('frontend.notifications_page.heading') }}</span>
                 </h1>
                 <p class="text-theme-muted text-sm mt-1">
-                    View all your recent updates and project alerts.
+                    {{ __('frontend.notifications_page.subtitle') }}
                 </p>
             </div>
 
@@ -19,7 +19,7 @@
                 @csrf
                 <button type="submit"
                         class="inline-flex items-center justify-center rounded-lg px-5 py-3 font-semibold border border-brand-accent text-theme-text hover:bg-brand-accent hover:text-white transition duration-300">
-                    Mark All Read
+                    {{ __('frontend.notifications_page.mark_all_read') }}
                 </button>
             </form>
         </div>
@@ -27,7 +27,7 @@
         <div class="theme-panel rounded-3xl overflow-hidden shadow-brand-soft">
             @forelse($notifications as $n)
                 @php
-                    $title = $n->data['title'] ?? 'Notification';
+                    $title = $n->data['title'] ?? __('frontend.notifications_page.notification_fallback');
                     $message = $n->data['message'] ?? '';
                     $url = $n->data['url'] ?? null;
                     $icon = $n->data['icon'] ?? 'fas fa-bell';
@@ -57,7 +57,7 @@
                                     <input type="hidden" name="redirect" value="{{ $url }}">
                                     <button type="submit"
                                             class="px-3 py-2 rounded-lg bg-brand-accent text-white text-xs font-bold hover:bg-brand-accent-strong transition">
-                                        Open
+                                        {{ __('frontend.notifications_page.open') }}
                                     </button>
                                 </form>
                             @endif
@@ -67,7 +67,7 @@
                                     @csrf
                                     <button type="submit"
                                             class="px-3 py-2 rounded-lg bg-theme-surface-2 text-theme-text text-xs font-bold hover:bg-brand-accent-soft transition border border-theme-border">
-                                        Mark Read
+                                        {{ __('frontend.notifications_page.mark_read') }}
                                     </button>
                                 </form>
                             @endif
@@ -76,7 +76,7 @@
                 </div>
             @empty
                 <div class="p-10 text-center text-theme-muted">
-                    No notifications yet.
+                    {{ __('frontend.notifications_page.empty') }}
                 </div>
             @endforelse
         </div>

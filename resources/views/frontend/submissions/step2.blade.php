@@ -5,15 +5,15 @@
     <div class="w-full max-w-4xl mx-auto p-10 rounded-2xl theme-panel shadow-brand-soft">
 
         <div class="mb-8">
-            <h3 class="text-xl font-semibold text-theme-text mb-2">Step 2 of 5: Academic Information</h3>
+            <h3 class="text-xl font-semibold text-theme-text mb-2">{{ __('frontend.submit_step2.step_title') }}</h3>
             <div class="h-2 bg-theme-surface-2 rounded-full overflow-hidden">
                 <div class="h-full bg-brand-accent" style="width: 40%;"></div>
             </div>
         </div>
 
-        <h2 class="text-4xl font-bold text-theme-text mb-2">Academic and Institutional Information</h2>
+        <h2 class="text-4xl font-bold text-theme-text mb-2">{{ __('frontend.submit_step2.page_title') }}</h2>
         <p class="text-lg text-theme-muted mb-10">
-            Enter the academic details related to the project, including the student, supervisor, and institution.
+            {{ __('frontend.submit_step2.page_subtitle') }}
         </p>
 
         @if ($errors->any())
@@ -30,12 +30,12 @@
             @csrf
 
             <div class="border border-theme-border p-6 rounded-lg bg-theme-surface-2">
-                <h4 class="text-2xl font-semibold text-brand-accent mb-4">Student Information</h4>
+                <h4 class="text-2xl font-semibold text-brand-accent mb-4">{{ __('frontend.submit_step2.student_information') }}</h4>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label for="student_name" class="block text-sm font-medium text-theme-muted mb-2">
-                            Student Full Name <span class="text-brand-accent">*</span>
+                            {{ __('frontend.submit_step2.student_full_name') }} <span class="text-brand-accent">*</span>
                         </label>
                         <input
                             type="text"
@@ -49,7 +49,7 @@
 
                     <div>
                         <label for="academic_level" class="block text-sm font-medium text-theme-muted mb-2">
-                            Academic Level <span class="text-brand-accent">*</span>
+                            {{ __('frontend.submit_step2.academic_level') }} <span class="text-brand-accent">*</span>
                         </label>
                         <select
                             id="academic_level"
@@ -58,25 +58,25 @@
                             class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface text-theme-text focus:ring-0 focus:border-brand-accent"
                         >
                             <option value="" disabled {{ old('academic_level', session('project_data.academic_level')) ? '' : 'selected' }}>
-                                Select academic level
+                                {{ __('frontend.submit_step2.select_academic_level') }}
                             </option>
-                            <option value="diploma" {{ old('academic_level', session('project_data.academic_level')) == 'diploma' ? 'selected' : '' }}>Diploma</option>
-                            <option value="bachelor" {{ old('academic_level', session('project_data.academic_level')) == 'bachelor' ? 'selected' : '' }}>Bachelor</option>
-                            <option value="master" {{ old('academic_level', session('project_data.academic_level')) == 'master' ? 'selected' : '' }}>Master</option>
-                            <option value="phd" {{ old('academic_level', session('project_data.academic_level')) == 'phd' ? 'selected' : '' }}>PhD</option>
-                            <option value="independent_research" {{ old('academic_level', session('project_data.academic_level')) == 'independent_research' ? 'selected' : '' }}>Independent Research</option>
+                            <option value="diploma" {{ old('academic_level', session('project_data.academic_level')) == 'diploma' ? 'selected' : '' }}>{{ __('frontend.submit_step2.level_diploma') }}</option>
+                            <option value="bachelor" {{ old('academic_level', session('project_data.academic_level')) == 'bachelor' ? 'selected' : '' }}>{{ __('frontend.submit_step2.level_bachelor') }}</option>
+                            <option value="master" {{ old('academic_level', session('project_data.academic_level')) == 'master' ? 'selected' : '' }}>{{ __('frontend.submit_step2.level_master') }}</option>
+                            <option value="phd" {{ old('academic_level', session('project_data.academic_level')) == 'phd' ? 'selected' : '' }}>{{ __('frontend.submit_step2.level_phd') }}</option>
+                            <option value="independent_research" {{ old('academic_level', session('project_data.academic_level')) == 'independent_research' ? 'selected' : '' }}>{{ __('frontend.submit_step2.level_independent_research') }}</option>
                         </select>
                     </div>
                 </div>
             </div>
 
             <div class="border border-theme-border p-6 rounded-lg bg-theme-surface-2">
-                <h4 class="text-2xl font-semibold text-brand-accent mb-4">Supervisor Information</h4>
+                <h4 class="text-2xl font-semibold text-brand-accent mb-4">{{ __('frontend.submit_step2.supervisor_information') }}</h4>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label for="supervisor_name" class="block text-sm font-medium text-theme-muted mb-2">
-                            Supervisor Name <span class="text-brand-accent">*</span>
+                            {{ __('frontend.submit_step2.supervisor_name') }} <span class="text-brand-accent">*</span>
                         </label>
                         <input
                             type="text"
@@ -90,7 +90,7 @@
 
                     <div>
                         <label for="supervisor_title" class="block text-sm font-medium text-theme-muted mb-2">
-                            Supervisor Title / Position <span class="text-brand-accent">*</span>
+                            {{ __('frontend.submit_step2.supervisor_title') }} <span class="text-brand-accent">*</span>
                         </label>
                         <input
                             type="text"
@@ -98,7 +98,7 @@
                             name="supervisor_title"
                             required
                             value="{{ old('supervisor_title', session('project_data.supervisor_title')) }}"
-                            placeholder="e.g., الدكتور / المهندس / الأستاذ المشارك"
+                            placeholder="{{ __('frontend.submit_step2.supervisor_title_placeholder') }}"
                             class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface text-theme-text focus:ring-0 focus:border-brand-accent"
                         >
                     </div>
@@ -106,12 +106,12 @@
             </div>
 
             <div class="border border-theme-border p-6 rounded-lg bg-theme-surface-2">
-                <h4 class="text-2xl font-semibold text-brand-accent mb-4">Institution Information</h4>
+                <h4 class="text-2xl font-semibold text-brand-accent mb-4">{{ __('frontend.submit_step2.institution_information') }}</h4>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label for="university_name" class="block text-sm font-medium text-theme-muted mb-2">
-                            University / Institution <span class="text-brand-accent">*</span>
+                            {{ __('frontend.submit_step2.university_name') }} <span class="text-brand-accent">*</span>
                         </label>
                         <input
                             type="text"
@@ -125,7 +125,7 @@
 
                     <div>
                         <label for="college_name" class="block text-sm font-medium text-theme-muted mb-2">
-                            College / Faculty <span class="text-brand-accent">*</span>
+                            {{ __('frontend.submit_step2.college_name') }} <span class="text-brand-accent">*</span>
                         </label>
                         <input
                             type="text"
@@ -139,7 +139,7 @@
 
                     <div>
                         <label for="department" class="block text-sm font-medium text-theme-muted mb-2">
-                            Department / Major <span class="text-brand-accent">*</span>
+                            {{ __('frontend.submit_step2.department') }} <span class="text-brand-accent">*</span>
                         </label>
                         <input
                             type="text"
@@ -151,42 +151,84 @@
                         >
                     </div>
 
-                    <div>
-                        <label for="governorate" class="block text-sm font-medium text-theme-muted mb-2">
-                            Governorate <span class="text-brand-accent">*</span>
-                        </label>
-                        <select
-                            id="governorate"
-                            name="governorate"
-                            required
-                            class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface text-theme-text focus:ring-0 focus:border-brand-accent"
-                        >
-                            <option value="" disabled {{ old('governorate', session('project_data.governorate')) ? '' : 'selected' }}>
-                                Select governorate
-                            </option>
-                            <option value="sanaa" {{ old('governorate', session('project_data.governorate')) == 'sanaa' ? 'selected' : '' }}>Sana'a</option>
-                            <option value="aden" {{ old('governorate', session('project_data.governorate')) == 'aden' ? 'selected' : '' }}>Aden</option>
-                            <option value="taiz" {{ old('governorate', session('project_data.governorate')) == 'taiz' ? 'selected' : '' }}>Taiz</option>
-                            <option value="ibb" {{ old('governorate', session('project_data.governorate')) == 'ibb' ? 'selected' : '' }}>Ibb</option>
-                            <option value="hodeidah" {{ old('governorate', session('project_data.governorate')) == 'hodeidah' ? 'selected' : '' }}>Al Hudaydah</option>
-                            <option value="hadramout" {{ old('governorate', session('project_data.governorate')) == 'hadramout' ? 'selected' : '' }}>Hadramout</option>
-                            <option value="dhamar" {{ old('governorate', session('project_data.governorate')) == 'dhamar' ? 'selected' : '' }}>Dhamar</option>
-                            <option value="marib" {{ old('governorate', session('project_data.governorate')) == 'marib' ? 'selected' : '' }}>Ma'rib</option>
-                            <option value="amran" {{ old('governorate', session('project_data.governorate')) == 'amran' ? 'selected' : '' }}>Amran</option>
-                            <option value="hajjah" {{ old('governorate', session('project_data.governorate')) == 'hajjah' ? 'selected' : '' }}>Hajjah</option>
-                            <option value="lahij" {{ old('governorate', session('project_data.governorate')) == 'lahij' ? 'selected' : '' }}>Lahij</option>
-                            <option value="shabwah" {{ old('governorate', session('project_data.governorate')) == 'shabwah' ? 'selected' : '' }}>Shabwah</option>
-                            <option value="abyan" {{ old('governorate', session('project_data.governorate')) == 'abyan' ? 'selected' : '' }}>Abyan</option>
-                            <option value="saada" {{ old('governorate', session('project_data.governorate')) == 'saada' ? 'selected' : '' }}>Saada</option>
-                            <option value="aljawf" {{ old('governorate', session('project_data.governorate')) == 'aljawf' ? 'selected' : '' }}>Al Jawf</option>
-                            <option value="almahwit" {{ old('governorate', session('project_data.governorate')) == 'almahwit' ? 'selected' : '' }}>Al Mahwit</option>
-                            <option value="raymah" {{ old('governorate', session('project_data.governorate')) == 'raymah' ? 'selected' : '' }}>Raymah</option>
-                            <option value="albayda" {{ old('governorate', session('project_data.governorate')) == 'albayda' ? 'selected' : '' }}>Al Bayda</option>
-                            <option value="aldhale" {{ old('governorate', session('project_data.governorate')) == 'aldhale' ? 'selected' : '' }}>Al Dhale'e</option>
-                            <option value="almahrah" {{ old('governorate', session('project_data.governorate')) == 'almahrah' ? 'selected' : '' }}>Al Mahrah</option>
-                            <option value="socotra" {{ old('governorate', session('project_data.governorate')) == 'socotra' ? 'selected' : '' }}>Socotra</option>
-                        </select>
-                    </div>
+<div>
+    <label for="governorate" class="block text-sm font-medium text-theme-muted mb-2">
+        {{ __('frontend.submit_step2.governorate') }} <span class="text-brand-accent">*</span>
+    </label>
+    <select
+        id="governorate"
+        name="governorate"
+        required
+        class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface text-theme-text focus:ring-0 focus:border-brand-accent"
+    >
+        <option value="" disabled {{ old('governorate', session('project_data.governorate')) ? '' : 'selected' }}>
+            {{ __('frontend.submit_step2.select_governorate') }}
+        </option>
+        <option value="sanaa" {{ old('governorate', session('project_data.governorate')) == 'sanaa' ? 'selected' : '' }}>
+            {{ __('frontend.governorates.sanaa') }}
+        </option>
+        <option value="aden" {{ old('governorate', session('project_data.governorate')) == 'aden' ? 'selected' : '' }}>
+            {{ __('frontend.governorates.aden') }}
+        </option>
+        <option value="taiz" {{ old('governorate', session('project_data.governorate')) == 'taiz' ? 'selected' : '' }}>
+            {{ __('frontend.governorates.taiz') }}
+        </option>
+        <option value="ibb" {{ old('governorate', session('project_data.governorate')) == 'ibb' ? 'selected' : '' }}>
+            {{ __('frontend.governorates.ibb') }}
+        </option>
+        <option value="hodeidah" {{ old('governorate', session('project_data.governorate')) == 'hodeidah' ? 'selected' : '' }}>
+            {{ __('frontend.governorates.hodeidah') }}
+        </option>
+        <option value="hadramout" {{ old('governorate', session('project_data.governorate')) == 'hadramout' ? 'selected' : '' }}>
+            {{ __('frontend.governorates.hadramout') }}
+        </option>
+        <option value="dhamar" {{ old('governorate', session('project_data.governorate')) == 'dhamar' ? 'selected' : '' }}>
+            {{ __('frontend.governorates.dhamar') }}
+        </option>
+        <option value="marib" {{ old('governorate', session('project_data.governorate')) == 'marib' ? 'selected' : '' }}>
+            {{ __('frontend.governorates.marib') }}
+        </option>
+        <option value="amran" {{ old('governorate', session('project_data.governorate')) == 'amran' ? 'selected' : '' }}>
+            {{ __('frontend.governorates.amran') }}
+        </option>
+        <option value="hajjah" {{ old('governorate', session('project_data.governorate')) == 'hajjah' ? 'selected' : '' }}>
+            {{ __('frontend.governorates.hajjah') }}
+        </option>
+        <option value="lahij" {{ old('governorate', session('project_data.governorate')) == 'lahij' ? 'selected' : '' }}>
+            {{ __('frontend.governorates.lahij') }}
+        </option>
+        <option value="shabwah" {{ old('governorate', session('project_data.governorate')) == 'shabwah' ? 'selected' : '' }}>
+            {{ __('frontend.governorates.shabwah') }}
+        </option>
+        <option value="abyan" {{ old('governorate', session('project_data.governorate')) == 'abyan' ? 'selected' : '' }}>
+            {{ __('frontend.governorates.abyan') }}
+        </option>
+        <option value="saada" {{ old('governorate', session('project_data.governorate')) == 'saada' ? 'selected' : '' }}>
+            {{ __('frontend.governorates.saada') }}
+        </option>
+        <option value="aljawf" {{ old('governorate', session('project_data.governorate')) == 'aljawf' ? 'selected' : '' }}>
+            {{ __('frontend.governorates.aljawf') }}
+        </option>
+        <option value="almahwit" {{ old('governorate', session('project_data.governorate')) == 'almahwit' ? 'selected' : '' }}>
+            {{ __('frontend.governorates.almahwit') }}
+        </option>
+        <option value="raymah" {{ old('governorate', session('project_data.governorate')) == 'raymah' ? 'selected' : '' }}>
+            {{ __('frontend.governorates.raymah') }}
+        </option>
+        <option value="albayda" {{ old('governorate', session('project_data.governorate')) == 'albayda' ? 'selected' : '' }}>
+            {{ __('frontend.governorates.albayda') }}
+        </option>
+        <option value="aldhale" {{ old('governorate', session('project_data.governorate')) == 'aldhale' ? 'selected' : '' }}>
+            {{ __('frontend.governorates.aldhale') }}
+        </option>
+        <option value="almahrah" {{ old('governorate', session('project_data.governorate')) == 'almahrah' ? 'selected' : '' }}>
+            {{ __('frontend.governorates.almahrah') }}
+        </option>
+        <option value="socotra" {{ old('governorate', session('project_data.governorate')) == 'socotra' ? 'selected' : '' }}>
+            {{ __('frontend.governorates.socotra') }}
+        </option>
+    </select>
+</div>
                 </div>
             </div>
 
@@ -195,14 +237,14 @@
                     href="{{ route('project.submit.step1') }}"
                     class="inline-flex items-center justify-center rounded-lg px-8 py-3 text-lg font-semibold border border-brand-accent text-theme-text hover:bg-brand-accent hover:text-white transition duration-300"
                 >
-                    <i class="fas fa-arrow-left mr-2"></i> Back
+                    <i class="fas fa-arrow-left mr-2"></i> {{ __('frontend.common.back') }}
                 </a>
 
                 <button
                     type="submit"
                     class="inline-flex items-center justify-center rounded-lg px-8 py-3 text-lg font-semibold bg-brand-accent text-white hover:bg-brand-accent-strong transition duration-300 shadow-brand-soft"
                 >
-                    Save & Continue <i class="fas fa-arrow-right ml-2"></i>
+                    {{ __('frontend.common.save_continue') }} <i class="fas fa-arrow-right ml-2"></i>
                 </button>
             </div>
         </form>

@@ -16,19 +16,23 @@
                 $user = auth('web')->user();
 
                 $navLinks = [
-                    ['href' => '#advantage', 'label' => 'The Advantage'],
-                    ['href' => route('utility.support'), 'label' => 'Support'],
+                    ['href' => '#advantage', 'label' => __('frontend.header.why_vertexgrad')],
+                    ['href' => route('utility.support'), 'label' => __('frontend.header.help_center')],
                 ];
 
                 if ($user) {
                     if ($user->role === 'Investor') {
-                        array_unshift($navLinks, ['href' => route('frontend.projects.index'), 'label' => 'Marketplace']);
+                        array_unshift($navLinks, ['href' => route('frontend.projects.index'), 'label' => __('frontend.header.marketplace')]);
                     } else {
-                        array_unshift($navLinks, ['href' => route('project.submit.step1'), 'label' => 'Submit Research']);
+                        array_unshift($navLinks, ['href' => route('project.submit.step1'), 'label' => __('frontend.header.submit_project')]);
                     }
                 } else {
-                    array_unshift($navLinks, ['href' => route('frontend.projects.index'), 'label' => 'Explore Projects']);
+                    array_unshift($navLinks, ['href' => route('frontend.projects.index'), 'label' => __('frontend.header.browse_projects')]);
                 }
+
+                $currentLocale = app()->getLocale();
+                $nextLocale = $currentLocale === 'ar' ? 'en' : 'ar';
+                $languageLabel = $currentLocale === 'ar' ? 'English' : 'العربية';
             @endphp
 
             @foreach($navLinks as $link)
@@ -60,7 +64,7 @@
                     @click="open = !open"
                     class="h-10 px-4 rounded-xl border border-theme-border bg-theme-surface text-theme-text hover-border-brand-accent hover-text-brand-accent transition-all text-[11px] font-black uppercase tracking-widest shadow-brand-soft"
                 >
-                    Theme
+                    {{ __('frontend.header.theme') }}
                 </button>
 
                 <div
@@ -78,7 +82,7 @@
                         @click="setTheme('brand')"
                         class="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-brand-accent-soft transition"
                     >
-                        <span class="text-sm font-semibold text-theme-text">VertexGrad</span>
+                        <span class="text-sm font-semibold text-theme-text">{{ __('frontend.header.vertexgrad_theme') }}</span>
                         <span class="w-4 h-4 rounded-full border border-cyan-400 bg-cyan-400"></span>
                     </button>
 
@@ -87,7 +91,7 @@
                         @click="setTheme('dark')"
                         class="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-brand-accent-soft transition border-t border-theme-border"
                     >
-                        <span class="text-sm font-semibold text-theme-text">Dark</span>
+                        <span class="text-sm font-semibold text-theme-text">{{ __('frontend.header.dark_theme') }}</span>
                         <span class="w-4 h-4 rounded-full border border-slate-500 bg-slate-950"></span>
                     </button>
 
@@ -96,29 +100,29 @@
                         @click="setTheme('light')"
                         class="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-brand-accent-soft transition border-t border-theme-border"
                     >
-                        <span class="text-sm font-semibold text-theme-text">Light</span>
+                        <span class="text-sm font-semibold text-theme-text">{{ __('frontend.header.light_theme') }}</span>
                         <span class="w-4 h-4 rounded-full border border-slate-300 bg-white"></span>
                     </button>
                 </div>
             </div>
 
-            {{-- LANGUAGE BUTTON PLACEHOLDER --}}
-            <button
-                type="button"
-                class="h-10 px-4 rounded-xl border border-theme-border bg-theme-surface text-theme-text hover-border-brand-accent hover-text-brand-accent transition-all text-[11px] font-black uppercase tracking-widest shadow-brand-soft"
+            {{-- LANGUAGE SWITCHER --}}
+            <a
+                href="{{ route('frontend.language.switch', $nextLocale) }}"
+                class="h-10 px-4 rounded-xl border border-theme-border bg-theme-surface text-theme-text hover-border-brand-accent hover-text-brand-accent transition-all text-[11px] font-black uppercase tracking-widest shadow-brand-soft inline-flex items-center justify-center"
             >
-                Language
-            </button>
+                {{ $languageLabel }}
+            </a>
 
             @guest('web')
                 <a href="{{ route('login.show') }}"
                    class="text-theme-muted hover-text-brand-accent text-xs font-bold uppercase tracking-widest {{ $transitionBase }}">
-                    Login
+                    {{ __('frontend.header.sign_in') }}
                 </a>
 
                 <a href="{{ route('frontend.projects.index') }}"
                    class="inline-flex items-center justify-center rounded-xl px-6 py-3 text-xs font-extrabold bg-brand-accent text-white hover-bg-brand-accent-strong transition-all shadow-brand-soft">
-                    Find Investment
+                    {{ __('frontend.header.browse_opportunities') }}
                 </a>
             @endguest
 
@@ -135,7 +139,7 @@
                 @if(!$isInvestor)
                     <a href="{{ route('project.submit.step1') }}"
                        class="text-brand-accent hover:text-theme-text text-xs font-bold uppercase tracking-widest mr-1 transition-colors">
-                        <i class="fas fa-plus-circle mr-1"></i> New Project
+                        <i class="fas fa-plus-circle mr-1"></i> {{ __('frontend.header.new_submission') }}
                     </a>
                 @endif
 
@@ -176,14 +180,16 @@
                          class="absolute right-0 top-12 w-80 bg-theme-surface border border-theme-border rounded-2xl shadow-2xl z-[9999] overflow-hidden">
 
                         <div class="p-4 border-b border-theme-border bg-brand-accent-soft flex justify-between items-center">
-                            <h3 class="text-xs font-black uppercase tracking-widest text-brand-accent">Notifications</h3>
-                            <span class="text-[10px] text-theme-muted" x-text="unreadCount + ' unread'"></span>
+                            <h3 class="text-xs font-black uppercase tracking-widest text-brand-accent">
+                                {{ __('frontend.header.alerts') }}
+                            </h3>
+                            <span class="text-[10px] text-theme-muted" x-text="unreadCount + ' {{ __('frontend.header.unread') }}'"></span>
                         </div>
 
                         <div class="max-h-80 overflow-y-auto">
                             @forelse($latestNotifications as $n)
                                 @php
-                                    $title = $n->data['title'] ?? 'Notification';
+                                    $title = $n->data['title'] ?? __('frontend.header.notification');
                                     $message = $n->data['message'] ?? '';
                                     $url = $n->data['url'] ?? null;
                                     $icon = $n->data['icon'] ?? 'fas fa-circle';
@@ -216,7 +222,7 @@
                                 </form>
                             @empty
                                 <div class="p-8 text-center text-theme-muted text-xs italic">
-                                    No notifications yet
+                                    {{ __('frontend.header.no_alerts') }}
                                 </div>
                             @endforelse
                         </div>
@@ -224,12 +230,12 @@
                         <div class="grid grid-cols-2 border-t border-theme-border bg-brand-accent-soft">
                             <a href="{{ route('frontend.notifications.index') }}"
                                class="p-3 text-center text-[10px] font-black text-theme-muted hover-text-brand-accent transition border-r border-theme-border">
-                                History
+                                {{ __('frontend.header.view_all') }}
                             </a>
                             <form method="POST" action="{{ route('frontend.notifications.markAllRead') }}">
                                 @csrf
                                 <button type="submit" class="p-3 w-full text-center text-[10px] font-black text-brand-accent hover:text-theme-text transition">
-                                    Mark All Read
+                                    {{ __('frontend.header.mark_all_read') }}
                                 </button>
                             </form>
                         </div>
@@ -238,7 +244,7 @@
 
                 <a href="{{ $dashboardRoute }}"
                    class="px-5 py-2.5 bg-theme-surface border border-theme-border rounded-xl text-theme-text hover:bg-brand-accent hover:text-white font-black uppercase text-[10px] tracking-widest transition-all shadow-brand-soft">
-                    Dashboard
+                    {{ __('frontend.header.dashboard') }}
                 </a>
 
                 <div class="flex items-center gap-3 ml-3 pl-3 border-l border-theme-border">
@@ -251,7 +257,7 @@
                         @csrf
                         <button type="submit"
                                 class="px-4 py-2 rounded-xl border border-red-400/30 text-red-400 hover:bg-red-500 hover:text-white transition-all text-[10px] font-black uppercase tracking-widest">
-                            Logout
+                            {{ __('frontend.header.logout') }}
                         </button>
                     </form>
                 </div>
@@ -260,6 +266,14 @@
 
         {{-- MOBILE ACTIONS --}}
         <div class="md:hidden flex items-center gap-2">
+            {{-- MOBILE LANGUAGE SWITCH --}}
+            <a
+                href="{{ route('frontend.language.switch', $nextLocale) }}"
+                class="w-auto min-w-[74px] h-10 px-3 rounded-xl border border-theme-border bg-theme-surface text-theme-text flex items-center justify-center shadow-brand-soft text-[11px] font-black uppercase tracking-widest hover-border-brand-accent hover-text-brand-accent transition-all"
+            >
+                {{ $languageLabel }}
+            </a>
+
             <div
                 class="relative"
                 x-data="{
@@ -286,13 +300,13 @@
                     class="absolute right-0 top-12 w-44 rounded-2xl border border-theme-border bg-theme-surface shadow-2xl overflow-hidden"
                 >
                     <button type="button" @click="setTheme('brand')" class="w-full px-4 py-3 text-left text-sm font-semibold text-theme-text hover:bg-brand-accent-soft transition">
-                        VertexGrad
+                        {{ __('frontend.header.vertexgrad_theme') }}
                     </button>
                     <button type="button" @click="setTheme('dark')" class="w-full px-4 py-3 text-left text-sm font-semibold text-theme-text hover:bg-brand-accent-soft transition border-t border-theme-border">
-                        Dark
+                        {{ __('frontend.header.dark_theme') }}
                     </button>
                     <button type="button" @click="setTheme('light')" class="w-full px-4 py-3 text-left text-sm font-semibold text-theme-text hover:bg-brand-accent-soft transition border-t border-theme-border">
-                        Light
+                        {{ __('frontend.header.light_theme') }}
                     </button>
                 </div>
             </div>

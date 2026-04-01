@@ -6,10 +6,11 @@
 
         <header class="text-center mb-12">
             <h1 class="text-5xl font-extrabold text-theme-text mb-4">
-                Get in <span class="text-brand-accent">Touch</span>
+                {{ __('frontend.contact.title_before') }}
+                <span class="text-brand-accent">{{ __('frontend.contact.title_highlight') }}</span>
             </h1>
             <p class="text-xl text-theme-muted max-w-xl mx-auto">
-                Have questions about submitting a project, investing, or becoming a vetting partner?
+                {{ __('frontend.contact.subtitle') }}
             </p>
         </header>
 
@@ -23,7 +24,7 @@
 
             @if ($errors->any())
                 <div class="mb-6 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-600">
-                    <p class="font-semibold mb-2">Please fix the following issues:</p>
+                    <p class="font-semibold mb-2">{{ __('frontend.contact.fix_issues') }}</p>
                     <ul class="list-disc pl-5 space-y-1">
                         @foreach ($errors->all() as $error)
                             <li>{{ $error }}</li>
@@ -38,7 +39,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label for="name" class="block text-sm font-medium text-theme-muted mb-2">
-                            Your Name
+                            {{ __('frontend.contact.name') }}
                         </label>
                         <input
                             type="text"
@@ -48,13 +49,13 @@
                             required
                             maxlength="100"
                             class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface-2 text-theme-text placeholder:text-theme-muted focus:ring-0 focus:border-brand-accent"
-                            placeholder="Enter your full name"
+                            placeholder="{{ __('frontend.contact.name_placeholder') }}"
                         >
                     </div>
 
                     <div>
                         <label for="email" class="block text-sm font-medium text-theme-muted mb-2">
-                            Email Address
+                            {{ __('frontend.contact.email') }}
                         </label>
                         <input
                             type="email"
@@ -64,14 +65,14 @@
                             required
                             maxlength="150"
                             class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface-2 text-theme-text placeholder:text-theme-muted focus:ring-0 focus:border-brand-accent"
-                            placeholder="Enter your email address"
+                            placeholder="{{ __('frontend.contact.email_placeholder') }}"
                         >
                     </div>
                 </div>
 
                 <div>
                     <label for="subject" class="block text-sm font-medium text-theme-muted mb-2">
-                        Subject
+                        {{ __('frontend.contact.subject') }}
                     </label>
                     <select
                         id="subject"
@@ -80,26 +81,26 @@
                         class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface-2 text-theme-text focus:ring-0 focus:border-brand-accent"
                     >
                         <option value="" disabled {{ old('subject') ? '' : 'selected' }}>
-                            Select the nature of your inquiry
+                            {{ __('frontend.contact.subject_placeholder') }}
                         </option>
                         <option value="academic" {{ old('subject') === 'academic' ? 'selected' : '' }}>
-                            Academic Submission Inquiry
+                            {{ __('frontend.contact.subject_academic') }}
                         </option>
                         <option value="investor" {{ old('subject') === 'investor' ? 'selected' : '' }}>
-                            Investor / Funding Inquiry
+                            {{ __('frontend.contact.subject_investor') }}
                         </option>
                         <option value="support" {{ old('subject') === 'support' ? 'selected' : '' }}>
-                            Technical Support
+                            {{ __('frontend.contact.subject_support') }}
                         </option>
                         <option value="other" {{ old('subject') === 'other' ? 'selected' : '' }}>
-                            Other / General Inquiry
+                            {{ __('frontend.contact.subject_other') }}
                         </option>
                     </select>
                 </div>
 
                 <div>
                     <label for="message" class="block text-sm font-medium text-theme-muted mb-2">
-                        Message
+                        {{ __('frontend.contact.message') }}
                     </label>
                     <textarea
                         id="message"
@@ -108,7 +109,7 @@
                         required
                         maxlength="5000"
                         class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface-2 text-theme-text placeholder:text-theme-muted focus:ring-0 focus:border-brand-accent"
-                        placeholder="Write your message here..."
+                        placeholder="{{ __('frontend.contact.message_placeholder') }}"
                     >{{ old('message') }}</textarea>
                 </div>
 
@@ -117,7 +118,7 @@
                         type="submit"
                         class="w-full inline-flex items-center justify-center rounded-lg px-6 py-3 text-lg font-semibold bg-brand-accent text-white hover:bg-brand-accent-strong transition duration-300 shadow-brand-soft"
                     >
-                        Send Message
+                        {{ __('frontend.contact.send') }}
                     </button>
                 </div>
             </form>

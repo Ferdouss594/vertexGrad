@@ -15,6 +15,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'permission' => \App\Http\Middleware\CheckPermission::class,
             'role' => \App\Http\Middleware\RoleMiddleware::class,
+            'frontend.locale' => \App\Http\Middleware\SetFrontendLocale::class,
+            'backend.locale' => \App\Http\Middleware\SetBackendLocale::class,
         ]);
 
         $middleware->redirectGuestsTo(function ($request) {

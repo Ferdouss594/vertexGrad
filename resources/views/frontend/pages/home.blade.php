@@ -123,44 +123,44 @@
 
     <div class="{{ $containerClass }} relative z-10 text-center pt-24 pb-16">
         <p class="text-md uppercase font-bold tracking-[0.2em] mb-4 text-brand-accent opacity-90">
-            A VertexGrad Platform
+            {{ __('frontend.home.hero_platform_label') }}
         </p>
 
         <h1 class="{{ $headingClass }} max-w-6xl mx-auto leading-tight text-theme-text">
-            Connect with the Future of
+            {{ __('frontend.home.hero_title_line1') }}
 
             <span class="block mt-6 text-7xl lg:text-8xl font-black uppercase tracking-wider text-brand-accent"
                   style="text-shadow: var(--hero-title-glow);">
-                VertexGrad
+                {{ __('frontend.home.hero_title_brand') }}
             </span>
         </h1>
 
         <p class="mt-8 text-xl lg:text-2xl text-theme-muted max-w-4xl mx-auto font-light">
-            The exclusive marketplace for institutional investors and industry leaders to fund high-potential, faculty-vetted university projects globally.
+            {{ __('frontend.home.hero_subtitle') }}
         </p>
 
         <div class="mt-14 max-w-4xl mx-auto">
             <div class="flex flex-col sm:flex-row items-stretch rounded-xl p-2 bg-theme-surface border border-theme-border shadow-brand-soft transition-colors duration-300">
                 <input
                     type="search"
-                    placeholder="Search Projects by Industry, University, or Keyword (e.g., AI, Fintech)"
+                    placeholder="{{ __('frontend.home.search_placeholder') }}"
                     class="flex-grow p-4 text-lg bg-transparent text-theme-text placeholder:text-theme-muted focus:outline-none focus:ring-0"
                 >
 
                 <a href="/projects"
                    class="mt-4 sm:mt-0 sm:ml-2 flex-shrink-0 inline-flex items-center justify-center rounded-lg px-8 py-4 text-lg font-semibold bg-brand-accent text-white hover-bg-brand-accent-strong transition duration-300 shadow-brand-soft">
-                    <i class="fas fa-search mr-2"></i> Find Projects
+                    <i class="fas fa-search mr-2"></i> {{ __('frontend.home.find_projects') }}
                 </a>
             </div>
 
             <div class="mt-8">
                 <p class="text-theme-muted text-sm font-semibold uppercase tracking-widest mb-4">
-                    Are you a Project Creator or Faculty Partner?
+                    {{ __('frontend.home.creator_prompt') }}
                 </p>
 
                 <a href="/submit-project"
                    class="inline-flex items-center justify-center rounded-lg px-6 py-3 text-base font-semibold border border-brand-accent text-theme-text hover:bg-brand-accent hover:text-white transition duration-300">
-                    <i class="fas fa-rocket mr-2"></i> Submit Your Project for Vetting
+                    <i class="fas fa-rocket mr-2"></i> {{ __('frontend.home.submit_for_vetting') }}
                 </a>
             </div>
         </div>
@@ -188,16 +188,16 @@
 
             <div class="lg:col-span-1 opacity-0 translate-y-8 section-anim">
                 <h2 class="text-4xl lg:text-5xl font-extrabold text-theme-text leading-tight">
-                    Featured <span class="text-brand-accent">Projects</span>
+                    {{ __('frontend.home.featured_title_before') }} <span class="text-brand-accent">{{ __('frontend.home.featured_title_highlight') }}</span>
                 </h2>
 
                 <p class="mt-4 text-theme-muted text-lg leading-relaxed">
-                    Explore high-impact innovations selected by academic partners.
+                    {{ __('frontend.home.featured_subtitle') }}
                 </p>
 
                 <a href="{{ route('frontend.projects.index') }}"
                    class="mt-8 inline-flex items-center justify-center rounded-lg px-8 py-3 text-base font-semibold border border-brand-accent text-theme-text hover:bg-brand-accent hover:text-white transition duration-300">
-                    View All Projects
+                    {{ __('frontend.home.view_all_projects') }}
                 </a>
             </div>
 
@@ -219,7 +219,7 @@
 
                             <div class="p-6">
                                 <p class="text-brand-accent text-sm font-semibold mb-2">
-                                    {{ $project->category ?? 'General' }}
+                                    {{ $project->category ?? __('frontend.home.general') }}
                                 </p>
 
                                 <h3 class="text-xl font-bold text-theme-text leading-tight mb-3">
@@ -232,12 +232,12 @@
 
                                 <div class="flex justify-between items-center mt-auto">
                                     <p class="text-theme-muted/80 text-xs">
-                                        By {{ $project->student->name ?? 'Student' }}
+                                        {{ __('frontend.home.by') }} {{ $project->student->name ?? __('frontend.home.student') }}
                                     </p>
 
                                     <a href="{{ route('frontend.projects.show', $project) }}"
                                        class="text-brand-accent text-sm font-bold hover:underline">
-                                        Details →
+                                        {{ __('frontend.home.details') }}
                                     </a>
                                 </div>
                             </div>
@@ -245,7 +245,7 @@
                     </div>
                 @empty
                     <div class="sm:col-span-2 p-10 rounded-2xl border border-dashed border-theme-border text-center text-theme-muted bg-theme-surface">
-                        No featured projects available yet.
+                        {{ __('frontend.home.no_featured_projects') }}
                     </div>
                 @endforelse
             </div>
@@ -283,20 +283,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
 @php
     $categories = [
-        ['name' => 'Artificial Intelligence', 'icon' => 'fas fa-brain', 'query' => 'Artificial Intelligence'],
-        ['name' => 'Fintech & Blockchain', 'icon' => 'fas fa-money-bill-wave', 'query' => 'Fintech'],
-        ['name' => 'Biotechnology & Health', 'icon' => 'fas fa-dna', 'query' => 'Healthcare'],
-        ['name' => 'Sustainable Energy', 'icon' => 'fas fa-leaf', 'query' => 'Energy'],
-        ['name' => 'Aerospace & Defense', 'icon' => 'fas fa-rocket', 'query' => 'Aerospace'],
-        ['name' => 'Quantum Computing', 'icon' => 'fas fa-cube', 'query' => 'Quantum'],
+        ['name' => __('frontend.home.cat_ai'), 'icon' => 'fas fa-brain', 'query' => 'Artificial Intelligence'],
+        ['name' => __('frontend.home.cat_fintech'), 'icon' => 'fas fa-money-bill-wave', 'query' => 'Fintech'],
+        ['name' => __('frontend.home.cat_biotech'), 'icon' => 'fas fa-dna', 'query' => 'Healthcare'],
+        ['name' => __('frontend.home.cat_energy'), 'icon' => 'fas fa-leaf', 'query' => 'Energy'],
+        ['name' => __('frontend.home.cat_aerospace'), 'icon' => 'fas fa-rocket', 'query' => 'Aerospace'],
+        ['name' => __('frontend.home.cat_quantum'), 'icon' => 'fas fa-cube', 'query' => 'Quantum'],
     ];
 @endphp
 
 <section class="{{ $sectionYClass }} bg-theme-bg relative border-b border-theme-border transition-colors duration-300">
     <div class="{{ $containerClass }} text-center">
         <x-section-title
-            title="Explore by Vetting Category"
-            subtitle="Find the innovations that align perfectly with your investment thesis."
+            title="{{ __('frontend.home.categories_title') }}"
+            subtitle="{{ __('frontend.home.categories_subtitle') }}"
         />
 
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 mt-12">
@@ -318,7 +318,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         <div class="mt-12">
             <a href="{{ route('frontend.projects.index') }}" class="text-sm text-brand-accent hover:text-theme-text font-medium transition">
-                <i class="fas fa-arrow-right mr-1"></i> View All Categories
+                <i class="fas fa-arrow-right mr-1"></i> {{ __('frontend.home.view_all_categories') }}
             </a>
         </div>
     </div>
@@ -336,19 +336,19 @@ document.addEventListener('DOMContentLoaded', () => {
 @php
     $valueProps = [
         [
-            'title' => 'Faculty-Vetted Exclusivity',
+            'title' => __('frontend.home.adv1_title'),
             'icon' => 'fas fa-graduation-cap',
-            'description' => 'Every project is rigorously pre-vetted by a panel of leading university faculty partners, ensuring only validated, high-potential research reaches our marketplace.',
+            'description' => __('frontend.home.adv1_desc'),
         ],
         [
-            'title' => 'Institutional-Grade Security',
+            'title' => __('frontend.home.adv2_title'),
             'icon' => 'fas fa-lock',
-            'description' => 'We utilize structured platform workflows and secure data handling to preserve trust, clarity, and controlled visibility throughout the research lifecycle.',
+            'description' => __('frontend.home.adv2_desc'),
         ],
         [
-            'title' => 'Global Funding Access',
+            'title' => __('frontend.home.adv3_title'),
             'icon' => 'fas fa-globe',
-            'description' => 'Connect groundbreaking projects with a curated network of global investors and institutions, accelerating development and real-world impact.',
+            'description' => __('frontend.home.adv3_desc'),
         ],
     ];
 @endphp
@@ -356,8 +356,8 @@ document.addEventListener('DOMContentLoaded', () => {
 <section id="advantage" class="{{ $sectionYClass }} bg-theme-surface-2 relative border-b border-theme-border transition-colors duration-300">
     <div class="{{ $containerClass }} text-center">
         <x-section-title
-            title="The VertexGrad Advantage"
-            subtitle="Why the world's leading investors and institutions trust our pipeline."
+            title="{{ __('frontend.home.advantage_title') }}"
+            subtitle="{{ __('frontend.home.advantage_subtitle') }}"
         />
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12 text-left">
@@ -383,16 +383,16 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="mt-16">
             @guest('web')
                 <p class="text-theme-muted text-md">
-                    Ready to explore the future of investment?
+                    {{ __('frontend.home.ready_prompt') }}
                     <a href="{{ route('register.investor') }}" class="text-brand-accent font-bold hover:text-theme-text transition">
-                        Create your Investor Account <i class="fas fa-arrow-right ml-1"></i>
+                        {{ __('frontend.home.create_investor_account') }} <i class="fas fa-arrow-right ml-1"></i>
                     </a>
                 </p>
             @else
                 <p class="text-theme-muted text-md">
-                    Welcome back.
+                    {{ __('frontend.home.welcome_back') }}
                     <a href="{{ $isInvestor ? route('dashboard.investor') : route('dashboard.academic') }}" class="text-brand-accent font-bold hover:text-theme-text transition">
-                        Go to your dashboard <i class="fas fa-arrow-right ml-1"></i>
+                        {{ __('frontend.home.go_to_dashboard') }} <i class="fas fa-arrow-right ml-1"></i>
                     </a>
                 </p>
             @endguest
@@ -418,7 +418,7 @@ document.addEventListener('DOMContentLoaded', () => {
 <section id="partners" class="{{ $sectionYClass }} bg-theme-surface relative border-b border-theme-border transition-colors duration-300">
     <div class="{{ $containerClass }} text-center">
         <h2 class="text-xl font-semibold uppercase tracking-widest text-theme-muted mb-12">
-            Trusted by Leading Global Research Institutions
+            {{ __('frontend.home.partners_title') }}
         </h2>
 
         <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-12 items-center justify-center">
@@ -434,9 +434,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         <div class="mt-12">
             <p class="text-theme-muted text-sm">
-                Interested in becoming a VertexGrad Vetting Partner?
+                {{ __('frontend.home.partner_prompt') }}
                 <a href="{{ route('utility.partnerships') }}" class="text-brand-accent font-bold hover:text-theme-text transition">
-                    Learn More <i class="fas fa-external-link-alt ml-1"></i>
+                    {{ __('frontend.home.learn_more') }} <i class="fas fa-external-link-alt ml-1"></i>
                 </a>
             </p>
         </div>
@@ -456,8 +456,8 @@ document.addEventListener('DOMContentLoaded', () => {
     <div class="{{ $containerClass }} text-center">
 
         <x-section-title
-            title="Access The VertexGrad Network"
-            subtitle="The secure, verified gateway to the future of academic investment."
+            title="{{ __('frontend.home.access_title') }}"
+            subtitle="{{ __('frontend.home.access_subtitle') }}"
         />
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-20 max-w-6xl mx-auto">
@@ -468,16 +468,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 </i>
 
                 <h3 class="text-4xl font-black text-theme-text mb-3 uppercase tracking-wide">
-                    Investor Portal
+                    {{ __('frontend.home.investor_portal') }}
                 </h3>
 
                 <p class="text-theme-muted mb-10 max-w-sm mx-auto text-lg">
-                    Secure exclusive access to verified, institutional-grade project pipelines and funding opportunities.
+                    {{ __('frontend.home.investor_portal_text') }}
                 </p>
 
                 <a href="{{ route('register.investor') }}"
                    class="inline-flex items-center justify-center rounded-lg px-12 py-4 text-xl font-extrabold bg-brand-accent text-white hover-bg-brand-accent-strong transition duration-300 shadow-brand-soft">
-                    <i class="fas fa-eye mr-2"></i> REVIEW PROJECTS NOW
+                    <i class="fas fa-eye mr-2"></i> {{ __('frontend.home.review_projects_now') }}
                 </a>
             </div>
 
@@ -487,16 +487,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 </i>
 
                 <h3 class="text-4xl font-black text-theme-text mb-3 uppercase tracking-wide">
-                    Academic Submission
+                    {{ __('frontend.home.academic_submission') }}
                 </h3>
 
                 <p class="text-theme-muted mb-10 max-w-sm mx-auto text-lg">
-                    Submit your research for faculty vetting and gain direct exposure to global institutional funding.
+                    {{ __('frontend.home.academic_submission_text') }}
                 </p>
 
                 <a href="{{ route('project.submit.step1') }}"
                    class="inline-flex items-center justify-center rounded-lg px-12 py-4 text-xl font-semibold border border-brand-accent text-theme-text hover:bg-brand-accent hover:text-white transition duration-300">
-                    <i class="fas fa-rocket mr-2"></i> START VETTING PROCESS
+                    <i class="fas fa-rocket mr-2"></i> {{ __('frontend.home.start_vetting_process') }}
                 </a>
             </div>
 

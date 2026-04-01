@@ -7,10 +7,10 @@
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
             <div>
                 <h1 class="text-4xl font-extrabold text-theme-text">
-                    My <span class="text-brand-accent">Investments</span>
+                    {{ __('frontend.investments.my') }} <span class="text-brand-accent">{{ __('frontend.investments.investments') }}</span>
                 </h1>
                 <p class="text-theme-muted mt-2">
-                    Track your interested, requested, and approved project activity.
+                    {{ __('frontend.investments.subtitle') }}
                 </p>
             </div>
         </div>
@@ -21,11 +21,11 @@
                     <table class="min-w-full">
                         <thead class="bg-theme-surface-2 border-b border-theme-border">
                             <tr>
-                                <th class="text-left px-6 py-4 text-xs font-black uppercase tracking-widest text-theme-muted">Project</th>
-                                <th class="text-left px-6 py-4 text-xs font-black uppercase tracking-widest text-theme-muted">Student</th>
-                                <th class="text-left px-6 py-4 text-xs font-black uppercase tracking-widest text-theme-muted">Status</th>
-                                <th class="text-left px-6 py-4 text-xs font-black uppercase tracking-widest text-theme-muted">Amount</th>
-                                <th class="text-left px-6 py-4 text-xs font-black uppercase tracking-widest text-theme-muted">Date</th>
+                                <th class="text-left px-6 py-4 text-xs font-black uppercase tracking-widest text-theme-muted">{{ __('frontend.investments.project') }}</th>
+                                <th class="text-left px-6 py-4 text-xs font-black uppercase tracking-widest text-theme-muted">{{ __('frontend.investments.student') }}</th>
+                                <th class="text-left px-6 py-4 text-xs font-black uppercase tracking-widest text-theme-muted">{{ __('frontend.investments.status') }}</th>
+                                <th class="text-left px-6 py-4 text-xs font-black uppercase tracking-widest text-theme-muted">{{ __('frontend.investments.amount') }}</th>
+                                <th class="text-left px-6 py-4 text-xs font-black uppercase tracking-widest text-theme-muted">{{ __('frontend.investments.date') }}</th>
                             </tr>
                         </thead>
 
@@ -76,11 +76,11 @@
                     <div class="w-20 h-20 mx-auto rounded-full bg-brand-accent-soft text-brand-accent flex items-center justify-center mb-4">
                         <i class="fas fa-briefcase text-3xl"></i>
                     </div>
-                    <h3 class="text-2xl font-bold text-theme-text mb-2">No investments yet</h3>
-                    <p class="text-theme-muted mb-6">You have not interacted with any projects yet.</p>
+                    <h3 class="text-2xl font-bold text-theme-text mb-2">{{ __('frontend.investments.no_investments_yet') }}</h3>
+                    <p class="text-theme-muted mb-6">{{ __('frontend.investments.no_investments_text') }}</p>
                     <a href="{{ route('frontend.projects.index') }}"
                        class="inline-flex items-center justify-center rounded-lg px-6 py-3 font-semibold bg-brand-accent text-white hover:bg-brand-accent-strong transition duration-300 shadow-brand-soft">
-                        Explore Projects
+                        {{ __('frontend.investments.explore_projects') }}
                     </a>
                 </div>
             @endif

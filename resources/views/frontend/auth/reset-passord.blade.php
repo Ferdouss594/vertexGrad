@@ -8,11 +8,11 @@
            style="filter: drop-shadow(0 0 8px var(--brand-accent-glow));"></i>
 
         <h2 class="text-3xl font-bold text-center text-theme-text mb-2">
-            Reset Your Password
+            {{ __('frontend.auth.reset_password_title') }}
         </h2>
 
         <p class="text-center text-theme-muted mb-8">
-            Set a new, strong password for your account.
+            {{ __('frontend.auth.reset_password_subtitle') }}
         </p>
 
         <form action="/reset-password" method="POST">
@@ -21,7 +21,9 @@
             <input type="hidden" name="token" value="{{ $token ?? '' }}">
 
             <div class="mb-6">
-                <label for="email" class="block text-sm font-medium text-theme-muted mb-2">Email Address</label>
+                <label for="email" class="block text-sm font-medium text-theme-muted mb-2">
+                    {{ __('frontend.auth.email') }}
+                </label>
                 <input
                     type="email"
                     id="email"
@@ -34,7 +36,9 @@
             </div>
 
             <div class="mb-6">
-                <label for="password" class="block text-sm font-medium text-theme-muted mb-2">New Password</label>
+                <label for="password" class="block text-sm font-medium text-theme-muted mb-2">
+                    {{ __('frontend.auth.new_password') }}
+                </label>
                 <input
                     type="password"
                     id="password"
@@ -45,7 +49,9 @@
             </div>
 
             <div class="mb-8">
-                <label for="password_confirmation" class="block text-sm font-medium text-theme-muted mb-2">Confirm New Password</label>
+                <label for="password_confirmation" class="block text-sm font-medium text-theme-muted mb-2">
+                    {{ __('frontend.auth.confirm_new_password') }}
+                </label>
                 <input
                     type="password"
                     id="password_confirmation"
@@ -59,13 +65,13 @@
                 type="submit"
                 class="w-full inline-flex items-center justify-center rounded-lg px-6 py-3 text-lg font-semibold bg-brand-accent text-white hover:bg-brand-accent-strong transition duration-300 shadow-brand-soft"
             >
-                Reset Password
+                {{ __('frontend.auth.reset_password_button') }}
             </button>
         </form>
 
         <p class="mt-8 text-center text-theme-muted text-sm">
             <a href="/login" class="text-brand-accent font-medium ml-1">
-                <i class="fas fa-arrow-left mr-1"></i> Back to Login
+                <i class="fas fa-arrow-left mr-1"></i> {{ __('frontend.auth.back_to_login') }}
             </a>
         </p>
     </div>

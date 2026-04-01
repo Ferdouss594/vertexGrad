@@ -5,14 +5,14 @@
     <div class="w-full max-w-lg p-10 rounded-2xl theme-panel shadow-brand-soft">
 
         <h2 class="text-3xl font-bold text-center text-theme-text mb-6">
-            Investor <span class="text-brand-accent">Registration</span>
+            {{ __('frontend.auth.investor') }} <span class="text-brand-accent">{{ __('frontend.auth.registration') }}</span>
         </h2>
 
         <form method="POST" action="{{ route('register.investor.post') }}" class="space-y-4">
             @csrf
 
             <div>
-                <label class="block text-sm font-medium text-theme-muted mb-1">Full Name / Entity Name</label>
+                <label class="block text-sm font-medium text-theme-muted mb-1">{{ __('frontend.auth.full_name_entity_name') }}</label>
                 <input
                     type="text"
                     name="name"
@@ -22,7 +22,7 @@
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-theme-muted mb-1">Username</label>
+                <label class="block text-sm font-medium text-theme-muted mb-1">{{ __('frontend.auth.username') }}</label>
                 <input
                     type="text"
                     name="username"
@@ -32,7 +32,7 @@
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-theme-muted mb-1">Business Email</label>
+                <label class="block text-sm font-medium text-theme-muted mb-1">{{ __('frontend.auth.business_email') }}</label>
                 <input
                     type="email"
                     name="email"
@@ -42,7 +42,7 @@
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-theme-muted mb-1">Password</label>
+                <label class="block text-sm font-medium text-theme-muted mb-1">{{ __('frontend.auth.password') }}</label>
                 <input
                     type="password"
                     name="password"
@@ -52,7 +52,7 @@
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-theme-muted mb-1">Confirm Password</label>
+                <label class="block text-sm font-medium text-theme-muted mb-1">{{ __('frontend.auth.confirm_password') }}</label>
                 <input
                     type="password"
                     name="password_confirmation"
@@ -65,7 +65,7 @@
                 type="submit"
                 class="w-full inline-flex items-center justify-center rounded-lg px-6 py-3 font-semibold bg-brand-accent text-white hover:bg-brand-accent-strong transition duration-300 shadow-brand-soft mt-4"
             >
-                Create Investor Account
+                {{ __('frontend.auth.create_investor_account') }}
             </button>
         </form>
     </div>

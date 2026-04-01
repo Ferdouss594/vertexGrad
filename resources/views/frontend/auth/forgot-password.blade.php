@@ -8,18 +8,18 @@
            style="filter: drop-shadow(0 0 8px var(--brand-accent-glow));"></i>
 
         <h2 class="text-3xl font-bold text-center text-theme-text mb-2">
-            Forgot Your Password?
+            {{ __('frontend.auth.forgot_password_title') }}
         </h2>
 
         <p class="text-center text-theme-muted mb-8">
-            Enter your email address below and we will send you a link to reset your password.
+            {{ __('frontend.auth.forgot_password_subtitle') }}
         </p>
 
         <form action="/forgot-password" method="POST">
             @csrf
 
             <div class="mb-6">
-                <label for="email" class="block text-sm font-medium text-theme-muted mb-2">Email Address</label>
+                <label for="email" class="block text-sm font-medium text-theme-muted mb-2">{{ __('frontend.auth.email') }}</label>
                 <input
                     type="email"
                     id="email"
@@ -33,14 +33,14 @@
                 type="submit"
                 class="w-full inline-flex items-center justify-center rounded-lg px-6 py-3 text-lg font-semibold bg-brand-accent text-white hover:bg-brand-accent-strong transition duration-300 shadow-brand-soft"
             >
-                Send Reset Link
+                {{ __('frontend.auth.send_reset_link') }}
             </button>
         </form>
 
         <p class="mt-8 text-center text-theme-muted text-sm">
-            Remember your password?
+            {{ __('frontend.auth.remember_password') }}
             <a href="/login" class="text-brand-accent font-medium ml-1">
-                Log In
+                {{ __('frontend.auth.log_in') }}
             </a>
         </p>
     </div>

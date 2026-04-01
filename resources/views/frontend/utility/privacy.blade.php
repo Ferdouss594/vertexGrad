@@ -6,36 +6,33 @@
 
         <header class="text-center mb-12">
             <h1 class="text-5xl font-extrabold text-theme-text mb-4">
-                Privacy <span class="text-brand-accent">Policy</span>
+                {{ __('frontend.privacy.title_before') }}
+                <span class="text-brand-accent">{{ __('frontend.privacy.title_highlight') }}</span>
             </h1>
             <p class="text-sm text-theme-muted">
-                Effective Date: January 1, 2026
+                {{ __('frontend.privacy.effective_date') }}
             </p>
         </header>
 
         <div class="theme-panel p-10 rounded-xl space-y-8 text-theme-muted">
             <section>
-                <h3 class="text-3xl font-semibold text-brand-accent mb-4">1. Information We Collect</h3>
-                <p>
-                    We collect personal identification information from Academics (institutional affiliation, research data summary) and Investors (accreditation status, fund size). This is primarily used for verification and matching purposes.
-                </p>
+                <h3 class="text-3xl font-semibold text-brand-accent mb-4">{{ __('frontend.privacy.section1_title') }}</h3>
+                <p>{{ __('frontend.privacy.section1_text') }}</p>
             </section>
 
             <section>
-                <h3 class="text-3xl font-semibold text-brand-accent mb-4">2. How We Use Your Data</h3>
+                <h3 class="text-3xl font-semibold text-brand-accent mb-4">{{ __('frontend.privacy.section2_title') }}</h3>
                 <ul class="list-disc list-inside space-y-2 ml-4">
-                    <li>To verify user identity and prevent fraud.</li>
-                    <li>To facilitate introductions between Investors and Vetted Projects.</li>
-                    <li>To send platform updates and security alerts.</li>
-                    <li>We never sell your personal information to third parties.</li>
+                    <li>{{ __('frontend.privacy.section2_point1') }}</li>
+                    <li>{{ __('frontend.privacy.section2_point2') }}</li>
+                    <li>{{ __('frontend.privacy.section2_point3') }}</li>
+                    <li>{{ __('frontend.privacy.section2_point4') }}</li>
                 </ul>
             </section>
 
             <section>
-                <h3 class="text-3xl font-semibold text-brand-accent mb-4">3. Data Security</h3>
-                <p>
-                    We implement a variety of security measures, including encryption and two-factor authentication, to maintain the safety of your personal information. Sensitive data, like financial details or non-public research abstracts, are stored in encrypted databases.
-                </p>
+                <h3 class="text-3xl font-semibold text-brand-accent mb-4">{{ __('frontend.privacy.section3_title') }}</h3>
+                <p>{{ __('frontend.privacy.section3_text') }}</p>
             </section>
         </div>
 

@@ -5,15 +5,15 @@
     <div class="w-full max-w-4xl mx-auto p-10 rounded-2xl theme-panel shadow-brand-soft">
 
         <div class="mb-8">
-            <h3 class="text-xl font-semibold text-theme-text mb-2">Step 3 of 5: Feasibility & Execution Plan</h3>
+            <h3 class="text-xl font-semibold text-theme-text mb-2">{{ __('frontend.submit_step3.step_title') }}</h3>
             <div class="h-2 bg-theme-surface-2 rounded-full overflow-hidden">
                 <div class="h-full bg-brand-accent" style="width: 60%;"></div>
             </div>
         </div>
 
-        <h2 class="text-4xl font-bold text-theme-text mb-2">Project Feasibility and Execution Plan</h2>
+        <h2 class="text-4xl font-bold text-theme-text mb-2">{{ __('frontend.submit_step3.page_title') }}</h2>
         <p class="text-lg text-theme-muted mb-10">
-            Explain the practical value of your project, its expected impact, required support, and the implementation plan.
+            {{ __('frontend.submit_step3.page_subtitle') }}
         </p>
 
         @if ($errors->any())
@@ -30,12 +30,12 @@
             @csrf
 
             <div class="border border-theme-border p-6 rounded-lg bg-theme-surface-2">
-                <h4 class="text-2xl font-semibold text-brand-accent mb-4">Feasibility Overview</h4>
+                <h4 class="text-2xl font-semibold text-brand-accent mb-4">{{ __('frontend.submit_step3.feasibility_overview') }}</h4>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label for="is_feasible" class="block text-sm font-medium text-theme-muted mb-2">
-                            Is the project practically feasible? <span class="text-brand-accent">*</span>
+                            {{ __('frontend.submit_step3.is_feasible') }} <span class="text-brand-accent">*</span>
                         </label>
                         <select
                             id="is_feasible"
@@ -43,16 +43,16 @@
                             required
                             class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface text-theme-text focus:ring-0 focus:border-brand-accent"
                         >
-                            <option value="" disabled {{ old('is_feasible', session('project_data.is_feasible')) ? '' : 'selected' }}>Select option</option>
-                            <option value="yes" {{ old('is_feasible', session('project_data.is_feasible')) == 'yes' ? 'selected' : '' }}>Yes</option>
-                            <option value="partially" {{ old('is_feasible', session('project_data.is_feasible')) == 'partially' ? 'selected' : '' }}>Partially</option>
-                            <option value="no" {{ old('is_feasible', session('project_data.is_feasible')) == 'no' ? 'selected' : '' }}>No</option>
+                            <option value="" disabled {{ old('is_feasible', session('project_data.is_feasible')) ? '' : 'selected' }}>{{ __('frontend.submit_step3.select_option') }}</option>
+                            <option value="yes" {{ old('is_feasible', session('project_data.is_feasible')) == 'yes' ? 'selected' : '' }}>{{ __('frontend.common.yes') }}</option>
+                            <option value="partially" {{ old('is_feasible', session('project_data.is_feasible')) == 'partially' ? 'selected' : '' }}>{{ __('frontend.common.partially') }}</option>
+                            <option value="no" {{ old('is_feasible', session('project_data.is_feasible')) == 'no' ? 'selected' : '' }}>{{ __('frontend.common.no') }}</option>
                         </select>
                     </div>
 
                     <div>
                         <label for="local_implementation" class="block text-sm font-medium text-theme-muted mb-2">
-                            Can it be implemented inside Yemen? <span class="text-brand-accent">*</span>
+                            {{ __('frontend.submit_step3.local_implementation') }} <span class="text-brand-accent">*</span>
                         </label>
                         <select
                             id="local_implementation"
@@ -60,50 +60,50 @@
                             required
                             class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface text-theme-text focus:ring-0 focus:border-brand-accent"
                         >
-                            <option value="" disabled {{ old('local_implementation', session('project_data.local_implementation')) ? '' : 'selected' }}>Select option</option>
-                            <option value="yes" {{ old('local_implementation', session('project_data.local_implementation')) == 'yes' ? 'selected' : '' }}>Yes</option>
-                            <option value="partially" {{ old('local_implementation', session('project_data.local_implementation')) == 'partially' ? 'selected' : '' }}>Partially</option>
-                            <option value="no" {{ old('local_implementation', session('project_data.local_implementation')) == 'no' ? 'selected' : '' }}>No</option>
+                            <option value="" disabled {{ old('local_implementation', session('project_data.local_implementation')) ? '' : 'selected' }}>{{ __('frontend.submit_step3.select_option') }}</option>
+                            <option value="yes" {{ old('local_implementation', session('project_data.local_implementation')) == 'yes' ? 'selected' : '' }}>{{ __('frontend.common.yes') }}</option>
+                            <option value="partially" {{ old('local_implementation', session('project_data.local_implementation')) == 'partially' ? 'selected' : '' }}>{{ __('frontend.common.partially') }}</option>
+                            <option value="no" {{ old('local_implementation', session('project_data.local_implementation')) == 'no' ? 'selected' : '' }}>{{ __('frontend.common.no') }}</option>
                         </select>
                     </div>
                 </div>
 
                 <div class="mt-6">
                     <label for="expected_impact" class="block text-sm font-medium text-theme-muted mb-2">
-                        Expected Impact <span class="text-brand-accent">*</span>
+                        {{ __('frontend.submit_step3.expected_impact') }} <span class="text-brand-accent">*</span>
                     </label>
                     <textarea
                         id="expected_impact"
                         name="expected_impact"
                         required
                         rows="4"
-                        placeholder="Explain the expected impact of the project..."
+                        placeholder="{{ __('frontend.submit_step3.expected_impact_placeholder') }}"
                         class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface text-theme-text focus:ring-0 focus:border-brand-accent"
                     >{{ old('expected_impact', session('project_data.expected_impact')) }}</textarea>
                 </div>
 
                 <div class="mt-6">
                     <label for="community_benefit" class="block text-sm font-medium text-theme-muted mb-2">
-                        Community Benefit <span class="text-brand-accent">*</span>
+                        {{ __('frontend.submit_step3.community_benefit') }} <span class="text-brand-accent">*</span>
                     </label>
                     <textarea
                         id="community_benefit"
                         name="community_benefit"
                         required
                         rows="4"
-                        placeholder="How does this project benefit the local community or target sector?"
+                        placeholder="{{ __('frontend.submit_step3.community_benefit_placeholder') }}"
                         class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface text-theme-text focus:ring-0 focus:border-brand-accent"
                     >{{ old('community_benefit', session('project_data.community_benefit')) }}</textarea>
                 </div>
             </div>
 
             <div class="border border-theme-border p-6 rounded-lg bg-theme-surface-2">
-                <h4 class="text-2xl font-semibold text-brand-accent mb-4">Funding & Resources</h4>
+                <h4 class="text-2xl font-semibold text-brand-accent mb-4">{{ __('frontend.submit_step3.funding_resources') }}</h4>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label for="needs_funding" class="block text-sm font-medium text-theme-muted mb-2">
-                            Does the project need funding? <span class="text-brand-accent">*</span>
+                            {{ __('frontend.submit_step3.needs_funding') }} <span class="text-brand-accent">*</span>
                         </label>
                         <select
                             id="needs_funding"
@@ -111,15 +111,15 @@
                             required
                             class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface text-theme-text focus:ring-0 focus:border-brand-accent"
                         >
-                            <option value="" disabled {{ old('needs_funding', session('project_data.needs_funding')) ? '' : 'selected' }}>Select option</option>
-                            <option value="yes" {{ old('needs_funding', session('project_data.needs_funding')) == 'yes' ? 'selected' : '' }}>Yes</option>
-                            <option value="no" {{ old('needs_funding', session('project_data.needs_funding')) == 'no' ? 'selected' : '' }}>No</option>
+                            <option value="" disabled {{ old('needs_funding', session('project_data.needs_funding')) ? '' : 'selected' }}>{{ __('frontend.submit_step3.select_option') }}</option>
+                            <option value="yes" {{ old('needs_funding', session('project_data.needs_funding')) == 'yes' ? 'selected' : '' }}>{{ __('frontend.common.yes') }}</option>
+                            <option value="no" {{ old('needs_funding', session('project_data.needs_funding')) == 'no' ? 'selected' : '' }}>{{ __('frontend.common.no') }}</option>
                         </select>
                     </div>
 
                     <div>
                         <label for="requested_amount" class="block text-sm font-medium text-theme-muted mb-2">
-                            Estimated Funding Amount (USD) <span class="text-brand-accent">*</span>
+                            {{ __('frontend.submit_step3.requested_amount') }} <span class="text-brand-accent">*</span>
                         </label>
                         <input
                             type="number"
@@ -129,14 +129,14 @@
                             min="0"
                             step="100"
                             value="{{ old('requested_amount', session('project_data.requested_amount')) }}"
-                            placeholder="e.g., 5000"
+                            placeholder="{{ __('frontend.submit_step3.requested_amount_placeholder') }}"
                             class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface text-theme-text focus:ring-0 focus:border-brand-accent"
                         >
                     </div>
 
                     <div>
                         <label for="duration_months" class="block text-sm font-medium text-theme-muted mb-2">
-                            Estimated Duration (Months) <span class="text-brand-accent">*</span>
+                            {{ __('frontend.submit_step3.duration_months') }} <span class="text-brand-accent">*</span>
                         </label>
                         <input
                             type="number"
@@ -146,14 +146,14 @@
                             min="1"
                             max="60"
                             value="{{ old('duration_months', session('project_data.duration_months')) }}"
-                            placeholder="e.g., 6"
+                            placeholder="{{ __('frontend.submit_step3.duration_months_placeholder') }}"
                             class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface text-theme-text focus:ring-0 focus:border-brand-accent"
                         >
                     </div>
 
                     <div>
                         <label for="support_type" class="block text-sm font-medium text-theme-muted mb-2">
-                            Type of Support Needed <span class="text-brand-accent">*</span>
+                            {{ __('frontend.submit_step3.support_type') }} <span class="text-brand-accent">*</span>
                         </label>
                         <select
                             id="support_type"
@@ -161,35 +161,35 @@
                             required
                             class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface text-theme-text focus:ring-0 focus:border-brand-accent"
                         >
-                            <option value="" disabled {{ old('support_type', session('project_data.support_type')) ? '' : 'selected' }}>Select support type</option>
-                            <option value="financial" {{ old('support_type', session('project_data.support_type')) == 'financial' ? 'selected' : '' }}>Financial Support</option>
-                            <option value="technical" {{ old('support_type', session('project_data.support_type')) == 'technical' ? 'selected' : '' }}>Technical Support</option>
-                            <option value="partnership" {{ old('support_type', session('project_data.support_type')) == 'partnership' ? 'selected' : '' }}>Partnership</option>
-                            <option value="incubation" {{ old('support_type', session('project_data.support_type')) == 'incubation' ? 'selected' : '' }}>Incubation</option>
-                            <option value="mixed" {{ old('support_type', session('project_data.support_type')) == 'mixed' ? 'selected' : '' }}>Mixed Support</option>
+                            <option value="" disabled {{ old('support_type', session('project_data.support_type')) ? '' : 'selected' }}>{{ __('frontend.submit_step3.select_support_type') }}</option>
+                            <option value="financial" {{ old('support_type', session('project_data.support_type')) == 'financial' ? 'selected' : '' }}>{{ __('frontend.submit_step3.support_financial') }}</option>
+                            <option value="technical" {{ old('support_type', session('project_data.support_type')) == 'technical' ? 'selected' : '' }}>{{ __('frontend.submit_step3.support_technical') }}</option>
+                            <option value="partnership" {{ old('support_type', session('project_data.support_type')) == 'partnership' ? 'selected' : '' }}>{{ __('frontend.submit_step3.support_partnership') }}</option>
+                            <option value="incubation" {{ old('support_type', session('project_data.support_type')) == 'incubation' ? 'selected' : '' }}>{{ __('frontend.submit_step3.support_incubation') }}</option>
+                            <option value="mixed" {{ old('support_type', session('project_data.support_type')) == 'mixed' ? 'selected' : '' }}>{{ __('frontend.submit_step3.support_mixed') }}</option>
                         </select>
                     </div>
                 </div>
 
                 <div class="mt-6">
                     <label for="budget_breakdown" class="block text-sm font-medium text-theme-muted mb-2">
-                        Budget Breakdown / Resource Plan <span class="text-brand-accent">*</span>
+                        {{ __('frontend.submit_step3.budget_breakdown') }} <span class="text-brand-accent">*</span>
                     </label>
                     <textarea
                         id="budget_breakdown"
                         name="budget_breakdown"
                         required
                         rows="4"
-                        placeholder="Explain how the budget or resources will be used..."
+                        placeholder="{{ __('frontend.submit_step3.budget_breakdown_placeholder') }}"
                         class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface text-theme-text focus:ring-0 focus:border-brand-accent"
                     >{{ old('budget_breakdown', session('project_data.budget_breakdown')) }}</textarea>
                 </div>
             </div>
 
             <div class="border border-theme-border p-6 rounded-lg bg-theme-surface-2">
-                <h4 class="text-2xl font-semibold text-brand-accent mb-4">Execution Milestones</h4>
+                <h4 class="text-2xl font-semibold text-brand-accent mb-4">{{ __('frontend.submit_step3.execution_milestones') }}</h4>
                 <p class="text-sm text-theme-muted mb-4">
-                    Define the key phases of implementation in a clear and measurable way.
+                    {{ __('frontend.submit_step3.execution_milestones_text') }}
                 </p>
 
                 <div class="space-y-4">
@@ -197,7 +197,7 @@
                         <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
                             <div class="md:col-span-4">
                                 <label for="milestone_{{ $i }}" class="block text-sm font-medium text-theme-muted mb-2">
-                                    Milestone {{ $i }} <span class="text-brand-accent">*</span>
+                                    {{ __('frontend.submit_step3.milestone') }} {{ $i }} <span class="text-brand-accent">*</span>
                                 </label>
                                 <input
                                     type="text"
@@ -205,14 +205,14 @@
                                     name="milestone_{{ $i }}"
                                     required
                                     value="{{ old('milestone_'.$i, session('project_data.milestone_'.$i)) }}"
-                                    placeholder="e.g., Build prototype / Complete testing / Deploy first version"
+                                    placeholder="{{ __('frontend.submit_step3.milestone_placeholder') }}"
                                     class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface text-theme-text focus:ring-0 focus:border-brand-accent"
                                 >
                             </div>
 
                             <div class="md:col-span-1">
                                 <label for="milestone_{{ $i }}_month" class="block text-sm font-medium text-theme-muted mb-2">
-                                    Month <span class="text-brand-accent">*</span>
+                                    {{ __('frontend.submit_step3.month') }} <span class="text-brand-accent">*</span>
                                 </label>
                                 <input
                                     type="number"
@@ -235,14 +235,14 @@
                     href="{{ route('project.submit.step2') }}"
                     class="inline-flex items-center justify-center rounded-lg px-8 py-3 text-lg font-semibold border border-brand-accent text-theme-text hover:bg-brand-accent hover:text-white transition duration-300"
                 >
-                    <i class="fas fa-arrow-left mr-2"></i> Back
+                    <i class="fas fa-arrow-left mr-2"></i> {{ __('frontend.common.back') }}
                 </a>
 
                 <button
                     type="submit"
                     class="inline-flex items-center justify-center rounded-lg px-8 py-3 text-lg font-semibold bg-brand-accent text-white hover:bg-brand-accent-strong transition duration-300 shadow-brand-soft"
                 >
-                    Save & Continue <i class="fas fa-arrow-right ml-2"></i>
+                    {{ __('frontend.common.save_continue') }} <i class="fas fa-arrow-right ml-2"></i>
                 </button>
             </div>
         </form>

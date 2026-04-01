@@ -24,7 +24,7 @@
 <body class="min-h-screen transition-colors duration-300 bg-theme-bg text-theme-text">
     <x-header />
 
-    @if(session('success'))
+    @if (session('success'))
         <div class="max-w-4xl mx-auto mt-24 px-4">
             <div class="p-4 rounded-xl bg-green-500/20 border border-green-500 text-green-200">
                 {{ session('success') }}
@@ -32,7 +32,7 @@
         </div>
     @endif
 
-    @if(session('error'))
+    @if (session('error'))
         <div class="max-w-4xl mx-auto mt-24 px-4">
             <div class="p-4 rounded-xl bg-red-500/20 border border-red-500 text-red-200">
                 {{ session('error') }}
