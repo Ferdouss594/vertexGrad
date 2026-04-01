@@ -38,6 +38,7 @@ use App\Http\Controllers\Admin\AuditLogController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\Admin\ReportController;
+use App\Http\Controllers\Admin\AdminProfileController;
 
 use App\Http\Controllers\Report\PlatformReportController;
 
@@ -114,8 +115,9 @@ Route::middleware(['web', 'backend.locale'])->group(function () {
         | Profile
         |--------------------------------------------------------------------------
         */
-        Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
-
+Route::get('/profile', [AdminProfileController::class, 'index'])->name('profile');
+Route::put('/profile', [AdminProfileController::class, 'update'])->name('profile.update');
+Route::put('/profile/password', [AdminProfileController::class, 'updatePassword'])->name('profile.password.update');
         /*
         |--------------------------------------------------------------------------
         | Students

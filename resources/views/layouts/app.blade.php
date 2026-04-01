@@ -691,13 +691,11 @@
                role="button"
                data-bs-toggle="dropdown"
                aria-expanded="false">
-                <img src="{{ $adminUser && $adminUser->avatar ? asset('storage/' . $adminUser->avatar) : asset('vendors/images/photo1.jpg') }}"
-                     class="rounded-circle"
-                     width="34"
-                     height="34"
-                     alt="User Avatar"
-                     style="object-fit: cover; border: 2px solid rgba(148,163,184,0.18);">
-
+<img
+    src="{{ !empty($adminUser?->profile_image) ? asset('storage/' . $adminUser->profile_image) : asset('vendors/images/photo1.jpg') }}"
+    alt="User Avatar"
+    class="sidebar-account-avatar"
+>
                 <div class="d-none d-md-block text-start">
                     <div style="font-size: 13px; font-weight: 700; color: var(--vg-header-color); line-height: 1.2;">
                         {{ $adminUser ? $adminUser->name : 'Guest' }}
@@ -900,9 +898,11 @@
 
                 <div class="sidebar-account-card">
                     <div class="sidebar-account-top">
-                        <img src="{{ $adminUser && $adminUser->avatar ? asset('storage/' . $adminUser->avatar) : asset('vendors/images/photo1.jpg') }}"
-                             alt="User Avatar"
-                             class="sidebar-account-avatar">
+<img
+    src="{{ !empty($adminUser?->profile_image) ? asset('storage/' . $adminUser->profile_image) : asset('vendors/images/photo1.jpg') }}"
+    alt="User Avatar"
+    class="sidebar-account-avatar"
+>
                         <div>
                             <div class="sidebar-account-name">{{ $adminUser ? $adminUser->name : 'Guest' }}</div>
                             <div class="sidebar-account-role">Administrator</div>
