@@ -38,7 +38,11 @@
                 </p>
             </div>
 
-            <div class="flex items-center gap-3">
+            <div class="flex flex-wrap items-center gap-3">
+                <a href="{{ route('settings.academic') }}" class="{{ $btnSecondaryClass }}">
+                    <i class="fas fa-cog mr-2"></i> {{ __('frontend.academic_dashboard.settings', [], app()->getLocale()) }}
+                </a>
+
                 <a href="{{ route('project.submit.step1') }}" class="{{ $btnPrimaryClass }}">
                     <i class="fas fa-rocket mr-2"></i> {{ __('frontend.academic_dashboard.submit_new_research') }}
                 </a>

@@ -92,6 +92,18 @@ Route::middleware(['web', 'frontend.locale'])->group(function () {
 
         Route::post('/student/requests/{requestItem}/respond', [AcademicDashboardController::class, 'respondToRequest'])
             ->name('student.requests.respond');
+
+            Route::get('/settings/academic', [AcademicDashboardController::class, 'settings'])
+    ->name('settings.academic');
+
+Route::post('/settings/academic/update', [AcademicDashboardController::class, 'updateSettings'])
+    ->name('settings.academic.update');
+
+    Route::get('/settings/investor', [InvestorDashboardController::class, 'settings'])
+    ->name('settings.investor');
+
+Route::post('/settings/investor/update', [InvestorDashboardController::class, 'updateSettings'])
+    ->name('settings.investor.update');
     });
 
     // ------------------------

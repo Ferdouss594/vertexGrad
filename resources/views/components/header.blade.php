@@ -1,43 +1,53 @@
+@php
+    $transitionBase = config('design.classes.transition_base');
+    $user = auth('web')->user();
+    $isLoggedIn = auth('web')->check();
+
+    if ($user) {
+        if ($user->role === 'Investor') {
+            $navLinks = [
+                ['href' => route('frontend.projects.index'), 'label' => __('frontend.header.marketplace')],
+                ['href' => route('home') . '#advantage', 'label' => __('frontend.header.why_vertexgrad')],
+            ];
+        } else {
+            $navLinks = [
+                ['href' => route('project.submit.step1'), 'label' => __('frontend.header.submit_project')],
+                ['href' => route('home') . '#advantage', 'label' => __('frontend.header.why_vertexgrad')],
+            ];
+        }
+    } else {
+        $navLinks = [
+            ['href' => route('frontend.projects.index'), 'label' => __('frontend.header.browse_projects')],
+            ['href' => route('home') . '#advantage', 'label' => __('frontend.header.why_vertexgrad')],
+            ['href' => route('utility.support'), 'label' => __('frontend.header.help_center')],
+        ];
+    }
+
+    $currentLocale = app()->getLocale();
+    $nextLocale = $currentLocale === 'ar' ? 'en' : 'ar';
+    $languageLabel = $currentLocale === 'ar' ? 'English' : 'العربية';
+@endphp
+
 <header class="w-full fixed top-0 left-0 z-50 border-b header-shell transition-colors duration-300">
-    <div class="{{ config('design.classes.container') }} flex items-center justify-between h-20">
+    <div class="{{ config('design.classes.container') }} flex items-center justify-between h-20 gap-4">
 
         {{-- LOGO --}}
-        <a href="{{ route('home') }}" class="flex items-center gap-3 shrink-0">
-            <img src="{{ config('design.brand.logo') }}" alt="{{ config('design.brand.name') }}" class="w-10 h-10 object-contain">
-            <span class="font-extrabold text-2xl tracking-tight text-brand-accent">
-                {{ config('design.brand.name') }}
+        <a href="{{ route('home') }}" class="flex items-center gap-3 shrink-0 min-w-0">
+            <img
+                src="{{ config('design.brand.logo') ? asset(config('design.brand.logo')) : asset('images/logo.png') }}"
+                alt="{{ config('design.brand.name', 'VertexGrad') }}"
+                class="w-10 h-10 object-contain shrink-0"
+            >
+            <span class="font-extrabold text-2xl tracking-tight text-brand-accent whitespace-nowrap">
+                {{ config('design.brand.name', 'VertexGrad') }}
             </span>
         </a>
 
         {{-- DESKTOP NAV --}}
-        <nav class="hidden md:flex items-center gap-8">
-            @php
-                $transitionBase = config('design.classes.transition_base');
-                $user = auth('web')->user();
-
-                $navLinks = [
-                    ['href' => '#advantage', 'label' => __('frontend.header.why_vertexgrad')],
-                    ['href' => route('utility.support'), 'label' => __('frontend.header.help_center')],
-                ];
-
-                if ($user) {
-                    if ($user->role === 'Investor') {
-                        array_unshift($navLinks, ['href' => route('frontend.projects.index'), 'label' => __('frontend.header.marketplace')]);
-                    } else {
-                        array_unshift($navLinks, ['href' => route('project.submit.step1'), 'label' => __('frontend.header.submit_project')]);
-                    }
-                } else {
-                    array_unshift($navLinks, ['href' => route('frontend.projects.index'), 'label' => __('frontend.header.browse_projects')]);
-                }
-
-                $currentLocale = app()->getLocale();
-                $nextLocale = $currentLocale === 'ar' ? 'en' : 'ar';
-                $languageLabel = $currentLocale === 'ar' ? 'English' : 'العربية';
-            @endphp
-
+        <nav class="hidden lg:flex items-center gap-8 min-w-0">
             @foreach($navLinks as $link)
                 <a href="{{ $link['href'] }}"
-                   class="{{ $transitionBase }} text-theme-text hover-text-brand-accent relative group uppercase text-[11px] tracking-[0.18em] font-bold">
+                   class="{{ $transitionBase }} text-theme-text hover-text-brand-accent relative group uppercase text-[11px] tracking-[0.16em] font-bold whitespace-nowrap">
                     {{ $link['label'] }}
                     <span class="absolute -bottom-1 left-0 w-full h-0.5 bg-brand-accent transform scale-x-0 group-hover:scale-x-100 {{ $transitionBase }}"></span>
                 </a>
@@ -45,7 +55,8 @@
         </nav>
 
         {{-- DESKTOP ACTIONS --}}
-        <div class="hidden md:flex items-center gap-3">
+        <div class="hidden md:flex items-center gap-3 shrink-0">
+
             {{-- THEME SWITCHER --}}
             <div
                 class="relative"
@@ -62,7 +73,7 @@
                 <button
                     type="button"
                     @click="open = !open"
-                    class="h-10 px-4 rounded-xl border border-theme-border bg-theme-surface text-theme-text hover-border-brand-accent hover-text-brand-accent transition-all text-[11px] font-black uppercase tracking-widest shadow-brand-soft"
+                    class="h-10 px-4 rounded-xl border border-theme-border bg-theme-surface text-theme-text hover-border-brand-accent hover-text-brand-accent transition-all text-[11px] font-black uppercase tracking-widest shadow-brand-soft whitespace-nowrap"
                 >
                     {{ __('frontend.header.theme') }}
                 </button>
@@ -109,39 +120,31 @@
             {{-- LANGUAGE SWITCHER --}}
             <a
                 href="{{ route('frontend.language.switch', $nextLocale) }}"
-                class="h-10 px-4 rounded-xl border border-theme-border bg-theme-surface text-theme-text hover-border-brand-accent hover-text-brand-accent transition-all text-[11px] font-black uppercase tracking-widest shadow-brand-soft inline-flex items-center justify-center"
+                class="h-10 px-4 rounded-xl border border-theme-border bg-theme-surface text-theme-text hover-border-brand-accent hover-text-brand-accent transition-all text-[11px] font-black uppercase tracking-widest shadow-brand-soft inline-flex items-center justify-center whitespace-nowrap"
             >
                 {{ $languageLabel }}
             </a>
 
             @guest('web')
                 <a href="{{ route('login.show') }}"
-                   class="text-theme-muted hover-text-brand-accent text-xs font-bold uppercase tracking-widest {{ $transitionBase }}">
+                   class="text-theme-muted hover-text-brand-accent text-xs font-bold uppercase tracking-widest {{ $transitionBase }} whitespace-nowrap">
                     {{ __('frontend.header.sign_in') }}
                 </a>
 
                 <a href="{{ route('frontend.projects.index') }}"
-                   class="inline-flex items-center justify-center rounded-xl px-6 py-3 text-xs font-extrabold bg-brand-accent text-white hover-bg-brand-accent-strong transition-all shadow-brand-soft">
+                   class="inline-flex items-center justify-center rounded-xl px-6 py-3 text-xs font-extrabold bg-brand-accent text-white hover-bg-brand-accent-strong transition-all shadow-brand-soft whitespace-nowrap">
                     {{ __('frontend.header.browse_opportunities') }}
                 </a>
             @endguest
 
             @auth('web')
                 @php
-                    $user = auth('web')->user();
                     $isInvestor = $user->role === 'Investor';
                     $dashboardRoute = $isInvestor ? route('dashboard.investor') : route('dashboard.academic');
 
                     $initialUnread = $user->unreadNotifications()->count();
                     $latestNotifications = $user->notifications()->latest()->take(5)->get();
                 @endphp
-
-                @if(!$isInvestor)
-                    <a href="{{ route('project.submit.step1') }}"
-                       class="text-brand-accent hover:text-theme-text text-xs font-bold uppercase tracking-widest mr-1 transition-colors">
-                        <i class="fas fa-plus-circle mr-1"></i> {{ __('frontend.header.new_submission') }}
-                    </a>
-                @endif
 
                 {{-- NOTIFICATIONS --}}
                 <div class="relative flex items-center"
@@ -161,10 +164,12 @@
                     <button type="button"
                             @click="open = !open"
                             class="relative flex items-center justify-center w-10 h-10 rounded-full bg-brand-accent-soft border border-theme-border text-brand-accent hover:bg-brand-accent hover:text-white transition-all focus:outline-none shadow-brand-soft">
-                        <i class="fas fa-bell text-lg"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-[17px] h-[17px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V4a2 2 0 10-4 0v1.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0a3 3 0 11-6 0m6 0H9" />
+                        </svg>
 
                         <template x-if="unreadCount > 0">
-                            <span class="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-black text-white shadow">
+                            <span class="absolute -top-1 -right-1 flex h-4 min-w-[16px] px-1 items-center justify-center rounded-full bg-red-500 text-[10px] font-black text-white shadow">
                                 <span x-text="unreadCount > 9 ? '9+' : unreadCount"></span>
                             </span>
                         </template>
@@ -243,20 +248,29 @@
                 </div>
 
                 <a href="{{ $dashboardRoute }}"
-                   class="px-5 py-2.5 bg-theme-surface border border-theme-border rounded-xl text-theme-text hover:bg-brand-accent hover:text-white font-black uppercase text-[10px] tracking-widest transition-all shadow-brand-soft">
+                   class="px-5 py-2.5 bg-theme-surface border border-theme-border rounded-xl text-theme-text hover:bg-brand-accent hover:text-white font-black uppercase text-[10px] tracking-widest transition-all shadow-brand-soft whitespace-nowrap">
                     {{ __('frontend.header.dashboard') }}
                 </a>
 
                 <div class="flex items-center gap-3 ml-3 pl-3 border-l border-theme-border">
-                    <div title="{{ $user->role }}"
-                         class="w-10 h-10 rounded-full bg-brand-accent-soft border border-brand-accent text-brand-accent flex items-center justify-center font-black text-sm">
-                        {{ strtoupper(substr($user->name, 0, 1)) }}
+                    <div title="{{ $user->role }}" class="shrink-0">
+                        @if(!empty($user->profile_image))
+                            <img
+                                src="{{ asset('storage/' . $user->profile_image) }}"
+                                alt="{{ $user->name }}"
+                                class="w-10 h-10 rounded-full object-cover border border-brand-accent/30 shadow-brand-soft"
+                            >
+                        @else
+                            <div class="w-10 h-10 rounded-full bg-brand-accent-soft border border-brand-accent text-brand-accent flex items-center justify-center font-black text-sm">
+                                {{ strtoupper(substr($user->name, 0, 1)) }}
+                            </div>
+                        @endif
                     </div>
 
                     <form action="{{ route('frontend.logout') }}" method="POST" class="inline">
                         @csrf
                         <button type="submit"
-                                class="px-4 py-2 rounded-xl border border-red-400/30 text-red-400 hover:bg-red-500 hover:text-white transition-all text-[10px] font-black uppercase tracking-widest">
+                                class="px-4 py-2 rounded-xl border border-red-400/30 text-red-400 hover:bg-red-500 hover:text-white transition-all text-[10px] font-black uppercase tracking-widest whitespace-nowrap">
                             {{ __('frontend.header.logout') }}
                         </button>
                     </form>
@@ -266,7 +280,6 @@
 
         {{-- MOBILE ACTIONS --}}
         <div class="md:hidden flex items-center gap-2">
-            {{-- MOBILE LANGUAGE SWITCH --}}
             <a
                 href="{{ route('frontend.language.switch', $nextLocale) }}"
                 class="w-auto min-w-[74px] h-10 px-3 rounded-xl border border-theme-border bg-theme-surface text-theme-text flex items-center justify-center shadow-brand-soft text-[11px] font-black uppercase tracking-widest hover-border-brand-accent hover-text-brand-accent transition-all"

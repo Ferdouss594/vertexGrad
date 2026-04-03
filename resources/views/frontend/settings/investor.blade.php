@@ -1,58 +1,342 @@
 @extends('frontend.layouts.app')
 
 @section('content')
-<div class="min-h-screen py-10 bg-theme-bg transition-colors duration-300">
-    <div class="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+@php
+    $btnPrimaryClass = 'inline-flex items-center justify-center rounded-2xl px-8 py-4 font-black bg-brand-accent text-white hover:bg-brand-accent-strong transition duration-300 shadow-brand-soft';
+    $btnSecondaryClass = 'inline-flex items-center justify-center rounded-2xl px-6 py-3 font-bold border border-brand-accent text-theme-text hover:bg-brand-accent hover:text-white transition duration-300';
+@endphp
 
-        <header class="mb-10 border-b border-theme-border pb-4">
-            <h1 class="text-4xl font-extrabold text-theme-text">
-                {{ __('frontend.investor.settings_title_before') }}
-                <span class="text-brand-accent">{{ __('frontend.investor.settings_title_highlight') }}</span>
-            </h1>
-            <p class="text-xl text-theme-muted mt-1">
-                {{ __('frontend.investor.subtitle') }}
-            </p>
+<div class="min-h-screen pt-28 pb-12 bg-theme-bg transition-colors duration-300">
+    <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        {{-- Header --}}
+        <header class="mb-10">
+            <div class="relative overflow-hidden theme-panel rounded-[2.5rem] shadow-brand-soft">
+                <div class="p-8 md:p-10">
+                    <div class="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-8">
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-3 mb-5 flex-wrap">
+                                <span class="px-4 py-1.5 rounded-xl bg-brand-accent-soft text-brand-accent text-[10px] font-black uppercase tracking-[0.15em] border border-brand-accent">
+                                    {{ __('frontend.investor.profile_settings_badge') }}
+                                </span>
+                                <span class="text-theme-muted text-xs font-mono">
+                                    ID: INV-{{ $user->id + 5000 }}
+                                </span>
+                            </div>
+
+                            <h1 class="text-3xl md:text-5xl font-black text-theme-text tracking-tight leading-[1.1]">
+                                {{ __('frontend.investor.settings_title_before') }}
+                                <span class="text-brand-accent">{{ __('frontend.investor.settings_title_highlight') }}</span>
+                            </h1>
+
+                            <p class="text-theme-muted mt-4 text-sm md:text-base leading-7 max-w-3xl">
+                                {{ __('frontend.investor.subtitle') }}
+                            </p>
+
+                            <div class="mt-6 flex flex-wrap items-center gap-3">
+                                <a href="{{ route('dashboard.investor') }}" class="{{ $btnSecondaryClass }}">
+                                    <i class="fas fa-arrow-left mr-2"></i>
+                                    {{ __('frontend.investor.back_to_dashboard') }}
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 xl:min-w-[320px]">
+                            <div class="theme-panel-soft rounded-2xl p-5 text-center">
+                                <div class="text-3xl font-black text-theme-text">
+                                    {{ isset($myInvestments) ? $myInvestments->count() : 0 }}
+                                </div>
+                                <div class="text-xs uppercase tracking-[0.18em] font-black text-theme-muted mt-2">
+                                    {{ __('frontend.investor.total_interactions') }}
+                                </div>
+                            </div>
+
+                            <div class="theme-panel-soft rounded-2xl p-5 text-center">
+                                <div class="text-3xl font-black text-theme-text">
+                                    {{ $approvedInvestments ?? 0 }}
+                                </div>
+                                <div class="text-xs uppercase tracking-[0.18em] font-black text-theme-muted mt-2">
+                                    {{ __('frontend.investor.approved_investments') }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="h-1.5 w-full bg-theme-surface-2">
+                    <div class="h-full bg-brand-accent w-1/2"></div>
+                </div>
+            </div>
         </header>
 
-        <form action="/settings/investor/update" method="POST" class="space-y-8">
+        {{-- Alerts --}}
+        @if(session('success'))
+            <div class="mb-6">
+                <div class="p-4 rounded-2xl border border-green-500/40 bg-green-500/10 text-green-600 shadow-brand-soft">
+                    {{ session('success') }}
+                </div>
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div class="mb-6">
+                <div class="p-4 rounded-2xl border border-red-500/40 bg-red-500/10 text-red-600 shadow-brand-soft">
+                    {{ session('error') }}
+                </div>
+            </div>
+        @endif
+
+        @if($errors->any())
+            <div class="mb-6">
+                <div class="p-5 rounded-2xl border border-red-500/40 bg-red-500/10 text-red-600 shadow-brand-soft">
+                    <div class="font-black uppercase tracking-[0.14em] text-xs mb-3">
+                        {{ __('frontend.investor.fix_issues') }}
+                    </div>
+                    <ul class="list-disc pl-5 space-y-1 text-sm">
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+        @endif
+
+        <form action="{{ route('settings.investor.update') }}" method="POST" enctype="multipart/form-data" class="space-y-8">
             @csrf
 
-            <div class="theme-panel p-6 rounded-xl">
-                <h2 class="text-2xl font-semibold text-brand-accent mb-4">
-                    {{ __('frontend.investor.contact_info') }}
-                </h2>
+            {{-- Profile / identity --}}
+            <section class="theme-panel rounded-[2.5rem] p-6 md:p-8">
+                <div class="flex flex-col lg:flex-row gap-8">
+                    <div class="lg:w-[320px] shrink-0">
+                        <div class="theme-panel-soft rounded-[2rem] p-6 h-full">
+                            <div class="flex items-center justify-between gap-3 mb-5">
+                                <h2 class="text-lg font-black text-theme-text uppercase tracking-[0.16em]">
+                                    {{ __('frontend.investor.profile_photo') }}
+                                </h2>
+                                <span class="text-[10px] font-black uppercase tracking-[0.14em] text-theme-muted">
+                                    JPG / PNG / WEBP
+                                </span>
+                            </div>
 
-                <input type="text" name="contact_name"
-                       placeholder="{{ __('frontend.investor.contact_name') }}"
-                       class="w-full p-3 mb-4 rounded-lg border border-theme-border bg-theme-surface-2 text-theme-text">
+                            <div class="flex flex-col items-center text-center">
+                                <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-theme-border shadow-brand-soft bg-theme-surface-2">
+                                    <img
+                                        src="{{ !empty($user->profile_image) ? asset('storage/' . $user->profile_image) : asset('images/default-avatar.png') }}"
+                                        alt="{{ $user->name }}"
+                                        class="w-full h-full object-cover"
+                                    >
+                                </div>
 
-                <input type="text" name="fund_name"
-                       placeholder="{{ __('frontend.investor.fund_name') }}"
-                       class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface-2 text-theme-text">
-            </div>
+                                <div class="mt-5 text-theme-text font-bold">
+                                    {{ $user->name }}
+                                </div>
+                                <div class="text-sm text-theme-muted mt-1 break-all">
+                                    {{ $user->email }}
+                                </div>
 
-            <div class="theme-panel p-6 rounded-xl">
-                <h2 class="text-2xl font-semibold text-brand-accent mb-4">
-                    {{ __('frontend.investor.investment_focus') }}
-                </h2>
+                                <div class="w-full mt-6">
+                                    <label class="block text-sm font-bold text-theme-text mb-2 text-left">
+                                        {{ __('frontend.investor.choose_new_photo') }}
+                                    </label>
+                                    <input
+                                        type="file"
+                                        name="profile_image"
+                                        accept="image/*"
+                                        class="w-full p-3 rounded-xl border border-theme-border bg-theme-surface text-theme-text"
+                                    >
+                                    <p class="text-xs text-theme-muted mt-2 text-left">
+                                        {{ __('frontend.investor.photo_hint') }}
+                                    </p>
+                                    @error('profile_image')
+                                        <p class="text-sm text-red-500 mt-2 text-left">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                <input type="number" name="min_investment"
-                       placeholder="{{ __('frontend.investor.min_investment') }}"
-                       class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface-2 text-theme-text">
-            </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center justify-between mb-6 flex-wrap gap-3">
+                            <h2 class="text-xl font-black text-theme-text uppercase tracking-[0.16em]">
+                                {{ __('frontend.investor.contact_info') }}
+                            </h2>
+                            <span class="text-xs font-mono text-theme-muted">
+                                {{ __('frontend.investor.contact_info_hint') }}
+                            </span>
+                        </div>
 
-            <div class="theme-panel p-6 rounded-xl">
-                <h2 class="text-2xl font-semibold text-brand-accent mb-4">
-                    {{ __('frontend.investor.compliance') }}
-                </h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            <div class="theme-panel-soft rounded-2xl p-4">
+                                <label class="block text-sm font-bold text-theme-text mb-2">
+                                    {{ __('frontend.investor.full_name') }}
+                                </label>
+                                <input
+                                    type="text"
+                                    name="full_name"
+                                    value="{{ old('full_name', $user->name) }}"
+                                    class="w-full p-3 rounded-xl border border-theme-border bg-theme-surface text-theme-text"
+                                >
+                                @error('full_name')
+                                    <p class="text-sm text-red-500 mt-2">{{ $message }}</p>
+                                @enderror
+                            </div>
 
-                <p class="text-green-600 font-bold">
-                    {{ __('frontend.investor.verified') }}
-                </p>
-            </div>
+                            <div class="theme-panel-soft rounded-2xl p-4">
+                                <label class="block text-sm font-bold text-theme-text mb-2">
+                                    {{ __('frontend.investor.email') }}
+                                </label>
+                                <input
+                                    type="email"
+                                    name="email"
+                                    value="{{ old('email', $user->email) }}"
+                                    class="w-full p-3 rounded-xl border border-theme-border bg-theme-surface text-theme-text"
+                                >
+                                @error('email')
+                                    <p class="text-sm text-red-500 mt-2">{{ $message }}</p>
+                                @enderror
+                            </div>
 
-            <div class="text-right">
-                <button class="px-8 py-3 bg-brand-accent text-white rounded-lg">
+                            <div class="theme-panel-soft rounded-2xl p-4">
+                                <label class="block text-sm font-bold text-theme-text mb-2">
+                                    {{ __('frontend.investor.contact_name') }}
+                                </label>
+                                <input
+                                    type="text"
+                                    name="contact_name"
+                                    value="{{ old('contact_name', $user->contact_name ?? '') }}"
+                                    class="w-full p-3 rounded-xl border border-theme-border bg-theme-surface text-theme-text"
+                                >
+                                @error('contact_name')
+                                    <p class="text-sm text-red-500 mt-2">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <div class="theme-panel-soft rounded-2xl p-4">
+                                <label class="block text-sm font-bold text-theme-text mb-2">
+                                    {{ __('frontend.investor.phone') }}
+                                </label>
+                                <input
+                                    type="text"
+                                    name="phone"
+                                    value="{{ old('phone', $user->phone ?? '') }}"
+                                    class="w-full p-3 rounded-xl border border-theme-border bg-theme-surface text-theme-text"
+                                >
+                                @error('phone')
+                                    <p class="text-sm text-red-500 mt-2">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {{-- Fund / investment profile --}}
+            <section class="theme-panel rounded-[2.5rem] p-6 md:p-8">
+                <div class="flex items-center justify-between mb-6 flex-wrap gap-3">
+                    <h2 class="text-xl font-black text-theme-text uppercase tracking-[0.16em]">
+                        {{ __('frontend.investor.investment_focus') }}
+                    </h2>
+                    <span class="text-xs font-mono text-theme-muted">
+                        {{ __('frontend.investor.investment_focus_hint') }}
+                    </span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div class="theme-panel-soft rounded-2xl p-4">
+                        <label class="block text-sm font-bold text-theme-text mb-2">
+                            {{ __('frontend.investor.fund_name') }}
+                        </label>
+                        <input
+                            type="text"
+                            name="fund_name"
+                            value="{{ old('fund_name', $user->fund_name ?? '') }}"
+                            class="w-full p-3 rounded-xl border border-theme-border bg-theme-surface text-theme-text"
+                        >
+                        @error('fund_name')
+                            <p class="text-sm text-red-500 mt-2">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div class="theme-panel-soft rounded-2xl p-4">
+                        <label class="block text-sm font-bold text-theme-text mb-2">
+                            {{ __('frontend.investor.min_investment') }}
+                        </label>
+                        <input
+                            type="number"
+                            step="0.01"
+                            min="0"
+                            name="min_investment"
+                            value="{{ old('min_investment', $user->min_investment ?? '') }}"
+                            class="w-full p-3 rounded-xl border border-theme-border bg-theme-surface text-theme-text"
+                        >
+                        @error('min_investment')
+                            <p class="text-sm text-red-500 mt-2">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div class="theme-panel-soft rounded-2xl p-4 md:col-span-2">
+                        <label class="block text-sm font-bold text-theme-text mb-2">
+                            {{ __('frontend.investor.investment_focus_label') }}
+                        </label>
+                        <textarea
+                            name="investment_focus"
+                            rows="5"
+                            class="w-full p-3 rounded-xl border border-theme-border bg-theme-surface text-theme-text"
+                            placeholder="{{ __('frontend.investor.investment_focus_placeholder') }}"
+                        >{{ old('investment_focus', $user->investment_focus ?? '') }}</textarea>
+                        @error('investment_focus')
+                            <p class="text-sm text-red-500 mt-2">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
+            </section>
+
+            {{-- Compliance / account status --}}
+            <section class="theme-panel rounded-[2.5rem] p-6 md:p-8">
+                <div class="flex items-center justify-between mb-6 flex-wrap gap-3">
+                    <h2 class="text-xl font-black text-theme-text uppercase tracking-[0.16em]">
+                        {{ __('frontend.investor.compliance') }}
+                    </h2>
+                    <span class="text-xs font-mono text-theme-muted">
+                        {{ __('frontend.investor.compliance_hint') }}
+                    </span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div class="theme-panel-soft rounded-2xl p-5">
+                        <div class="text-xs font-black uppercase tracking-[0.15em] text-theme-muted mb-2">
+                            {{ __('frontend.investor.verification_status') }}
+                        </div>
+                        <div class="text-green-600 font-black text-lg">
+                            {{ __('frontend.investor.verified') }}
+                        </div>
+                    </div>
+
+                    <div class="theme-panel-soft rounded-2xl p-5">
+                        <div class="text-xs font-black uppercase tracking-[0.15em] text-theme-muted mb-2">
+                            {{ __('frontend.investor.city') }}
+                        </div>
+                        <input
+                            type="text"
+                            name="city"
+                            value="{{ old('city', $user->city ?? '') }}"
+                            class="w-full p-3 rounded-xl border border-theme-border bg-theme-surface text-theme-text"
+                        >
+                        @error('city')
+                            <p class="text-sm text-red-500 mt-2">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
+            </section>
+
+            {{-- Actions --}}
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-3">
+                <a href="{{ route('dashboard.investor') }}" class="{{ $btnSecondaryClass }}">
+                    {{ __('frontend.investor.cancel') }}
+                </a>
+
+                <button type="submit" class="{{ $btnPrimaryClass }}">
+                    <i class="fas fa-save mr-2"></i>
                     {{ __('frontend.investor.save_preferences') }}
                 </button>
             </div>

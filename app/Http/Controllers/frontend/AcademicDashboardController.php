@@ -9,6 +9,9 @@ use App\Models\ProjectRequest;
 use App\Models\ProjectRequestResponse;
 use App\Notifications\GeneralNotification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 class AcademicDashboardController extends Controller
 {
@@ -90,6 +93,91 @@ class AcademicDashboardController extends Controller
             'currentMeetings',
             'announcements'
         ));
+    }
+
+    public function settings()
+    {
+        $user = auth('web')->user();
+
+        abort_unless($user && $user->role === 'Student', 403);
+
+        $projects = Project::where('student_id', $user->id)
+            ->latest('project_id')
+            ->get();
+
+        return view('frontend.settings.academic', compact('user', 'projects'));
+    }
+
+    public function updateSettings(Request $request)
+    {
+        $user = auth('web')->user();
+
+        abort_unless($user && $user->role === 'Student', 403);
+
+        $validated = $request->validate([
+            'full_name' => ['nullable', 'string', 'max:255'],
+            'academic_title' => ['nullable', 'string', 'max:255'],
+            'email' => [
+                'nullable',
+                'email',
+                'max:255',
+                Rule::unique('users', 'email')->ignore($user->id),
+            ],
+            'phone' => ['nullable', 'string', 'max:50'],
+            'institution' => ['nullable', 'string', 'max:255'],
+            'department' => ['nullable', 'string', 'max:255'],
+            'notif_status_change' => ['nullable'],
+            'notif_investor_interest' => ['nullable'],
+            'profile_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+        ]);
+
+        $userTable = $user->getTable();
+
+        if (array_key_exists('full_name', $validated) && !empty($validated['full_name']) && Schema::hasColumn($userTable, 'name')) {
+            $user->name = $validated['full_name'];
+        }
+
+        if (array_key_exists('email', $validated) && !empty($validated['email']) && Schema::hasColumn($userTable, 'email')) {
+            $user->email = $validated['email'];
+        }
+
+        if (array_key_exists('phone', $validated) && Schema::hasColumn($userTable, 'phone')) {
+            $user->phone = $validated['phone'];
+        }
+
+        if (array_key_exists('academic_title', $validated) && Schema::hasColumn($userTable, 'academic_title')) {
+            $user->academic_title = $validated['academic_title'];
+        }
+
+        if (array_key_exists('institution', $validated) && Schema::hasColumn($userTable, 'institution')) {
+            $user->institution = $validated['institution'];
+        }
+
+        if (array_key_exists('department', $validated) && Schema::hasColumn($userTable, 'department')) {
+            $user->department = $validated['department'];
+        }
+
+        if (Schema::hasColumn($userTable, 'notif_status_change')) {
+            $user->notif_status_change = $request->boolean('notif_status_change');
+        }
+
+        if (Schema::hasColumn($userTable, 'notif_investor_interest')) {
+            $user->notif_investor_interest = $request->boolean('notif_investor_interest');
+        }
+
+        if ($request->hasFile('profile_image') && Schema::hasColumn($userTable, 'profile_image')) {
+            if (!empty($user->profile_image) && Storage::disk('public')->exists($user->profile_image)) {
+                Storage::disk('public')->delete($user->profile_image);
+            }
+
+            $user->profile_image = $request->file('profile_image')->store('profile-images', 'public');
+        }
+
+        $user->save();
+
+        return redirect()
+            ->route('settings.academic')
+            ->with('success', 'Academic settings updated successfully.');
     }
 
     public function respondToRequest(Request $request, ProjectRequest $requestItem)
