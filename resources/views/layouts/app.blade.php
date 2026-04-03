@@ -28,14 +28,17 @@
         :root {
             --vg-primary: #1b00ff;
             --vg-primary-dark: #1400c8;
+
             --vg-bg: #f3f6fb;
             --vg-surface: #ffffff;
             --vg-surface-soft: #f8fafc;
             --vg-text: #18243a;
             --vg-text-muted: #6b7a90;
             --vg-border: #e2e8f0;
+
             --vg-shadow-sm: 0 10px 24px rgba(15, 23, 42, 0.06);
             --vg-shadow-md: 0 16px 36px rgba(15, 23, 42, 0.10);
+
             --sidebar-width: 290px;
             --header-height: 76px;
 
@@ -43,6 +46,7 @@
             --vg-header-color: #18243a;
             --vg-header-btn-bg: #f8fafc;
             --vg-header-btn-border: #e2e8f0;
+
             --vg-sidebar-bg: #ffffff;
             --vg-sidebar-color: #18243a;
             --vg-sidebar-muted: #7b8aa0;
@@ -53,27 +57,43 @@
             --vg-sidebar-bottom-bg: #fbfdff;
             --vg-sidebar-card-bg: #f8fafc;
             --vg-sidebar-card-border: #e2e8f0;
+
             --vg-header-shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
             --vg-sidebar-shadow: 8px 0 26px rgba(15, 23, 42, 0.08);
+
+            --vg-dropdown-bg: #ffffff;
+            --vg-footer-bg: #ffffff;
         }
 
         body.dark-theme {
+            --vg-bg: #08111f;
+            --vg-surface: #0f172a;
+            --vg-surface-soft: #111c31;
+            --vg-text: #e5eefc;
+            --vg-text-muted: #94a3b8;
+            --vg-border: rgba(255,255,255,0.08);
+
             --vg-header-bg: linear-gradient(135deg, #081534 0%, #1200b8 100%);
             --vg-header-color: #ffffff;
             --vg-header-btn-bg: rgba(255,255,255,0.12);
             --vg-header-btn-border: rgba(255,255,255,0.10);
+
             --vg-sidebar-bg: linear-gradient(180deg, #061127 0%, #0b1d49 100%);
-            --vg-sidebar-color: rgba(255,255,255,0.84);
-            --vg-sidebar-muted: rgba(255,255,255,0.46);
+            --vg-sidebar-color: rgba(255,255,255,0.86);
+            --vg-sidebar-muted: rgba(255,255,255,0.50);
             --vg-sidebar-hover: rgba(255,255,255,0.10);
             --vg-sidebar-active-bg: linear-gradient(90deg, rgba(27,0,255,0.36) 0%, rgba(79,70,229,0.18) 100%);
             --vg-sidebar-active-color: #ffffff;
             --vg-sidebar-border: rgba(255,255,255,0.07);
-            --vg-sidebar-bottom-bg: rgba(255,255,255,0.02);
+            --vg-sidebar-bottom-bg: rgba(255,255,255,0.03);
             --vg-sidebar-card-bg: rgba(255,255,255,0.05);
-            --vg-sidebar-card-border: rgba(255,255,255,0.07);
+            --vg-sidebar-card-border: rgba(255,255,255,0.08);
+
             --vg-header-shadow: 0 10px 28px rgba(9, 16, 45, 0.18);
             --vg-sidebar-shadow: 8px 0 26px rgba(10, 16, 39, 0.18);
+
+            --vg-dropdown-bg: #0f172a;
+            --vg-footer-bg: #0f172a;
         }
 
         html, body {
@@ -84,6 +104,7 @@
             background: var(--vg-bg);
             color: var(--vg-text);
             overflow-x: hidden;
+            transition: background 0.25s ease, color 0.25s ease;
         }
 
         body {
@@ -173,6 +194,7 @@
             min-height: calc(100vh - var(--header-height));
             background: var(--vg-bg);
             padding: 28px 0 24px;
+            transition: background 0.25s ease;
         }
 
         .app-content-wrap {
@@ -465,6 +487,7 @@
             box-shadow: var(--vg-shadow-md);
             padding: 10px;
             border-radius: 16px;
+            background: var(--vg-dropdown-bg);
         }
 
         .dropdown-item {
@@ -478,7 +501,7 @@
 
         .dropdown-item:hover,
         .dropdown-item:focus {
-            background: #f8fafc;
+            background: var(--vg-surface-soft);
             color: var(--vg-text);
         }
 
@@ -508,7 +531,7 @@
         .app-footer {
             margin: 18px 22px 0;
             padding: 14px 18px;
-            background: #fff;
+            background: var(--vg-footer-bg);
             border: 1px solid var(--vg-border);
             border-radius: 16px;
             box-shadow: var(--vg-shadow-sm);
@@ -518,6 +541,7 @@
             gap: 12px;
             color: var(--vg-text-muted);
             font-size: 13px;
+            transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
         }
 
         .app-footer strong {
@@ -618,9 +642,9 @@
             </a>
 
             <div class="dropdown-menu dropdown-menu-end p-0 border-0"
-                 style="width: 360px; max-width: 360px; border-radius: 18px; overflow: hidden;">
+                 style="width: 360px; max-width: 360px; border-radius: 18px; overflow: hidden; background: var(--vg-dropdown-bg);">
                 <div class="d-flex justify-content-between align-items-center px-3 py-3"
-                     style="border-bottom: 1px solid var(--vg-border); background: #fff;">
+                     style="border-bottom: 1px solid var(--vg-border); background: var(--vg-dropdown-bg);">
                     <div>
                         <h6 class="mb-0 fw-bold" style="color: var(--vg-text);">Notifications</h6>
                         <small style="color: var(--vg-text-muted);">
@@ -629,7 +653,7 @@
                     </div>
                 </div>
 
-                <div style="max-height: 340px; overflow-y: auto; background: #fff;">
+                <div style="max-height: 340px; overflow-y: auto; background: var(--vg-dropdown-bg);">
                     @forelse($latestNotifications as $notification)
                         @php
                             $title = $notification->data['title'] ?? 'Notification';
@@ -644,7 +668,7 @@
                             <input type="hidden" name="redirect" value="{{ $url }}">
                             <button type="submit"
                                     class="dropdown-item px-3 py-3 border-0 border-bottom text-wrap w-100 text-start"
-                                    style="background: {{ $isRead ? '#ffffff' : '#f8fbff' }}; border-radius: 0; border-color: var(--vg-border) !important;">
+                                    style="background: {{ $isRead ? 'var(--vg-dropdown-bg)' : 'var(--vg-surface-soft)' }}; border-radius: 0; border-color: var(--vg-border) !important;">
                                 <div class="d-flex align-items-start gap-3">
                                     <div class="d-inline-flex align-items-center justify-content-center flex-shrink-0"
                                          style="width: 36px; height: 36px; border-radius: 12px; background: rgba(27,0,255,0.08); color: var(--vg-primary);">
@@ -661,13 +685,13 @@
                             </button>
                         </form>
                     @empty
-                        <div class="px-3 py-4 text-center small" style="color: var(--vg-text-muted); background: #fff;">
+                        <div class="px-3 py-4 text-center small" style="color: var(--vg-text-muted); background: var(--vg-dropdown-bg);">
                             No notifications yet
                         </div>
                     @endforelse
                 </div>
 
-                <div class="d-grid" style="grid-template-columns: 1fr 1fr; background: #fff;">
+                <div class="d-grid" style="grid-template-columns: 1fr 1fr; background: var(--vg-dropdown-bg);">
                     <a href="{{ route('admin.notifications.index') }}"
                        class="btn btn-light rounded-0 border-0 py-2"
                        style="border-top: 1px solid var(--vg-border); border-right: 1px solid var(--vg-border);">
@@ -691,11 +715,11 @@
                role="button"
                data-bs-toggle="dropdown"
                aria-expanded="false">
-<img
-    src="{{ !empty($adminUser?->profile_image) ? asset('storage/' . $adminUser->profile_image) : asset('vendors/images/photo1.jpg') }}"
-    alt="User Avatar"
-    class="sidebar-account-avatar"
->
+                <img
+                    src="{{ !empty($adminUser?->profile_image) ? asset('storage/' . $adminUser->profile_image) : asset('vendors/images/photo1.jpg') }}"
+                    alt="User Avatar"
+                    class="sidebar-account-avatar"
+                >
                 <div class="d-none d-md-block text-start">
                     <div style="font-size: 13px; font-weight: 700; color: var(--vg-header-color); line-height: 1.2;">
                         {{ $adminUser ? $adminUser->name : 'Guest' }}
@@ -816,13 +840,14 @@
                         <span class="mtext">Projects</span>
                     </a>
                 </li>
-<li>
-    <a href="{{ route('admin.contact-messages.index') }}"
-       class="dropdown-toggle no-arrow {{ request()->routeIs('admin.contact-messages.*') ? 'active' : '' }}">
-        <span class="micon bi bi-envelope-paper-fill"></span>
-        <span class="mtext">Contact Messages</span>
-    </a>
-</li>
+
+                <li>
+                    <a href="{{ route('admin.contact-messages.index') }}"
+                       class="dropdown-toggle no-arrow {{ request()->routeIs('admin.contact-messages.*') ? 'active' : '' }}">
+                        <span class="micon bi bi-envelope-paper-fill"></span>
+                        <span class="mtext">Contact Messages</span>
+                    </a>
+                </li>
 
                 <li>
                     <a href="{{ route('manager.calendar.index') }}"
@@ -898,11 +923,11 @@
 
                 <div class="sidebar-account-card">
                     <div class="sidebar-account-top">
-<img
-    src="{{ !empty($adminUser?->profile_image) ? asset('storage/' . $adminUser->profile_image) : asset('vendors/images/photo1.jpg') }}"
-    alt="User Avatar"
-    class="sidebar-account-avatar"
->
+                        <img
+                            src="{{ !empty($adminUser?->profile_image) ? asset('storage/' . $adminUser->profile_image) : asset('vendors/images/photo1.jpg') }}"
+                            alt="User Avatar"
+                            class="sidebar-account-avatar"
+                        >
                         <div>
                             <div class="sidebar-account-name">{{ $adminUser ? $adminUser->name : 'Guest' }}</div>
                             <div class="sidebar-account-role">Administrator</div>
@@ -993,12 +1018,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const savedTheme = localStorage.getItem('vertex-theme');
 
+    function syncThemeIcon() {
+        if (!themeSwitchIcon) return;
+        themeSwitchIcon.className = body.classList.contains('dark-theme')
+            ? 'bi bi-sun-fill'
+            : 'bi bi-moon-stars-fill';
+    }
+
     if (savedTheme === 'dark') {
         body.classList.add('dark-theme');
-        if (themeSwitchIcon) {
-            themeSwitchIcon.className = 'bi bi-sun-fill';
-        }
     }
+    syncThemeIcon();
 
     function openLeftSidebar() {
         if (!sidebar) return;
@@ -1024,18 +1054,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function toggleTheme() {
         body.classList.toggle('dark-theme');
-
-        if (body.classList.contains('dark-theme')) {
-            localStorage.setItem('vertex-theme', 'dark');
-            if (themeSwitchIcon) {
-                themeSwitchIcon.className = 'bi bi-sun-fill';
-            }
-        } else {
-            localStorage.setItem('vertex-theme', 'light');
-            if (themeSwitchIcon) {
-                themeSwitchIcon.className = 'bi bi-moon-stars-fill';
-            }
-        }
+        localStorage.setItem('vertex-theme', body.classList.contains('dark-theme') ? 'dark' : 'light');
+        syncThemeIcon();
     }
 
     document.querySelectorAll('[data-toggle="left-sidebar-toggle"]').forEach(function (btn) {

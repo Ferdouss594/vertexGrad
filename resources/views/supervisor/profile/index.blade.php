@@ -184,6 +184,41 @@
         border-color: #c7d2fe;
         background: #eef2ff;
     }
+
+    .profile-page .profile-avatar-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        flex-wrap: wrap;
+        margin-bottom: 24px;
+        padding: 18px;
+        border-radius: 18px;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+    }
+
+    .profile-page .profile-avatar {
+        width: 110px;
+        height: 110px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid #fff;
+        box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
+        background: #fff;
+    }
+
+    .profile-page .avatar-meta h6 {
+        margin: 0 0 6px;
+        font-size: 16px;
+        font-weight: 800;
+        color: #0f172a;
+    }
+
+    .profile-page .avatar-meta p {
+        margin: 0;
+        font-size: 13px;
+        color: #64748b;
+    }
 </style>
 
 <div class="pd-ltr-20 xs-pd-20-10 profile-page">
@@ -255,8 +290,21 @@
                     Leave the password fields empty if you do not want to change your current password.
                 </div>
 
-                <form action="{{ route('supervisor.profile.update') }}" method="POST">
+                <form action="{{ route('supervisor.profile.update') }}" method="POST" enctype="multipart/form-data">
                     @csrf
+
+                    <div class="profile-avatar-wrapper">
+                        <img
+                            src="{{ !empty($user->profile_image) ? asset('storage/' . $user->profile_image) : asset('vendors/images/photo1.jpg') }}"
+                            alt="Supervisor Avatar"
+                            class="profile-avatar"
+                        >
+
+                        <div class="avatar-meta">
+                            <h6>Profile Photo</h6>
+                            <p>Upload a new profile image for your supervisor account.</p>
+                        </div>
+                    </div>
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
@@ -265,11 +313,14 @@
                                 <input
                                     type="text"
                                     name="name"
-                                    class="form-control"
+                                    class="form-control @error('name') is-invalid @enderror"
                                     value="{{ old('name', $user->name) }}"
                                     placeholder="Enter full name"
                                     required
                                 >
+                                @error('name')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
                             </div>
                         </div>
 
@@ -279,11 +330,29 @@
                                 <input
                                     type="email"
                                     name="email"
-                                    class="form-control"
+                                    class="form-control @error('email') is-invalid @enderror"
                                     value="{{ old('email', $user->email) }}"
                                     placeholder="Enter email address"
                                     required
                                 >
+                                @error('email')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="col-md-12 mb-3">
+                            <div class="form-group-modern">
+                                <label>Profile Image</label>
+                                <input
+                                    type="file"
+                                    name="profile_image"
+                                    class="form-control @error('profile_image') is-invalid @enderror"
+                                    accept="image/*"
+                                >
+                                @error('profile_image')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
                             </div>
                         </div>
 
@@ -293,9 +362,12 @@
                                 <input
                                     type="password"
                                     name="password"
-                                    class="form-control"
+                                    class="form-control @error('password') is-invalid @enderror"
                                     placeholder="Enter new password"
                                 >
+                                @error('password')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
                             </div>
                         </div>
 

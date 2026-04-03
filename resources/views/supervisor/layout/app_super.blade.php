@@ -1,22 +1,26 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
     <title>@yield('title', 'VertexGrad - Supervisor Panel')</title>
 
-    <link rel="apple-touch-icon" href="{{ asset('vendors/images/apple-touch-icon.png') }}" />
-    <link rel="icon" href="{{ asset('vendors/images/VertexGrad_logod.png') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="apple-touch-icon"
+          href="{{ setting('platform_logo') ? asset('storage/' . setting('platform_logo')) : asset('vendors/images/apple-touch-icon.png') }}" />
 
+    <link rel="icon"
+          href="{{ setting('platform_favicon') ? asset('storage/' . setting('platform_favicon')) : asset('vendors/images/VertexGrad_logod.png') }}">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('vendors/styles/core.css') }}" />
     <link rel="stylesheet" href="{{ asset('vendors/styles/icon-font.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('src/plugins/datatables/css/dataTables.bootstrap4.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('src/plugins/datatables/css/responsive.bootstrap4.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('vendors/styles/style.css') }}" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
     @php
         use App\Models\Announcement;
@@ -26,7 +30,7 @@
         $layoutAnnouncements = Announcement::published()
             ->where(function ($query) {
                 $query->where('audience', 'all')
-                      ->orWhere('audience', 'supervisors');
+                    ->orWhere('audience', 'supervisors');
             })
             ->ordered()
             ->take(3)
@@ -36,80 +40,111 @@
         $latestNotifications = $adminUser
             ? $adminUser->notifications()->latest()->take(5)->get()
             : collect();
+
+        $user = auth('admin')->user();
+
+        $canReviewProjects = $user && $user->hasPermission('review_projects');
+        $canViewMeetings = $user && $user->hasPermission('view_meetings');
+        $canManageMeetings = $user && $user->hasPermission('manage_meetings');
+        $canViewRequests = $user && $user->hasPermission('view_requests');
     @endphp
+
+    @stack('styles')
 
     <style>
         :root {
-            --bg: #f5f7fb;
-            --bg-soft: #eef2f8;
-            --surface: #ffffff;
-            --surface-2: #f8fafc;
-            --text: #0f172a;
-            --text-soft: #64748b;
-            --border: #dbe3ef;
-            --primary: #1b00ff;
-            --primary-2: #4338ca;
-            --accent: #06b6d4;
-            --success: #16a34a;
-            --warning: #f59e0b;
-            --danger: #ef4444;
-            --sidebar: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
-            --sidebar-text: #1e293b;
-            --sidebar-muted: #64748b;
-            --sidebar-hover: rgba(27, 0, 255, 0.08);
-            --header-bg: rgba(255, 255, 255, 0.9);
-            --header-border: #e9eef7;
-            --card-shadow: 0 18px 45px rgba(15, 23, 42, 0.06);
-            --soft-shadow: 0 10px 24px rgba(15, 23, 42, 0.05);
-            --announcement-bg: linear-gradient(135deg, rgba(27, 0, 255, 0.08), rgba(6, 182, 212, 0.06));
-            --announcement-border: rgba(27, 0, 255, 0.14);
-            --announcement-text: #0f172a;
+            --vg-primary: #1b00ff;
+            --vg-primary-dark: #1400c8;
+            --vg-bg: #f3f6fb;
+            --vg-surface: #ffffff;
+            --vg-surface-soft: #f8fafc;
+            --vg-text: #18243a;
+            --vg-text-muted: #6b7a90;
+            --vg-border: #e2e8f0;
+            --vg-shadow-sm: 0 10px 24px rgba(15, 23, 42, 0.06);
+            --vg-shadow-md: 0 16px 36px rgba(15, 23, 42, 0.10);
+            --vg-shadow-lg: 8px 0 26px rgba(15, 23, 42, 0.08);
+
+            --sidebar-width: 300px;
+            --header-height: 76px;
+
+            --vg-header-bg: #ffffff;
+            --vg-header-color: #18243a;
+            --vg-header-btn-bg: #f8fafc;
+            --vg-header-btn-border: #e2e8f0;
+
+            --vg-sidebar-bg: #ffffff;
+            --vg-sidebar-color: #18243a;
+            --vg-sidebar-muted: #7b8aa0;
+            --vg-sidebar-hover: #f2f6fc;
+            --vg-sidebar-active-bg: rgba(27, 0, 255, 0.08);
+            --vg-sidebar-active-color: #1b00ff;
+            --vg-sidebar-border: #edf2f7;
+            --vg-sidebar-bottom-bg: #fbfdff;
+            --vg-sidebar-card-bg: #f8fafc;
+            --vg-sidebar-card-border: #e2e8f0;
+
+            --vg-right-sidebar-bg: #ffffff;
+            --vg-dropdown-bg: #ffffff;
+            --vg-panel-bg: #ffffff;
+
+            --vg-scrollbar-thumb: rgba(148, 163, 184, 0.45);
+            --vg-scrollbar-track: transparent;
         }
 
-        html[data-theme="dark"] {
-            --bg: #0b1220;
-            --bg-soft: #111827;
-            --surface: #111827;
-            --surface-2: #0f172a;
-            --text: #e5eefc;
-            --text-soft: #94a3b8;
-            --border: rgba(255, 255, 255, 0.08);
-            --primary: #6d5dfc;
-            --primary-2: #8b5cf6;
-            --accent: #22d3ee;
-            --success: #22c55e;
-            --warning: #fbbf24;
-            --danger: #f87171;
-            --sidebar: radial-gradient(circle at top left, rgba(109,93,252,.20), transparent 28%), linear-gradient(180deg, #0b1120 0%, #0f172a 48%, #111827 100%);
-            --sidebar-text: #dbe7ff;
-            --sidebar-muted: #94a3b8;
-            --sidebar-hover: rgba(255, 255, 255, 0.08);
-            --header-bg: rgba(15, 23, 42, 0.85);
-            --header-border: rgba(255, 255, 255, 0.08);
-            --card-shadow: 0 18px 45px rgba(0, 0, 0, 0.22);
-            --soft-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
-            --announcement-bg: linear-gradient(135deg, rgba(109, 93, 252, 0.14), rgba(34, 211, 238, 0.09));
-            --announcement-border: rgba(109, 93, 252, 0.22);
-            --announcement-text: #e5eefc;
+        body.dark-theme {
+            --vg-bg: #07111f;
+            --vg-surface: #0f172a;
+            --vg-surface-soft: #111c31;
+            --vg-text: #e5eefc;
+            --vg-text-muted: #94a3b8;
+            --vg-border: rgba(255,255,255,0.08);
+
+            --vg-header-bg: linear-gradient(135deg, #081534 0%, #1200b8 100%);
+            --vg-header-color: #ffffff;
+            --vg-header-btn-bg: rgba(255,255,255,0.12);
+            --vg-header-btn-border: rgba(255,255,255,0.10);
+
+            --vg-sidebar-bg: linear-gradient(180deg, #061127 0%, #0b1d49 100%);
+            --vg-sidebar-color: rgba(255,255,255,0.90);
+            --vg-sidebar-muted: rgba(255,255,255,0.52);
+            --vg-sidebar-hover: rgba(255,255,255,0.08);
+            --vg-sidebar-active-bg: linear-gradient(90deg, rgba(27,0,255,0.36) 0%, rgba(79,70,229,0.18) 100%);
+            --vg-sidebar-active-color: #ffffff;
+            --vg-sidebar-border: rgba(255,255,255,0.07);
+            --vg-sidebar-bottom-bg: rgba(255,255,255,0.03);
+            --vg-sidebar-card-bg: rgba(255,255,255,0.05);
+            --vg-sidebar-card-border: rgba(255,255,255,0.08);
+
+            --vg-right-sidebar-bg: #0b1220;
+            --vg-dropdown-bg: #0f172a;
+            --vg-panel-bg: #0f172a;
+
+            --vg-shadow-sm: 0 10px 24px rgba(0, 0, 0, 0.20);
+            --vg-shadow-md: 0 16px 36px rgba(0, 0, 0, 0.28);
+            --vg-shadow-lg: 8px 0 26px rgba(0, 0, 0, 0.22);
+
+            --vg-scrollbar-thumb: rgba(255,255,255,0.30);
+            --vg-scrollbar-track: transparent;
         }
 
         * {
-            transition: background-color .22s ease, border-color .22s ease, color .22s ease, box-shadow .22s ease;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            min-height: 100%;
+            font-family: 'Inter', sans-serif;
+            background: var(--vg-bg);
+            color: var(--vg-text);
+            overflow-x: hidden;
+            transition: background 0.25s ease, color 0.25s ease;
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-        }
-
-        body.page-transition {
-            opacity: 1;
-            transition: opacity .2s ease-out;
-        }
-
-        body.page-transition.fade-out {
-            opacity: 0;
+            position: relative;
         }
 
         a {
@@ -118,54 +153,78 @@
 
         #flash-messages {
             position: fixed;
-            top: 18px;
-            right: 18px;
+            top: 20px;
+            right: 20px;
             z-index: 99999;
-            min-width: 290px;
-            max-width: 420px;
+            min-width: 280px;
+            max-width: 360px;
         }
 
-        .main-container,
+        .header,
         .left-side-bar,
-        .right-sidebar,
-        .header {
-            transition: all .25s ease;
+        .main-container,
+        .right-sidebar {
+            transition: all 0.25s ease;
         }
 
-        .main-container {
-            opacity: 0;
-            transform: translateY(8px);
-            padding-top: 96px;
-            min-height: 100vh;
-            background: var(--bg);
-        }
-
-        .main-container.loaded {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* Header */
         .header {
             position: fixed;
             top: 0;
-            left: 280px;
+            left: var(--sidebar-width);
             right: 0;
-            height: 78px;
-            background: var(--header-bg);
-            backdrop-filter: blur(14px);
-            border-bottom: 1px solid var(--header-border);
+            height: var(--header-height);
+            z-index: 1000;
             display: flex;
             align-items: center;
             justify-content: space-between;
             padding: 0 24px;
-            z-index: 1200;
-            box-shadow: var(--soft-shadow);
+            background: var(--vg-header-bg);
+            border-bottom: 1px solid var(--vg-border);
+            box-shadow: var(--vg-shadow-sm);
         }
 
-        .left-side-bar.closed + .mobile-menu-overlay + .main-container + .header,
-        body.sidebar-collapsed .header {
+        .left-side-bar {
+            position: fixed;
+            top: 0;
             left: 0;
+            width: var(--sidebar-width);
+            min-width: var(--sidebar-width);
+            max-width: var(--sidebar-width);
+            height: 100vh;
+            z-index: 1001;
+            display: flex;
+            flex-direction: column;
+            background: var(--vg-sidebar-bg);
+            border-right: 1px solid var(--vg-sidebar-border);
+            box-shadow: var(--vg-shadow-lg);
+            overflow: hidden;
+        }
+
+        .main-container {
+            margin-left: var(--sidebar-width);
+            margin-top: var(--header-height);
+            width: calc(100% - var(--sidebar-width));
+            min-height: calc(100vh - var(--header-height));
+            background: var(--vg-bg);
+            padding: 28px 0 24px;
+        }
+
+        .app-content-wrap {
+            padding: 0 22px;
+        }
+
+        body.sidebar-closed .header {
+            left: 0;
+        }
+
+        body.sidebar-closed .main-container {
+            margin-left: 0;
+            width: 100%;
+        }
+
+        body.sidebar-closed .left-side-bar {
+            transform: translateX(-100%);
+            pointer-events: none;
         }
 
         .header-left,
@@ -177,141 +236,405 @@
 
         .menu-icon,
         .search-toggle-icon,
-        .dashboard-setting,
-        .theme-toggle-btn {
-            width: 44px;
-            height: 44px;
-            border-radius: 14px;
+        .theme-switch-btn,
+        .header-circle-btn,
+        .header-setting-btn {
+            width: 42px;
+            height: 42px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            background: var(--surface);
-            color: var(--text);
+            border-radius: 13px;
+            background: var(--vg-header-btn-bg);
+            border: 1px solid var(--vg-header-btn-border);
+            color: var(--vg-header-color);
             cursor: pointer;
-            transition: all .2s ease;
-            border: 1px solid var(--border);
-            text-decoration: none;
-            box-shadow: var(--soft-shadow);
+            transition: all 0.18s ease;
+            flex-shrink: 0;
         }
 
         .menu-icon:hover,
         .search-toggle-icon:hover,
-        .dashboard-setting:hover,
-        .theme-toggle-btn:hover {
-            background: var(--bg-soft);
-            color: var(--primary);
+        .theme-switch-btn:hover,
+        .header-circle-btn:hover,
+        .header-setting-btn:hover {
             transform: translateY(-1px);
         }
 
-        .theme-toggle-btn i {
-            font-size: 18px;
-        }
-
-        .theme-toggle-btn .theme-icon-dark {
-            display: none;
-        }
-
-        html[data-theme="dark"] .theme-toggle-btn .theme-icon-light {
-            display: none;
-        }
-
-        html[data-theme="dark"] .theme-toggle-btn .theme-icon-dark {
-            display: inline-block;
-        }
-
         .user-info-dropdown .dropdown-toggle {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            padding: 8px 12px;
-            border-radius: 16px;
-            text-decoration: none;
-            color: var(--text);
-            font-weight: 600;
-            box-shadow: var(--soft-shadow);
+            padding: 6px 10px 6px 8px;
+            border-radius: 15px;
+            border: 1px solid var(--vg-header-btn-border);
+            background: var(--vg-header-btn-bg);
+            color: var(--vg-header-color) !important;
+            display: flex;
+            align-items: center;
         }
 
         .user-info-dropdown .dropdown-toggle::after {
             margin-left: 10px;
+            color: var(--vg-header-color);
         }
 
-        .user-info-dropdown .dropdown-menu,
-        .header-right .dropdown-menu {
-            border: 1px solid var(--border);
-            border-radius: 18px;
-            box-shadow: var(--card-shadow);
+        .brand-logo {
+            min-height: 82px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 18px 18px 16px;
+            border-bottom: 1px solid var(--vg-sidebar-border);
+            flex-shrink: 0;
+        }
+
+        .sidebar-logo-link {
+            display: flex;
+            align-items: center;
+            max-width: calc(100% - 44px);
+        }
+
+        .sidebar-logo-img {
+            max-height: 42px;
+            width: auto;
+            max-width: 100%;
+            object-fit: contain;
+            display: block;
+        }
+
+        .close-sidebar {
+            width: 34px;
+            height: 34px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            color: var(--vg-sidebar-color);
+            cursor: pointer;
+            transition: all 0.18s ease;
+            flex-shrink: 0;
+        }
+
+        .close-sidebar:hover {
+            background: var(--vg-sidebar-hover);
+        }
+
+        .menu-block {
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
             overflow: hidden;
-            background: var(--surface);
         }
 
-        .header-right .dropdown-menu .dropdown-item,
-        .user-info-dropdown .dropdown-menu .dropdown-item {
-            color: var(--text);
-            transition: .2s ease;
+        .sidebar-menu {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-height: 0;
+            overflow: hidden;
         }
 
-        .header-right .dropdown-menu .dropdown-item:hover,
-        .user-info-dropdown .dropdown-menu .dropdown-item:hover {
-            background: var(--bg-soft);
-            color: var(--primary);
-        }
-
-        /* Notification bell */
-        .notification-trigger {
-            position: relative;
-            width: 46px;
-            height: 46px;
-            border-radius: 15px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            color: var(--text);
-            box-shadow: var(--soft-shadow);
-            transition: all .22s ease;
-            text-decoration: none;
-        }
-
-        .notification-trigger:hover {
-            transform: translateY(-1px);
-            color: var(--primary);
-            background: var(--bg-soft);
-            border-color: var(--border);
-            box-shadow: var(--card-shadow);
-        }
-
-        .notification-trigger i {
-            font-size: 20px;
-            line-height: 1;
-        }
-
-        .notification-badge {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            min-width: 20px;
-            height: 20px;
-            padding: 0 5px;
-            border-radius: 999px;
-            background: linear-gradient(135deg, #ef4444, #dc2626);
-            color: #fff;
-            font-size: 10px;
+        .sidebar-section-label {
+            padding: 22px 18px 14px;
+            margin: 0;
+            font-size: 11px;
             font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--vg-sidebar-muted);
+            flex-shrink: 0;
+        }
+
+        .sidebar-menu-scroll {
+            flex: 1;
+            min-height: 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 0 0 16px 0;
+        }
+
+        .sidebar-menu-scroll::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .sidebar-menu-scroll::-webkit-scrollbar-track {
+            background: var(--vg-scrollbar-track);
+        }
+
+        .sidebar-menu-scroll::-webkit-scrollbar-thumb {
+            background: var(--vg-scrollbar-thumb);
+            border-radius: 999px;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+        }
+
+        .sidebar-menu-scroll {
+            scrollbar-width: thin;
+            scrollbar-color: var(--vg-scrollbar-thumb) var(--vg-scrollbar-track);
+        }
+
+        #accordion-menu {
+            list-style: none;
+            margin: 0;
+            padding: 0 12px 0 12px;
+        }
+
+        #accordion-menu li {
+            list-style: none;
+            margin: 0 0 10px 0;
+            padding: 0;
+        }
+
+        #accordion-menu li > a,
+        #accordion-menu li > .menu-dropdown-trigger {
+            position: relative;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: flex-start !important;
+            gap: 14px !important;
+            width: 100%;
+            min-height: 54px;
+            padding: 15px 15px;
+            border-radius: 15px;
+            color: var(--vg-sidebar-color) !important;
+            font-weight: 600;
+            font-size: 14px;
+            line-height: 1.2;
+            transition: all 0.18s ease;
+            overflow: hidden;
+            border: 1px solid transparent;
+            background: transparent;
+            cursor: pointer;
+        }
+
+        #accordion-menu li > a:hover,
+        #accordion-menu li > .menu-dropdown-trigger:hover {
+            background: var(--vg-sidebar-hover);
+            transform: translateX(2px);
+        }
+
+        #accordion-menu li > a .micon,
+        #accordion-menu li > .menu-dropdown-trigger .micon {
+            width: 22px !important;
+            min-width: 22px !important;
+            max-width: 22px !important;
+            height: 22px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            font-size: 18px !important;
+            color: inherit !important;
+            flex: 0 0 22px !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            position: static !important;
+            transform: none !important;
+        }
+
+        #accordion-menu li > a .mtext,
+        #accordion-menu li > .menu-dropdown-trigger .mtext {
+            flex: 1 1 auto !important;
+            min-width: 0 !important;
+            display: block !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            position: static !important;
+            transform: none !important;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+            color: inherit !important;
+        }
+
+        #accordion-menu li > a.active,
+        #accordion-menu li.active > a,
+        #accordion-menu li.open > .menu-dropdown-trigger {
+            background: var(--vg-sidebar-active-bg);
+            color: var(--vg-sidebar-active-color) !important;
+            box-shadow: inset 0 0 0 1px rgba(27,0,255,0.05);
+        }
+
+        .menu-arrow {
+            flex: 0 0 auto;
+            margin-left: auto;
+            font-size: 12px;
+            opacity: 0.85;
+            transition: transform 0.2s ease;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            border: 2px solid var(--surface);
-            box-shadow: 0 8px 18px rgba(220, 38, 38, .28);
+        }
+
+        .dropdown-parent.open > .menu-dropdown-trigger .menu-arrow {
+            transform: rotate(180deg);
+        }
+
+        .submenu {
+            display: none;
+            margin: 8px 0 14px 12px;
+            padding: 14px;
+            border-radius: 18px;
+            background: rgba(148, 163, 184, 0.07);
+            border: 1px solid var(--vg-sidebar-card-border);
+        }
+
+        .dropdown-parent.open > .submenu {
+            display: block;
+        }
+
+        .submenu li {
+            margin-bottom: 9px;
+        }
+
+        .submenu li:last-child {
+            margin-bottom: 0;
+        }
+
+        .submenu li a {
+            position: relative;
+            display: flex;
+            align-items: center;
+            min-height: 48px;
+            padding: 13px 14px 13px 50px !important;
+            border-radius: 13px;
+            color: var(--vg-sidebar-color) !important;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.18s ease;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .submenu li a::before {
+            content: "";
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            transform: translateY(-50%);
+            background: currentColor;
+            opacity: 0.45;
+        }
+
+        .submenu li a:hover,
+        .submenu li a.active {
+            background: var(--vg-sidebar-hover);
+            color: var(--vg-sidebar-active-color) !important;
+        }
+
+        .sidebar-bottom {
+            margin-top: auto;
+            padding: 14px 12px 16px;
+            border-top: 1px solid var(--vg-sidebar-border);
+            background: var(--vg-sidebar-bottom-bg);
+            flex-shrink: 0;
+        }
+
+        .sidebar-bottom-title {
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--vg-sidebar-muted);
+            margin-bottom: 10px;
+            padding: 0 6px;
+        }
+
+        .sidebar-account-card {
+            background: var(--vg-sidebar-card-bg);
+            border: 1px solid var(--vg-sidebar-card-border);
+            border-radius: 16px;
+            padding: 12px;
+        }
+
+        .sidebar-account-top {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .sidebar-account-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(148,163,184,0.18);
+            flex-shrink: 0;
+        }
+
+        .sidebar-account-name {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--vg-sidebar-color);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .sidebar-account-role {
+            margin-top: 2px;
+            font-size: 11px;
+            color: var(--vg-sidebar-muted);
+        }
+
+        .sidebar-account-links {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .sidebar-account-links a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-height: 42px;
+            padding: 10px 12px;
+            border-radius: 12px;
+            color: var(--vg-sidebar-color);
+            font-weight: 600;
+            font-size: 13px;
+            transition: all 0.18s ease;
+        }
+
+        .sidebar-account-links a:hover {
+            background: var(--vg-sidebar-hover);
+        }
+
+        .dropdown-menu {
+            border: 1px solid var(--vg-border);
+            box-shadow: var(--vg-shadow-md);
+            padding: 10px;
+            border-radius: 16px;
+            background: var(--vg-dropdown-bg);
+        }
+
+        .dropdown-item {
+            min-height: 42px;
+            display: flex;
+            align-items: center;
+            border-radius: 10px;
+            font-weight: 500;
+            color: var(--vg-text);
+        }
+
+        .dropdown-item:hover,
+        .dropdown-item:focus {
+            background: var(--vg-surface-soft);
+            color: var(--vg-text);
         }
 
         .notification-panel {
             width: 360px;
             max-width: 360px;
-            border: 1px solid var(--border);
-            border-radius: 18px;
-            box-shadow: var(--card-shadow);
+            padding: 0;
             overflow: hidden;
-            background: var(--surface);
+            border-radius: 18px;
+            border: 1px solid var(--vg-border);
+            background: var(--vg-panel-bg);
         }
 
         .notification-panel-header {
@@ -319,27 +642,27 @@
             justify-content: space-between;
             align-items: center;
             padding: 14px 16px;
-            border-bottom: 1px solid var(--border);
-            background: var(--surface);
+            border-bottom: 1px solid var(--vg-border);
+            background: var(--vg-panel-bg);
         }
 
         .notification-panel-title {
             margin: 0;
             font-size: 15px;
             font-weight: 800;
-            color: var(--text);
+            color: var(--vg-text);
         }
 
         .notification-panel-count {
             font-size: 12px;
-            color: var(--text-soft);
+            color: var(--vg-text-muted);
             font-weight: 600;
         }
 
         .notification-panel-body {
             max-height: 330px;
             overflow-y: auto;
-            background: var(--surface);
+            background: var(--vg-panel-bg);
         }
 
         .notification-item-btn {
@@ -348,25 +671,26 @@
             text-align: left;
             padding: 14px 16px;
             border: 0;
-            background: var(--surface);
-            border-bottom: 1px solid var(--border);
+            background: var(--vg-panel-bg);
+            border-bottom: 1px solid var(--vg-border);
             transition: .2s ease;
+            color: inherit;
         }
 
         .notification-item-btn:hover {
-            background: var(--bg-soft);
+            background: var(--vg-surface-soft);
         }
 
         .notification-item-btn.unread {
-            background: color-mix(in srgb, var(--surface) 88%, var(--primary) 12%);
+            background: var(--vg-surface-soft);
         }
 
         .notification-item-icon {
             width: 34px;
             height: 34px;
             border-radius: 12px;
-            background: color-mix(in srgb, var(--primary) 12%, transparent);
-            color: var(--primary);
+            background: rgba(27,0,255,0.08);
+            color: var(--vg-primary);
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -377,295 +701,50 @@
         .notification-item-title {
             font-size: 13px;
             font-weight: 800;
-            color: var(--text);
+            color: var(--vg-text);
             margin-bottom: 3px;
         }
 
         .notification-item-message {
             font-size: 12px;
-            color: var(--text-soft);
+            color: var(--vg-text-muted);
             line-height: 1.5;
         }
 
         .notification-item-time {
             font-size: 11px;
-            color: var(--text-soft);
+            color: var(--vg-text-muted);
             margin-top: 6px;
         }
 
         .notification-panel-footer {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            border-top: 1px solid var(--border);
-            background: var(--surface);
+            border-top: 1px solid var(--vg-border);
+            background: var(--vg-panel-bg);
         }
 
         .notification-footer-btn {
             border: 0;
-            background: var(--surface);
+            background: var(--vg-panel-bg);
             padding: 12px;
             font-size: 13px;
             font-weight: 700;
-            color: var(--text);
+            color: var(--vg-text);
             text-decoration: none;
             text-align: center;
             transition: .2s ease;
         }
 
         .notification-footer-btn:hover {
-            background: var(--bg-soft);
-            color: var(--primary);
+            background: var(--vg-surface-soft);
+            color: var(--vg-primary);
         }
 
         .notification-footer-btn + .notification-footer-btn {
-            border-left: 1px solid var(--border);
+            border-left: 1px solid var(--vg-border);
         }
 
-        /* Sidebar */
-        .left-side-bar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 280px;
-            height: 100vh;
-            background: var(--sidebar);
-            border-right: 1px solid var(--border);
-            z-index: 1300;
-            overflow: hidden;
-            box-shadow: 18px 0 45px rgba(15, 23, 42, 0.10);
-        }
-
-        .left-side-bar.closed {
-            transform: translateX(-100%);
-            opacity: 0;
-        }
-
-        .brand-logo {
-            height: 84px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 20px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .brand-logo-link {
-            display: flex;
-            align-items: center;
-            min-height: 60px;
-        }
-
-        .brand-main-logo {
-            display: block !important;
-            max-height: 46px !important;
-            width: auto !important;
-            object-fit: contain;
-            opacity: 1 !important;
-            visibility: visible !important;
-            filter: none !important;
-        }
-
-        .close-sidebar {
-            width: 38px;
-            height: 38px;
-            border-radius: 12px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            background: color-mix(in srgb, var(--surface) 88%, var(--primary) 12%);
-            color: var(--text);
-            cursor: pointer;
-            transition: .2s ease;
-            border: 1px solid var(--border);
-        }
-
-        .close-sidebar:hover {
-            background: var(--bg-soft);
-            color: var(--primary);
-        }
-
-        .menu-block {
-            height: calc(100vh - 84px);
-            overflow-y: auto;
-            overflow-x: hidden;
-            padding: 16px 14px 26px;
-        }
-
-        .menu-block::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .menu-block::-webkit-scrollbar-thumb {
-            background: color-mix(in srgb, var(--text-soft) 30%, transparent);
-            border-radius: 20px;
-        }
-
-        .sidebar-menu ul {
-            padding: 0;
-            margin: 0;
-            list-style: none;
-        }
-
-        .sidebar-menu .menu-title {
-            padding: 16px 14px 8px;
-        }
-
-        .sidebar-menu .menu-title .mtext {
-            color: var(--sidebar-muted) !important;
-            font-size: 12px;
-            font-weight: 800;
-            letter-spacing: .14em;
-            text-transform: uppercase;
-        }
-
-        .sidebar-menu li {
-            margin-bottom: 8px;
-        }
-
-        .sidebar-menu li > a {
-            position: relative;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            min-height: 52px;
-            padding: 13px 16px;
-            border-radius: 16px;
-            color: var(--sidebar-text);
-            text-decoration: none;
-            font-weight: 600;
-            transition: all .22s ease;
-            background: transparent;
-            border: 1px solid transparent;
-        }
-
-        .sidebar-menu li > a .micon {
-            width: 22px;
-            min-width: 22px;
-            display: inline-flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 18px;
-            color: var(--sidebar-text);
-            opacity: .85;
-        }
-
-        .sidebar-menu li > a:hover,
-        .sidebar-menu li.active > a {
-            background: var(--sidebar-hover);
-            border-color: var(--border);
-            color: var(--primary);
-            transform: translateX(3px);
-            box-shadow: var(--soft-shadow);
-        }
-
-        .sidebar-menu li > a:hover .micon,
-        .sidebar-menu li.active > a .micon {
-            color: var(--primary);
-        }
-
-        .sidebar-menu li > a .menu-arrow {
-            margin-left: auto;
-            transition: transform .25s ease;
-            font-size: 12px;
-            opacity: .8;
-        }
-
-        .sidebar-menu li.open > a .menu-arrow {
-            transform: rotate(180deg);
-        }
-
-        .sidebar-menu .dropdown-parent > a {
-            border: 1px solid transparent;
-        }
-
-        .sidebar-menu .submenu {
-            display: none;
-            margin-top: 8px;
-            margin-left: 10px;
-            padding: 10px;
-            border-radius: 18px;
-            background: color-mix(in srgb, var(--surface) 94%, var(--primary) 6%);
-            border: 1px solid var(--border);
-            box-shadow: inset 0 1px 0 rgba(255,255,255,.03);
-        }
-
-        .sidebar-menu .dropdown-parent.open > .submenu {
-            display: block;
-            animation: fadeSlideDown .22s ease;
-        }
-
-        .sidebar-menu .submenu li {
-            margin-bottom: 6px;
-        }
-
-        .sidebar-menu .submenu li:last-child {
-            margin-bottom: 0;
-        }
-
-        .sidebar-menu .submenu a {
-            min-height: 46px;
-            padding: 11px 14px 11px 42px;
-            font-size: 14px;
-            color: var(--sidebar-text);
-            border-radius: 14px;
-            background: transparent;
-        }
-
-        .sidebar-menu .submenu a::before {
-            content: "";
-            position: absolute;
-            left: 18px;
-            top: 50%;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            transform: translateY(-50%);
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            box-shadow: 0 0 0 4px rgba(96,165,250,.12);
-        }
-
-        .sidebar-menu .submenu a:hover,
-        .sidebar-menu .submenu li.active a {
-            background: color-mix(in srgb, var(--primary) 12%, transparent);
-            color: var(--primary);
-            border-color: transparent;
-            transform: translateX(2px);
-        }
-
-        html[data-theme="light"] .sidebar-menu .submenu,
-        html[data-theme="light"] .sidebar-menu .submenu li,
-        html[data-theme="light"] .sidebar-menu .submenu li a,
-        html[data-theme="light"] .sidebar-menu .submenu li a .mtext {
-            color: #0f172a !important;
-        }
-
-        html[data-theme="light"] .sidebar-menu .submenu li a {
-            background: transparent !important;
-        }
-
-        html[data-theme="light"] .sidebar-menu .submenu li a:hover,
-        html[data-theme="light"] .sidebar-menu .submenu li.active a {
-            color: var(--primary) !important;
-            background: rgba(27, 0, 255, 0.08) !important;
-        }
-
-        .mobile-menu-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(15,23,42,.45);
-            backdrop-filter: blur(2px);
-            opacity: 0;
-            visibility: hidden;
-            transition: .25s ease;
-            z-index: 1250;
-        }
-
-        .mobile-menu-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        /* Right sidebar */
         .right-sidebar {
             position: fixed;
             top: 0;
@@ -673,10 +752,11 @@
             width: 320px;
             height: 100vh;
             z-index: 1400;
-            background: var(--surface);
-            border-left: 1px solid var(--border);
+            background: var(--vg-right-sidebar-bg);
+            border-left: 1px solid var(--vg-border);
             box-shadow: -16px 0 45px rgba(15,23,42,.08);
             transition: right 0.25s ease;
+            overflow-y: auto;
         }
 
         .right-sidebar.open {
@@ -685,30 +765,38 @@
 
         .right-sidebar .sidebar-title {
             padding: 24px 20px;
-            border-bottom: 1px solid var(--border);
+            border-bottom: 1px solid var(--vg-border);
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
         }
 
         .right-sidebar .sidebar-title h3 {
-            color: var(--text);
+            color: var(--vg-text);
+            margin: 0;
         }
 
         .right-sidebar .sidebar-title span {
-            color: var(--text-soft);
+            color: var(--vg-text-muted);
         }
 
         .right-sidebar .close-sidebar {
-            background: var(--bg-soft);
-            color: var(--text);
-        }
-
-        .right-sidebar .close-sidebar:hover {
-            background: color-mix(in srgb, var(--primary) 10%, var(--surface));
-            color: var(--primary);
+            background: var(--vg-surface-soft);
+            color: var(--vg-text);
+            border: 1px solid var(--vg-border);
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
         }
 
         .theme-setting-card {
-            border: 1px solid var(--border);
-            background: var(--surface-2);
+            border: 1px solid var(--vg-border);
+            background: var(--vg-surface-soft);
             border-radius: 22px;
             padding: 18px;
             margin-bottom: 18px;
@@ -717,7 +805,7 @@
         .theme-setting-title {
             font-size: 13px;
             font-weight: 800;
-            color: var(--text);
+            color: var(--vg-text);
             margin-bottom: 12px;
             text-transform: uppercase;
             letter-spacing: .12em;
@@ -730,9 +818,9 @@
 
         .theme-choice-btn {
             flex: 1;
-            border: 1px solid var(--border);
-            background: var(--surface);
-            color: var(--text);
+            border: 1px solid var(--vg-border);
+            background: var(--vg-surface);
+            color: var(--vg-text);
             padding: 12px 14px;
             border-radius: 16px;
             font-size: 13px;
@@ -741,92 +829,24 @@
         }
 
         .theme-choice-btn.active {
-            background: linear-gradient(135deg, var(--primary), var(--primary-2));
+            background: linear-gradient(135deg, var(--vg-primary), #4338ca);
             color: #fff;
             border-color: transparent;
             box-shadow: 0 14px 30px rgba(27, 0, 255, .18);
         }
 
-        /* Announcement helpers */
-        .announcement-banner {
-            background: var(--announcement-bg);
-            border: 1px solid var(--announcement-border);
-            border-radius: 28px;
-            padding: 22px 24px;
-            color: var(--announcement-text);
-            box-shadow: var(--card-shadow);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .announcement-banner::before {
-            content: "";
-            position: absolute;
-            top: -35px;
-            right: -35px;
-            width: 130px;
-            height: 130px;
-            background: rgba(255,255,255,.08);
-            border-radius: 999px;
-            pointer-events: none;
-        }
-
-        .announcement-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 12px;
-            border-radius: 999px;
-            font-size: 11px;
-            font-weight: 800;
-            letter-spacing: .12em;
-            text-transform: uppercase;
-            border: 1px solid var(--border);
-            background: color-mix(in srgb, var(--surface) 90%, var(--primary) 10%);
-            color: var(--text);
-        }
-
-        .announcement-badge.pinned {
-            background: rgba(245, 158, 11, 0.10);
-            border-color: rgba(245, 158, 11, 0.22);
-            color: #f59e0b;
-        }
-
-        .announcement-title {
-            font-size: 22px;
-            font-weight: 900;
-            margin-top: 12px;
-            margin-bottom: 8px;
-            color: var(--text);
-        }
-
-        .announcement-text {
-            font-size: 14px;
-            line-height: 1.8;
-            color: var(--text-soft);
-            margin-bottom: 0;
-        }
-
-        .announcement-meta {
-            margin-top: 12px;
-            font-size: 12px;
-            font-weight: 700;
-            color: var(--text-soft);
-        }
-
         .announcement-card {
-            border: 1px solid var(--border);
-            background: var(--surface);
-            border-radius: 22px;
-            padding: 18px;
-            box-shadow: var(--soft-shadow);
-            height: 100%;
+            border: 1px solid var(--vg-border);
+            background: var(--vg-surface);
+            border-radius: 18px;
+            padding: 16px;
+            box-shadow: var(--vg-shadow-sm);
         }
 
         .announcement-card-title {
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 800;
-            color: var(--text);
+            color: var(--vg-text);
             margin-bottom: 8px;
             line-height: 1.5;
         }
@@ -834,175 +854,252 @@
         .announcement-card-text {
             font-size: 13px;
             line-height: 1.7;
-            color: var(--text-soft);
+            color: var(--vg-text-muted);
             margin-bottom: 0;
         }
 
-        @keyframes fadeSlideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-6px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .announcement-meta {
+            margin-top: 10px;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--vg-text-muted);
         }
 
-        @media (max-width: 991px) {
+        .announcement-badge.pinned {
+            background: rgba(245, 158, 11, 0.10);
+            border: 1px solid rgba(245, 158, 11, 0.22);
+            color: #f59e0b;
+            border-radius: 999px;
+            padding: 6px 10px;
+            font-size: 10px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .app-footer {
+            margin: 18px 22px 0;
+            padding: 14px 18px;
+            background: var(--vg-surface);
+            border: 1px solid var(--vg-border);
+            border-radius: 16px;
+            box-shadow: var(--vg-shadow-sm);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            color: var(--vg-text-muted);
+            font-size: 13px;
+        }
+
+        .app-footer strong {
+            color: var(--vg-text);
+        }
+
+        .mobile-menu-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15,23,42,.45);
+            backdrop-filter: blur(2px);
+            opacity: 0;
+            visibility: hidden;
+            transition: .25s ease;
+            z-index: 999;
+        }
+
+        .mobile-menu-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        @media (max-width: 991.98px) {
+            .header {
+                left: 0;
+                width: 100%;
+                padding: 0 16px;
+            }
+
             .left-side-bar {
                 transform: translateX(-100%);
                 opacity: 0;
             }
 
             .left-side-bar.mobile-open {
-                transform: translateX(0);
-                opacity: 1;
-            }
-
-            .header {
-                left: 0 !important;
-                padding: 0 16px;
+                transform: translateX(0) !important;
+                opacity: 1 !important;
             }
 
             .main-container {
-                padding-top: 86px;
+                margin-left: 0;
+                width: 100%;
+            }
+
+            .app-content-wrap {
+                padding: 0 14px;
+            }
+
+            .app-footer {
+                margin: 18px 14px 0;
+                padding: 12px 14px;
+                flex-direction: column;
+                align-items: flex-start;
             }
         }
     </style>
 
     <script>
-        (function () {
-            const savedTheme = localStorage.getItem('supervisor-theme') || 'light';
-            document.documentElement.setAttribute('data-theme', savedTheme);
-        })();
-
         function showToast(message, type = 'success') {
             const flashDiv = document.getElementById('flash-messages');
             if (!flashDiv) return;
 
             const toast = document.createElement('div');
-            toast.className = `alert alert-${type} alert-dismissible fade show shadow`;
+            toast.className = `alert alert-${type} alert-dismissible fade show shadow-sm`;
             toast.style.marginBottom = '10px';
-            toast.style.borderRadius = '16px';
-            toast.style.border = 'none';
+            toast.style.borderRadius = '14px';
             toast.innerHTML = message + `<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
             flashDiv.appendChild(toast);
 
             setTimeout(() => {
                 toast.classList.remove('show');
-                setTimeout(() => toast.remove(), 250);
+                setTimeout(() => toast.remove(), 200);
             }, 4000);
         }
     </script>
 </head>
-<body class="page-transition">
+<body>
 
 <div id="flash-messages"></div>
 
 <div class="left-side-bar" id="supervisorSidebar">
     <div class="brand-logo">
-        <a href="{{ route('supervisor.dashboard') }}" class="brand-logo-link">
-            <img src="{{ asset('vendors/images/VertexGrad_logod.png') }}" alt="VertexGrad Logo" class="brand-main-logo" />
+        <a href="{{ route('supervisor.dashboard') }}" class="sidebar-logo-link">
+            <img
+    src="{{ !empty($adminUser?->profile_image) ? asset('storage/' . $adminUser->profile_image) : asset('vendors/images/photo1.jpg') }}"
+    alt="User Avatar"
+    class="sidebar-account-avatar"
+>
         </a>
 
-        <div class="close-sidebar" id="sidebarCloseBtn">
+        <div class="close-sidebar" id="sidebarCloseBtn" title="Close sidebar">
             <i class="ion-close-round"></i>
         </div>
     </div>
 
-    <div class="menu-block customscroll">
+    <div class="menu-block">
         <div class="sidebar-menu">
-            <ul id="accordion-menu">
+            <div class="sidebar-section-label">Supervisor Panel</div>
 
-                @php
-                    $user = auth('admin')->user();
+            <div class="sidebar-menu-scroll">
+                <ul id="accordion-menu">
+                    <li>
+                        <a href="{{ route('supervisor.dashboard') }}"
+                           class="{{ request()->routeIs('supervisor.dashboard') ? 'active' : '' }}">
+                            <span class="micon bi bi-house-door-fill"></span>
+                            <span class="mtext">Dashboard</span>
+                        </a>
+                    </li>
 
-                    $canReviewProjects = $user && $user->hasPermission('review_projects');
-                    $canViewMeetings = $user && $user->hasPermission('view_meetings');
-                    $canManageMeetings = $user && $user->hasPermission('manage_meetings');
-                    $canViewRequests = $user && $user->hasPermission('view_requests');
-                @endphp
+                    @if($canReviewProjects)
+                        @php $projectsOpen = request()->routeIs('supervisor.projects.*'); @endphp
+                        <li class="dropdown-parent {{ $projectsOpen ? 'open active' : '' }}">
+                            <div class="menu-dropdown-trigger">
+                                <span class="micon bi bi-folder-fill"></span>
+                                <span class="mtext">Projects</span>
+                                <span class="menu-arrow"><i class="fa fa-chevron-down"></i></span>
+                            </div>
+                            <ul class="submenu">
+                                <li><a href="{{ route('supervisor.projects.index') }}" class="{{ request()->routeIs('supervisor.projects.index') ? 'active' : '' }}">All Projects</a></li>
+                                <li><a href="{{ route('supervisor.projects.pending') }}" class="{{ request()->routeIs('supervisor.projects.pending') ? 'active' : '' }}">Pending Reviews</a></li>
+                                <li><a href="{{ route('supervisor.projects.approved') }}" class="{{ request()->routeIs('supervisor.projects.approved') ? 'active' : '' }}">Approved Projects</a></li>
+                                <li><a href="{{ route('supervisor.projects.revisions') }}" class="{{ request()->routeIs('supervisor.projects.revisions') ? 'active' : '' }}">Revision Requests</a></li>
+                            </ul>
+                        </li>
+                    @endif
 
-                <li class="menu-title">
-                    <span class="mtext">SUPERVISOR PANEL</span>
-                </li>
+                    @if($canViewMeetings)
+                        @php $meetingsOpen = request()->routeIs('supervisor.meetings.*'); @endphp
+                        <li class="dropdown-parent {{ $meetingsOpen ? 'open active' : '' }}">
+                            <div class="menu-dropdown-trigger">
+                                <span class="micon bi bi-calendar-event"></span>
+                                <span class="mtext">Meetings</span>
+                                <span class="menu-arrow"><i class="fa fa-chevron-down"></i></span>
+                            </div>
+                            <ul class="submenu">
+                                <li><a href="{{ route('supervisor.meetings.index') }}" class="{{ request()->routeIs('supervisor.meetings.index') ? 'active' : '' }}">All Meetings</a></li>
+                                <li><a href="{{ route('supervisor.meetings.upcoming') }}" class="{{ request()->routeIs('supervisor.meetings.upcoming') ? 'active' : '' }}">Upcoming Meetings</a></li>
+                                <li><a href="{{ route('supervisor.meetings.completed') }}" class="{{ request()->routeIs('supervisor.meetings.completed') ? 'active' : '' }}">Completed Meetings</a></li>
+                                @if($canManageMeetings)
+                                    <li><a href="{{ route('supervisor.meetings.create') }}" class="{{ request()->routeIs('supervisor.meetings.create') ? 'active' : '' }}">Create Meeting</a></li>
+                                @endif
+                            </ul>
+                        </li>
+                    @endif
 
-                <li>
-                    <a href="{{ route('supervisor.dashboard') }}">
-                        <span class="micon bi bi-house-door-fill"></span>
-                        <span class="mtext">Dashboard</span>
-                    </a>
-                </li>
+                    @if($canViewRequests)
+                        @php $requestsOpen = request()->routeIs('supervisor.requests.*'); @endphp
+                        <li class="dropdown-parent {{ $requestsOpen ? 'open active' : '' }}">
+                            <div class="menu-dropdown-trigger">
+                                <span class="micon fa fa-send"></span>
+                                <span class="mtext">Requests</span>
+                                <span class="menu-arrow"><i class="fa fa-chevron-down"></i></span>
+                            </div>
+                            <ul class="submenu">
+                                <li><a href="{{ route('supervisor.requests.index') }}" class="{{ request()->routeIs('supervisor.requests.index') ? 'active' : '' }}">All Requests</a></li>
+                                <li><a href="{{ route('supervisor.requests.pending') }}" class="{{ request()->routeIs('supervisor.requests.pending') ? 'active' : '' }}">Pending Requests</a></li>
+                                <li><a href="{{ route('supervisor.requests.completed') }}" class="{{ request()->routeIs('supervisor.requests.completed') ? 'active' : '' }}">Completed Requests</a></li>
+                            </ul>
+                        </li>
+                    @endif
 
-                @if($canReviewProjects)
-                <li class="dropdown-parent">
-                    <a href="javascript:void(0);" class="menu-dropdown-trigger">
-                        <span class="micon bi bi-folder-fill"></span>
-                        <span class="mtext">Projects</span>
-                        <span class="menu-arrow"><i class="fa fa-chevron-down"></i></span>
-                    </a>
-                    <ul class="submenu">
-                        <li><a href="{{ route('supervisor.projects.index') }}">All Projects</a></li>
-                        <li><a href="{{ route('supervisor.projects.pending') }}">Pending Reviews</a></li>
-                        <li><a href="{{ route('supervisor.projects.approved') }}">Approved Projects</a></li>
-                        <li><a href="{{ route('supervisor.projects.revisions') }}">Revision Requests</a></li>
-                    </ul>
-                </li>
-                @endif
+                    @if($user && $user->hasPermission('view_contact_messages'))
+                        <li>
+                            <a href="{{ route('supervisor.contact-messages.index') }}"
+                               class="{{ request()->routeIs('supervisor.contact-messages.*') ? 'active' : '' }}">
+                                <span class="micon bi bi-envelope-paper-fill"></span>
+                                <span class="mtext">Contact Messages</span>
+                            </a>
+                        </li>
+                    @endif
 
-                @if($canViewMeetings)
-                <li class="dropdown-parent">
-                    <a href="javascript:void(0);" class="menu-dropdown-trigger">
-                        <span class="micon bi bi-calendar-event"></span>
-                        <span class="mtext">Meetings</span>
-                        <span class="menu-arrow"><i class="fa fa-chevron-down"></i></span>
-                    </a>
-                    <ul class="submenu">
-                        <li><a href="{{ route('supervisor.meetings.index') }}">All Meetings</a></li>
-                        <li><a href="{{ route('supervisor.meetings.upcoming') }}">Upcoming Meetings</a></li>
-                        <li><a href="{{ route('supervisor.meetings.completed') }}">Completed Meetings</a></li>
-                        @if($canManageMeetings)
-                        <li><a href="{{ route('supervisor.meetings.create') }}">Create Meeting</a></li>
-                        @endif
-                    </ul>
-                </li>
-                @endif
+                    <li>
+                        <a href="{{ route('supervisor.profile.index') }}"
+                           class="{{ request()->routeIs('supervisor.profile.*') ? 'active' : '' }}">
+                            <span class="micon bi bi-person-lines-fill"></span>
+                            <span class="mtext">Profile Settings</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
 
-                @if($canViewRequests)
-                <li class="dropdown-parent">
-                    <a href="javascript:void(0);" class="menu-dropdown-trigger">
-                        <span class="micon fa fa-send"></span>
-                        <span class="mtext">Requests</span>
-                        <span class="menu-arrow"><i class="fa fa-chevron-down"></i></span>
-                    </a>
-                    <ul class="submenu">
-                        <li><a href="{{ route('supervisor.requests.index') }}">All Requests</a></li>
-                        <li><a href="{{ route('supervisor.requests.pending') }}">Pending Requests</a></li>
-                        <li><a href="{{ route('supervisor.requests.completed') }}">Completed Requests</a></li>
-                    </ul>
-                </li>
-                @endif
-@if($user && $user->hasPermission('view_contact_messages'))
-<li class="{{ request()->routeIs('supervisor.contact-messages.*') ? 'active' : '' }}">
-    <a href="{{ route('supervisor.contact-messages.index') }}">
-        <span class="micon bi bi-envelope-paper-fill"></span>
-        <span class="mtext">Contact Messages</span>
-    </a>
-</li>
-@endif
-                <li class="menu-title">
-                    <span class="mtext">ACCOUNT</span>
-                </li>
+            <div class="sidebar-bottom">
+                <div class="sidebar-bottom-title">Account</div>
 
-                <li>
-                    <a href="{{ route('supervisor.profile.index') }}">
-                        <span class="micon bi bi-person-lines-fill"></span>
-                        <span class="mtext">Profile Settings</span>
-                    </a>
-                </li>
+                <div class="sidebar-account-card">
+                    <div class="sidebar-account-top">
+            <img
+    src="{{ !empty($adminUser?->profile_image) ? asset('storage/' . $adminUser->profile_image) : asset('vendors/images/photo1.jpg') }}"
+    alt="User Avatar"
+    class="sidebar-account-avatar"
+>
+                        <div>
+                            <div class="sidebar-account-name">{{ $adminUser ? $adminUser->name : 'Guest' }}</div>
+                            <div class="sidebar-account-role">Supervisor</div>
+                        </div>
+                    </div>
 
-            </ul>
+                    <div class="sidebar-account-links">
+                        <a href="{{ route('supervisor.profile.index') }}">
+                            <span class="micon bi bi-person-circle"></span>
+                            <span class="mtext">Profile</span>
+                        </a>
+                        <a href="javascript:void(0);" id="rightSidebarToggleBtn">
+                            <span class="micon bi bi-gear"></span>
+                            <span class="mtext">Layout Settings</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -1011,37 +1108,41 @@
 
 <div class="header">
     <div class="header-left">
-        <div class="menu-icon bi bi-list" id="sidebarToggleBtn"></div>
-        <div class="search-toggle-icon bi bi-grid"></div>
+        <div class="menu-icon bi bi-list" id="sidebarToggleBtn" title="Toggle sidebar"></div>
+        <div class="search-toggle-icon bi bi-grid" title="Supervisor Panel"></div>
     </div>
 
-    <div class="header-right d-flex align-items-center gap-2">
-
-        <button type="button" class="theme-toggle-btn" id="themeToggleBtn" title="Toggle theme">
-            <i class="fas fa-moon theme-icon-light"></i>
-            <i class="fas fa-sun theme-icon-dark"></i>
+    <div class="header-right">
+        <button type="button" class="theme-switch-btn" id="themeSwitchBtn" title="Change theme">
+            <i class="bi bi-moon-stars-fill" id="themeSwitchIcon"></i>
         </button>
 
-        <a href="javascript:void(0);" class="dashboard-setting" id="rightSidebarToggleBtn" title="Layout settings">
+        <a href="javascript:void(0);" class="header-setting-btn" id="headerRightSidebarToggleBtn" title="Layout settings">
             <i class="dw dw-settings2"></i>
         </a>
 
         <div class="dropdown" id="admin-notification-bell" data-count-url="{{ route('admin.notifications.count') }}">
-            <a class="dropdown-toggle notification-trigger p-0" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="dw dw-notification"></i>
-
+            <a class="dropdown-toggle position-relative d-inline-flex align-items-center justify-content-center text-decoration-none header-circle-btn"
+               href="#"
+               role="button"
+               data-bs-toggle="dropdown"
+               aria-expanded="false">
+                <i class="icon-copy dw dw-notification" style="font-size: 18px;"></i>
                 <span id="adminUnreadBadge"
-                      class="notification-badge {{ $unreadCount > 0 ? '' : 'd-none' }}">
+                      class="badge bg-danger rounded-circle d-flex align-items-center justify-content-center {{ $unreadCount > 0 ? '' : 'd-none' }}"
+                      style="position:absolute; top:-5px; right:-7px; min-width:18px; height:18px; font-size:10px; padding:0;">
                     {{ $unreadCount > 9 ? '9+' : $unreadCount }}
                 </span>
             </a>
 
-            <div class="dropdown-menu dropdown-menu-end p-0 notification-panel">
+            <div class="dropdown-menu dropdown-menu-end notification-panel">
                 <div class="notification-panel-header">
-                    <h6 class="notification-panel-title">Notifications</h6>
-                    <span class="notification-panel-count">
-                        <span id="adminUnreadText">{{ $unreadCount }}</span> unread
-                    </span>
+                    <div>
+                        <h6 class="notification-panel-title">Notifications</h6>
+                        <small class="notification-panel-count">
+                            <span id="adminUnreadText">{{ $unreadCount }}</span> unread
+                        </small>
+                    </div>
                 </div>
 
                 <div class="notification-panel-body">
@@ -1063,7 +1164,6 @@
                                     <div class="notification-item-icon">
                                         <i class="{{ $icon }}"></i>
                                     </div>
-
                                     <div class="flex-grow-1">
                                         <div class="notification-item-title">{{ $title }}</div>
                                         <div class="notification-item-message">{{ $message }}</div>
@@ -1073,7 +1173,7 @@
                             </button>
                         </form>
                     @empty
-                        <div class="px-3 py-4 text-center text-muted small">
+                        <div class="px-3 py-4 text-center small" style="color: var(--vg-text-muted);">
                             No notifications yet
                         </div>
                     @endforelse
@@ -1095,31 +1195,46 @@
         </div>
 
         <div class="dropdown user-info-dropdown">
-            <a class="dropdown-toggle d-flex align-items-center gap-2" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <img src="{{ $adminUser && $adminUser->avatar ? asset('storage/' . $adminUser->avatar) : asset('vendors/images/photo1.jpg') }}"
-                     class="rounded-circle"
-                     width="36"
-                     height="36"
-                     alt="User Avatar">
-                <span>{{ $adminUser ? $adminUser->name : 'Guest' }}</span>
+            <a class="dropdown-toggle d-flex align-items-center gap-2"
+               href="#"
+               role="button"
+               data-bs-toggle="dropdown"
+               aria-expanded="false">
+                <img
+                    src="{{ !empty($adminUser?->avatar) ? asset('storage/' . $adminUser->avatar) : asset('vendors/images/photo1.jpg') }}"
+                    alt="User Avatar"
+                    class="sidebar-account-avatar"
+                >
+                <div class="d-none d-md-block text-start">
+                    <div style="font-size: 13px; font-weight: 700; color: var(--vg-header-color); line-height: 1.2;">
+                        {{ $adminUser ? $adminUser->name : 'Guest' }}
+                    </div>
+                    <div style="font-size: 11px; color: var(--vg-text-muted); line-height: 1.2;">
+                        Supervisor
+                    </div>
+                </div>
             </a>
 
-            <ul class="dropdown-menu dropdown-menu-end">
+            <ul class="dropdown-menu dropdown-menu-end border-0" style="min-width: 230px;">
                 <li>
-                    <a class="dropdown-item" href="{{ route('admin.profile') }}">
-                        <i class="bi bi-person"></i> Profile
+                    <a class="dropdown-item d-flex align-items-center gap-2" href="{{ route('supervisor.profile.index') }}">
+                        <i class="bi bi-person"></i>
+                        <span>Profile</span>
                     </a>
                 </li>
                 <li>
-                    <a class="dropdown-item" href="javascript:void(0);">
-                        <i class="bi bi-gear"></i> Settings
+                    <a class="dropdown-item d-flex align-items-center gap-2" href="javascript:void(0);" id="dropdownSettingsBtn">
+                        <i class="bi bi-gear"></i>
+                        <span>Layout Settings</span>
                     </a>
                 </li>
+                <li><hr class="dropdown-divider my-2"></li>
                 <li>
-                    <a class="dropdown-item"
+                    <a class="dropdown-item d-flex align-items-center gap-2 text-danger"
                        href="{{ route('admin.logout') }}"
                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                        <i class="bi bi-box-arrow-right"></i> Log Out
+                        <i class="bi bi-box-arrow-right"></i>
+                        <span>Log Out</span>
                     </a>
                 </li>
             </ul>
@@ -1135,7 +1250,7 @@
     <div class="sidebar-title">
         <h3 class="weight-600 font-16">
             Layout Settings
-            <span class="btn-block font-weight-400 font-12">User Interface Settings</span>
+            <span class="btn-block font-weight-400 font-12">Supervisor interface preferences</span>
         </h3>
         <div class="close-sidebar" id="rightSidebarCloseBtn">
             <i class="icon-copy ion-close-round"></i>
@@ -1144,7 +1259,6 @@
 
     <div class="right-sidebar-body customscroll">
         <div class="right-sidebar-body-content p-3">
-
             <div class="theme-setting-card">
                 <div class="theme-setting-title">Theme Mode</div>
                 <div class="theme-btn-group">
@@ -1166,7 +1280,7 @@
                                     </div>
 
                                     @if($announcement->is_pinned)
-                                        <span class="announcement-badge pinned" style="padding:6px 10px; font-size:10px;">
+                                        <span class="announcement-badge pinned">
                                             <i class="fas fa-thumbtack"></i>
                                             Pinned
                                         </span>
@@ -1203,7 +1317,14 @@
 </div>
 
 <div class="main-container">
-    @yield('content')
+    <div class="app-content-wrap">
+        @yield('content')
+    </div>
+
+    <div class="app-footer">
+        <div><strong>{{ setting('platform_name', 'VertexGrad') }}</strong> Supervisor Panel</div>
+        <div>{{ setting('platform_tagline', 'Professional supervision for project reviews, meetings, and requests.') }}</div>
+    </div>
 </div>
 
 <script src="{{ asset('vendors/scripts/core.js') }}"></script>
@@ -1227,160 +1348,131 @@ document.addEventListener('DOMContentLoaded', function () {
         showToast(@json(session('error')), 'danger');
     @endif
 
-    const html = document.documentElement;
     const body = document.body;
-
     const sidebar = document.getElementById('supervisorSidebar');
-    const toggleBtn = document.getElementById('sidebarToggleBtn');
-    const closeBtn = document.getElementById('sidebarCloseBtn');
-    const overlay = document.getElementById('mobileMenuOverlay');
-    const main = document.querySelector('.main-container');
+    const mobileOverlay = document.getElementById('mobileMenuOverlay');
+
+    const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
+    const sidebarCloseBtn = document.getElementById('sidebarCloseBtn');
 
     const rightSidebar = document.getElementById('rightSidebarPanel');
     const rightSidebarToggleBtn = document.getElementById('rightSidebarToggleBtn');
+    const headerRightSidebarToggleBtn = document.getElementById('headerRightSidebarToggleBtn');
+    const dropdownSettingsBtn = document.getElementById('dropdownSettingsBtn');
     const rightSidebarCloseBtn = document.getElementById('rightSidebarCloseBtn');
 
-    const themeToggleBtn = document.getElementById('themeToggleBtn');
+    const themeSwitchBtn = document.getElementById('themeSwitchBtn');
+    const themeSwitchIcon = document.getElementById('themeSwitchIcon');
     const themeLightBtn = document.getElementById('themeLightBtn');
     const themeDarkBtn = document.getElementById('themeDarkBtn');
     const resetBtn = document.getElementById('reset-settings');
 
-    if (main) {
-        requestAnimationFrame(() => {
-            main.classList.add('loaded');
-        });
+    const bell = document.getElementById('admin-notification-bell');
+    const badge = document.getElementById('adminUnreadBadge');
+    const unreadText = document.getElementById('adminUnreadText');
+
+    function syncThemeButtons() {
+        const isDark = body.classList.contains('dark-theme');
+
+        if (themeSwitchIcon) {
+            themeSwitchIcon.className = isDark ? 'bi bi-sun-fill' : 'bi bi-moon-stars-fill';
+        }
+
+        if (themeLightBtn) themeLightBtn.classList.toggle('active', !isDark);
+        if (themeDarkBtn) themeDarkBtn.classList.toggle('active', isDark);
     }
 
     function applyTheme(theme) {
-        html.setAttribute('data-theme', theme);
-        localStorage.setItem('supervisor-theme', theme);
+        if (theme === 'dark') {
+            body.classList.add('dark-theme');
+            localStorage.setItem('supervisor-theme', 'dark');
+        } else {
+            body.classList.remove('dark-theme');
+            localStorage.setItem('supervisor-theme', 'light');
+        }
         syncThemeButtons();
     }
 
-    function syncThemeButtons() {
-        const currentTheme = html.getAttribute('data-theme') || 'light';
-
-        if (themeLightBtn && themeDarkBtn) {
-            themeLightBtn.classList.toggle('active', currentTheme === 'light');
-            themeDarkBtn.classList.toggle('active', currentTheme === 'dark');
+    function openLeftSidebar() {
+        if (window.innerWidth <= 991.98) {
+            sidebar?.classList.add('mobile-open');
+            mobileOverlay?.classList.add('active');
+        } else {
+            body.classList.remove('sidebar-closed');
         }
     }
 
-    function openRightSidebarPanel() {
-        if (!rightSidebar) return;
-        rightSidebar.classList.add('open');
+    function closeLeftSidebar() {
+        if (window.innerWidth <= 991.98) {
+            sidebar?.classList.remove('mobile-open');
+            mobileOverlay?.classList.remove('active');
+        } else {
+            body.classList.add('sidebar-closed');
+        }
     }
 
-    function closeRightSidebarPanel() {
-        if (!rightSidebar) return;
-        rightSidebar.classList.remove('open');
-    }
-
-    function toggleRightSidebarPanel() {
-        if (!rightSidebar) return;
-        rightSidebar.classList.toggle('open');
-    }
-
-    function openSidebarMobile() {
-        if (!sidebar || !overlay) return;
-        sidebar.classList.add('mobile-open');
-        overlay.classList.add('active');
-    }
-
-    function closeSidebarMobile() {
-        if (!sidebar || !overlay) return;
-        sidebar.classList.remove('mobile-open');
-        overlay.classList.remove('active');
-    }
-
-    function toggleSidebarDesktop() {
-        if (!sidebar) return;
-        sidebar.classList.toggle('closed');
-        body.classList.toggle('sidebar-collapsed');
-    }
-
-    if (themeToggleBtn) {
-        themeToggleBtn.addEventListener('click', function () {
-            const currentTheme = html.getAttribute('data-theme') || 'light';
-            applyTheme(currentTheme === 'light' ? 'dark' : 'light');
-        });
-    }
-
-    if (themeLightBtn) {
-        themeLightBtn.addEventListener('click', function () {
-            applyTheme('light');
-            closeRightSidebarPanel();
-        });
-    }
-
-    if (themeDarkBtn) {
-        themeDarkBtn.addEventListener('click', function () {
-            applyTheme('dark');
-            closeRightSidebarPanel();
-        });
-    }
-
-    if (resetBtn) {
-        resetBtn.addEventListener('click', function () {
-            applyTheme('light');
-            closeRightSidebarPanel();
-        });
-    }
-
-    syncThemeButtons();
-
-    if (rightSidebarToggleBtn) {
-        rightSidebarToggleBtn.addEventListener('click', function (e) {
-            e.preventDefault();
-            toggleRightSidebarPanel();
-        });
-    }
-
-    if (rightSidebarCloseBtn) {
-        rightSidebarCloseBtn.addEventListener('click', function () {
-            closeRightSidebarPanel();
-        });
-    }
-
-    if (toggleBtn) {
-        toggleBtn.addEventListener('click', function () {
-            if (window.innerWidth <= 991) {
-                if (sidebar && sidebar.classList.contains('mobile-open')) {
-                    closeSidebarMobile();
-                } else {
-                    openSidebarMobile();
-                }
+    function toggleLeftSidebar() {
+        if (window.innerWidth <= 991.98) {
+            if (sidebar?.classList.contains('mobile-open')) {
+                closeLeftSidebar();
             } else {
-                toggleSidebarDesktop();
+                openLeftSidebar();
             }
-        });
+        } else {
+            body.classList.toggle('sidebar-closed');
+        }
     }
 
-    if (closeBtn) {
-        closeBtn.addEventListener('click', function () {
-            if (window.innerWidth <= 991) {
-                closeSidebarMobile();
-            } else {
-                toggleSidebarDesktop();
-            }
-        });
+    function toggleRightSidebar() {
+        rightSidebar?.classList.toggle('open');
     }
 
-    if (overlay) {
-        overlay.addEventListener('click', function () {
-            closeSidebarMobile();
-            closeRightSidebarPanel();
-        });
-    }
+    sidebarToggleBtn?.addEventListener('click', function (e) {
+        e.preventDefault();
+        toggleLeftSidebar();
+    });
 
-    document.querySelectorAll('.dropdown-parent').forEach(function (parent) {
-        const link = parent.querySelector('a');
-        let closeTimer = null;
+    sidebarCloseBtn?.addEventListener('click', function (e) {
+        e.preventDefault();
+        closeLeftSidebar();
+    });
 
-        if (!link) return;
+    mobileOverlay?.addEventListener('click', function () {
+        closeLeftSidebar();
+        rightSidebar?.classList.remove('open');
+    });
 
-        link.addEventListener('click', function (e) {
+    [rightSidebarToggleBtn, headerRightSidebarToggleBtn, dropdownSettingsBtn].forEach(function (btn) {
+        btn?.addEventListener('click', function (e) {
             e.preventDefault();
+            toggleRightSidebar();
+        });
+    });
+
+    rightSidebarCloseBtn?.addEventListener('click', function () {
+        rightSidebar?.classList.remove('open');
+    });
+
+    themeSwitchBtn?.addEventListener('click', function () {
+        applyTheme(body.classList.contains('dark-theme') ? 'light' : 'dark');
+    });
+
+    themeLightBtn?.addEventListener('click', function () {
+        applyTheme('light');
+    });
+
+    themeDarkBtn?.addEventListener('click', function () {
+        applyTheme('dark');
+    });
+
+    resetBtn?.addEventListener('click', function () {
+        applyTheme('light');
+    });
+
+    document.querySelectorAll('.dropdown-parent > .menu-dropdown-trigger').forEach(function (trigger) {
+        trigger.addEventListener('click', function () {
+            const parent = this.closest('.dropdown-parent');
+            if (!parent) return;
 
             const isOpen = parent.classList.contains('open');
 
@@ -1390,35 +1482,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             });
 
-            if (!isOpen) {
-                parent.classList.add('open');
-
-                closeTimer = setTimeout(function () {
-                    parent.classList.remove('open');
-                }, 10000);
-            } else {
+            if (isOpen) {
                 parent.classList.remove('open');
-            }
-        });
-
-        parent.addEventListener('mouseenter', function () {
-            if (closeTimer) clearTimeout(closeTimer);
-        });
-
-        parent.addEventListener('mouseleave', function () {
-            if (parent.classList.contains('open')) {
-                closeTimer = setTimeout(function () {
-                    parent.classList.remove('open');
-                }, 10000);
+            } else {
+                parent.classList.add('open');
             }
         });
     });
 
-    const bell = document.getElementById('admin-notification-bell');
     if (bell) {
         const countUrl = bell.dataset.countUrl;
-        const badge = document.getElementById('adminUnreadBadge');
-        const unreadText = document.getElementById('adminUnreadText');
 
         function refreshUnreadCount() {
             fetch(countUrl, {
@@ -1431,9 +1504,7 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(data => {
                 const count = data.count ?? 0;
 
-                if (unreadText) {
-                    unreadText.textContent = count;
-                }
+                if (unreadText) unreadText.textContent = count;
 
                 if (badge) {
                     if (count > 0) {
@@ -1449,10 +1520,27 @@ document.addEventListener('DOMContentLoaded', function () {
 
         setInterval(refreshUnreadCount, 30000);
     }
+
+    const savedTheme = localStorage.getItem('supervisor-theme');
+    applyTheme(savedTheme === 'dark' ? 'dark' : 'light');
+
+    if (window.innerWidth <= 991.98) {
+        closeLeftSidebar();
+    } else {
+        openLeftSidebar();
+    }
+
+    window.addEventListener('resize', function () {
+        if (window.innerWidth <= 991.98) {
+            closeLeftSidebar();
+        } else {
+            sidebar?.classList.remove('mobile-open');
+            mobileOverlay?.classList.remove('active');
+        }
+    });
 });
 </script>
 
 @stack('scripts')
-
 </body>
 </html>
