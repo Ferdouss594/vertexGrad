@@ -12,9 +12,11 @@ use App\Http\Controllers\Frontend\ProjectController as FrontendProjectController
 use App\Http\Controllers\Frontend\NotificationController as FrontNotificationController;
 use App\Http\Controllers\Frontend\InvestorDashboardController;
 use App\Http\Controllers\Frontend\AcademicDashboardController;
+use App\Http\Controllers\Frontend\InvestorProjectSummaryController;
 use App\Http\Controllers\Frontend\ContactController;
 use App\Http\Controllers\Frontend\LanguageController as FrontendLanguageController;
 use App\Http\Controllers\Admin\ProjectController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -66,7 +68,7 @@ Route::middleware(['web', 'frontend.locale'])->group(function () {
     // ------------------------
     // FRONTEND DASHBOARDS (web guard)
     // ------------------------
-    Route::middleware(['auth:web'])->group(function () {
+     Route::middleware(['auth:web'])->group(function () {
         Route::post('/projects/{project}/request-funding', [FrontendProjectController::class, 'requestFunding'])
             ->name('frontend.projects.requestFunding');
 
@@ -104,6 +106,17 @@ Route::post('/settings/academic/update', [AcademicDashboardController::class, 'u
 
 Route::post('/settings/investor/update', [InvestorDashboardController::class, 'updateSettings'])
     ->name('settings.investor.update');
+
+        Route::prefix('investor/projects')->name('investor.projects.')->group(function () {
+
+        Route::get('{project}/summary', [InvestorProjectSummaryController::class, 'show'])
+            ->name('summary');
+
+        Route::get('{project}/pitch-deck/download', [InvestorProjectSummaryController::class, 'download'])
+            ->name('pitch-deck.download');
+
+    });
+
     });
 
     // ------------------------

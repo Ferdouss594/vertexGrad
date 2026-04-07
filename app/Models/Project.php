@@ -199,4 +199,13 @@ class Project extends Model implements HasMedia
         return $this->hasMany(\App\Models\ProjectReview::class, 'project_id', 'project_id')
             ->where('decision', 'approved');
     }
+    public function pitchDecks()
+{
+    return $this->hasMany(\App\Models\ProjectPitchDeck::class, 'project_id', 'project_id');
+}
+
+public function latestPitchDeck()
+{
+    return $this->hasOne(\App\Models\ProjectPitchDeck::class, 'project_id', 'project_id')->latestOfMany();
+}
 }

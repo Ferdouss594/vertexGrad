@@ -21,6 +21,14 @@
     $requestedCount = isset($project)
         ? $project->investors->where('pivot.status', 'requested')->count()
         : 0;
+
+    $canViewInvestorDeck = isset($project) && in_array($project->status, [
+        'active',
+        'published',
+        'approved',
+        'completed',
+        'investor_visible',
+    ], true);
 @endphp
 
 @extends('frontend.layouts.app')
@@ -141,6 +149,22 @@
                         </div>
 
                         @if($isInvestor)
+                            @if($canViewInvestorDeck)
+                                <div class="mt-6 space-y-3">
+                                    <a href="{{ route('investor.projects.summary', $project) }}"
+                                       class="w-full inline-flex items-center justify-center py-3 bg-brand-accent text-white font-bold rounded-xl hover:bg-brand-accent-strong transition">
+                                        <i class="fas fa-file-lines mr-2"></i>
+                                        {{ __('frontend.project_show.view_summary') }}
+                                    </a>
+
+                                    <a href="{{ route('investor.projects.pitch-deck.download', $project) }}"
+                                       class="w-full inline-flex items-center justify-center py-3 bg-theme-surface-2 text-theme-text font-bold rounded-xl border border-theme-border hover:border-brand-accent hover:text-brand-accent transition">
+                                        <i class="fas fa-file-powerpoint mr-2"></i>
+                                        {{ __('frontend.project_show.download_powerpoint') }}
+                                    </a>
+                                </div>
+                            @endif
+
                             @if(!$currentInvestorStatus)
                                 <div class="mt-6 space-y-3">
                                     <form method="POST" action="{{ route('frontend.projects.invest', $project) }}">

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Project;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
@@ -206,105 +207,79 @@ class ProjectSubmissionController extends Controller
     |--------------------------------------------------------------------------
     */
 
-    public function submitFinal(SubmitProjectFinalRequest $request)
-    {
-        $this->ensureGuestOrStudent();
+public function submitFinal(SubmitProjectFinalRequest $request)
+{
+    $this->ensureGuestOrStudent();
 
-        $projectData = session()->get('project_data');
+    $projectData = session()->get('project_data');
 
-        if (!$projectData) {
+    if (!$projectData) {
+        return redirect()
+            ->route('project.submit.step1')
+            ->with('error', 'انتهت الجلسة، يرجى إعادة تعبئة بيانات المشروع.');
+    }
+
+    $userData = null;
+
+    if (!auth('web')->check()) {
+        $userData = session()->get('user_data');
+
+        if (!$userData) {
             return redirect()
-                ->route('project.submit.step1')
-                ->with('error', 'انتهت الجلسة، يرجى إعادة تعبئة بيانات المشروع.');
+                ->route('project.submit.step4')
+                ->with('error', 'بيانات الحساب غير موجودة، يرجى إكمال الخطوة الرابعة.');
         }
+    }
 
-        $userData = null;
+    try {
+        DB::beginTransaction();
 
+        // 1) Create student account if guest
         if (!auth('web')->check()) {
-            $userData = session()->get('user_data');
+            $username = strstr($userData['email'], '@', true);
 
-            if (!$userData) {
-                return redirect()
-                    ->route('project.submit.step4')
-                    ->with('error', 'بيانات الحساب غير موجودة، يرجى إكمال الخطوة الرابعة.');
+            if (User::where('username', $username)->exists()) {
+                $username .= rand(10, 99);
             }
+
+            $user = User::create([
+                'name' => $projectData['student_name'] ?? $projectData['project_title'] ?? 'Student',
+                'username' => $username,
+                'email' => $userData['email'],
+                'password' => Hash::make($userData['password']),
+                'role' => 'Student',
+                'status' => 'active',
+            ]);
+
+            Auth::guard('web')->login($user);
         }
 
-        try {
-            DB::beginTransaction();
+        $student = auth('web')->user();
 
-            // 1) Create student account if guest
-            if (!auth('web')->check()) {
-                $username = strstr($userData['email'], '@', true);
+        if (!$student) {
+            throw new \Exception('تعذر تحديد حساب الطالب بعد تسجيل الدخول.');
+        }
 
-                if (User::where('username', $username)->exists()) {
-                    $username .= rand(10, 99);
-                }
+        // 2) Save project in main platform first
+        $project = Project::create($this->buildProjectPayload($projectData, $student->id));
 
-                $user = User::create([
-                    'name' => $projectData['student_name'] ?? $projectData['project_title'] ?? 'Student',
-                    'username' => $username,
-                    'email' => $userData['email'],
-                    'password' => Hash::make($userData['password']),
-                    'role' => 'Student',
-                    'status' => 'active',
-                ]);
+        // 3) Local safe bypass for development only
+        if ($this->shouldBypassScannerLocally()) {
+            $bypassMode = env('SCANNER_BYPASS_MODE', 'success');
 
-                auth('web')->login($user);
-            }
-
-            $student = auth('web')->user();
-
-            if (!$student) {
-                throw new \Exception('تعذر تحديد حساب الطالب بعد تسجيل الدخول.');
-            }
-
-            // 2) Save project in main platform first
-            $project = Project::create($this->buildProjectPayload($projectData, $student->id));
-
-            // 3) Try scanner integration
-            try {
-                $scannerRequestPayload = [
-                    'name' => $project->name,
-                    'platform_project_id' => $project->project_id,
-                    'student_id' => $student->id,
-                    'student_name' => $projectData['student_name'] ?? $student->name,
-                    'student_email' => $student->email,
-                    'callback_url' => env('SCANNER_CALLBACK_URL'),
-                ];
-
-                $response = Http::connectTimeout(5)
-                    ->timeout(15)
-                    ->withHeaders([
-                        'X-INTEGRATION-SECRET' => env('SCANNER_INTEGRATION_SECRET'),
-                        'Accept' => 'application/json',
-                        'Content-Type' => 'application/json',
-                    ])
-                    ->post(env('SCANNER_INTEGRATION_URL'), $scannerRequestPayload);
-
-                if (!$response->successful()) {
-                    throw new \Exception('Scanner HTTP request failed with status ' . $response->status());
-                }
-
-                $payload = $response->json();
-                $scannerData = $payload['data'] ?? [];
-
-                if (!($payload['success'] ?? false)) {
-                    throw new \Exception($payload['message'] ?? 'Scanner integration failed.');
-                }
-
-                if (empty($scannerData['scanner_project_id']) || empty($scannerData['token'])) {
-                    throw new \Exception('Scanner response missing scanner_project_id or token.');
-                }
+            if ($bypassMode === 'success') {
+                $fakeScannerProjectId = env('SCANNER_FAKE_PROJECT_ID', 'LOCAL-SCAN-' . $project->project_id);
+                $fakeToken = env('SCANNER_FAKE_TOKEN', 'local-token-' . $project->project_id);
 
                 $this->appendProjectHistory($project, [
-                    'action' => 'scanner_request_created',
-                    'message' => 'Technical scan request created successfully.',
+                    'action' => 'scanner_bypassed_locally',
+                    'message' => 'Scanner bypassed locally for development testing.',
+                    'scanner_project_id' => $fakeScannerProjectId,
                     'at' => now()->toDateTimeString(),
                 ]);
 
                 $project->update([
-                    'scanner_project_id' => $scannerData['scanner_project_id'],
+                    'scanner_project_id' => $fakeScannerProjectId,
                     'scanner_status' => 'pending',
                     'status' => 'scan_requested',
                 ]);
@@ -319,21 +294,16 @@ class ProjectSubmissionController extends Controller
 
                 session()->forget(['project_data', 'user_data']);
 
-                $scanUrl = rtrim(env('SCANNER_PUBLIC_BASE_URL'), '/') . '/?project_token=' . urlencode($scannerData['token']);
+                return redirect('/dashboard/academic')->with(
+                    'success',
+                    'تم حفظ المشروع بنجاح في وضع التطوير المحلي، وتم تجاوز منصة الفحص مؤقتًا للاختبار.'
+                );
+            }
 
-                return redirect()->away($scanUrl);
-
-            } catch (\Throwable $scannerException) {
-                Log::warning('Scanner platform unavailable during project submission', [
-                    'project_id' => $project->project_id,
-                    'student_id' => $student->id,
-                    'message' => $scannerException->getMessage(),
-                ]);
-
+            if ($bypassMode === 'fail') {
                 $this->appendProjectHistory($project, [
-                    'action' => 'scanner_unavailable',
-                    'message' => 'Scanner platform unavailable at submission time. Project saved for later follow-up.',
-                    'error' => $scannerException->getMessage(),
+                    'action' => 'scanner_bypass_failed_locally',
+                    'message' => 'Local development mode simulated scanner failure.',
                     'at' => now()->toDateTimeString(),
                 ]);
 
@@ -350,25 +320,123 @@ class ProjectSubmissionController extends Controller
 
                 return redirect('/dashboard/academic')->with(
                     'warning',
-                    'تم حفظ معلومات مشروعك بنجاح، لكن منصة الفحص في وضع الصيانة حاليًا. سيتم التواصل معك قريبًا بعد استئناف الخدمة.'
+                    'تم حفظ المشروع بنجاح، وتمت محاكاة تعطل منصة الفحص محليًا لأغراض الاختبار.'
                 );
             }
+        }
 
-        } catch (\Throwable $e) {
-            DB::rollBack();
+        // 4) Real scanner integration
+        try {
+            $scannerRequestPayload = [
+                'name' => $project->name,
+                'platform_project_id' => $project->project_id,
+                'student_id' => $student->id,
+                'student_name' => $projectData['student_name'] ?? $student->name,
+                'student_email' => $student->email,
+                'callback_url' => env('SCANNER_CALLBACK_URL'),
+            ];
 
-            Log::error('submitFinal failed', [
-                'message' => $e->getMessage(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
-                'trace' => $e->getTraceAsString(),
+            $response = Http::connectTimeout(5)
+                ->timeout(15)
+                ->withHeaders([
+                    'X-INTEGRATION-SECRET' => env('SCANNER_INTEGRATION_SECRET'),
+                    'Accept' => 'application/json',
+                    'Content-Type' => 'application/json',
+                ])
+                ->post(env('SCANNER_INTEGRATION_URL'), $scannerRequestPayload);
+
+            if (!$response->successful()) {
+                throw new \Exception('Scanner HTTP request failed with status ' . $response->status());
+            }
+
+            $payload = $response->json();
+            $scannerData = $payload['data'] ?? [];
+
+            if (!($payload['success'] ?? false)) {
+                throw new \Exception($payload['message'] ?? 'Scanner integration failed.');
+            }
+
+            if (empty($scannerData['scanner_project_id']) || empty($scannerData['token'])) {
+                throw new \Exception('Scanner response missing scanner_project_id or token.');
+            }
+
+            $this->appendProjectHistory($project, [
+                'action' => 'scanner_request_created',
+                'message' => 'Technical scan request created successfully.',
+                'at' => now()->toDateTimeString(),
             ]);
 
-            return redirect()
-                ->route('project.submit.confirm')
-                ->with('error', 'تعذر إكمال إرسال المشروع الآن. يرجى المحاولة مرة أخرى. سبب الخطأ: ' . $e->getMessage());
+            $project->update([
+                'scanner_project_id' => $scannerData['scanner_project_id'],
+                'scanner_status' => 'pending',
+                'status' => 'scan_requested',
+            ]);
+
+            DB::commit();
+
+            $this->notifyManagersProjectSubmitted($project);
+
+            if ($student) {
+                $student->notify(new ProjectPendingNotification($project));
+            }
+
+            session()->forget(['project_data', 'user_data']);
+
+            $scanUrl = rtrim(env('SCANNER_PUBLIC_BASE_URL'), '/') . '/?project_token=' . urlencode($scannerData['token']);
+
+            return redirect()->away($scanUrl);
+
+        } catch (\Throwable $scannerException) {
+            Log::warning('Scanner platform unavailable during project submission', [
+                'project_id' => $project->project_id,
+                'student_id' => $student->id,
+                'message' => $scannerException->getMessage(),
+            ]);
+
+            $this->appendProjectHistory($project, [
+                'action' => 'scanner_unavailable',
+                'message' => 'Scanner platform unavailable at submission time. Project saved for later follow-up.',
+                'error' => $scannerException->getMessage(),
+                'at' => now()->toDateTimeString(),
+            ]);
+
+            $project->update([
+                'scanner_status' => 'failed',
+                'status' => 'scan_requested',
+            ]);
+
+            DB::commit();
+
+            $this->notifyManagersProjectSubmitted($project);
+
+            session()->forget(['project_data', 'user_data']);
+
+            return redirect('/dashboard/academic')->with(
+                'warning',
+                'تم حفظ معلومات مشروعك بنجاح، لكن منصة الفحص في وضع الصيانة حاليًا. سيتم التواصل معك قريبًا بعد استئناف الخدمة.'
+            );
         }
+
+    } catch (\Throwable $e) {
+        DB::rollBack();
+
+        Log::error('submitFinal failed', [
+            'message' => $e->getMessage(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+            'trace' => $e->getTraceAsString(),
+        ]);
+
+        return redirect()
+            ->route('project.submit.confirm')
+            ->with('error', 'تعذر إكمال إرسال المشروع الآن. يرجى المحاولة مرة أخرى. سبب الخطأ: ' . $e->getMessage());
     }
+}
+
+private function shouldBypassScannerLocally(): bool
+{
+    return app()->environment('local') && filter_var(env('SCANNER_BYPASS_LOCAL', false), FILTER_VALIDATE_BOOL);
+}
 
     /*
     |--------------------------------------------------------------------------
