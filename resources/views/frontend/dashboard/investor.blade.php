@@ -1,20 +1,57 @@
 @extends('frontend.layouts.app')
 
 @section('content')
+@php
+    $btnPrimaryClass = 'inline-flex items-center justify-center rounded-2xl px-8 py-4 font-black bg-brand-accent text-white hover:bg-brand-accent-strong transition duration-300 shadow-brand-soft';
+    $btnSecondaryClass = 'inline-flex items-center justify-center rounded-2xl px-6 py-3 font-bold border border-brand-accent text-theme-text hover:bg-brand-accent hover:text-white transition duration-300';
+@endphp
+
 <div class="min-h-screen pt-28 pb-12 bg-theme-bg transition-colors duration-300">
     <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         <header class="mb-12 flex flex-col md:flex-row md:justify-between md:items-end gap-6">
             <div>
                 <h1 class="text-5xl font-black text-theme-text tracking-tighter uppercase">
-                    {{ __('frontend.investor_dashboard.investor') }} <span class="text-brand-accent">{{ __('frontend.investor_dashboard.dashboard') }}</span>
+                    {{ __('frontend.investor_dashboard.investor') }}
+                    <span class="text-brand-accent">{{ __('frontend.investor_dashboard.dashboard') }}</span>
                 </h1>
+
                 <p class="text-theme-muted text-xs font-bold tracking-[0.3em] mt-2 uppercase">
                     {{ __('frontend.investor_dashboard.subtitle') }}
                 </p>
             </div>
 
-            <div class="text-right hidden md:block">
+            <div class="flex flex-wrap items-center gap-3">
+                <a href="{{ route('settings.investor') }}" class="{{ $btnSecondaryClass }}">
+                    <i class="fas fa-cog mr-2"></i>
+                    {{ __('frontend.investor_dashboard.settings', [], app()->getLocale()) }}
+                </a>
+
+                <a href="{{ route('investor.investments') }}" class="{{ $btnSecondaryClass }}">
+                    <i class="fas fa-briefcase mr-2"></i>
+                    {{ __('frontend.investments.my_investments', [], app()->getLocale()) }}
+                </a>
+
+                <a href="{{ route('frontend.projects.index') }}" class="{{ $btnPrimaryClass }}">
+                    <i class="fas fa-compass mr-2"></i>
+                    {{ __('frontend.investor_dashboard.explore_all') }}
+                </a>
+            </div>
+        </header>
+
+        <div class="mb-8 md:hidden">
+            <div class="theme-panel rounded-[2rem] p-5">
+                <p class="text-theme-muted text-[10px] font-black uppercase tracking-widest">
+                    {{ __('frontend.investor_dashboard.total_approved_funding') }}
+                </p>
+                <p class="text-3xl font-black text-green-600 mt-2">
+                    ${{ number_format($totalDeployed) }}
+                </p>
+            </div>
+        </div>
+
+        <div class="hidden md:flex justify-end mb-8">
+            <div class="text-right">
                 <p class="text-theme-muted text-[10px] font-black uppercase tracking-widest">
                     {{ __('frontend.investor_dashboard.total_approved_funding') }}
                 </p>
@@ -22,7 +59,7 @@
                     ${{ number_format($totalDeployed) }}
                 </p>
             </div>
-        </header>
+        </div>
 
         {{-- Announcements --}}
         @if(isset($announcements) && $announcements->count())
@@ -119,7 +156,8 @@
                 {{-- MY INTERESTED / APPROVED PROJECTS --}}
                 <section class="theme-panel p-10 rounded-[3rem]">
                     <h3 class="text-xl font-black text-theme-text mb-8 flex items-center uppercase tracking-widest">
-                        <i class="fas fa-briefcase mr-4 text-brand-accent"></i> {{ __('frontend.investor_dashboard.my_investment_activity') }}
+                        <i class="fas fa-briefcase mr-4 text-brand-accent"></i>
+                        {{ __('frontend.investor_dashboard.my_investment_activity') }}
                     </h3>
 
                     <div class="space-y-4">
@@ -147,13 +185,15 @@
                                         </h4>
 
                                         <p class="text-xs text-theme-muted mt-1">
-                                            {{ __('frontend.investor_dashboard.lead') }}: {{ $investment->student?->name ?? __('frontend.investor_dashboard.not_available') }}
+                                            {{ __('frontend.investor_dashboard.lead') }}:
+                                            {{ $investment->student?->name ?? __('frontend.investor_dashboard.not_available') }}
                                         </p>
 
                                         <div class="flex items-center gap-3 mt-2 flex-wrap">
                                             @if($video)
                                                 <span class="text-xs text-brand-accent flex items-center gap-1">
-                                                    <i class="fas fa-video"></i> {{ __('frontend.investor_dashboard.video_available') }}
+                                                    <i class="fas fa-video"></i>
+                                                    {{ __('frontend.investor_dashboard.video_available') }}
                                                 </span>
                                             @endif
 
@@ -172,7 +212,8 @@
                                     </span>
 
                                     <p class="text-[10px] text-theme-muted uppercase mt-1">
-                                        {{ __('frontend.investor_dashboard.budget') }}: ${{ number_format($investment->budget ?? 0) }}
+                                        {{ __('frontend.investor_dashboard.budget') }}:
+                                        ${{ number_format($investment->budget ?? 0) }}
                                     </p>
                                 </div>
                             </a>
@@ -230,7 +271,8 @@
 
                                             @if($video)
                                                 <span class="text-xs text-brand-accent flex items-center gap-1">
-                                                    <i class="fas fa-video"></i> {{ __('frontend.investor_dashboard.video') }}
+                                                    <i class="fas fa-video"></i>
+                                                    {{ __('frontend.investor_dashboard.video') }}
                                                 </span>
                                             @endif
                                         </div>
@@ -246,7 +288,8 @@
                                                 </div>
 
                                                 <span class="text-xs text-theme-muted">
-                                                    {{ $interestedCount }} {{ __('frontend.investor_dashboard.interested_investor_label', ['count' => $interestedCount]) }}
+                                                    {{ $interestedCount }}
+                                                    {{ __('frontend.investor_dashboard.interested_investor_label', ['count' => $interestedCount]) }}
                                                 </span>
                                             </div>
                                         @endif
@@ -326,14 +369,138 @@
 <script>
     function dismissAnnouncements() {
         const section = document.getElementById('announcementSection');
-        if (section) {
-            section.style.transition = 'all 0.25s ease';
-            section.style.opacity = '0';
-            section.style.transform = 'translateY(-8px)';
-            setTimeout(() => {
-                section.remove();
-            }, 250);
+        if (!section) return;
+
+        try {
+            sessionStorage.setItem('investor_dashboard_announcements_dismissed', '1');
+        } catch (e) {}
+
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        if (prefersReducedMotion) {
+            section.remove();
+            return;
         }
+
+        section.style.pointerEvents = 'none';
+        section.style.overflow = 'hidden';
+        section.style.transition = 'opacity 0.28s ease, transform 0.28s ease, max-height 0.28s ease, margin 0.28s ease';
+        section.style.maxHeight = section.offsetHeight + 'px';
+
+        requestAnimationFrame(() => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(-10px)';
+            section.style.maxHeight = '0px';
+            section.style.marginBottom = '0px';
+        });
+
+        setTimeout(() => {
+            section.remove();
+        }, 300);
     }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        try {
+            const dismissed = sessionStorage.getItem('investor_dashboard_announcements_dismissed');
+            const announcementSection = document.getElementById('announcementSection');
+            if (dismissed === '1' && announcementSection) {
+                announcementSection.remove();
+            }
+        } catch (e) {}
+
+        if (!prefersReducedMotion) {
+            const animatedElements = [
+                document.querySelector('header'),
+                document.getElementById('announcementSection'),
+                ...document.querySelectorAll('.theme-panel')
+            ].filter(Boolean);
+
+            animatedElements.forEach((el, index) => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(24px) scale(0.985)';
+                el.style.transition = 'opacity 0.7s ease, transform 0.7s ease';
+
+                setTimeout(() => {
+                    el.style.opacity = '1';
+                    el.style.transform = 'translateY(0) scale(1)';
+                }, 120 + (index * 120));
+            });
+        }
+
+        const projectCards = document.querySelectorAll('a[href].p-6, a[href].group');
+        projectCards.forEach(card => {
+            card.style.transition = 'transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease';
+
+            card.addEventListener('mouseenter', () => {
+                if (prefersReducedMotion) return;
+                card.style.transform = 'translateY(-4px)';
+                card.style.boxShadow = '0 16px 36px rgba(0,0,0,0.08)';
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0)';
+                card.style.boxShadow = 'none';
+            });
+        });
+
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') {
+                const section = document.getElementById('announcementSection');
+                if (section) dismissAnnouncements();
+            }
+        });
+
+        if (!prefersReducedMotion) {
+            const numberElements = Array.from(document.querySelectorAll('span, p')).filter(el => {
+                const text = el.textContent.trim();
+                return /^[$]?\d[\d,]*$/.test(text);
+            });
+
+            numberElements.forEach((el, index) => {
+                const originalText = el.textContent.trim();
+                const hasDollar = originalText.startsWith('$');
+                const numericValue = parseInt(originalText.replace(/[^\d]/g, ''), 10);
+
+                if (isNaN(numericValue)) return;
+
+                el.textContent = hasDollar ? '$0' : '0';
+
+                setTimeout(() => {
+                    const duration = 1000;
+                    const startTime = performance.now();
+
+                    function animate(currentTime) {
+                        const progress = Math.min((currentTime - startTime) / duration, 1);
+                        const eased = 1 - Math.pow(1 - progress, 3);
+                        const current = Math.floor(numericValue * eased);
+
+                        el.textContent = (hasDollar ? '$' : '') + current.toLocaleString();
+
+                        if (progress < 1) {
+                            requestAnimationFrame(animate);
+                        } else {
+                            el.textContent = (hasDollar ? '$' : '') + numericValue.toLocaleString();
+                        }
+                    }
+
+                    requestAnimationFrame(animate);
+                }, 250 + (index * 80));
+            });
+        }
+
+        const interactiveItems = document.querySelectorAll('a[href], button');
+        interactiveItems.forEach(item => {
+            item.addEventListener('focus', () => {
+                item.style.outline = 'none';
+                item.style.boxShadow = '0 0 0 3px rgba(99, 102, 241, 0.18)';
+            });
+
+            item.addEventListener('blur', () => {
+                item.style.boxShadow = '';
+            });
+        });
+    });
 </script>
 @endsection

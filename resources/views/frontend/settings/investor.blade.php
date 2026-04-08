@@ -113,9 +113,6 @@
                                 <h2 class="text-lg font-black text-theme-text uppercase tracking-[0.16em]">
                                     {{ __('frontend.investor.profile_photo') }}
                                 </h2>
-                                <span class="text-[10px] font-black uppercase tracking-[0.14em] text-theme-muted">
-                                    JPG / PNG / WEBP
-                                </span>
                             </div>
 
                             <div class="flex flex-col items-center text-center">

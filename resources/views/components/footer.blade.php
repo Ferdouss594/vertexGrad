@@ -82,3 +82,84 @@
         </div>
     </div>
 </footer>
+<script>
+(function () {
+    function initVertexFooter() {
+        const footer = document.querySelector('footer');
+        if (!footer) return;
+
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const footerColumns = footer.querySelectorAll('nav, .space-y-4, .space-y-2.pt-2');
+
+        // reveal footer when it appears
+        if (!prefersReducedMotion && 'IntersectionObserver' in window) {
+            footer.style.opacity = '0';
+            footer.style.transform = 'translateY(34px)';
+            footer.style.transition = 'opacity 1s ease, transform 1s cubic-bezier(0.22, 1, 0.36, 1)';
+
+            const observer = new IntersectionObserver((entries, obs) => {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting) return;
+
+                    footer.style.opacity = '1';
+                    footer.style.transform = 'translateY(0)';
+
+                    footerColumns.forEach((col, index) => {
+                        col.style.opacity = '0';
+                        col.style.transform = 'translateY(20px)';
+                        col.style.transition = 'opacity 0.85s ease, transform 0.85s ease';
+
+                        setTimeout(() => {
+                            col.style.opacity = '1';
+                            col.style.transform = 'translateY(0)';
+                        }, 140 + (index * 120));
+                    });
+
+                    obs.unobserve(footer);
+                });
+            }, { threshold: 0.15 });
+
+            observer.observe(footer);
+        }
+
+        // footer links hover
+        const links = footer.querySelectorAll('a');
+        links.forEach(link => {
+            link.style.transition = 'transform 0.25s ease, color 0.25s ease';
+
+            link.addEventListener('mouseenter', function () {
+                if (prefersReducedMotion) return;
+                link.style.transform = 'translateX(3px)';
+            });
+
+            link.addEventListener('mouseleave', function () {
+                link.style.transform = '';
+            });
+        });
+
+        // social icons
+        const socialLinks = footer.querySelectorAll('.fab');
+        socialLinks.forEach(icon => {
+            const parent = icon.closest('a');
+            if (!parent) return;
+
+            parent.style.transition = 'transform 0.28s ease';
+
+            parent.addEventListener('mouseenter', function () {
+                if (prefersReducedMotion) return;
+                parent.style.transform = 'translateY(-4px) scale(1.06)';
+            });
+
+            parent.addEventListener('mouseleave', function () {
+                parent.style.transform = '';
+            });
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initVertexFooter);
+    } else {
+        initVertexFooter();
+    }
+})();
+</script>

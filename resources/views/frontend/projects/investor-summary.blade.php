@@ -233,4 +233,259 @@
         </div>
     </div>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // =====================================
+    // Unified style system
+    // =====================================
+    if (!document.getElementById('vg-unified-motion-style')) {
+        const style = document.createElement('style');
+        style.id = 'vg-unified-motion-style';
+        style.innerHTML = `
+            @keyframes vgSpin {
+                from { transform: rotate(0deg); }
+                to { transform: rotate(360deg); }
+            }
+
+            .vg-progress-line {
+                position: fixed;
+                top: 0;
+                left: 0;
+                height: 3px;
+                width: 0%;
+                z-index: 9999;
+                pointer-events: none;
+                background: linear-gradient(90deg, rgba(99,102,241,0.98), rgba(34,197,94,0.98));
+                box-shadow: 0 0 18px rgba(99,102,241,0.28);
+                transition: width 0.08s linear;
+            }
+
+            .vg-reveal-up {
+                opacity: 0;
+                transform: translateY(42px);
+                transition: opacity 1.15s ease, transform 1.15s cubic-bezier(0.22, 1, 0.36, 1);
+                will-change: opacity, transform;
+            }
+
+            .vg-reveal-left {
+                opacity: 0;
+                transform: translateX(-42px);
+                transition: opacity 1.15s ease, transform 1.15s cubic-bezier(0.22, 1, 0.36, 1);
+                will-change: opacity, transform;
+            }
+
+            .vg-reveal-right {
+                opacity: 0;
+                transform: translateX(42px);
+                transition: opacity 1.15s ease, transform 1.15s cubic-bezier(0.22, 1, 0.36, 1);
+                will-change: opacity, transform;
+            }
+
+            .vg-visible {
+                opacity: 1 !important;
+                transform: translate(0, 0) scale(1) !important;
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    // =====================================
+    // Reading progress
+    // =====================================
+    const progress = document.createElement('div');
+    progress.className = 'vg-progress-line';
+    document.body.appendChild(progress);
+
+    function updateProgress() {
+        const scrollTop = window.scrollY || window.pageYOffset;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const percent = docHeight > 0 ? Math.min((scrollTop / docHeight) * 100, 100) : 0;
+        progress.style.width = percent + '%';
+    }
+
+    updateProgress();
+    window.addEventListener('scroll', updateProgress, { passive: true });
+    window.addEventListener('resize', updateProgress);
+
+    // =====================================
+    // Main structure
+    // =====================================
+    const topBar = document.querySelector('.mb-6.flex');
+    const title = document.querySelector('h1');
+    const grid = document.querySelector('.grid.grid-cols-1.lg\\:grid-cols-3.gap-8');
+    const leftColumn = grid ? grid.children[0] : null;
+    const rightColumn = grid ? grid.children[1] : null;
+
+    const panels = Array.from(document.querySelectorAll('.theme-panel'));
+    const milestoneCards = Array.from(document.querySelectorAll('.theme-panel .p-5.rounded-2xl.border'));
+
+    // =====================================
+    // Calm page-load reveal
+    // =====================================
+    if (!prefersReducedMotion) {
+        if (topBar) topBar.classList.add('vg-reveal-up');
+        if (title) title.classList.add('vg-reveal-up');
+        if (leftColumn) leftColumn.classList.add('vg-reveal-left');
+        if (rightColumn) rightColumn.classList.add('vg-reveal-right');
+
+        setTimeout(() => topBar && topBar.classList.add('vg-visible'), 120);
+        setTimeout(() => title && title.classList.add('vg-visible'), 320);
+        setTimeout(() => leftColumn && leftColumn.classList.add('vg-visible'), 620);
+        setTimeout(() => rightColumn && rightColumn.classList.add('vg-visible'), 860);
+
+        panels.forEach((panel, index) => {
+            panel.style.opacity = '0';
+            panel.style.transform = 'translateY(34px)';
+            panel.style.transition = 'opacity 1.05s ease, transform 1.05s cubic-bezier(0.22, 1, 0.36, 1)';
+
+            setTimeout(() => {
+                panel.style.opacity = '1';
+                panel.style.transform = 'translateY(0)';
+            }, 700 + (index * 180));
+        });
+
+        milestoneCards.forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(26px) scale(0.988)';
+            card.style.transition = 'opacity 0.95s ease, transform 0.95s cubic-bezier(0.22, 1, 0.36, 1)';
+
+            setTimeout(() => {
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0) scale(1)';
+            }, 1500 + (index * 180));
+        });
+    }
+
+    // =====================================
+    // Unified hover polish
+    // =====================================
+    panels.forEach(panel => {
+        panel.style.transition = 'transform 0.32s ease, box-shadow 0.32s ease';
+
+        panel.addEventListener('mouseenter', function () {
+            if (prefersReducedMotion) return;
+            panel.style.transform = 'translateY(-6px)';
+            panel.style.boxShadow = '0 22px 48px rgba(0,0,0,0.09)';
+        });
+
+        panel.addEventListener('mouseleave', function () {
+            panel.style.transform = 'translateY(0)';
+            panel.style.boxShadow = '';
+        });
+    });
+
+    milestoneCards.forEach(card => {
+        card.style.transition = 'transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease';
+
+        card.addEventListener('mouseenter', function () {
+            if (prefersReducedMotion) return;
+            card.style.transform = 'translateY(-4px)';
+            card.style.boxShadow = '0 16px 32px rgba(0,0,0,0.07)';
+            card.style.borderColor = 'rgba(99,102,241,0.22)';
+        });
+
+        card.addEventListener('mouseleave', function () {
+            card.style.transform = '';
+            card.style.boxShadow = '';
+            card.style.borderColor = '';
+        });
+    });
+
+    // =====================================
+    // Unified number animation
+    // =====================================
+    function animateValue(el, finalValue, prefix = '', duration = 1500) {
+        const startTime = performance.now();
+
+        function update(now) {
+            const progress = Math.min((now - startTime) / duration, 1);
+            const eased = 1 - Math.pow(1 - progress, 3);
+            const currentValue = Math.floor(finalValue * eased);
+            el.textContent = prefix + currentValue.toLocaleString();
+
+            if (progress < 1) {
+                requestAnimationFrame(update);
+            } else {
+                el.textContent = prefix + finalValue.toLocaleString();
+            }
+        }
+
+        requestAnimationFrame(update);
+    }
+
+    if (!prefersReducedMotion) {
+        const numericEls = Array.from(document.querySelectorAll('h2, span')).filter(el => {
+            const text = el.textContent.trim();
+            return /^[$]?\d[\d,]*$/.test(text);
+        });
+
+        numericEls.forEach((el, index) => {
+            const text = el.textContent.trim();
+            const hasDollar = text.startsWith('$');
+            const value = parseInt(text.replace(/[^\d]/g, ''), 10);
+
+            if (isNaN(value)) return;
+
+            el.textContent = hasDollar ? '$0' : '0';
+
+            setTimeout(() => {
+                animateValue(el, value, hasDollar ? '$' : '', hasDollar ? 1700 : 1450);
+            }, 1200 + (index * 120));
+        });
+    }
+
+    // =====================================
+    // Unified download feedback
+    // =====================================
+    const downloadButton = Array.from(document.querySelectorAll('a[href]')).find(link =>
+        link.href.includes('pitch-deck') || link.href.includes('download')
+    );
+
+    if (downloadButton) {
+        const originalHTML = downloadButton.innerHTML;
+
+        downloadButton.addEventListener('click', function () {
+            downloadButton.style.pointerEvents = 'none';
+            downloadButton.style.opacity = '0.92';
+            downloadButton.innerHTML = `
+                <span style="display:inline-flex;align-items:center;gap:10px;">
+                    <span style="
+                        width:16px;
+                        height:16px;
+                        border:2px solid rgba(255,255,255,0.45);
+                        border-top-color:#ffffff;
+                        border-radius:50%;
+                        display:inline-block;
+                        animation: vgSpin .7s linear infinite;
+                    "></span>
+                    Preparing...
+                </span>
+            `;
+
+            setTimeout(() => {
+                downloadButton.style.pointerEvents = '';
+                downloadButton.style.opacity = '';
+                downloadButton.innerHTML = originalHTML;
+            }, 2200);
+        });
+    }
+
+    // =====================================
+    // Unified focus style
+    // =====================================
+    const interactive = document.querySelectorAll('a, button');
+    interactive.forEach(el => {
+        el.addEventListener('focus', function () {
+            el.style.outline = 'none';
+            el.style.boxShadow = '0 0 0 3px rgba(99,102,241,0.18)';
+        });
+
+        el.addEventListener('blur', function () {
+            el.style.boxShadow = '';
+        });
+    });
+});
+</script>
 @endsection

@@ -309,4 +309,358 @@
         @endif
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // =========================
+    // Page load stagger animation
+    // =========================
+    if (!prefersReducedMotion) {
+        const animatedBlocks = [
+            ...document.querySelectorAll('.theme-panel'),
+            ...document.querySelectorAll('h1'),
+            ...document.querySelectorAll('.grid > div')
+        ];
+
+        const uniqueBlocks = [...new Set(animatedBlocks)].filter(Boolean);
+
+        uniqueBlocks.forEach((el, index) => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(24px) scale(0.985)';
+            el.style.transition = 'opacity 0.65s ease, transform 0.65s ease';
+
+            setTimeout(() => {
+                el.style.opacity = '1';
+                el.style.transform = 'translateY(0) scale(1)';
+            }, 80 + (index * 90));
+        });
+    }
+
+    // =========================
+    // Hover lift for cards/files/images
+    // =========================
+    const hoverCards = document.querySelectorAll(
+        '.theme-panel, .theme-panel a.block, .theme-panel .flex.items-center.justify-between.p-3'
+    );
+
+    hoverCards.forEach(card => {
+        const originalTransition = getComputedStyle(card).transition;
+        card.style.transition = originalTransition && originalTransition !== 'all 0s ease 0s'
+            ? originalTransition + ', transform 0.22s ease, box-shadow 0.22s ease'
+            : 'transform 0.22s ease, box-shadow 0.22s ease';
+
+        card.addEventListener('mouseenter', function () {
+            if (prefersReducedMotion) return;
+            if (card.classList.contains('theme-panel')) return;
+            card.style.transform = 'translateY(-4px)';
+            card.style.boxShadow = '0 16px 35px rgba(0,0,0,0.08)';
+        });
+
+        card.addEventListener('mouseleave', function () {
+            if (card.classList.contains('theme-panel')) return;
+            card.style.transform = '';
+            card.style.boxShadow = '';
+        });
+    });
+
+    // =========================
+    // Animated numbers
+    // =========================
+    if (!prefersReducedMotion) {
+        const numberCandidates = Array.from(document.querySelectorAll('h2, span')).filter(el => {
+            const text = el.textContent.trim();
+            return /^[$]?\d[\d,]*$/.test(text);
+        });
+
+        numberCandidates.forEach((el, index) => {
+            const originalText = el.textContent.trim();
+            const hasDollar = originalText.startsWith('$');
+            const numericValue = parseInt(originalText.replace(/[^\d]/g, ''), 10);
+
+            if (isNaN(numericValue)) return;
+
+            el.textContent = hasDollar ? '$0' : '0';
+
+            setTimeout(() => {
+                const duration = 950;
+                const startTime = performance.now();
+
+                function animate(currentTime) {
+                    const progress = Math.min((currentTime - startTime) / duration, 1);
+                    const eased = 1 - Math.pow(1 - progress, 3);
+                    const current = Math.floor(numericValue * eased);
+                    el.textContent = (hasDollar ? '$' : '') + current.toLocaleString();
+
+                    if (progress < 1) {
+                        requestAnimationFrame(animate);
+                    } else {
+                        el.textContent = (hasDollar ? '$' : '') + numericValue.toLocaleString();
+                    }
+                }
+
+                requestAnimationFrame(animate);
+            }, 150 + (index * 100));
+        });
+    }
+
+    // =========================
+    // Image preview modal
+    // =========================
+    const imageLinks = document.querySelectorAll('a[href] img');
+    if (imageLinks.length) {
+        const modal = document.createElement('div');
+        modal.innerHTML = `
+            <div id="projectImagePreviewModal" style="
+                position: fixed;
+                inset: 0;
+                background: rgba(0,0,0,0.82);
+                display: none;
+                align-items: center;
+                justify-content: center;
+                z-index: 9999;
+                padding: 24px;
+                opacity: 0;
+                transition: opacity 0.25s ease;
+            ">
+                <button type="button" id="projectImagePreviewClose" style="
+                    position: absolute;
+                    top: 18px;
+                    right: 18px;
+                    width: 46px;
+                    height: 46px;
+                    border: none;
+                    border-radius: 14px;
+                    background: rgba(255,255,255,0.12);
+                    color: white;
+                    font-size: 20px;
+                    cursor: pointer;
+                ">×</button>
+                <img id="projectImagePreviewTarget" src="" alt="Preview" style="
+                    max-width: 92vw;
+                    max-height: 88vh;
+                    border-radius: 20px;
+                    box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+                    transform: scale(0.96);
+                    transition: transform 0.25s ease;
+                ">
+            </div>
+        `;
+        document.body.appendChild(modal);
+
+        const modalEl = document.getElementById('projectImagePreviewModal');
+        const modalImg = document.getElementById('projectImagePreviewTarget');
+        const closeBtn = document.getElementById('projectImagePreviewClose');
+
+        imageLinks.forEach(img => {
+            const link = img.closest('a');
+            if (!link) return;
+
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+                modalImg.src = link.href;
+                modalEl.style.display = 'flex';
+
+                requestAnimationFrame(() => {
+                    modalEl.style.opacity = '1';
+                    modalImg.style.transform = 'scale(1)';
+                });
+
+                document.body.style.overflow = 'hidden';
+            });
+        });
+
+        function closeModal() {
+            modalEl.style.opacity = '0';
+            modalImg.style.transform = 'scale(0.96)';
+
+            setTimeout(() => {
+                modalEl.style.display = 'none';
+                modalImg.src = '';
+                document.body.style.overflow = '';
+            }, 220);
+        }
+
+        closeBtn.addEventListener('click', closeModal);
+        modalEl.addEventListener('click', function (e) {
+            if (e.target === modalEl) closeModal();
+        });
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && modalEl.style.display === 'flex') {
+                closeModal();
+            }
+        });
+    }
+
+    // =========================
+    // Video polish
+    // =========================
+    const video = document.querySelector('video');
+    if (video) {
+        video.addEventListener('play', function () {
+            video.style.boxShadow = '0 20px 45px rgba(0,0,0,0.18)';
+            video.style.transform = 'scale(1.003)';
+            video.style.transition = 'transform 0.25s ease, box-shadow 0.25s ease';
+        });
+
+        video.addEventListener('pause', function () {
+            video.style.boxShadow = '';
+            video.style.transform = '';
+        });
+
+        video.addEventListener('ended', function () {
+            video.style.boxShadow = '';
+            video.style.transform = '';
+        });
+    }
+
+    // =========================
+    // Funding forms UX
+    // =========================
+    const fundingForms = document.querySelectorAll('form[action*="requestFunding"]');
+    fundingForms.forEach(form => {
+        const amountInput = form.querySelector('input[name="amount"]');
+        const messageInput = form.querySelector('textarea[name="message"]');
+        const submitBtn = form.querySelector('button[type="submit"]');
+
+        if (amountInput) {
+            const hint = document.createElement('div');
+            hint.className = 'text-xs mt-2';
+            hint.style.minHeight = '18px';
+            amountInput.insertAdjacentElement('afterend', hint);
+
+            function updateAmountHint() {
+                const value = parseFloat(amountInput.value);
+                if (!amountInput.value.trim()) {
+                    hint.textContent = '';
+                    hint.className = 'text-xs mt-2';
+                    amountInput.style.borderColor = '';
+                    return;
+                }
+
+                if (isNaN(value) || value <= 0) {
+                    hint.textContent = 'Please enter a valid funding amount.';
+                    hint.className = 'text-xs mt-2 text-red-500';
+                    amountInput.style.borderColor = 'rgb(239 68 68)';
+                } else {
+                    hint.textContent = 'Amount looks good.';
+                    hint.className = 'text-xs mt-2 text-green-600';
+                    amountInput.style.borderColor = 'rgb(34 197 94)';
+                }
+            }
+
+            amountInput.addEventListener('input', updateAmountHint);
+            amountInput.addEventListener('blur', updateAmountHint);
+        }
+
+        if (messageInput) {
+            const counter = document.createElement('div');
+            counter.className = 'text-xs text-theme-muted mt-2 text-right';
+            messageInput.insertAdjacentElement('afterend', counter);
+
+            function updateCounter() {
+                const length = messageInput.value.length;
+                counter.textContent = `${length} characters`;
+
+                if (length > 500) {
+                    counter.className = 'text-xs mt-2 text-right text-red-500';
+                } else if (length > 300) {
+                    counter.className = 'text-xs mt-2 text-right text-yellow-500';
+                } else {
+                    counter.className = 'text-xs text-theme-muted mt-2 text-right';
+                }
+            }
+
+            updateCounter();
+            messageInput.addEventListener('input', updateCounter);
+        }
+
+        form.addEventListener('submit', function () {
+            if (!submitBtn) return;
+
+            submitBtn.disabled = true;
+            submitBtn.dataset.originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = `
+                <span style="display:inline-flex;align-items:center;gap:10px;">
+                    <span style="
+                        width:16px;
+                        height:16px;
+                        border:2px solid rgba(255,255,255,0.45);
+                        border-top-color:white;
+                        border-radius:50%;
+                        display:inline-block;
+                        animation: projectSpin .7s linear infinite;
+                    "></span>
+                    Processing...
+                </span>
+            `;
+            submitBtn.style.opacity = '0.9';
+            submitBtn.style.cursor = 'wait';
+        });
+    });
+
+    // =========================
+    // Other form loading states
+    // =========================
+    const allForms = document.querySelectorAll('form');
+    allForms.forEach(form => {
+        const submitBtn = form.querySelector('button[type="submit"]');
+        if (!submitBtn) return;
+
+        if (form.action.includes('requestFunding')) return;
+
+        form.addEventListener('submit', function () {
+            submitBtn.disabled = true;
+
+            if (!submitBtn.dataset.originalText) {
+                submitBtn.dataset.originalText = submitBtn.innerHTML;
+            }
+
+            submitBtn.innerHTML = `
+                <span style="display:inline-flex;align-items:center;gap:10px;">
+                    <span style="
+                        width:16px;
+                        height:16px;
+                        border:2px solid rgba(255,255,255,0.45);
+                        border-top-color:currentColor;
+                        border-radius:50%;
+                        display:inline-block;
+                        animation: projectSpin .7s linear infinite;
+                    "></span>
+                    Loading...
+                </span>
+            `;
+        });
+    });
+
+    // =========================
+    // Accessibility focus style
+    // =========================
+    const interactiveItems = document.querySelectorAll('a, button, input, textarea');
+    interactiveItems.forEach(item => {
+        item.addEventListener('focus', function () {
+            item.style.outline = 'none';
+            item.style.boxShadow = '0 0 0 3px rgba(99, 102, 241, 0.18)';
+        });
+
+        item.addEventListener('blur', function () {
+            item.style.boxShadow = '';
+        });
+    });
+
+    // =========================
+    // Inject spin keyframes
+    // =========================
+    const style = document.createElement('style');
+    style.innerHTML = `
+        @keyframes projectSpin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    `;
+    document.head.appendChild(style);
+});
+</script>
 @endsection
