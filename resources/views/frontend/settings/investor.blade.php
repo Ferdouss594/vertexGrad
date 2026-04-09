@@ -341,4 +341,216 @@
 
     </div>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const headerPanel = document.querySelector('header .theme-panel');
+    const alerts = Array.from(document.querySelectorAll('.mb-6 > div'));
+    const form = document.querySelector('form');
+    const sections = Array.from(document.querySelectorAll('form > section.theme-panel'));
+    const statNumbers = Array.from(document.querySelectorAll('header .text-3xl.font-black.text-theme-text'));
+    const inputs = Array.from(document.querySelectorAll('input[type="text"], input[type="email"], input[type="number"], input[type="file"], textarea'));
+    const submitButton = form?.querySelector('button[type="submit"]');
+    const cancelLink = form?.querySelector('a[href]');
+    const profileImageInput = document.querySelector('input[name="profile_image"]');
+    const profilePreview = document.querySelector('.w-32.h-32 img');
+    const minInvestmentInput = document.querySelector('input[name="min_investment"]');
+    const verificationCard = Array.from(document.querySelectorAll('.theme-panel-soft')).find(card =>
+        card.textContent.includes('{{ __("frontend.investor.verification_status") }}') ||
+        card.textContent.trim().length > 0
+    );
+
+    if (!document.getElementById('vg-investor-settings-style')) {
+        const style = document.createElement('style');
+        style.id = 'vg-investor-settings-style';
+        style.textContent = `
+            .vg-reveal {
+                opacity: 0;
+                transform: translateY(22px);
+                transition: opacity .7s ease, transform .7s cubic-bezier(.22,1,.36,1);
+            }
+
+            .vg-reveal.is-visible {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            .vg-settings-panel {
+                transition: box-shadow .28s ease, transform .28s ease, border-color .28s ease;
+            }
+
+            .vg-settings-panel:hover {
+                box-shadow: 0 22px 52px rgba(0,0,0,.08);
+            }
+
+            .vg-settings-field {
+                transition: border-color .2s ease, box-shadow .2s ease, background-color .2s ease;
+            }
+
+            .vg-settings-field:focus {
+                box-shadow: 0 0 0 4px rgba(99,102,241,.10);
+            }
+
+            .vg-file-ready {
+                border-color: rgba(34,197,94,.45) !important;
+                box-shadow: 0 0 0 4px rgba(34,197,94,.08);
+            }
+
+            .vg-field-ok {
+                border-color: rgba(34,197,94,.45) !important;
+                box-shadow: 0 0 0 4px rgba(34,197,94,.08);
+            }
+
+            .vg-status-card {
+                transition: box-shadow .22s ease, transform .22s ease, background-color .22s ease;
+            }
+
+            .vg-status-card:hover {
+                background-color: rgba(34,197,94,.05);
+            }
+
+            .vg-submit-btn {
+                transition: transform .22s ease, box-shadow .22s ease, opacity .22s ease;
+            }
+
+            .vg-submit-btn:hover {
+                transform: translateY(-1px);
+            }
+
+            .vg-submit-btn.is-loading {
+                pointer-events: none;
+                opacity: .92;
+            }
+
+            .vg-focus-ring:focus-visible {
+                outline: none;
+                box-shadow: 0 0 0 3px rgba(99,102,241,.16);
+                border-radius: 14px;
+            }
+
+            @media (prefers-reduced-motion: reduce) {
+                .vg-reveal,
+                .vg-settings-panel,
+                .vg-settings-field,
+                .vg-status-card,
+                .vg-submit-btn {
+                    transition: none !important;
+                    transform: none !important;
+                    animation: none !important;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    function animateCount(el, finalValue, duration = 1200) {
+        if (prefersReducedMotion) {
+            el.textContent = finalValue.toLocaleString();
+            return;
+        }
+
+        const startTime = performance.now();
+
+        function frame(now) {
+            const progress = Math.min((now - startTime) / duration, 1);
+            const eased = 1 - Math.pow(1 - progress, 3);
+            const current = Math.floor(finalValue * eased);
+            el.textContent = current.toLocaleString();
+
+            if (progress < 1) {
+                requestAnimationFrame(frame);
+            } else {
+                el.textContent = finalValue.toLocaleString();
+            }
+        }
+
+        requestAnimationFrame(frame);
+    }
+
+    [headerPanel, ...alerts, ...sections].filter(Boolean).forEach((el, index) => {
+        el.classList.add('vg-reveal');
+
+        if (el.classList.contains('theme-panel')) {
+            el.classList.add('vg-settings-panel');
+        }
+
+        if (prefersReducedMotion) {
+            el.classList.add('is-visible');
+            return;
+        }
+
+        setTimeout(() => {
+            el.classList.add('is-visible');
+        }, 100 + (index * 110));
+    });
+
+    statNumbers.forEach((el, index) => {
+        const value = parseInt(el.textContent.replace(/[^\d]/g, ''), 10);
+        if (Number.isNaN(value)) return;
+
+        el.textContent = '0';
+        setTimeout(() => animateCount(el, value, 1100), 250 + (index * 140));
+    });
+
+    inputs.forEach(input => {
+        input.classList.add('vg-settings-field', 'vg-focus-ring');
+    });
+
+    if (cancelLink) {
+        cancelLink.classList.add('vg-focus-ring');
+    }
+
+    if (profileImageInput && profilePreview) {
+        profileImageInput.addEventListener('change', event => {
+            const file = event.target.files?.[0];
+            if (!file) return;
+
+            if (!file.type.startsWith('image/')) return;
+
+            const reader = new FileReader();
+            reader.onload = e => {
+                profilePreview.src = e.target.result;
+                profileImageInput.classList.add('vg-file-ready');
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    if (minInvestmentInput) {
+        const validateMinInvestment = () => {
+            const value = parseFloat(minInvestmentInput.value);
+            minInvestmentInput.classList.remove('vg-field-ok');
+
+            if (!Number.isNaN(value) && value >= 0) {
+                minInvestmentInput.classList.add('vg-field-ok');
+            }
+        };
+
+        minInvestmentInput.addEventListener('input', validateMinInvestment);
+        validateMinInvestment();
+    }
+
+    const statusCards = Array.from(document.querySelectorAll('.theme-panel-soft'));
+    statusCards.forEach(card => {
+        if (card.textContent.includes('{{ __('frontend.investor.verified') }}')) {
+            card.classList.add('vg-status-card');
+        }
+    });
+
+    if (submitButton) {
+        submitButton.classList.add('vg-submit-btn', 'vg-focus-ring');
+
+        form?.addEventListener('submit', () => {
+            submitButton.classList.add('is-loading');
+            submitButton.innerHTML = `
+                <span class="inline-flex items-center gap-2">
+                    <i class="fas fa-circle-notch fa-spin"></i>
+                    {{ __('frontend.investor.save_preferences') }}
+                </span>
+            `;
+        });
+    }
+});
+</script>
 @endsection

@@ -129,4 +129,245 @@
         </form>
     </div>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const pagePanel = document.querySelector('.theme-panel');
+    const progressLabel = document.querySelector('.mb-8 h3');
+    const progressBar = document.querySelector('.mb-8 .bg-brand-accent');
+    const heading = document.querySelector('h2');
+    const subtitle = document.querySelector('h2 + p');
+    const errorBox = document.querySelector('.bg-red-500\\/10');
+    const form = document.querySelector('form');
+    const cards = Array.from(document.querySelectorAll('form .border.border-theme-border'));
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const confirmPasswordInput = document.getElementById('password_confirmation');
+    const checkboxes = Array.from(document.querySelectorAll('input[type="checkbox"]'));
+    const backLink = form?.querySelector('a[href*="step3"]');
+    const submitButton = form?.querySelector('button[type="submit"]');
+
+    if (!document.getElementById('vg-submit-step4-style')) {
+        const style = document.createElement('style');
+        style.id = 'vg-submit-step4-style';
+        style.textContent = `
+            .vg-reveal {
+                opacity: 0;
+                transform: translateY(18px);
+                transition: opacity .66s ease, transform .66s cubic-bezier(.22,1,.36,1);
+            }
+
+            .vg-reveal.is-visible {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            .vg-card {
+                transition: box-shadow .22s ease, border-color .22s ease;
+            }
+
+            .vg-card:hover {
+                box-shadow: 0 16px 36px rgba(0,0,0,.05);
+                border-color: rgba(99,102,241,.14);
+            }
+
+            .vg-field {
+                transition: border-color .2s ease, box-shadow .2s ease;
+            }
+
+            .vg-field:focus {
+                box-shadow: 0 0 0 4px rgba(99,102,241,.10);
+            }
+
+            .vg-field.is-ok {
+                border-color: rgba(34,197,94,.42);
+            }
+
+            .vg-field.is-mismatch {
+                border-color: rgba(239,68,68,.45);
+                box-shadow: 0 0 0 4px rgba(239,68,68,.08);
+            }
+
+            .vg-check-row {
+                transition: background-color .2s ease, box-shadow .2s ease, border-radius .2s ease;
+            }
+
+            .vg-check-row.is-checked {
+                background-color: rgba(99,102,241,.05);
+                box-shadow: inset 0 0 0 1px rgba(99,102,241,.16);
+                border-radius: 14px;
+            }
+
+            .vg-password-wrap {
+                position: relative;
+            }
+
+            .vg-password-toggle {
+                position: absolute;
+                right: 14px;
+                top: 50%;
+                transform: translateY(-50%);
+                background: transparent;
+                border: 0;
+                color: inherit;
+                cursor: pointer;
+                opacity: .75;
+                transition: opacity .2s ease;
+            }
+
+            .vg-password-toggle:hover {
+                opacity: 1;
+            }
+
+            .vg-password-input {
+                padding-right: 42px !important;
+            }
+
+            .vg-btn,
+            .vg-back-link {
+                transition: transform .22s ease, opacity .22s ease, box-shadow .22s ease;
+            }
+
+            .vg-btn:hover,
+            .vg-back-link:hover {
+                transform: translateY(-1px);
+            }
+
+            .vg-btn.is-loading {
+                pointer-events: none;
+                opacity: .92;
+            }
+
+            .vg-focus-ring:focus-visible {
+                outline: none;
+                box-shadow: 0 0 0 3px rgba(99,102,241,.16);
+                border-radius: 12px;
+            }
+
+            @media (prefers-reduced-motion: reduce) {
+                .vg-reveal,
+                .vg-card,
+                .vg-field,
+                .vg-check-row,
+                .vg-password-toggle,
+                .vg-btn,
+                .vg-back-link {
+                    transition: none !important;
+                    transform: none !important;
+                    animation: none !important;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    [pagePanel, progressLabel, heading, subtitle, errorBox, ...cards].filter(Boolean).forEach((el, index) => {
+        el.classList.add('vg-reveal');
+
+        if (cards.includes(el)) el.classList.add('vg-card');
+
+        if (prefersReducedMotion) {
+            el.classList.add('is-visible');
+            return;
+        }
+
+        setTimeout(() => el.classList.add('is-visible'), 80 + (index * 90));
+    });
+
+    if (progressBar && !prefersReducedMotion) {
+        progressBar.style.width = '0%';
+        progressBar.style.transition = 'width .95s cubic-bezier(.22,1,.36,1)';
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                progressBar.style.width = '80%';
+            });
+        });
+    }
+
+    [emailInput, passwordInput, confirmPasswordInput].filter(Boolean).forEach(field => {
+        field.classList.add('vg-field', 'vg-focus-ring');
+    });
+
+    function addPasswordToggle(input) {
+        if (!input || input.dataset.toggleApplied === 'true') return;
+
+        const wrapper = document.createElement('div');
+        wrapper.className = 'vg-password-wrap';
+        input.parentNode.insertBefore(wrapper, input);
+        wrapper.appendChild(input);
+
+        input.classList.add('vg-password-input');
+
+        const toggle = document.createElement('button');
+        toggle.type = 'button';
+        toggle.className = 'vg-password-toggle';
+        toggle.innerHTML = '<i class="fas fa-eye"></i>';
+        wrapper.appendChild(toggle);
+
+        toggle.addEventListener('click', () => {
+            const icon = toggle.querySelector('i');
+            const isPassword = input.type === 'password';
+            input.type = isPassword ? 'text' : 'password';
+
+            if (icon) {
+                icon.classList.toggle('fa-eye', !isPassword);
+                icon.classList.toggle('fa-eye-slash', isPassword);
+            }
+        });
+
+        input.dataset.toggleApplied = 'true';
+    }
+
+    addPasswordToggle(passwordInput);
+    addPasswordToggle(confirmPasswordInput);
+
+    function validatePasswords() {
+        if (!passwordInput || !confirmPasswordInput) return;
+
+        confirmPasswordInput.classList.remove('is-ok', 'is-mismatch');
+
+        if (!confirmPasswordInput.value) return;
+
+        if (passwordInput.value === confirmPasswordInput.value) {
+            confirmPasswordInput.classList.add('is-ok');
+        } else {
+            confirmPasswordInput.classList.add('is-mismatch');
+        }
+    }
+
+    passwordInput?.addEventListener('input', validatePasswords);
+    confirmPasswordInput?.addEventListener('input', validatePasswords);
+
+    checkboxes.forEach(checkbox => {
+        const label = checkbox.closest('label');
+        if (!label) return;
+
+        label.classList.add('vg-check-row', 'vg-focus-ring');
+
+        const syncState = () => {
+            label.classList.toggle('is-checked', checkbox.checked);
+        };
+
+        syncState();
+        checkbox.addEventListener('change', syncState);
+    });
+
+    if (backLink) backLink.classList.add('vg-back-link', 'vg-focus-ring');
+
+    if (submitButton) {
+        submitButton.classList.add('vg-btn', 'vg-focus-ring');
+
+        form?.addEventListener('submit', () => {
+            submitButton.classList.add('is-loading');
+            submitButton.innerHTML = `
+                <span class="inline-flex items-center gap-2">
+                    <i class="fas fa-circle-notch fa-spin"></i>
+                    {{ __('frontend.common.save_continue') }}
+                </span>
+            `;
+        });
+    }
+});
+</script>
 @endsection

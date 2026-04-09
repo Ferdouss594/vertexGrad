@@ -167,4 +167,166 @@
         </form>
     </div>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const pagePanel = document.querySelector('.theme-panel');
+    const progressLabel = document.querySelector('.mb-8 h3');
+    const progressBar = document.querySelector('.mb-8 .bg-brand-accent');
+    const heading = document.querySelector('h2');
+    const subtitle = document.querySelector('h2 + p');
+    const errorBox = document.querySelector('.bg-red-500\\/10');
+    const form = document.querySelector('form');
+    const fields = Array.from(document.querySelectorAll('input, textarea, select'));
+    const summaryField = document.getElementById('abstract');
+    const problemField = document.getElementById('problem_statement');
+    const submitButton = form?.querySelector('button[type="submit"]');
+
+    if (!document.getElementById('vg-submit-step1-style')) {
+        const style = document.createElement('style');
+        style.id = 'vg-submit-step1-style';
+        style.textContent = `
+            .vg-reveal {
+                opacity: 0;
+                transform: translateY(18px);
+                transition: opacity .65s ease, transform .65s cubic-bezier(.22,1,.36,1);
+            }
+
+            .vg-reveal.is-visible {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            .vg-field {
+                transition: border-color .2s ease, box-shadow .2s ease, background-color .2s ease;
+            }
+
+            .vg-field:focus {
+                box-shadow: 0 0 0 4px rgba(99,102,241,.10);
+            }
+
+            .vg-field.is-complete {
+                border-color: rgba(34,197,94,.42);
+            }
+
+            .vg-counter {
+                margin-top: 8px;
+                font-size: 12px;
+                color: var(--theme-muted, #6b7280);
+                text-align: right;
+            }
+
+            .vg-submit-btn {
+                transition: transform .22s ease, box-shadow .22s ease, opacity .22s ease;
+            }
+
+            .vg-submit-btn:hover {
+                transform: translateY(-1px);
+            }
+
+            .vg-submit-btn.is-loading {
+                pointer-events: none;
+                opacity: .92;
+            }
+
+            .vg-focus-ring:focus-visible {
+                outline: none;
+                box-shadow: 0 0 0 3px rgba(99,102,241,.16);
+                border-radius: 12px;
+            }
+
+            @media (prefers-reduced-motion: reduce) {
+                .vg-reveal,
+                .vg-field,
+                .vg-submit-btn {
+                    transition: none !important;
+                    transform: none !important;
+                    animation: none !important;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    [pagePanel, progressLabel, heading, subtitle, errorBox, form].filter(Boolean).forEach((el, index) => {
+        el.classList.add('vg-reveal');
+
+        if (prefersReducedMotion) {
+            el.classList.add('is-visible');
+            return;
+        }
+
+        setTimeout(() => el.classList.add('is-visible'), 90 + (index * 100));
+    });
+
+    if (progressBar && !prefersReducedMotion) {
+        progressBar.style.width = '0%';
+        progressBar.style.transition = 'width .85s cubic-bezier(.22,1,.36,1)';
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                progressBar.style.width = '20%';
+            });
+        });
+    }
+
+    fields.forEach((field, index) => {
+        field.classList.add('vg-field', 'vg-focus-ring');
+
+        const syncState = () => {
+            const value = (field.value || '').trim();
+            field.classList.toggle('is-complete', value.length > 0);
+        };
+
+        syncState();
+        field.addEventListener('input', syncState);
+        field.addEventListener('change', syncState);
+
+        if (!prefersReducedMotion) {
+            field.style.opacity = '0';
+            field.style.transform = 'translateY(10px)';
+            field.style.transition += ', opacity .45s ease, transform .45s ease';
+
+            setTimeout(() => {
+                field.style.opacity = '1';
+                field.style.transform = 'translateY(0)';
+            }, 220 + (index * 55));
+        }
+    });
+
+    function addCounter(textarea, minGood = 80) {
+        if (!textarea) return;
+
+        const counter = document.createElement('div');
+        counter.className = 'vg-counter';
+        textarea.insertAdjacentElement('afterend', counter);
+
+        const updateCounter = () => {
+            const len = textarea.value.trim().length;
+            counter.textContent = `${len} characters`;
+            counter.style.color = len >= minGood ? '' : '';
+        };
+
+        updateCounter();
+        textarea.addEventListener('input', updateCounter);
+    }
+
+    addCounter(summaryField, 120);
+    addCounter(problemField, 80);
+
+    if (submitButton) {
+        submitButton.classList.add('vg-submit-btn', 'vg-focus-ring');
+
+        form?.addEventListener('submit', () => {
+            submitButton.classList.add('is-loading');
+            submitButton.innerHTML = `
+                <span class="inline-flex items-center gap-2">
+                    <i class="fas fa-circle-notch fa-spin"></i>
+                    {{ __('frontend.common.save_continue') }}
+                </span>
+            `;
+        });
+    }
+});
+</script>
 @endsection

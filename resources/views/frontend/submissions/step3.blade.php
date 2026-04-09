@@ -248,4 +248,204 @@
         </form>
     </div>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const pagePanel = document.querySelector('.theme-panel');
+    const progressLabel = document.querySelector('.mb-8 h3');
+    const progressBar = document.querySelector('.mb-8 .bg-brand-accent');
+    const heading = document.querySelector('h2');
+    const subtitle = document.querySelector('h2 + p');
+    const errorBox = document.querySelector('.bg-red-500\\/10');
+    const form = document.querySelector('form');
+    const cards = Array.from(document.querySelectorAll('form .border.border-theme-border'));
+    const fields = Array.from(document.querySelectorAll('input, select, textarea'));
+    const requestedAmountInput = document.getElementById('requested_amount');
+    const durationInput = document.getElementById('duration_months');
+    const milestoneMonthInputs = Array.from(document.querySelectorAll('input[id^="milestone_"][id$="_month"]'));
+    const backLink = form?.querySelector('a[href*="step2"]');
+    const submitButton = form?.querySelector('button[type="submit"]');
+
+    if (!document.getElementById('vg-submit-step3-style')) {
+        const style = document.createElement('style');
+        style.id = 'vg-submit-step3-style';
+        style.textContent = `
+            .vg-reveal {
+                opacity: 0;
+                transform: translateY(18px);
+                transition: opacity .66s ease, transform .66s cubic-bezier(.22,1,.36,1);
+            }
+
+            .vg-reveal.is-visible {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            .vg-card {
+                transition: box-shadow .22s ease, border-color .22s ease;
+            }
+
+            .vg-card:hover {
+                box-shadow: 0 16px 36px rgba(0,0,0,.05);
+                border-color: rgba(99,102,241,.14);
+            }
+
+            .vg-field {
+                transition: border-color .2s ease, box-shadow .2s ease;
+            }
+
+            .vg-field:focus {
+                box-shadow: 0 0 0 4px rgba(99,102,241,.10);
+            }
+
+            .vg-field.is-valid {
+                border-color: rgba(34,197,94,.42);
+            }
+
+            .vg-field.is-warning {
+                border-color: rgba(245,158,11,.45);
+                box-shadow: 0 0 0 4px rgba(245,158,11,.08);
+            }
+
+            .vg-inline-note {
+                margin-top: 8px;
+                font-size: 12px;
+                color: var(--theme-muted, #6b7280);
+            }
+
+            .vg-btn,
+            .vg-back-link {
+                transition: transform .22s ease, opacity .22s ease, box-shadow .22s ease;
+            }
+
+            .vg-btn:hover,
+            .vg-back-link:hover {
+                transform: translateY(-1px);
+            }
+
+            .vg-btn.is-loading {
+                pointer-events: none;
+                opacity: .92;
+            }
+
+            .vg-focus-ring:focus-visible {
+                outline: none;
+                box-shadow: 0 0 0 3px rgba(99,102,241,.16);
+                border-radius: 12px;
+            }
+
+            @media (prefers-reduced-motion: reduce) {
+                .vg-reveal,
+                .vg-card,
+                .vg-field,
+                .vg-btn,
+                .vg-back-link {
+                    transition: none !important;
+                    transform: none !important;
+                    animation: none !important;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    [pagePanel, progressLabel, heading, subtitle, errorBox, ...cards].filter(Boolean).forEach((el, index) => {
+        el.classList.add('vg-reveal');
+
+        if (cards.includes(el)) el.classList.add('vg-card');
+
+        if (prefersReducedMotion) {
+            el.classList.add('is-visible');
+            return;
+        }
+
+        setTimeout(() => el.classList.add('is-visible'), 80 + (index * 90));
+    });
+
+    if (progressBar && !prefersReducedMotion) {
+        progressBar.style.width = '0%';
+        progressBar.style.transition = 'width .95s cubic-bezier(.22,1,.36,1)';
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                progressBar.style.width = '60%';
+            });
+        });
+    }
+
+    fields.forEach(field => {
+        field.classList.add('vg-field', 'vg-focus-ring');
+
+        const syncState = () => {
+            const value = (field.value || '').trim();
+            field.classList.toggle('is-valid', value.length > 0);
+        };
+
+        syncState();
+        field.addEventListener('input', syncState);
+        field.addEventListener('change', syncState);
+    });
+
+    function addNote(input, formatter) {
+        if (!input) return null;
+        const note = document.createElement('div');
+        note.className = 'vg-inline-note';
+        input.insertAdjacentElement('afterend', note);
+
+        const update = () => {
+            note.textContent = formatter(input.value);
+        };
+
+        update();
+        input.addEventListener('input', update);
+        return note;
+    }
+
+    addNote(requestedAmountInput, value => {
+        const number = parseFloat(value);
+        if (Number.isNaN(number) || value === '') return 'Enter the estimated amount needed.';
+        return `Estimated funding: $${number.toLocaleString()}`;
+    });
+
+    addNote(durationInput, value => {
+        const number = parseInt(value, 10);
+        if (Number.isNaN(number) || value === '') return 'Set the expected implementation period.';
+        return `Estimated duration: ${number} month${number > 1 ? 's' : ''}`;
+    });
+
+    milestoneMonthInputs.forEach(input => {
+        const validateMonth = () => {
+            const value = parseInt(input.value, 10);
+            input.classList.remove('is-warning');
+
+            if (!Number.isNaN(value) && durationInput?.value) {
+                const duration = parseInt(durationInput.value, 10);
+                if (!Number.isNaN(duration) && value > duration) {
+                    input.classList.add('is-warning');
+                }
+            }
+        };
+
+        input.addEventListener('input', validateMonth);
+        durationInput?.addEventListener('input', validateMonth);
+        validateMonth();
+    });
+
+    if (backLink) backLink.classList.add('vg-back-link', 'vg-focus-ring');
+
+    if (submitButton) {
+        submitButton.classList.add('vg-btn', 'vg-focus-ring');
+
+        form?.addEventListener('submit', () => {
+            submitButton.classList.add('is-loading');
+            submitButton.innerHTML = `
+                <span class="inline-flex items-center gap-2">
+                    <i class="fas fa-circle-notch fa-spin"></i>
+                    {{ __('frontend.common.save_continue') }}
+                </span>
+            `;
+        });
+    }
+});
+</script>
 @endsection

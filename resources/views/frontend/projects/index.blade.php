@@ -27,60 +27,140 @@
                         <i class="fas fa-filter mr-3 text-brand-accent text-xs"></i> {{ __('frontend.pipeline.filter') }}
                     </h3>
 
-                    <form action="{{ route('frontend.projects.index') }}" method="GET" class="space-y-6">
-                        <div>
-                            <label class="text-[10px] font-black text-theme-muted uppercase tracking-widest block mb-3">
-                                {{ __('frontend.pipeline.discipline') }}
-                            </label>
+<form action="{{ route('frontend.projects.index') }}" method="GET" class="space-y-6">
+    <div>
+        <label class="text-[10px] font-black text-theme-muted uppercase tracking-widest block mb-3">
+            Search
+        </label>
+        <input
+            type="text"
+            name="search"
+            value="{{ request('search') }}"
+            placeholder="Search projects, description, researcher..."
+            class="w-full bg-theme-surface-2 border border-theme-border rounded-xl p-3 text-theme-text text-sm focus:border-brand-accent outline-none transition-all"
+        >
+    </div>
 
-                            <select name="category" class="w-full bg-theme-surface-2 border border-theme-border rounded-xl p-3 text-theme-text text-sm focus:border-brand-accent outline-none transition-all">
-                                <option value="">{{ __('frontend.pipeline.all_fields') }}</option>
-                                @foreach($categories as $category)
-                                    <option value="{{ $category }}" {{ request('category') == $category ? 'selected' : '' }}>
-                                        {{ $category }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
+    <div>
+        <label class="text-[10px] font-black text-theme-muted uppercase tracking-widest block mb-3">
+            {{ __('frontend.pipeline.discipline') }}
+        </label>
 
-                        <div>
-                            <label class="text-[10px] font-black text-theme-muted uppercase tracking-widest block mb-3">
-                                {{ __('frontend.pipeline.max_funding') }}
-                            </label>
+        <select name="category" class="w-full bg-theme-surface-2 border border-theme-border rounded-xl p-3 text-theme-text text-sm focus:border-brand-accent outline-none transition-all">
+            <option value="">{{ __('frontend.pipeline.all_fields') }}</option>
+            @foreach($categories as $category)
+                <option value="{{ $category }}" {{ request('category') == $category ? 'selected' : '' }}>
+                    {{ $category }}
+                </option>
+            @endforeach
+        </select>
+    </div>
 
-                            <div class="flex justify-between text-brand-accent font-mono text-xs mb-2">
-                                <span>{{ __('frontend.pipeline.selected') }}:</span>
-                                <span>${{ number_format(request('budget_max', 1000000)) }}</span>
-                            </div>
+    <div class="grid grid-cols-2 gap-3">
+        <div>
+            <label class="text-[10px] font-black text-theme-muted uppercase tracking-widest block mb-3">
+                Min Budget
+            </label>
+            <input
+                type="number"
+                name="budget_min"
+                min="100"
+                step="100"
+                value="{{ request('budget_min', 100) }}"
+                placeholder="100"
+                class="w-full bg-theme-surface-2 border border-theme-border rounded-xl p-3 text-theme-text text-sm focus:border-brand-accent outline-none transition-all"
+            >
+        </div>
 
-                            <input
-                                type="range"
-                                name="budget_max"
-                                min="1000"
-                                max="1000000"
-                                step="5000"
-                                value="{{ request('budget_max', 1000000) }}"
-                                class="w-full accent-[var(--brand-accent)] cursor-pointer"
-                                oninput="this.previousElementSibling.lastElementChild.innerText = '$' + Number(this.value).toLocaleString()"
-                            >
-                        </div>
+        <div>
+            <label class="text-[10px] font-black text-theme-muted uppercase tracking-widest block mb-3">
+                Max Budget
+            </label>
+            <input
+                type="number"
+                name="budget_max"
+                min="100"
+                step="100"
+                value="{{ request('budget_max') }}"
+                placeholder="1000000"
+                class="w-full bg-theme-surface-2 border border-theme-border rounded-xl p-3 text-theme-text text-sm focus:border-brand-accent outline-none transition-all"
+            >
+        </div>
+    </div>
 
-                        <div class="pt-4 space-y-3">
-                            <button type="submit" class="w-full py-4 bg-brand-accent text-white font-black text-xs uppercase tracking-widest rounded-xl hover:bg-brand-accent-strong transition-all shadow-brand-soft">
-                                {{ __('frontend.pipeline.update_results') }}
-                            </button>
+    <div>
+        <label class="text-[10px] font-black text-theme-muted uppercase tracking-widest block mb-3">
+            Sort By
+        </label>
 
-                            @if(request()->filled('category') || request()->filled('budget_max'))
-                                <a href="{{ route('frontend.projects.index') }}" class="block text-center text-[10px] font-black text-theme-muted uppercase tracking-widest hover:text-red-500 transition-colors">
-                                    {{ __('frontend.pipeline.clear_filters') }}
-                                </a>
-                            @endif
-                        </div>
-                    </form>
+        <select name="sort" class="w-full bg-theme-surface-2 border border-theme-border rounded-xl p-3 text-theme-text text-sm focus:border-brand-accent outline-none transition-all">
+            <option value="latest" {{ request('sort', 'latest') == 'latest' ? 'selected' : '' }}>Latest</option>
+            <option value="oldest" {{ request('sort') == 'oldest' ? 'selected' : '' }}>Oldest</option>
+            <option value="budget_low" {{ request('sort') == 'budget_low' ? 'selected' : '' }}>Budget: Low to High</option>
+            <option value="budget_high" {{ request('sort') == 'budget_high' ? 'selected' : '' }}>Budget: High to Low</option>
+            <option value="name" {{ request('sort') == 'name' ? 'selected' : '' }}>Name A-Z</option>
+        </select>
+    </div>
+
+    <div class="pt-4 space-y-3">
+        <button type="submit" class="w-full py-4 bg-brand-accent text-white font-black text-xs uppercase tracking-widest rounded-xl hover:bg-brand-accent-strong transition-all shadow-brand-soft">
+            Apply Filters
+        </button>
+
+        @if(
+            request()->filled('search') ||
+            request()->filled('category') ||
+            request()->filled('budget_min') ||
+            request()->filled('budget_max') ||
+            request()->filled('sort')
+        )
+            <a href="{{ route('frontend.projects.index') }}" class="block text-center text-[10px] font-black text-theme-muted uppercase tracking-widest hover:text-red-500 transition-colors">
+                Clear Filters
+            </a>
+        @endif
+    </div>
+</form>
                 </div>
             </aside>
 
             <section class="lg:col-span-3">
+                <div class="theme-panel p-5 rounded-[1.5rem] mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+    <div>
+        <h3 class="text-theme-text font-bold text-lg">Projects Directory</h3>
+        <p class="text-sm text-theme-muted">
+            Showing {{ $projects->firstItem() ?? 0 }} - {{ $projects->lastItem() ?? 0 }}
+            of {{ $projects->total() }} projects
+        </p>
+    </div>
+
+    @if(request()->filled('search') || request()->filled('category') || request()->filled('budget_min') || request()->filled('budget_max'))
+        <div class="flex flex-wrap gap-2">
+            @if(request('search'))
+                <span class="px-3 py-1 rounded-full bg-brand-accent-soft text-brand-accent text-xs font-bold">
+                    Search: {{ request('search') }}
+                </span>
+            @endif
+
+            @if(request('category'))
+                <span class="px-3 py-1 rounded-full bg-brand-accent-soft text-brand-accent text-xs font-bold">
+                    {{ request('category') }}
+                </span>
+            @endif
+
+            @if(request('budget_min'))
+                <span class="px-3 py-1 rounded-full bg-brand-accent-soft text-brand-accent text-xs font-bold">
+                    Min ${{ number_format((float) request('budget_min')) }}
+                </span>
+            @endif
+
+            @if(request('budget_max'))
+                <span class="px-3 py-1 rounded-full bg-brand-accent-soft text-brand-accent text-xs font-bold">
+                    Max ${{ number_format((float) request('budget_max')) }}
+                </span>
+            @endif
+        </div>
+    @endif
+</div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     @forelse ($projects as $project)
                         @php

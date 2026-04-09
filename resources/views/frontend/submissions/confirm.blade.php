@@ -147,4 +147,146 @@
         </form>
     </div>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const pagePanel = document.querySelector('.theme-panel');
+    const progressLabel = document.querySelector('.mb-8 h3');
+    const progressBar = document.querySelector('.mb-8 .bg-brand-accent');
+    const heading = document.querySelector('h2');
+    const subtitle = document.querySelector('h2 + p');
+    const alerts = Array.from(document.querySelectorAll('.mb-6.p-4, .mb-6 > .p-4'));
+    const form = document.querySelector('form');
+    const sections = Array.from(document.querySelectorAll('form .border.border-theme-border'));
+    const noteBox = document.querySelector('.border-brand-accent\\/30');
+    const editLinks = Array.from(document.querySelectorAll('a[href*="project.submit.step"]'));
+    const submitButton = form?.querySelector('button[type="submit"]');
+    const backLink = form?.querySelector('a[href*="project.submit.step4"]');
+
+    if (!document.getElementById('vg-submit-review-style')) {
+        const style = document.createElement('style');
+        style.id = 'vg-submit-review-style';
+        style.textContent = `
+            .vg-reveal {
+                opacity: 0;
+                transform: translateY(20px);
+                transition: opacity .68s ease, transform .68s cubic-bezier(.22,1,.36,1);
+            }
+
+            .vg-reveal.is-visible {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            .vg-section-card {
+                transition: box-shadow .24s ease, border-color .24s ease, background-color .24s ease;
+            }
+
+            .vg-section-card:hover {
+                box-shadow: 0 18px 42px rgba(0,0,0,.06);
+                border-color: rgba(99,102,241,.16);
+            }
+
+            .vg-edit-link {
+                transition: color .2s ease, opacity .2s ease, transform .2s ease;
+            }
+
+            .vg-edit-link:hover {
+                transform: translateX(2px);
+            }
+
+            .vg-note-box {
+                transition: box-shadow .24s ease, border-color .24s ease;
+            }
+
+            .vg-note-box:hover {
+                box-shadow: 0 16px 36px rgba(99,102,241,.08);
+            }
+
+            .vg-submit-btn,
+            .vg-back-link {
+                transition: transform .22s ease, box-shadow .22s ease, opacity .22s ease;
+            }
+
+            .vg-submit-btn:hover,
+            .vg-back-link:hover {
+                transform: translateY(-1px);
+            }
+
+            .vg-submit-btn.is-loading {
+                pointer-events: none;
+                opacity: .92;
+            }
+
+            .vg-focus-ring:focus-visible {
+                outline: none;
+                box-shadow: 0 0 0 3px rgba(99,102,241,.16);
+                border-radius: 12px;
+            }
+
+            @media (prefers-reduced-motion: reduce) {
+                .vg-reveal,
+                .vg-section-card,
+                .vg-edit-link,
+                .vg-note-box,
+                .vg-submit-btn,
+                .vg-back-link {
+                    transition: none !important;
+                    transform: none !important;
+                    animation: none !important;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    [pagePanel, progressLabel, heading, subtitle, ...alerts, ...sections, noteBox].filter(Boolean).forEach((el, index) => {
+        el.classList.add('vg-reveal');
+
+        if (el.classList.contains('border') && el.classList.contains('bg-theme-surface-2')) {
+            el.classList.add('vg-section-card');
+        }
+
+        if (el === noteBox) {
+            el.classList.add('vg-note-box');
+        }
+
+        if (prefersReducedMotion) {
+            el.classList.add('is-visible');
+            return;
+        }
+
+        setTimeout(() => el.classList.add('is-visible'), 80 + (index * 90));
+    });
+
+    if (progressBar && !prefersReducedMotion) {
+        progressBar.style.width = '0%';
+        progressBar.style.transition = 'width 1s cubic-bezier(.22,1,.36,1)';
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                progressBar.style.width = '100%';
+            });
+        });
+    }
+
+    editLinks.forEach(link => link.classList.add('vg-edit-link', 'vg-focus-ring'));
+
+    if (backLink) backLink.classList.add('vg-back-link', 'vg-focus-ring');
+
+    if (submitButton) {
+        submitButton.classList.add('vg-submit-btn', 'vg-focus-ring');
+
+        form?.addEventListener('submit', () => {
+            submitButton.classList.add('is-loading');
+            submitButton.innerHTML = `
+                <span class="inline-flex items-center gap-2">
+                    <i class="fas fa-circle-notch fa-spin"></i>
+                    {{ __('frontend.submit_review.start_technical_scan') }}
+                </span>
+            `;
+        });
+    }
+});
+</script>
 @endsection

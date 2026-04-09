@@ -70,4 +70,208 @@
         </form>
     </div>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const panel = document.querySelector('.theme-panel');
+    const heading = document.querySelector('h2');
+    const form = document.querySelector('form');
+    const inputs = Array.from(document.querySelectorAll('input'));
+    const passwordInput = document.querySelector('input[name="password"]');
+    const confirmPasswordInput = document.querySelector('input[name="password_confirmation"]');
+    const submitButton = form?.querySelector('button[type="submit"]');
+
+    if (!document.getElementById('vg-investor-register-style')) {
+        const style = document.createElement('style');
+        style.id = 'vg-investor-register-style';
+        style.textContent = `
+            .vg-reveal {
+                opacity: 0;
+                transform: translateY(18px);
+                transition: opacity .65s ease, transform .65s cubic-bezier(.22,1,.36,1);
+            }
+
+            .vg-reveal.is-visible {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            .vg-auth-panel {
+                transition: box-shadow .28s ease, transform .28s ease;
+            }
+
+            .vg-auth-panel:hover {
+                box-shadow: 0 22px 52px rgba(0,0,0,.10);
+            }
+
+            .vg-auth-input {
+                transition: border-color .2s ease, box-shadow .2s ease, background-color .2s ease;
+            }
+
+            .vg-auth-input:focus {
+                box-shadow: 0 0 0 4px rgba(99,102,241,.10);
+            }
+
+            .vg-field-ok {
+                border-color: rgba(34,197,94,.45) !important;
+            }
+
+            .vg-field-mismatch {
+                border-color: rgba(239,68,68,.45) !important;
+                box-shadow: 0 0 0 4px rgba(239,68,68,.08);
+            }
+
+            .vg-auth-btn {
+                transition: transform .22s ease, box-shadow .22s ease, opacity .22s ease;
+            }
+
+            .vg-auth-btn:hover {
+                transform: translateY(-1px);
+            }
+
+            .vg-auth-btn.is-loading {
+                pointer-events: none;
+                opacity: .92;
+            }
+
+            .vg-password-wrap {
+                position: relative;
+            }
+
+            .vg-password-toggle {
+                position: absolute;
+                right: 14px;
+                top: 50%;
+                transform: translateY(-50%);
+                background: transparent;
+                border: 0;
+                color: inherit;
+                cursor: pointer;
+                opacity: .75;
+                transition: opacity .2s ease, transform .2s ease;
+            }
+
+            .vg-password-toggle:hover {
+                opacity: 1;
+            }
+
+            .vg-password-input {
+                padding-right: 42px !important;
+            }
+
+            .vg-focus-ring:focus-visible {
+                outline: none;
+                box-shadow: 0 0 0 3px rgba(99,102,241,.16);
+                border-radius: 12px;
+            }
+
+            @media (prefers-reduced-motion: reduce) {
+                .vg-reveal,
+                .vg-auth-panel,
+                .vg-auth-input,
+                .vg-auth-btn,
+                .vg-password-toggle {
+                    transition: none !important;
+                    transform: none !important;
+                    animation: none !important;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    [panel, heading, form].filter(Boolean).forEach((el, index) => {
+        el.classList.add('vg-reveal');
+
+        if (prefersReducedMotion) {
+            el.classList.add('is-visible');
+            return;
+        }
+
+        setTimeout(() => el.classList.add('is-visible'), 100 + (index * 120));
+    });
+
+    if (panel) panel.classList.add('vg-auth-panel');
+
+    inputs.forEach((input, index) => {
+        input.classList.add('vg-auth-input', 'vg-focus-ring');
+
+        if (!prefersReducedMotion) {
+            input.style.opacity = '0';
+            input.style.transform = 'translateY(10px)';
+            input.style.transition = 'opacity .5s ease, transform .5s ease, border-color .2s ease, box-shadow .2s ease';
+
+            setTimeout(() => {
+                input.style.opacity = '1';
+                input.style.transform = 'translateY(0)';
+            }, 220 + (index * 70));
+        }
+    });
+
+    function addPasswordToggle(input) {
+        if (!input || input.dataset.toggleApplied === 'true') return;
+
+        const wrapper = document.createElement('div');
+        wrapper.className = 'vg-password-wrap';
+        input.parentNode.insertBefore(wrapper, input);
+        wrapper.appendChild(input);
+
+        input.classList.add('vg-password-input');
+
+        const toggle = document.createElement('button');
+        toggle.type = 'button';
+        toggle.className = 'vg-password-toggle';
+        toggle.innerHTML = '<i class="fas fa-eye"></i>';
+        wrapper.appendChild(toggle);
+
+        toggle.addEventListener('click', () => {
+            const icon = toggle.querySelector('i');
+            const isPassword = input.type === 'password';
+            input.type = isPassword ? 'text' : 'password';
+
+            if (icon) {
+                icon.classList.toggle('fa-eye', !isPassword);
+                icon.classList.toggle('fa-eye-slash', isPassword);
+            }
+        });
+
+        input.dataset.toggleApplied = 'true';
+    }
+
+    addPasswordToggle(passwordInput);
+    addPasswordToggle(confirmPasswordInput);
+
+    function validatePasswords() {
+        if (!passwordInput || !confirmPasswordInput) return;
+
+        confirmPasswordInput.classList.remove('vg-field-ok', 'vg-field-mismatch');
+
+        if (!confirmPasswordInput.value) return;
+
+        if (passwordInput.value === confirmPasswordInput.value) {
+            confirmPasswordInput.classList.add('vg-field-ok');
+        } else {
+            confirmPasswordInput.classList.add('vg-field-mismatch');
+        }
+    }
+
+    passwordInput?.addEventListener('input', validatePasswords);
+    confirmPasswordInput?.addEventListener('input', validatePasswords);
+
+    if (submitButton) {
+        submitButton.classList.add('vg-auth-btn', 'vg-focus-ring');
+
+        form?.addEventListener('submit', () => {
+            submitButton.classList.add('is-loading');
+            submitButton.innerHTML = `
+                <span class="inline-flex items-center gap-2">
+                    <i class="fas fa-circle-notch fa-spin"></i>
+                    {{ __('frontend.auth.create_investor_account') }}
+                </span>
+            `;
+        });
+    }
+});
+</script>
 @endsection

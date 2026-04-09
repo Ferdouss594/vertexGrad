@@ -45,4 +45,111 @@
         </p>
     </div>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const panel = document.querySelector('.theme-panel');
+    const topIcon = document.querySelector('.theme-panel > i');
+    const heading = document.querySelector('h2');
+    const subtitle = document.querySelector('h2 + p');
+    const form = document.querySelector('form');
+    const emailInput = document.getElementById('email');
+    const submitButton = form?.querySelector('button[type="submit"]');
+    const backLink = document.querySelector('a[href*="login"]');
+
+    if (!document.getElementById('vg-forgot-password-style')) {
+        const style = document.createElement('style');
+        style.id = 'vg-forgot-password-style';
+        style.textContent = `
+            .vg-reveal {
+                opacity: 0;
+                transform: translateY(18px);
+                transition: opacity .65s ease, transform .65s cubic-bezier(.22,1,.36,1);
+            }
+
+            .vg-reveal.is-visible {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            .vg-auth-panel {
+                transition: box-shadow .28s ease, transform .28s ease;
+            }
+
+            .vg-auth-panel:hover {
+                box-shadow: 0 22px 52px rgba(0,0,0,.10);
+            }
+
+            .vg-auth-input {
+                transition: border-color .2s ease, box-shadow .2s ease, background-color .2s ease;
+            }
+
+            .vg-auth-input:focus {
+                box-shadow: 0 0 0 4px rgba(99,102,241,.10);
+            }
+
+            .vg-auth-btn {
+                transition: transform .22s ease, box-shadow .22s ease, opacity .22s ease;
+            }
+
+            .vg-auth-btn:hover {
+                transform: translateY(-1px);
+            }
+
+            .vg-auth-btn.is-loading {
+                pointer-events: none;
+                opacity: .92;
+            }
+
+            .vg-focus-ring:focus-visible {
+                outline: none;
+                box-shadow: 0 0 0 3px rgba(99,102,241,.16);
+                border-radius: 12px;
+            }
+
+            @media (prefers-reduced-motion: reduce) {
+                .vg-reveal,
+                .vg-auth-panel,
+                .vg-auth-input,
+                .vg-auth-btn {
+                    transition: none !important;
+                    transform: none !important;
+                    animation: none !important;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    [panel, topIcon, heading, subtitle, form].filter(Boolean).forEach((el, index) => {
+        el.classList.add('vg-reveal');
+
+        if (prefersReducedMotion) {
+            el.classList.add('is-visible');
+            return;
+        }
+
+        setTimeout(() => el.classList.add('is-visible'), 100 + (index * 110));
+    });
+
+    if (panel) panel.classList.add('vg-auth-panel');
+    if (emailInput) emailInput.classList.add('vg-auth-input', 'vg-focus-ring');
+    if (backLink) backLink.classList.add('vg-focus-ring');
+
+    if (submitButton) {
+        submitButton.classList.add('vg-auth-btn', 'vg-focus-ring');
+
+        form?.addEventListener('submit', () => {
+            submitButton.classList.add('is-loading');
+            submitButton.innerHTML = `
+                <span class="inline-flex items-center gap-2">
+                    <i class="fas fa-circle-notch fa-spin"></i>
+                    {{ __('frontend.auth.send_reset_link') }}
+                </span>
+            `;
+        });
+    }
+});
+</script>
 @endsection

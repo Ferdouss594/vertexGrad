@@ -250,4 +250,145 @@
         </form>
     </div>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const pagePanel = document.querySelector('.theme-panel');
+    const progressLabel = document.querySelector('.mb-8 h3');
+    const progressBar = document.querySelector('.mb-8 .bg-brand-accent');
+    const heading = document.querySelector('h2');
+    const subtitle = document.querySelector('h2 + p');
+    const errorBox = document.querySelector('.bg-red-500\\/10');
+    const form = document.querySelector('form');
+    const cards = Array.from(document.querySelectorAll('form .border.border-theme-border'));
+    const fields = Array.from(document.querySelectorAll('input, select'));
+    const backLink = form?.querySelector('a[href*="step1"]');
+    const submitButton = form?.querySelector('button[type="submit"]');
+
+    if (!document.getElementById('vg-submit-step2-style')) {
+        const style = document.createElement('style');
+        style.id = 'vg-submit-step2-style';
+        style.textContent = `
+            .vg-reveal {
+                opacity: 0;
+                transform: translateY(18px);
+                transition: opacity .66s ease, transform .66s cubic-bezier(.22,1,.36,1);
+            }
+
+            .vg-reveal.is-visible {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            .vg-card {
+                transition: box-shadow .22s ease, border-color .22s ease;
+            }
+
+            .vg-card:hover {
+                box-shadow: 0 16px 36px rgba(0,0,0,.05);
+                border-color: rgba(99,102,241,.14);
+            }
+
+            .vg-field {
+                transition: border-color .2s ease, box-shadow .2s ease;
+            }
+
+            .vg-field:focus {
+                box-shadow: 0 0 0 4px rgba(99,102,241,.10);
+            }
+
+            .vg-field.is-complete {
+                border-color: rgba(34,197,94,.42);
+            }
+
+            .vg-btn,
+            .vg-back-link {
+                transition: transform .22s ease, opacity .22s ease, box-shadow .22s ease;
+            }
+
+            .vg-btn:hover,
+            .vg-back-link:hover {
+                transform: translateY(-1px);
+            }
+
+            .vg-btn.is-loading {
+                pointer-events: none;
+                opacity: .92;
+            }
+
+            .vg-focus-ring:focus-visible {
+                outline: none;
+                box-shadow: 0 0 0 3px rgba(99,102,241,.16);
+                border-radius: 12px;
+            }
+
+            @media (prefers-reduced-motion: reduce) {
+                .vg-reveal,
+                .vg-card,
+                .vg-field,
+                .vg-btn,
+                .vg-back-link {
+                    transition: none !important;
+                    transform: none !important;
+                    animation: none !important;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    [pagePanel, progressLabel, heading, subtitle, errorBox, ...cards].filter(Boolean).forEach((el, index) => {
+        el.classList.add('vg-reveal');
+
+        if (cards.includes(el)) el.classList.add('vg-card');
+
+        if (prefersReducedMotion) {
+            el.classList.add('is-visible');
+            return;
+        }
+
+        setTimeout(() => el.classList.add('is-visible'), 80 + (index * 90));
+    });
+
+    if (progressBar && !prefersReducedMotion) {
+        progressBar.style.width = '0%';
+        progressBar.style.transition = 'width .9s cubic-bezier(.22,1,.36,1)';
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                progressBar.style.width = '40%';
+            });
+        });
+    }
+
+    fields.forEach(field => {
+        field.classList.add('vg-field', 'vg-focus-ring');
+
+        const syncState = () => {
+            const value = (field.value || '').trim();
+            field.classList.toggle('is-complete', value.length > 0);
+        };
+
+        syncState();
+        field.addEventListener('input', syncState);
+        field.addEventListener('change', syncState);
+    });
+
+    if (backLink) backLink.classList.add('vg-back-link', 'vg-focus-ring');
+
+    if (submitButton) {
+        submitButton.classList.add('vg-btn', 'vg-focus-ring');
+
+        form?.addEventListener('submit', () => {
+            submitButton.classList.add('is-loading');
+            submitButton.innerHTML = `
+                <span class="inline-flex items-center gap-2">
+                    <i class="fas fa-circle-notch fa-spin"></i>
+                    {{ __('frontend.common.save_continue') }}
+                </span>
+            `;
+        });
+    }
+});
+</script>
 @endsection

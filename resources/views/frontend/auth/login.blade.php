@@ -50,13 +50,12 @@
                     required
                     class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface-2 text-theme-text placeholder:text-theme-muted pr-10 focus:ring-0 focus:border-brand-accent"
                 >
-                <button
-                    type="button"
-                    onclick="togglePassword('loginPassword', this)"
-                    class="absolute right-3 top-10 text-theme-muted hover:text-brand-accent transition"
-                >
-                    <i class="fas fa-eye"></i>
-                </button>
+<button
+    type="button"
+    class="absolute right-3 top-10 text-theme-muted hover:text-brand-accent transition"
+>
+    <i class="fas fa-eye"></i>
+</button>
             </div>
 
             <div>
@@ -105,19 +104,168 @@
 </div>
 
 <script>
-    function togglePassword(id, button) {
-        const input = document.getElementById(id);
-        const icon = button.querySelector('i');
+document.addEventListener('DOMContentLoaded', () => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-        if (input.type === 'password') {
-            input.type = 'text';
-            icon.classList.remove('fa-eye');
-            icon.classList.add('fa-eye-slash');
-        } else {
-            input.type = 'password';
-            icon.classList.remove('fa-eye-slash');
-            icon.classList.add('fa-eye');
-        }
+    const panel = document.querySelector('.theme-panel');
+    const iconTop = document.querySelector('.text-center i');
+    const heading = document.querySelector('h2');
+    const subtitle = document.querySelector('h2 + p');
+    const errorBox = document.querySelector('.bg-red-500\\/10');
+    const form = document.querySelector('form');
+    const fields = Array.from(document.querySelectorAll('input, select, button, a'));
+    const submitButton = form?.querySelector('button[type="submit"]');
+    const passwordInput = document.getElementById('loginPassword');
+    const passwordToggle = document.querySelector('button[onclick*="togglePassword"]');
+
+    if (!document.getElementById('vg-login-style')) {
+        const style = document.createElement('style');
+        style.id = 'vg-login-style';
+        style.textContent = `
+            .vg-reveal {
+                opacity: 0;
+                transform: translateY(18px);
+                transition: opacity .65s ease, transform .65s cubic-bezier(.22,1,.36,1);
+            }
+
+            .vg-reveal.is-visible {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            .vg-login-panel {
+                transition: box-shadow .28s ease, transform .28s ease;
+            }
+
+            .vg-login-panel:hover {
+                box-shadow: 0 22px 52px rgba(0,0,0,.10);
+            }
+
+            .vg-login-input {
+                transition:
+                    border-color .2s ease,
+                    box-shadow .2s ease,
+                    background-color .2s ease;
+            }
+
+            .vg-login-input:focus {
+                box-shadow: 0 0 0 4px rgba(99,102,241,.10);
+            }
+
+            .vg-password-toggle {
+                transition: color .2s ease, transform .2s ease;
+            }
+
+            .vg-password-toggle:hover {
+                transform: scale(1.06);
+            }
+
+            .vg-submit-btn {
+                transition:
+                    transform .22s ease,
+                    box-shadow .22s ease,
+                    background-color .22s ease,
+                    opacity .22s ease;
+            }
+
+            .vg-submit-btn:hover {
+                transform: translateY(-1px);
+            }
+
+            .vg-submit-btn.is-loading {
+                pointer-events: none;
+                opacity: .92;
+            }
+
+            .vg-focus-ring:focus-visible {
+                outline: none;
+                box-shadow: 0 0 0 3px rgba(99,102,241,.16);
+                border-radius: 12px;
+            }
+
+            @media (prefers-reduced-motion: reduce) {
+                .vg-reveal,
+                .vg-login-panel,
+                .vg-login-input,
+                .vg-password-toggle,
+                .vg-submit-btn {
+                    transition: none !important;
+                    animation: none !important;
+                    transform: none !important;
+                }
+            }
+        `;
+        document.head.appendChild(style);
     }
+
+    const revealItems = [panel, iconTop, heading, subtitle, errorBox, form].filter(Boolean);
+
+    revealItems.forEach((el, index) => {
+        el.classList.add('vg-reveal');
+
+        if (prefersReducedMotion) {
+            el.classList.add('is-visible');
+            return;
+        }
+
+        setTimeout(() => {
+            el.classList.add('is-visible');
+        }, 100 + (index * 110));
+    });
+
+    if (panel) {
+        panel.classList.add('vg-login-panel');
+    }
+
+    document.querySelectorAll('input, select').forEach(el => {
+        el.classList.add('vg-login-input', 'vg-focus-ring');
+    });
+
+    document.querySelectorAll('button, a').forEach(el => {
+        el.classList.add('vg-focus-ring');
+    });
+
+    if (passwordToggle) {
+        passwordToggle.classList.add('vg-password-toggle');
+        passwordToggle.removeAttribute('onclick');
+
+        passwordToggle.addEventListener('click', () => {
+            if (!passwordInput) return;
+
+            const icon = passwordToggle.querySelector('i');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                if (icon) {
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                }
+            } else {
+                passwordInput.type = 'password';
+                if (icon) {
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                }
+            }
+        });
+    }
+
+    if (submitButton) {
+        submitButton.classList.add('vg-submit-btn');
+
+        form?.addEventListener('submit', () => {
+            submitButton.classList.add('is-loading');
+
+            const originalText = submitButton.innerHTML;
+            submitButton.dataset.originalText = originalText;
+            submitButton.innerHTML = `
+                <span class="inline-flex items-center gap-2">
+                    <i class="fas fa-circle-notch fa-spin"></i>
+                    {{ __('frontend.auth.log_in') }}
+                </span>
+            `;
+        });
+    }
+});
 </script>
 @endsection
