@@ -2,7 +2,6 @@
 
 @section('content')
 @php
-    $btnPrimaryClass = 'inline-flex items-center justify-center rounded-2xl px-8 py-4 font-black bg-brand-accent text-white hover:bg-brand-accent-strong transition duration-300 shadow-brand-soft';
     $btnSecondaryClass = 'inline-flex items-center justify-center rounded-2xl px-6 py-3 font-bold border border-brand-accent text-theme-text hover:bg-brand-accent hover:text-white transition duration-300';
 @endphp
 
@@ -30,11 +29,6 @@
                 <a href="{{ route('investor.investments') }}" class="{{ $btnSecondaryClass }}">
                     <i class="fas fa-briefcase mr-2"></i>
                     {{ __('frontend.investments.my_investments', [], app()->getLocale()) }}
-                </a>
-
-                <a href="{{ route('frontend.projects.index') }}" class="{{ $btnPrimaryClass }}">
-                    <i class="fas fa-compass mr-2"></i>
-                    {{ __('frontend.investor_dashboard.explore_all') }}
                 </a>
             </div>
         </header>
@@ -184,7 +178,7 @@
                                             {{ $investment->name }}
                                         </h4>
 
-                                        <p class="text-xs text-theme-muted mt-1">
+                                        <p class="text-xs text-theme-muted mt-1 truncate">
                                             {{ __('frontend.investor_dashboard.lead') }}:
                                             {{ $investment->student?->name ?? __('frontend.investor_dashboard.not_available') }}
                                         </p>
@@ -225,17 +219,15 @@
                     </div>
                 </section>
 
-                {{-- DEAL FLOW --}}
+                {{-- SMART RECOMMENDATIONS --}}
                 <section class="theme-panel p-10 rounded-[3rem]">
-                    <div class="flex justify-between items-center mb-8">
+                    <div class="mb-8">
                         <h3 class="text-xl font-black text-theme-text uppercase tracking-widest">
                             {{ __('frontend.investor_dashboard.suggested_for_you') }}
                         </h3>
-
-                        <a href="{{ route('frontend.projects.index') }}"
-                           class="text-brand-accent text-[10px] font-black hover:underline tracking-widest">
-                            {{ __('frontend.investor_dashboard.explore_all') }}
-                        </a>
+                        <p class="text-sm text-theme-muted mt-2">
+                            Personalized opportunities based on your recent interests and investment activity.
+                        </p>
                     </div>
 
                     <div class="space-y-4">
@@ -265,7 +257,7 @@
                                         </div>
 
                                         <div class="flex items-center gap-3 mt-2 flex-wrap">
-                                            <span class="text-xs text-theme-muted">
+                                            <span class="text-xs text-theme-muted truncate">
                                                 {{ $deal->student?->name ?? __('frontend.investor_dashboard.researcher') }}
                                             </span>
 
@@ -275,6 +267,10 @@
                                                     {{ __('frontend.investor_dashboard.video') }}
                                                 </span>
                                             @endif
+
+                                            <span class="text-xs text-theme-muted uppercase">
+                                                {{ $deal->status }}
+                                            </span>
                                         </div>
 
                                         @if($interestedCount > 0)
@@ -296,15 +292,28 @@
                                     </div>
                                 </div>
 
-                                <span class="text-green-600 font-mono text-sm font-bold shrink-0 ml-4">
-                                    ${{ number_format($deal->budget ?? 0) }}
-                                </span>
+                                <div class="text-right shrink-0 ml-4">
+                                    <span class="text-green-600 font-mono text-sm font-bold block">
+                                        ${{ number_format($deal->budget ?? 0) }}
+                                    </span>
+                                    <span class="text-[10px] text-theme-muted uppercase tracking-wider mt-1 block">
+                                        Matched for you
+                                    </span>
+                                </div>
                             </a>
                         @empty
                             <div class="text-center py-10 text-theme-muted italic text-sm">
                                 {{ __('frontend.investor_dashboard.no_open_opportunities') }}
                             </div>
                         @endforelse
+                    </div>
+
+                    <div class="mt-6 pt-6 border-t border-theme-border">
+                        <a href="{{ route('frontend.projects.index') }}"
+                           class="inline-flex items-center justify-center rounded-2xl px-6 py-3 font-bold border border-brand-accent text-theme-text hover:bg-brand-accent hover:text-white transition duration-300">
+                            <i class="fas fa-compass mr-2"></i>
+                            {{ __('frontend.investor_dashboard.explore_all') }}
+                        </a>
                     </div>
                 </section>
             </div>

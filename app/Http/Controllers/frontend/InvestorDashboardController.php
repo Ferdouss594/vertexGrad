@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Announcement;
 use App\Models\Project;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
@@ -18,77 +19,20 @@ class InvestorDashboardController extends Controller
 
         abort_unless($user && $user->role === 'Investor', 403);
 
-        $myInvestments = $user->investments()
-            ->with(['student', 'media', 'investors'])
-            ->orderByPivot('created_at', 'desc')
-            ->get();
+        $myInvestments = $this->getInvestorProjects($user);
+        $totalDeployed = $this->calculateTotalDeployed($myInvestments);
 
-        $totalDeployed = $myInvestments
-            ->where('pivot.status', 'approved')
-            ->sum(function ($project) {
-                return (float) ($project->pivot->amount ?? 0);
-            });
+        $interactedProjectIds = $this->getInteractedProjectIds($user);
+        $preferredCategories = $this->getPreferredCategories($user);
 
-        // Projects this investor already interacted with
-        $interactedProjectIds = $user->investments()
-            ->pluck('projects.project_id');
+        $suggestedProjects = $this->getSuggestedProjects(
+            $preferredCategories,
+            $interactedProjectIds,
+            3
+        );
 
-        // Preferred categories based on investor history
-        $preferredCategories = $user->investments()
-            ->whereNotNull('projects.category')
-            ->pluck('projects.category')
-            ->filter(function ($category) {
-                return filled(trim($category));
-            })
-            ->map(function ($category) {
-                return trim($category);
-            })
-            ->unique()
-            ->values();
-
-        // Suggested projects: same categories first, excluding already interacted projects
-        $suggestedProjectsQuery = Project::with(['student', 'media', 'investors'])
-            ->where('status', 'active')
-            ->whereNotIn('project_id', $interactedProjectIds);
-
-        if ($preferredCategories->isNotEmpty()) {
-            $suggestedProjectsQuery->whereIn('category', $preferredCategories);
-        }
-
-        $suggestedProjects = $suggestedProjectsQuery
-            ->latest('project_id')
-            ->take(6)
-            ->get();
-
-        // Fallback: fill remaining slots with latest active projects
-        if ($suggestedProjects->count() < 6) {
-            $existingSuggestedIds = $suggestedProjects->pluck('project_id');
-
-            $fallbackProjects = Project::with(['student', 'media', 'investors'])
-                ->where('status', 'active')
-                ->whereNotIn('project_id', $interactedProjectIds)
-                ->whereNotIn('project_id', $existingSuggestedIds)
-                ->latest('project_id')
-                ->take(6 - $suggestedProjects->count())
-                ->get();
-
-            $suggestedProjects = $suggestedProjects->concat($fallbackProjects);
-        }
-
-        $marketplaceStats = [
-            'active_projects'  => Project::where('status', 'active')->count(),
-            'interested_count' => $myInvestments->where('pivot.status', 'interested')->count(),
-            'requested_count'  => $myInvestments->where('pivot.status', 'requested')->count(),
-            'approved_count'   => $myInvestments->where('pivot.status', 'approved')->count(),
-        ];
-
-        $announcements = Announcement::published()
-            ->where(function ($query) {
-                $query->where('audience', 'all')
-                      ->orWhere('audience', 'investors');
-            })
-            ->ordered()
-            ->get();
+        $marketplaceStats = $this->getMarketplaceStats($myInvestments);
+        $announcements = $this->getInvestorAnnouncements();
 
         return view('frontend.dashboard.investor', compact(
             'myInvestments',
@@ -120,7 +64,6 @@ class InvestorDashboardController extends Controller
         abort_unless($user && $user->role === 'Investor', 403);
 
         $myInvestments = $user->investments()->get();
-
         $approvedInvestments = $myInvestments->where('pivot.status', 'approved')->count();
 
         return view('frontend.settings.investor', compact(
@@ -200,5 +143,120 @@ class InvestorDashboardController extends Controller
         return redirect()
             ->route('settings.investor')
             ->with('success', 'Investor settings updated successfully.');
+    }
+
+    private function getInvestorProjects($user): Collection
+    {
+        return $user->investments()
+            ->with(['student', 'media', 'investors'])
+            ->orderByPivot('created_at', 'desc')
+            ->get();
+    }
+
+    private function calculateTotalDeployed(Collection $investments): float
+    {
+        return (float) $investments
+            ->where('pivot.status', 'approved')
+            ->sum(function ($project) {
+                return (float) ($project->pivot->amount ?? 0);
+            });
+    }
+
+    private function getInteractedProjectIds($user): array
+    {
+        return $user->investments()
+            ->pluck('projects.project_id')
+            ->map(fn ($id) => (int) $id)
+            ->filter()
+            ->values()
+            ->all();
+    }
+
+    private function getPreferredCategories($user): Collection
+    {
+        return $user->investments()
+            ->whereNotNull('projects.category')
+            ->pluck('projects.category')
+            ->filter(function ($category) {
+                return filled(trim((string) $category));
+            })
+            ->map(function ($category) {
+                return trim((string) $category);
+            })
+            ->unique()
+            ->values();
+    }
+
+    private function getSuggestedProjects(Collection $preferredCategories, array $interactedProjectIds, int $limit = 3): Collection
+    {
+        $query = Project::query()
+            ->with(['student', 'media', 'investors'])
+            ->whereIn('status', ['published', 'active']);
+
+        if (!empty($interactedProjectIds)) {
+            $query->whereNotIn('project_id', $interactedProjectIds);
+        }
+
+        if ($preferredCategories->isNotEmpty()) {
+            $placeholders = implode(',', array_fill(0, $preferredCategories->count(), '?'));
+
+            $query->orderByRaw(
+                "CASE WHEN category IN ($placeholders) THEN 0 ELSE 1 END",
+                $preferredCategories->all()
+            );
+        }
+
+        $query->orderByRaw("CASE WHEN status = 'published' THEN 0 ELSE 1 END")
+            ->orderByRaw("CASE WHEN budget IS NULL OR budget = 0 THEN 1 ELSE 0 END")
+            ->latest('project_id');
+
+        $projects = $query->take($limit)->get();
+
+        if ($projects->count() >= $limit) {
+            return $projects;
+        }
+
+        $existingIds = $projects->pluck('project_id')->map(fn ($id) => (int) $id)->all();
+
+        $fallbackQuery = Project::query()
+            ->with(['student', 'media', 'investors'])
+            ->whereIn('status', ['published', 'active']);
+
+        if (!empty($interactedProjectIds)) {
+            $fallbackQuery->whereNotIn('project_id', $interactedProjectIds);
+        }
+
+        if (!empty($existingIds)) {
+            $fallbackQuery->whereNotIn('project_id', $existingIds);
+        }
+
+        $fallbackProjects = $fallbackQuery
+            ->orderByRaw("CASE WHEN status = 'published' THEN 0 ELSE 1 END")
+            ->latest('project_id')
+            ->take($limit - $projects->count())
+            ->get();
+
+        return $projects->concat($fallbackProjects);
+    }
+
+    private function getMarketplaceStats(Collection $myInvestments): array
+    {
+        return [
+            'active_projects'  => Project::whereIn('status', ['active', 'published'])->count(),
+            'interested_count' => $myInvestments->where('pivot.status', 'interested')->count(),
+            'requested_count'  => $myInvestments->where('pivot.status', 'requested')->count(),
+            'approved_count'   => $myInvestments->where('pivot.status', 'approved')->count(),
+        ];
+    }
+
+    private function getInvestorAnnouncements(): Collection
+    {
+        return Announcement::published()
+            ->where(function ($query) {
+                $query->where('audience', 'all')
+                      ->orWhere('audience', 'investors');
+            })
+            ->ordered()
+            ->get();
     }
 }
