@@ -27,72 +27,64 @@
             </div>
         @endif
 
-        <form method="POST" action="{{ route('login.post') }}" class="space-y-6">
-            @csrf
+<form method="POST" action="{{ route('login.post') }}" class="space-y-6">
+    @csrf
 
-            <div>
-                <label class="block text-sm font-medium text-theme-muted mb-2">{{ __('frontend.auth.username_or_email') }}</label>
-                <input
-                    type="text"
-                    name="login_id"
-                    value="{{ old('login_id') }}"
-                    required
-                    class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface-2 text-theme-text placeholder:text-theme-muted focus:ring-0 focus:border-brand-accent"
-                >
-            </div>
+    <div>
+        <label class="block text-sm font-medium text-theme-muted mb-2">
+            {{ __('frontend.auth.username_or_email') }}
+        </label>
+        <input
+            type="text"
+            name="login_id"
+            value="{{ old('login_id') }}"
+            required
+            class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface-2 text-theme-text placeholder:text-theme-muted focus:ring-0 focus:border-brand-accent"
+        >
+    </div>
 
-            <div class="relative">
-                <label class="block text-sm font-medium text-theme-muted mb-2">{{ __('frontend.auth.password') }}</label>
-                <input
-                    type="password"
-                    id="loginPassword"
-                    name="password"
-                    required
-                    class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface-2 text-theme-text placeholder:text-theme-muted pr-10 focus:ring-0 focus:border-brand-accent"
-                >
-<button
-    type="button"
-    class="absolute right-3 top-10 text-theme-muted hover:text-brand-accent transition"
->
-    <i class="fas fa-eye"></i>
-</button>
-            </div>
+    <div class="relative">
+        <label class="block text-sm font-medium text-theme-muted mb-2">
+            {{ __('frontend.auth.password') }}
+        </label>
+        <input
+            type="password"
+            id="loginPassword"
+            name="password"
+            required
+            class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface-2 text-theme-text placeholder:text-theme-muted pr-10 focus:ring-0 focus:border-brand-accent"
+        >
+        <button
+            type="button"
+            id="passwordToggle"
+            class="absolute right-3 top-10 text-theme-muted hover:text-brand-accent transition"
+        >
+            <i class="fas fa-eye"></i>
+        </button>
+    </div>
 
-            <div>
-                <label class="block text-sm font-medium text-theme-muted mb-2">{{ __('frontend.auth.login_as') }}</label>
-                <select
-                    name="role"
-                    required
-                    class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface-2 text-theme-text focus:ring-0 focus:border-brand-accent"
-                >
-                    <option value="">{{ __('frontend.auth.select_role') }}</option>
-                    <option value="Student">{{ __('frontend.auth.student') }}</option>
-                    <option value="Investor">{{ __('frontend.auth.investor') }}</option>
-                </select>
-            </div>
-
-            <div class="flex items-center justify-between">
-                <label class="flex items-center text-sm text-theme-muted cursor-pointer">
-                    <input
-                        type="checkbox"
-                        name="remember"
-                        class="mr-2 rounded border-theme-border bg-theme-surface-2 text-brand-accent focus:ring-brand-accent"
-                    >
-                    {{ __('frontend.auth.remember_me') }}
-                </label>
-
-                <a href="#" class="text-sm text-brand-accent hover:underline">
-                    {{ __('frontend.auth.forgot_password_short') }}
-                </a>
-            </div>
-
-            <button
-                type="submit"
-                class="w-full inline-flex items-center justify-center rounded-lg px-6 py-3 text-lg font-semibold bg-brand-accent text-white hover:bg-brand-accent-strong transition duration-300 shadow-brand-soft"
+    <div class="flex items-center justify-between">
+        <label class="flex items-center text-sm text-theme-muted cursor-pointer">
+            <input
+                type="checkbox"
+                name="remember"
+                class="mr-2 rounded border-theme-border bg-theme-surface-2 text-brand-accent focus:ring-brand-accent"
             >
-                {{ __('frontend.auth.log_in') }}
-            </button>
-        </form>
+            {{ __('frontend.auth.remember_me') }}
+        </label>
+
+        <a href="{{ route('password.request') }}" class="text-sm text-brand-accent hover:underline">
+            {{ __('frontend.auth.forgot_password_short') }}
+        </a>
+    </div>
+
+    <button
+        type="submit"
+        class="w-full inline-flex items-center justify-center rounded-lg px-6 py-3 text-lg font-semibold bg-brand-accent text-white hover:bg-brand-accent-strong transition duration-300 shadow-brand-soft"
+    >
+        {{ __('frontend.auth.log_in') }}
+    </button>
+</form>
 
         <p class="mt-8 text-center text-theme-muted text-sm">
             {{ __('frontend.auth.no_account') }}

@@ -10,7 +10,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Contracts\Auth\Guard;
 
 class AuthController extends Controller
 {
@@ -22,33 +21,55 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            'login_id' => 'required',
-            'password' => 'required',
-            // ✅ Frontend must only allow Investor/Student (NOT Manager/Supervisor)
-            'role'     => 'required|in:Investor,Student',
+            'login_id' => ['required', 'string'],
+            'password' => ['required', 'string'],
         ]);
 
         $fieldType = filter_var($request->login_id, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 
-        $credentials = [
-            $fieldType => $request->login_id,
-            'password' => $request->password,
-            'role'     => $request->role,
-        ];
+        $user = User::query()
+            ->where($fieldType, $request->login_id)
+            ->first();
 
-        if (Auth::guard('web')->attempt($credentials, $request->has('remember'))) {
-            $request->session()->regenerate();
+        if (! $user || ! Hash::check($request->password, $user->password)) {
+            return back()
+                ->withErrors([
+                    'login_id' => 'Invalid credentials. Please check your email/username and password.',
+                ])
+                ->withInput($request->only('login_id'));
+        }
 
-        return redirect()->to(match(Auth::guard('web')->user()->role) {
+        // Frontend login must only allow Student / Investor
+        if (! in_array($user->role, ['Student', 'Investor'], true)) {
+            return back()
+                ->withErrors([
+                    'login_id' => 'This account is not allowed to sign in from the frontend portal.',
+                ])
+                ->withInput($request->only('login_id'));
+        }
+
+        // Optional but professional: prevent inactive frontend accounts
+        if (($user->status ?? null) !== 'active') {
+            return back()
+                ->withErrors([
+                    'login_id' => 'Your account is currently inactive. Please contact support.',
+                ])
+                ->withInput($request->only('login_id'));
+        }
+
+        Auth::guard('web')->login($user, $request->boolean('remember'));
+        $request->session()->regenerate();
+
+        return redirect()->to($this->redirectPathByRole($user->role));
+    }
+
+    protected function redirectPathByRole(string $role): string
+    {
+        return match ($role) {
             'Investor' => route('dashboard.investor'),
             'Student'  => route('dashboard.academic'),
             default    => route('home'),
-        });
-        }
-
-        return back()
-            ->withErrors(['login_id' => 'Invalid credentials. Please check your email/username and password.'])
-            ->withInput();
+        };
     }
 
     public function registerInvestor(Request $request)
@@ -68,7 +89,6 @@ class AuthController extends Controller
                 'name'     => $request->name,
                 'email'    => $request->email,
                 'password' => Hash::make($request->password),
-                // ✅ FIX: MUST set role
                 'role'     => 'Investor',
                 'status'   => 'active',
             ]);
@@ -79,77 +99,86 @@ class AuthController extends Controller
             ]);
 
             DB::commit();
-            return redirect()->route('login.show')->with('success', 'Investor account created successfully!');
-        } catch (\Exception $e) {
-            DB::rollBack();
-
-            \Log::error('submitFinal failed', [
-                'message' => $e->getMessage(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
-                'trace' => $e->getTraceAsString(),
-                'has_project_data' => session()->has('project_data'),
-                'has_user_data' => session()->has('user_data'),
-                'user_id' => auth('web')->id(),
-            ]);
 
             return redirect()
-                ->route('project.submit.confirm')
-                ->with('error', 'Debug: '.$e->getMessage());
+                ->route('login.show')
+                ->with('success', 'Investor account created successfully!');
+        } catch (\Throwable $e) {
+            DB::rollBack();
+
+            \Log::error('Investor registration failed', [
+                'message' => $e->getMessage(),
+                'file'    => $e->getFile(),
+                'line'    => $e->getLine(),
+            ]);
+
+            return back()->withInput()->withErrors([
+                'error' => 'Registration failed. Please try again.',
+            ]);
         }
     }
 
-public function registerStudent(Request $request)
-{
-    $request->validate([
-        'username' => 'required|unique:users',
-        'name'     => 'required',
-        'email'    => 'required|email|unique:users',
-        'password' => 'required|confirmed|min:6',
-    ]);
-
-    try {
-        DB::beginTransaction();
-
-        $user = User::create([
-            'username' => $request->username,
-            'name'     => $request->name,
-            'email'    => $request->email,
-            'password' => Hash::make($request->password),
-            'role'     => 'Student',
-            'status'   => 'active',
+    public function registerStudent(Request $request)
+    {
+        $request->validate([
+            'username' => 'required|string|max:50|unique:users,username',
+            'name'     => 'required|string|max:150',
+            'email'    => 'required|email|unique:users,email',
+            'password' => 'required|confirmed|min:6',
         ]);
 
-        Student::create([
-            'user_id' => $user->id,
-        ]);
+        try {
+            DB::beginTransaction();
 
-        // Notify active managers
-        $managers = User::where('role', 'Manager')
-            ->where('status', 'active')
-            ->get();
+            $user = User::create([
+                'username' => $request->username,
+                'name'     => $request->name,
+                'email'    => $request->email,
+                'password' => Hash::make($request->password),
+                'role'     => 'Student',
+                'status'   => 'active',
+            ]);
 
-        \Notification::send($managers, new \App\Notifications\NewStudentRegisteredNotification($user));
+            Student::create([
+                'user_id' => $user->id,
+            ]);
 
-        DB::commit();
+            $managers = User::where('role', 'Manager')
+                ->where('status', 'active')
+                ->get();
 
-        return redirect()->route('login.show')->with('success', 'Student account created!');
-    } catch (\Exception $e) {
-        DB::rollBack();
+            \Notification::send(
+                $managers,
+                new \App\Notifications\NewStudentRegisteredNotification($user)
+            );
 
-        return back()->withInput()->withErrors([
-            'error' => 'Registration failed: ' . $e->getMessage()
-        ]);
+            DB::commit();
+
+            return redirect()
+                ->route('login.show')
+                ->with('success', 'Student account created!');
+        } catch (\Throwable $e) {
+            DB::rollBack();
+
+            \Log::error('Student registration failed', [
+                'message' => $e->getMessage(),
+                'file'    => $e->getFile(),
+                'line'    => $e->getLine(),
+            ]);
+
+            return back()->withInput()->withErrors([
+                'error' => 'Registration failed. Please try again.',
+            ]);
+        }
     }
-}
 
     public function logout(Request $request)
-{
-    auth('web')->logout();
-    $request->session()->invalidate();
-    $request->session()->regenerateToken();
-    return redirect()->route('home');
-}
+    {
+        Auth::guard('web')->logout();
 
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
+        return redirect()->route('home');
+    }
 }
