@@ -1,21 +1,24 @@
-<div class="section-card mb-4">
-    <div class="section-header">
-        <i class="fa fa-hand-holding-usd"></i> Funding / Project Investments
+<div class="main-panel mb-4">
+    <div class="panel-head">
+        <h2 class="panel-title">
+            <i class="fa fa-hand-holding-usd mr-2"></i> Funding / Project Investments
+        </h2>
+        <div class="panel-subtitle">Track investor funding activity, project interest, and investment statuses.</div>
     </div>
 
-    <div class="section-body p-0">
+    <div class="table-wrap">
         @if($projectInvestments->count() > 0)
-            <div class="table-responsive">
-                <table class="table modern-table">
+            <div class="table-responsive students-table-card">
+                <table class="table students-table align-middle mb-0">
                     <thead>
                         <tr>
-                            <th>#</th>
+                            <th class="text-center">#</th>
                             <th>Project</th>
                             <th>Student</th>
-                            <th>Status</th>
-                            <th>Amount</th>
+                            <th class="text-center">Status</th>
+                            <th class="text-center">Amount</th>
                             <th>Message</th>
-                            <th>Date</th>
+                            <th class="text-center">Date</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -29,26 +32,41 @@
                                     default => 'badge-default',
                                 };
                             @endphp
+
                             <tr>
-                                <td>{{ $loop->iteration }}</td>
+                                <td class="text-center">{{ $loop->iteration }}</td>
+
                                 <td>
-                                    <strong>{{ $project->name ?? 'Untitled Project' }}</strong>
-                                    <div class="record-meta">Project ID: {{ $project->project_id ?? '—' }}</div>
+                                    <div class="student-name-cell">{{ $project->name ?? 'Untitled Project' }}</div>
+                                    <div class="student-muted-cell">Project ID: {{ $project->project_id ?? '—' }}</div>
                                 </td>
-                                <td>{{ $project->student->name ?? '—' }}</td>
+
                                 <td>
+                                    <div class="student-muted-cell">{{ $project->student->name ?? '—' }}</div>
+                                </td>
+
+                                <td class="text-center">
                                     <span class="badge-soft {{ $fundingClass }}">
                                         {{ ucfirst($project->pivot->status ?? '—') }}
                                     </span>
                                 </td>
-                                <td>
-                                    {{ $project->pivot->amount !== null ? '$' . number_format($project->pivot->amount, 2) : '—' }}
+
+                                <td class="text-center">
+                                    <div class="student-muted-cell">
+                                        {{ $project->pivot->amount !== null ? '$' . number_format($project->pivot->amount, 2) : '—' }}
+                                    </div>
                                 </td>
+
                                 <td style="max-width: 260px;">
-                                    {{ $project->pivot->message ?? '—' }}
+                                    <div class="student-muted-cell" style="white-space: normal; line-height: 1.6;">
+                                        {{ $project->pivot->message ?? '—' }}
+                                    </div>
                                 </td>
-                                <td>
-                                    {{ optional($project->pivot->created_at)->format('Y-m-d h:i A') ?? '—' }}
+
+                                <td class="text-center">
+                                    <div class="student-muted-cell">
+                                        {{ optional($project->pivot->created_at)->format('Y-m-d h:i A') ?? '—' }}
+                                    </div>
                                 </td>
                             </tr>
                         @endforeach
@@ -56,9 +74,11 @@
                 </table>
             </div>
         @else
-            <div class="empty-state">
-                <i class="fa fa-hand-holding-usd"></i>
-                <div>No funding activity found for this investor.</div>
+            <div class="students-table-card">
+                <div class="empty-state">
+                    <i class="fa fa-hand-holding-usd mb-2"></i>
+                    <div>No funding activity found for this investor.</div>
+                </div>
             </div>
         @endif
     </div>

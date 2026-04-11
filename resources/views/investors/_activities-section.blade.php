@@ -1,29 +1,48 @@
-<div class="section-card h-100">
-    <div class="section-header">
-        <i class="fa fa-history"></i> Activities
+<div class="main-panel h-100">
+    <div class="panel-head">
+        <h2 class="panel-title">
+            <i class="fa fa-history mr-2"></i>Activities
+        </h2>
+        <div class="panel-subtitle">Recent activity history and recorded actions for this investor.</div>
     </div>
 
-    <div class="section-body">
+    <div class="table-wrap">
         @if($investor->activities->count() > 0)
-            <ul class="list-clean">
-                @foreach($investor->activities as $activity)
-                    <li>
-                        <div class="record-title">{{ $activity->user?->name ?? 'System' }}</div>
-                        <div class="record-meta">{{ $activity->created_at?->format('Y-m-d h:i A') }}</div>
-                        <div class="record-text">{{ ucfirst(str_replace('_', ' ', $activity->action)) }}</div>
+            <div class="students-table-card">
+                <div class="p-3 p-md-4">
+                    <ul class="list-unstyled mb-0">
+                        @foreach($investor->activities as $activity)
+                            <li class="py-3 {{ !$loop->last ? 'border-bottom' : '' }}" style="border-color: #eef2f7 !important;">
+                                <div class="d-flex flex-column gap-1">
+                                    <div class="student-name-cell">
+                                        {{ $activity->user?->name ?? 'System' }}
+                                    </div>
 
-                        @if(!empty($activity->meta))
-                            <div class="record-meta mt-1">
-                                {{ is_array($activity->meta) ? json_encode($activity->meta) : $activity->meta }}
-                            </div>
-                        @endif
-                    </li>
-                @endforeach
-            </ul>
+                                    <div class="student-muted-cell">
+                                        {{ $activity->created_at?->format('Y-m-d h:i A') }}
+                                    </div>
+
+                                    <div style="font-weight: 600; color: var(--text-main);">
+                                        {{ ucfirst(str_replace('_', ' ', $activity->action)) }}
+                                    </div>
+
+                                    @if(!empty($activity->meta))
+                                        <div class="student-muted-cell mt-1">
+                                            {{ is_array($activity->meta) ? json_encode($activity->meta) : $activity->meta }}
+                                        </div>
+                                    @endif
+                                </div>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
         @else
-            <div class="empty-state">
-                <i class="fa fa-history"></i>
-                <div>No activities recorded.</div>
+            <div class="students-table-card">
+                <div class="empty-state">
+                    <i class="fa fa-history mb-2"></i>
+                    <div>No activities recorded.</div>
+                </div>
             </div>
         @endif
     </div>

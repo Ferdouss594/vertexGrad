@@ -3,535 +3,548 @@
 @section('title', 'Edit Project')
 
 @section('content')
-<div class="pd-ltr-20 xs-pd-20-10">
-    <div class="min-height-200px">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 
-        @if(session('success'))
-            <div class="alert alert-success border-0 shadow-sm mb-4" style="border-radius: 14px;">
-                {{ session('success') }}
-            </div>
-        @endif
+<style>
+    :root {
+        --page-bg: #f5f7fb;
+        --card-bg: #ffffff;
+        --text-main: #172033;
+        --text-soft: #7b8497;
+        --border-color: #e8ecf4;
+        --primary-color: #4e73df;
+        --primary-soft: rgba(78, 115, 223, 0.10);
+        --info-color: #36b9cc;
+        --info-soft: rgba(54, 185, 204, 0.12);
+        --success-color: #1cc88a;
+        --success-soft: rgba(28, 200, 138, 0.12);
+        --warning-color: #f6c23e;
+        --warning-soft: rgba(246, 194, 62, 0.14);
+        --danger-color: #e74a3b;
+        --danger-soft: rgba(231, 74, 59, 0.12);
+        --shadow-sm: 0 8px 20px rgba(18, 38, 63, 0.06);
+        --shadow-md: 0 14px 36px rgba(18, 38, 63, 0.10);
+        --radius-xl: 24px;
+    }
 
-        @if(session('error'))
-            <div class="alert alert-danger border-0 shadow-sm mb-4" style="border-radius: 14px;">
-                {{ session('error') }}
-            </div>
-        @endif
+    body { background: var(--page-bg); }
 
-        @if($errors->any())
-            <div class="alert alert-danger border-0 shadow-sm mb-4" style="border-radius: 14px;">
-                <strong>Please fix the following errors:</strong>
-                <ul class="mb-0 mt-2 pl-3">
-                    @foreach($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
+    .edit-project-page { padding: 10px 0 24px; }
 
-        <style>
-            .edit-project-page .page-header-card {
-                background: linear-gradient(135deg, #0d1b4c 0%, #1b00ff 100%);
-                border-radius: 20px;
-                padding: 28px 30px;
-                color: #fff;
-                box-shadow: 0 12px 30px rgba(27, 0, 255, 0.18);
-                margin-bottom: 24px;
-            }
+    .page-header-card {
+        background: linear-gradient(135deg, #ffffff 0%, #f9fbff 100%);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-xl);
+        padding: 26px 28px;
+        box-shadow: var(--shadow-sm);
+        margin-bottom: 24px;
+    }
 
-            .edit-project-page .page-header-card h3 {
-                margin: 0;
-                font-weight: 700;
-                color: #fff;
-            }
+    .page-title {
+        margin: 0;
+        font-size: 1.65rem;
+        font-weight: 800;
+        color: var(--text-main);
+    }
 
-            .edit-project-page .page-header-card p {
-                margin: 8px 0 0;
-                opacity: 0.9;
-            }
+    .page-subtitle {
+        margin: 8px 0 0;
+        color: var(--text-soft);
+        font-size: 0.96rem;
+    }
 
-            .edit-project-page .form-card {
-                background: #fff;
-                border-radius: 20px;
-                box-shadow: 0 10px 25px rgba(15, 23, 42, 0.06);
-                border: 1px solid #edf2f7;
-                overflow: hidden;
-                margin-bottom: 24px;
-            }
+    .custom-alert {
+        border: none;
+        border-radius: 14px;
+        box-shadow: var(--shadow-sm);
+    }
 
-            .edit-project-page .form-card-header {
-                padding: 20px 24px;
-                border-bottom: 1px solid #eef2f7;
-                background: #f8fafc;
-            }
+    .reset-btn {
+        min-height: 46px;
+        border-radius: 14px;
+        font-weight: 700;
+        padding: 10px 18px;
+        background: #eef2f8;
+        color: #344054;
+        border: none;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
 
-            .edit-project-page .form-card-header h5 {
-                margin: 0;
-                font-weight: 700;
-                color: #0f172a;
-            }
+    .reset-btn:hover {
+        color: #344054;
+        text-decoration: none;
+    }
 
-            .edit-project-page .form-card-body {
-                padding: 24px;
-            }
+    .search-btn {
+        min-height: 46px;
+        border-radius: 14px;
+        font-weight: 700;
+        padding: 10px 18px;
+    }
 
-            .edit-project-page .section-title {
-                font-size: 16px;
-                font-weight: 700;
-                color: #0f172a;
-                margin-bottom: 16px;
-                padding-bottom: 8px;
-                border-bottom: 1px solid #eef2f7;
-            }
+    .main-panel {
+        background: #fff;
+        border: 1px solid var(--border-color);
+        border-radius: 24px;
+        box-shadow: var(--shadow-sm);
+        overflow: hidden;
+        margin-bottom: 24px;
+    }
 
-            .edit-project-page .form-group label {
-                font-weight: 700;
-                color: #334155;
-                margin-bottom: 8px;
-            }
+    .panel-head {
+        padding: 22px 24px 10px;
+        border-bottom: 1px solid rgba(232, 236, 244, 0.7);
+    }
 
-            .edit-project-page .form-control,
-            .edit-project-page .custom-select,
-            .edit-project-page textarea {
-                border-radius: 12px;
-                border: 1px solid #dbe4f0;
-                min-height: 46px;
-                box-shadow: none;
-            }
+    .panel-title {
+        margin: 0;
+        font-size: 1.08rem;
+        font-weight: 800;
+        color: var(--text-main);
+    }
 
-            .edit-project-page .form-control:focus,
-            .edit-project-page .custom-select:focus,
-            .edit-project-page textarea:focus {
-                border-color: #4f46e5;
-                box-shadow: 0 0 0 0.2rem rgba(79, 70, 229, 0.10);
-            }
+    .panel-subtitle {
+        margin-top: 6px;
+        color: var(--text-soft);
+        font-size: 0.9rem;
+    }
 
-            .edit-project-page textarea.form-control {
-                min-height: 120px;
-            }
+    .table-wrap {
+        padding: 20px 24px 26px;
+    }
 
-            .edit-project-page .info-box {
-                background: #f8fafc;
-                border: 1px solid #e2e8f0;
-                border-radius: 14px;
-                padding: 16px;
-                height: 100%;
-            }
+    .form-label-custom {
+        font-size: 0.82rem;
+        color: var(--text-soft);
+        font-weight: 700;
+        margin-bottom: 8px;
+        display: block;
+    }
 
-            .edit-project-page .info-label {
-                font-size: 12px;
-                font-weight: 700;
-                color: #64748b;
-                text-transform: uppercase;
-                letter-spacing: .4px;
-                margin-bottom: 6px;
-            }
+    .form-control.custom-input,
+    .form-select.custom-input {
+        min-height: 46px;
+        border-radius: 14px;
+        border: 1px solid #dfe5ef;
+        box-shadow: none;
+        padding: 12px 14px;
+    }
 
-            .edit-project-page .info-value {
-                font-size: 16px;
-                font-weight: 700;
-                color: #0f172a;
-                word-break: break-word;
-            }
+    .form-control.custom-input:focus,
+    .form-select.custom-input:focus {
+        border-color: rgba(78, 115, 223, 0.5);
+        box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.12);
+    }
 
-            .edit-project-page .badge-soft {
-                display: inline-block;
-                padding: 7px 12px;
-                border-radius: 999px;
-                font-size: 12px;
-                font-weight: 700;
-            }
+    textarea.custom-input {
+        min-height: 120px;
+        resize: vertical;
+    }
 
-            .edit-project-page .badge-status-pending {
-                background: #fff7ed;
-                color: #c2410c;
-            }
+    .notice-box {
+        border-radius: 16px;
+        padding: 16px 18px;
+        margin-bottom: 18px;
+        border: 1px solid transparent;
+    }
 
-            .edit-project-page .badge-status-approved {
-                background: #ecfdf5;
-                color: #15803d;
-            }
+    .notice-info {
+        background: #eff6ff;
+        border-color: #bfdbfe;
+        color: #1e40af;
+    }
 
-            .edit-project-page .badge-status-rejected {
-                background: #fef2f2;
-                color: #dc2626;
-            }
+    .notice-success {
+        background: #ecfdf5;
+        border-color: #bbf7d0;
+        color: #166534;
+    }
 
-            .edit-project-page .badge-status-default {
-                background: #eff6ff;
-                color: #1d4ed8;
-            }
+    .info-box {
+        background: #f8fafc;
+        border: 1px solid #edf2f7;
+        border-radius: 16px;
+        padding: 16px;
+        height: 100%;
+    }
 
-            .edit-project-page .btn-main {
-                background: linear-gradient(135deg, #1b00ff, #4338ca);
-                color: #fff;
-                border: none;
-                border-radius: 12px;
-                padding: 11px 20px;
-                font-weight: 700;
-                box-shadow: 0 10px 20px rgba(27, 0, 255, 0.15);
-            }
+    .info-label {
+        font-size: 12px;
+        font-weight: 700;
+        color: #64748b;
+        margin-bottom: 6px;
+        text-transform: uppercase;
+        letter-spacing: .3px;
+    }
 
-            .edit-project-page .btn-main:hover {
-                color: #fff;
-                opacity: 0.95;
-            }
+    .info-value {
+        font-size: 15px;
+        font-weight: 700;
+        color: #0f172a;
+        word-break: break-word;
+    }
 
-            .edit-project-page .btn-add-student {
-                background: linear-gradient(135deg, #16a34a, #22c55e);
-                color: #fff;
-                border: none;
-                border-radius: 12px;
-                padding: 10px 16px;
-                font-weight: 700;
-                text-decoration: none;
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-                min-height: 46px;
-            }
+    .badge-soft {
+        display: inline-block;
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: .2px;
+        white-space: nowrap;
+    }
 
-            .edit-project-page .btn-add-student:hover {
-                color: #fff;
-                text-decoration: none;
-                opacity: 0.95;
-            }
+    .badge-status-pending {
+        background: #fff7ed;
+        color: #c2410c;
+    }
 
-            .edit-project-page .btn-light-custom {
-                border-radius: 12px;
-                padding: 11px 20px;
-                font-weight: 700;
-            }
+    .badge-status-approved {
+        background: #ecfdf5;
+        color: #15803d;
+    }
 
-            .edit-project-page .notice-box {
-                border-radius: 16px;
-                padding: 16px 18px;
-                margin-bottom: 18px;
-                border: 1px solid transparent;
-            }
+    .badge-status-rejected {
+        background: #fef2f2;
+        color: #dc2626;
+    }
 
-            .edit-project-page .notice-info {
-                background: #eff6ff;
-                border-color: #bfdbfe;
-                color: #1e40af;
-            }
+    .badge-status-default {
+        background: #eff6ff;
+        color: #1d4ed8;
+    }
 
-            .edit-project-page .notice-success {
-                background: #ecfdf5;
-                border-color: #bbf7d0;
-                color: #166534;
-            }
+    .action-bar {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
 
-            .edit-project-page .student-row {
-                display: grid;
-                grid-template-columns: 1fr auto;
-                gap: 12px;
-                align-items: end;
-            }
+    .student-row {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 12px;
+        align-items: end;
+    }
 
-            @media (max-width: 768px) {
-                .edit-project-page .student-row {
-                    grid-template-columns: 1fr;
-                }
-            }
-        </style>
+    @media (max-width: 768px) {
+        .student-row { grid-template-columns: 1fr; }
+    }
 
-        <div class="edit-project-page">
+    @media (max-width: 991px) {
+        .page-header-card { padding: 22px 20px; }
+        .panel-head, .table-wrap { padding-left: 18px; padding-right: 18px; }
+    }
 
-            <div class="page-header-card">
-                <div class="d-flex justify-content-between align-items-center flex-wrap" style="gap: 15px;">
-                    <div>
-                        <h3>Edit Project</h3>
-                        <p>Update project details, assign related users, manage workflow status, and keep the record organized professionally.</p>
-                    </div>
+    @media (max-width: 576px) {
+        .page-title { font-size: 1.3rem; }
+    }
+</style>
 
-                    <div class="d-flex flex-wrap" style="gap: 10px;">
-                        <a href="{{ route('admin.projects.show', $project) }}" class="btn btn-light btn-light-custom">
-                            <i class="fa fa-eye mr-1"></i> View Project
-                        </a>
-                        <a href="{{ route('admin.projects.index') }}" class="btn btn-outline-light btn-light-custom">
-                            <i class="fa fa-arrow-left mr-1"></i> Back
-                        </a>
-                    </div>
-                </div>
-            </div>
+<div class="container-fluid edit-project-page">
 
-            @if(in_array($project->status, ['pending', 'active', 'draft']))
-                <div class="notice-box notice-info">
-                    <strong>Scanner Action Available:</strong>
-                    This project can be sent to the scanner platform for technical analysis when you are ready.
-                </div>
-            @endif
+    @if(session('success'))
+        <div class="alert alert-success custom-alert mb-4">{{ session('success') }}</div>
+    @endif
 
-            @if(in_array($project->status, ['scan_requested', 'awaiting_manual_review']))
-                <div class="notice-box notice-info">
-                    <strong>Project Under Review:</strong>
-                    This project has already entered the scanning/review workflow.
-                </div>
-            @endif
+    @if(session('error'))
+        <div class="alert alert-danger custom-alert mb-4">{{ session('error') }}</div>
+    @endif
 
-            @if(in_array($project->status, ['approved', 'published', 'completed']))
-                <div class="notice-box notice-success">
-                    <strong>Approved Workflow:</strong>
-                    This project has already passed the approval stage and the student can now upload media files.
-                </div>
-            @endif
+    @if($errors->any())
+        <div class="alert alert-danger custom-alert mb-4">
+            <strong>Please fix the following errors:</strong>
+            <ul class="mb-0 mt-2 pl-3">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
 
-            <div class="form-card">
-                <div class="form-card-header">
-                    <h5>Project Actions</h5>
-                </div>
-
-                <div class="form-card-body">
-                    <div class="d-flex flex-wrap" style="gap: 12px;">
-                   <a href="{{ route('admin.projects.scannerReview', $project) }}" class="btn btn-outline-info">
-    <i class="fa fa-search mr-1"></i> Go to Scan Page
-</a>
-
-                        <a href="{{ route('admin.projects.show', $project) }}" class="btn btn-outline-primary">
-                            <i class="fa fa-folder-open mr-1"></i> Open Details
-                        </a>
-                    </div>
-                </div>
+    <div class="page-header-card">
+        <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3">
+            <div>
+                <h1 class="page-title">Edit Project</h1>
+                <p class="page-subtitle">
+                    Update project details, assign related users, manage workflow status, and keep the record organized professionally.
+                </p>
             </div>
 
-            <form action="{{ route('admin.projects.update', $project) }}" method="POST">
-                @csrf
-                @method('PUT')
-
-                <div class="form-card">
-                    <div class="form-card-header">
-                        <h5>Project Overview</h5>
-                    </div>
-
-                    <div class="form-card-body">
-                        <div class="row">
-                            <div class="col-md-6 mb-4">
-                                <div class="section-title">Basic Information</div>
-
-                                <div class="form-group mb-3">
-                                    <label for="name">Project Name</label>
-                                    <input type="text"
-                                           id="name"
-                                           name="name"
-                                           class="form-control"
-                                           value="{{ old('name', $project->name) }}"
-                                           required>
-                                </div>
-
-                                <div class="form-group mb-3">
-                                    <label for="category">Category</label>
-                                    <input type="text"
-                                           id="category"
-                                           name="category"
-                                           class="form-control"
-                                           value="{{ old('category', $project->category) }}"
-                                           placeholder="e.g. Software, Healthcare, AI">
-                                </div>
-
-                                <div class="form-group mb-3">
-                                    <label for="budget">Budget</label>
-                                    <input type="number"
-                                           step="0.01"
-                                           id="budget"
-                                           name="budget"
-                                           class="form-control"
-                                           value="{{ old('budget', $project->budget) }}"
-                                           placeholder="0.00">
-                                </div>
-
-                                <div class="form-group mb-3">
-                                    <label for="priority">Priority</label>
-                                    <select id="priority" name="priority" class="custom-select form-control">
-                                        <option value="Low" {{ old('priority', $project->priority) === 'Low' ? 'selected' : '' }}>Low</option>
-                                        <option value="Medium" {{ old('priority', $project->priority) === 'Medium' ? 'selected' : '' }}>Medium</option>
-                                        <option value="High" {{ old('priority', $project->priority) === 'High' ? 'selected' : '' }}>High</option>
-                                    </select>
-                                </div>
-
-                                <div class="form-group mb-0">
-                                    <label for="description">Description</label>
-                                    <textarea id="description"
-                                              name="description"
-                                              class="form-control"
-                                              rows="6"
-                                              placeholder="Write a clear description of the project...">{{ old('description', $project->description) }}</textarea>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6 mb-4">
-                                <div class="section-title">Status & System Information</div>
-
-                                @php
-                                    $statusClass = match($project->status) {
-                                        'pending', 'scan_requested', 'awaiting_manual_review' => 'badge-status-pending',
-                                        'approved', 'published', 'completed' => 'badge-status-approved',
-                                        'rejected', 'scan_failed' => 'badge-status-rejected',
-                                        default => 'badge-status-default',
-                                    };
-                                @endphp
-
-                                <div class="mb-3">
-                                    <span class="badge-soft {{ $statusClass }}">
-                                        Current Status: {{ ucfirst(str_replace('_', ' ', $project->status ?? 'unknown')) }}
-                                    </span>
-                                </div>
-
-                                <div class="form-group mb-3">
-                                    <label for="status">Project Status</label>
-                                    <select id="status" name="status" class="custom-select form-control" required>
-                                        <option value="draft" {{ old('status', $project->status) === 'draft' ? 'selected' : '' }}>Draft</option>
-                                        <option value="pending" {{ old('status', $project->status) === 'pending' ? 'selected' : '' }}>Pending</option>
-                                        <option value="scan_requested" {{ old('status', $project->status) === 'scan_requested' ? 'selected' : '' }}>Scan Requested</option>
-                                        <option value="awaiting_manual_review" {{ old('status', $project->status) === 'awaiting_manual_review' ? 'selected' : '' }}>Awaiting Manual Review</option>
-                                        <option value="approved" {{ old('status', $project->status) === 'approved' ? 'selected' : '' }}>Approved</option>
-                                        <option value="published" {{ old('status', $project->status) === 'published' ? 'selected' : '' }}>Published</option>
-                                        <option value="active" {{ old('status', $project->status) === 'active' ? 'selected' : '' }}>Active</option>
-                                        <option value="completed" {{ old('status', $project->status) === 'completed' ? 'selected' : '' }}>Completed</option>
-                                        <option value="rejected" {{ old('status', $project->status) === 'rejected' ? 'selected' : '' }}>Rejected</option>
-                                        <option value="scan_failed" {{ old('status', $project->status) === 'scan_failed' ? 'selected' : '' }}>Scan Failed</option>
-                                    </select>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-sm-6 mb-3">
-                                        <div class="info-box">
-                                            <div class="info-label">Project ID</div>
-                                            <div class="info-value">{{ $project->project_id ?? $project->id }}</div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-sm-6 mb-3">
-                                        <div class="info-box">
-                                            <div class="info-label">Scanner Status</div>
-                                            <div class="info-value">{{ $project->scanner_status ?? '—' }}</div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-sm-6 mb-3">
-                                        <div class="info-box">
-                                            <div class="info-label">Scanner Project ID</div>
-                                            <div class="info-value">{{ $project->scanner_project_id ?? '—' }}</div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-sm-6 mb-3">
-                                        <div class="info-box">
-                                            <div class="info-label">Scan Score</div>
-                                            <div class="info-value">{{ $project->scan_score ?? '—' }}</div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-sm-6 mb-3">
-                                        <div class="info-box">
-                                            <div class="info-label">Created At</div>
-                                            <div class="info-value">{{ optional($project->created_at)->format('Y-m-d h:i A') ?? '—' }}</div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-sm-6 mb-3">
-                                        <div class="info-box">
-                                            <div class="info-label">Updated At</div>
-                                            <div class="info-value">{{ optional($project->updated_at)->format('Y-m-d h:i A') ?? '—' }}</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-card">
-                    <div class="form-card-header">
-                        <h5>Assignments</h5>
-                    </div>
-
-                    <div class="form-card-body">
-                        <div class="row">
-                            <div class="col-md-6 mb-4">
-                                <div class="form-group">
-                                    <label for="student_id">Student</label>
-                                    <div class="student-row">
-                                        <select id="student_id" name="student_id" class="custom-select form-control">
-                                            <option value="">Select Student</option>
-                                            @foreach($students as $student)
-                                                <option value="{{ $student->id }}"
-                                                    {{ (string) old('student_id', $project->student_id) === (string) $student->id ? 'selected' : '' }}>
-                                                    {{ $student->name }} - {{ $student->email }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-
-                                        <a href="{{ route('register.academic') }}" class="btn-add-student">
-                                            <i class="fa fa-user-plus mr-1"></i> Add New Student
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6 mb-4">
-                                <div class="form-group">
-                                    <label for="supervisor_id">Supervisor</label>
-                                    <select id="supervisor_id" name="supervisor_id" class="custom-select form-control">
-                                        <option value="">Select Supervisor</option>
-                                        @foreach($supervisors as $supervisor)
-                                            <option value="{{ $supervisor->id }}"
-                                                {{ (string) old('supervisor_id', $project->supervisor_id) === (string) $supervisor->id ? 'selected' : '' }}>
-                                                {{ $supervisor->name }} - {{ $supervisor->email }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6 mb-4">
-                                <div class="form-group">
-                                    <label for="manager_id">Manager</label>
-                                    <select id="manager_id" name="manager_id" class="custom-select form-control">
-                                        <option value="">Select Manager</option>
-                                        @foreach($managers as $manager)
-                                            <option value="{{ $manager->id }}"
-                                                {{ (string) old('manager_id', $project->manager_id) === (string) $manager->id ? 'selected' : '' }}>
-                                                {{ $manager->name }} - {{ $manager->email }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6 mb-4">
-                                <div class="form-group">
-                                    <label for="investor_id">Investor</label>
-                                    <select id="investor_id" name="investor_id" class="custom-select form-control">
-                                        <option value="">Select Investor</option>
-                                        @foreach($investors as $investor)
-                                            <option value="{{ $investor->id }}"
-                                                {{ (string) old('investor_id', $project->investor_id) === (string) $investor->id ? 'selected' : '' }}>
-                                                {{ $investor->name }} - {{ $investor->email }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="d-flex flex-wrap" style="gap: 12px;">
-                    <button type="submit" class="btn btn-main">
-                        <i class="fa fa-save mr-1"></i> Save Changes
-                    </button>
-
-                    <a href="{{ route('admin.projects.show', $project) }}" class="btn btn-outline-primary btn-light-custom">
-                        <i class="fa fa-eye mr-1"></i> View
-                    </a>
-
-                    <a href="{{ route('admin.projects.index') }}" class="btn btn-outline-secondary btn-light-custom">
-                        Cancel
-                    </a>
-                </div>
-            </form>
+            <div class="d-flex flex-wrap gap-2">
+                <a href="{{ route('admin.projects.show', $project) }}" class="reset-btn">
+                    <i class="fa fa-eye mr-1"></i> View Project
+                </a>
+                <a href="{{ route('admin.projects.index') }}" class="reset-btn">
+                    <i class="fa fa-arrow-left mr-1"></i> Back
+                </a>
+            </div>
         </div>
     </div>
+
+    @if(in_array($project->status, ['pending', 'active', 'draft']))
+        <div class="notice-box notice-info">
+            <strong>Scanner Action Available:</strong>
+            This project can be sent to the scanner platform for technical analysis when you are ready.
+        </div>
+    @endif
+
+    @if(in_array($project->status, ['scan_requested', 'awaiting_manual_review']))
+        <div class="notice-box notice-info">
+            <strong>Project Under Review:</strong>
+            This project has already entered the scanning/review workflow.
+        </div>
+    @endif
+
+    @if(in_array($project->status, ['approved', 'published', 'completed']))
+        <div class="notice-box notice-success">
+            <strong>Approved Workflow:</strong>
+            This project has already passed the approval stage and the student can now upload media files.
+        </div>
+    @endif
+
+    <div class="main-panel form-animate">
+        <div class="panel-head">
+            <h2 class="panel-title">Project Actions</h2>
+            <div class="panel-subtitle">Quick access to scan page and project details.</div>
+        </div>
+
+        <div class="table-wrap">
+            <div class="action-bar">
+                <a href="{{ route('admin.projects.scannerReview', $project) }}" class="btn btn-outline-info search-btn">
+                    <i class="fa fa-search mr-1"></i> Go to Scan Page
+                </a>
+
+                <a href="{{ route('admin.projects.show', $project) }}" class="btn btn-outline-primary search-btn">
+                    <i class="fa fa-folder-open mr-1"></i> Open Details
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <form action="{{ route('admin.projects.update', $project) }}" method="POST">
+        @csrf
+        @method('PUT')
+
+        <div class="main-panel form-animate">
+            <div class="panel-head">
+                <h2 class="panel-title">Project Overview</h2>
+                <div class="panel-subtitle">Basic information and system status for this project.</div>
+            </div>
+
+            <div class="table-wrap">
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <div class="mb-3">
+                            <label class="form-label-custom" for="name">Project Name</label>
+                            <input type="text" id="name" name="name" class="form-control custom-input" value="{{ old('name', $project->name) }}" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label-custom" for="category">Category</label>
+                            <input type="text" id="category" name="category" class="form-control custom-input" value="{{ old('category', $project->category) }}" placeholder="e.g. Software, Healthcare, AI">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label-custom" for="budget">Budget</label>
+                            <input type="number" step="0.01" id="budget" name="budget" class="form-control custom-input" value="{{ old('budget', $project->budget) }}" placeholder="0.00">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label-custom" for="priority">Priority</label>
+                            <select id="priority" name="priority" class="form-select custom-input">
+                                <option value="Low" {{ old('priority', $project->priority) === 'Low' ? 'selected' : '' }}>Low</option>
+                                <option value="Medium" {{ old('priority', $project->priority) === 'Medium' ? 'selected' : '' }}>Medium</option>
+                                <option value="High" {{ old('priority', $project->priority) === 'High' ? 'selected' : '' }}>High</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-0">
+                            <label class="form-label-custom" for="description">Description</label>
+                            <textarea id="description" name="description" class="form-control custom-input" rows="6" placeholder="Write a clear description of the project...">{{ old('description', $project->description) }}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 mb-4">
+                        @php
+                            $statusClass = match($project->status) {
+                                'pending', 'scan_requested', 'awaiting_manual_review' => 'badge-status-pending',
+                                'approved', 'published', 'completed' => 'badge-status-approved',
+                                'rejected', 'scan_failed' => 'badge-status-rejected',
+                                default => 'badge-status-default',
+                            };
+                        @endphp
+
+                        <div class="mb-3">
+                            <span class="badge-soft {{ $statusClass }}">
+                                Current Status: {{ ucfirst(str_replace('_', ' ', $project->status ?? 'unknown')) }}
+                            </span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label-custom" for="status">Project Status</label>
+                            <select id="status" name="status" class="form-select custom-input" required>
+                                <option value="draft" {{ old('status', $project->status) === 'draft' ? 'selected' : '' }}>Draft</option>
+                                <option value="pending" {{ old('status', $project->status) === 'pending' ? 'selected' : '' }}>Pending</option>
+                                <option value="scan_requested" {{ old('status', $project->status) === 'scan_requested' ? 'selected' : '' }}>Scan Requested</option>
+                                <option value="awaiting_manual_review" {{ old('status', $project->status) === 'awaiting_manual_review' ? 'selected' : '' }}>Awaiting Manual Review</option>
+                                <option value="approved" {{ old('status', $project->status) === 'approved' ? 'selected' : '' }}>Approved</option>
+                                <option value="published" {{ old('status', $project->status) === 'published' ? 'selected' : '' }}>Published</option>
+                                <option value="active" {{ old('status', $project->status) === 'active' ? 'selected' : '' }}>Active</option>
+                                <option value="completed" {{ old('status', $project->status) === 'completed' ? 'selected' : '' }}>Completed</option>
+                                <option value="rejected" {{ old('status', $project->status) === 'rejected' ? 'selected' : '' }}>Rejected</option>
+                                <option value="scan_failed" {{ old('status', $project->status) === 'scan_failed' ? 'selected' : '' }}>Scan Failed</option>
+                            </select>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-6 mb-3">
+                                <div class="info-box">
+                                    <div class="info-label">Project ID</div>
+                                    <div class="info-value">{{ $project->project_id ?? $project->id }}</div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6 mb-3">
+                                <div class="info-box">
+                                    <div class="info-label">Scanner Status</div>
+                                    <div class="info-value">{{ $project->scanner_status ?? '—' }}</div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6 mb-3">
+                                <div class="info-box">
+                                    <div class="info-label">Scanner Project ID</div>
+                                    <div class="info-value">{{ $project->scanner_project_id ?? '—' }}</div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6 mb-3">
+                                <div class="info-box">
+                                    <div class="info-label">Scan Score</div>
+                                    <div class="info-value">{{ $project->scan_score ?? '—' }}</div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6 mb-3">
+                                <div class="info-box">
+                                    <div class="info-label">Created At</div>
+                                    <div class="info-value">{{ optional($project->created_at)->format('Y-m-d h:i A') ?? '—' }}</div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6 mb-3">
+                                <div class="info-box">
+                                    <div class="info-label">Updated At</div>
+                                    <div class="info-value">{{ optional($project->updated_at)->format('Y-m-d h:i A') ?? '—' }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-panel form-animate">
+            <div class="panel-head">
+                <h2 class="panel-title">Assignments</h2>
+                <div class="panel-subtitle">Assign student, supervisor, manager, and investor.</div>
+            </div>
+
+            <div class="table-wrap">
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <label class="form-label-custom" for="student_id">Student</label>
+                        <div class="student-row">
+                            <select id="student_id" name="student_id" class="form-select custom-input">
+                                <option value="">Select Student</option>
+                                @foreach($students as $student)
+                                    <option value="{{ $student->id }}"
+                                        {{ (string) old('student_id', $project->student_id) === (string) $student->id ? 'selected' : '' }}>
+                                        {{ $student->name }} - {{ $student->email }}
+                                    </option>
+                                @endforeach
+                            </select>
+
+                            <a href="{{ route('register.academic') }}" class="btn btn-success search-btn">
+                                <i class="fa fa-user-plus mr-1"></i> Add New Student
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 mb-4">
+                        <label class="form-label-custom" for="supervisor_id">Supervisor</label>
+                        <select id="supervisor_id" name="supervisor_id" class="form-select custom-input">
+                            <option value="">Select Supervisor</option>
+                            @foreach($supervisors as $supervisor)
+                                <option value="{{ $supervisor->id }}"
+                                    {{ (string) old('supervisor_id', $project->supervisor_id) === (string) $supervisor->id ? 'selected' : '' }}>
+                                    {{ $supervisor->name }} - {{ $supervisor->email }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="col-md-6 mb-4">
+                        <label class="form-label-custom" for="manager_id">Manager</label>
+                        <select id="manager_id" name="manager_id" class="form-select custom-input">
+                            <option value="">Select Manager</option>
+                            @foreach($managers as $manager)
+                                <option value="{{ $manager->id }}"
+                                    {{ (string) old('manager_id', $project->manager_id) === (string) $manager->id ? 'selected' : '' }}>
+                                    {{ $manager->name }} - {{ $manager->email }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="col-md-6 mb-4">
+                        <label class="form-label-custom" for="investor_id">Investor</label>
+                        <select id="investor_id" name="investor_id" class="form-select custom-input">
+                            <option value="">Select Investor</option>
+                            @foreach($investors as $investor)
+                                <option value="{{ $investor->id }}"
+                                    {{ (string) old('investor_id', $project->investor_id) === (string) $investor->id ? 'selected' : '' }}>
+                                    {{ $investor->name }} - {{ $investor->email }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="action-bar">
+            <button type="submit" class="btn btn-primary search-btn">
+                <i class="fa fa-save mr-1"></i> Save Changes
+            </button>
+
+            <a href="{{ route('admin.projects.show', $project) }}" class="reset-btn">
+                <i class="fa fa-eye mr-1"></i> View
+            </a>
+
+            <a href="{{ route('admin.projects.index') }}" class="reset-btn">
+                Cancel
+            </a>
+        </div>
+    </form>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.page-header-card, .form-animate').forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(10px)';
+
+        setTimeout(() => {
+            card.style.transition = 'all 0.35s ease';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, 70 * (index + 1));
+    });
+});
+</script>
 @endsection

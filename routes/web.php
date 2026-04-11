@@ -1,22 +1,26 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
-use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Frontend\Auth\AuthController as FrontendAuth;
-use App\Http\Controllers\Frontend\ProjectSubmissionController;
+use App\Http\Controllers\Frontend\Auth\LoginOtpController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+
 use App\Http\Controllers\Frontend\HomeController;
+use App\Http\Controllers\Frontend\LanguageController as FrontendLanguageController;
 use App\Http\Controllers\Frontend\ProjectController as FrontendProjectController;
+use App\Http\Controllers\Frontend\ProjectSubmissionController;
 use App\Http\Controllers\Frontend\NotificationController as FrontNotificationController;
 use App\Http\Controllers\Frontend\InvestorDashboardController;
 use App\Http\Controllers\Frontend\AcademicDashboardController;
 use App\Http\Controllers\Frontend\InvestorProjectSummaryController;
 use App\Http\Controllers\Frontend\ContactController;
-use App\Http\Controllers\Frontend\LanguageController as FrontendLanguageController;
-use App\Http\Controllers\Admin\ProjectController;
 
+use App\Http\Controllers\Admin\ProjectController;
+use App\Http\Controllers\Frontend\Auth\SecurityController;
 
 /*
 |--------------------------------------------------------------------------
@@ -43,36 +47,92 @@ Route::middleware(['web', 'frontend.locale'])->group(function () {
         ->name('frontend.language.switch');
 
     // ------------------------
-    // FRONTEND AUTH (Students / Investors)
+    // FRONTEND AUTH (GUEST ONLY)
     // ------------------------
-    Route::prefix('auth')->group(function () {
+    Route::middleware('guest:web')->prefix('auth')->group(function () {
+
         Route::get('/login', [FrontendAuth::class, 'showLogin'])->name('login.show');
-        Route::post('/login', [FrontendAuth::class, 'login'])->name('login.post');
-        Route::post('/logout', [FrontendAuth::class, 'logout'])->name('frontend.logout');
-
-        Route::get('/register', fn () => view('frontend.auth.register'))->name('register.show');
-
+        Route::post('/login', [FrontendAuth::class, 'login'])->middleware('throttle:login')->name('login.post');
+    Route::get('/login/otp', [LoginOtpController::class, 'show'])->name('login.otp.show');
+    Route::post('/login/otp', [LoginOtpController::class, 'verify'])->name('login.otp.verify');
+    Route::post('/login/otp/resend', [LoginOtpController::class, 'resend'])->middleware('throttle:6,1')->name('login.otp.resend');
+       Route::post('/login/otp/recovery', [LoginOtpController::class, 'verifyRecoveryCode'])->name('login.otp.recovery');
+       Route::get('/recovery-codes/download', [SecurityController::class, 'downloadRecoveryCodes'])->name('recovery-codes.download');
+    Route::get('/register', fn () => view('frontend.auth.register'))->name('register.show');
         Route::get('/register/investor', fn () => view('frontend.auth.register_investor'))->name('register.investor');
         Route::post('/register/investor', [FrontendAuth::class, 'registerInvestor'])->name('register.investor.post');
-
         Route::get('/register/academic', fn () => view('frontend.auth.register_academic'))->name('register.academic');
         Route::post('/register/student', [FrontendAuth::class, 'registerStudent'])->name('register.student.post');
+        Route::get('/forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+        Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail']) ->middleware('throttle:6,1') ->name('password.email');
+        Route::get('/reset-password/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
+        Route::post('/reset-password', [ResetPasswordController::class, 'reset'])->name('password.update');
     });
 
     // ------------------------
-    // FRONTEND MARKETPLACE (Investor browsing)
+    // FRONTEND AUTH (AUTHENTICATED)
+    // ------------------------
+    Route::middleware('auth:web')->group(function () {
+        Route::post('/auth/logout', [FrontendAuth::class, 'logout'])->name('frontend.logout');
+
+        Route::get('/auth/email/verify', function () {
+            return view('frontend.auth.verify-email');
+        })->name('verification.notice');
+
+        Route::get('/auth/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+            $request->fulfill();
+
+            return redirect()->route('profile')->with('success', 'Email verified successfully.');
+        })->middleware('signed')->name('verification.verify');
+
+        Route::post('/auth/email/verification-notification', function (Request $request) {
+            $request->user()->sendEmailVerificationNotification();
+
+            return back()->with('status', 'Verification link sent successfully.');
+        })->middleware('throttle:6,1')->name('verification.send');
+    });
+
+    // ------------------------
+    // FRONTEND MARKETPLACE (PUBLIC BROWSING)
     // ------------------------
     Route::get('/projects', [FrontendProjectController::class, 'index'])->name('frontend.projects.index');
     Route::get('/projects/{project}', [FrontendProjectController::class, 'show'])->name('frontend.projects.show');
 
     // ------------------------
-    // FRONTEND DASHBOARDS (web guard)
+    // FRONTEND PROFILE
     // ------------------------
-     Route::middleware(['auth:web'])->group(function () {
+    Route::middleware(['auth:web'])->get('/profile', function () {
+        $user = auth('web')->user();
+
+        if (method_exists($user, 'hasVerifiedEmail') && ! $user->hasVerifiedEmail()) {
+            return redirect()->route('verification.notice');
+        }
+
+        return match ($user->role) {
+            'Investor' => redirect()->route('dashboard.investor'),
+            'Student'  => redirect()->route('dashboard.academic'),
+            default    => redirect()->route('home'),
+        };
+    })->name('profile');
+
+    // ------------------------
+    // FRONTEND VERIFIED USER AREA
+    // ------------------------
+    Route::middleware(['auth:web', 'verified'])->group(function () {
+
+                    Route::prefix('security')->name('security.')->group(function () {
+    Route::get('/', [SecurityController::class, 'index'])->name('index');
+    Route::post('/sessions/{sessionId}/revoke', [SecurityController::class, 'revokeSession'])->name('sessions.revoke');
+    Route::post('/trusted-devices/{trustedDeviceId}/revoke', [SecurityController::class, 'revokeTrustedDevice'])->name('trusted-devices.revoke');
+    Route::post('/logout-other-devices', [SecurityController::class, 'logoutOtherDevices'])->name('logout-other-devices');
+    Route::post('/recovery-codes/regenerate', [SecurityController::class, 'regenerateRecoveryCodes'])
+    ->name('recovery-codes.regenerate');
+});
         Route::post('/projects/{project}/request-funding', [FrontendProjectController::class, 'requestFunding'])
             ->name('frontend.projects.requestFunding');
 
-        Route::get('/dashboard/investor', [InvestorDashboardController::class, 'index'])->name('dashboard.investor');
+        Route::get('/dashboard/investor', [InvestorDashboardController::class, 'index'])
+            ->name('dashboard.investor');
 
         Route::get('/dashboard/academic', [AcademicDashboardController::class, 'index'])
             ->name('dashboard.academic');
@@ -95,34 +155,29 @@ Route::middleware(['web', 'frontend.locale'])->group(function () {
         Route::post('/student/requests/{requestItem}/respond', [AcademicDashboardController::class, 'respondToRequest'])
             ->name('student.requests.respond');
 
-            Route::get('/settings/academic', [AcademicDashboardController::class, 'settings'])
-    ->name('settings.academic');
+        Route::get('/settings/academic', [AcademicDashboardController::class, 'settings'])
+            ->name('settings.academic');
 
-Route::post('/settings/academic/update', [AcademicDashboardController::class, 'updateSettings'])
-    ->name('settings.academic.update');
+        Route::post('/settings/academic/update', [AcademicDashboardController::class, 'updateSettings'])
+            ->name('settings.academic.update');
 
-    Route::get('/settings/investor', [InvestorDashboardController::class, 'settings'])
-    ->name('settings.investor');
+        Route::get('/settings/investor', [InvestorDashboardController::class, 'settings'])
+            ->name('settings.investor');
 
-Route::post('/settings/investor/update', [InvestorDashboardController::class, 'updateSettings'])
-    ->name('settings.investor.update');
+        Route::post('/settings/investor/update', [InvestorDashboardController::class, 'updateSettings'])
+            ->name('settings.investor.update');
 
         Route::prefix('investor/projects')->name('investor.projects.')->group(function () {
+            Route::get('{project}/summary', [InvestorProjectSummaryController::class, 'show'])
+                ->name('summary');
 
-        Route::get('{project}/summary', [InvestorProjectSummaryController::class, 'show'])
-            ->name('summary');
+            Route::get('{project}/pitch-deck/download', [InvestorProjectSummaryController::class, 'download'])
+                ->name('pitch-deck.download');
+        });
 
-        Route::get('{project}/pitch-deck/download', [InvestorProjectSummaryController::class, 'download'])
-            ->name('pitch-deck.download');
-
-    });
-
-    });
-
-    // ------------------------
-    // FRONTEND NOTIFICATIONS
-    // ------------------------
-    Route::middleware(['auth:web'])->group(function () {
+        // ------------------------
+        // FRONTEND NOTIFICATIONS
+        // ------------------------
         Route::get('/notifications', [FrontNotificationController::class, 'index'])
             ->name('frontend.notifications.index');
 
@@ -135,27 +190,6 @@ Route::post('/settings/investor/update', [InvestorDashboardController::class, 'u
         Route::post('/notifications/mark-all-read', [FrontNotificationController::class, 'markAllRead'])
             ->name('frontend.notifications.markAllRead');
     });
-
-    // ------------------------
-    // FRONTEND PROFILE (web only)
-    // ------------------------
-    Route::middleware(['auth:web'])->get('/profile', function () {
-        $user = auth('web')->user();
-
-        return match ($user->role) {
-            'Investor' => redirect()->route('dashboard.investor'),
-            'Student'  => redirect()->route('dashboard.academic'),
-            default    => redirect()->route('home'),
-        };
-    })->name('profile');
-
-    // ------------------------
-    // PASSWORD RESET ROUTES
-    // ------------------------
-    Route::get('forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
-    Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
-    Route::get('reset-password/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
-    Route::post('reset-password', [ResetPasswordController::class, 'reset'])->name('password.update');
 
     // ------------------------
     // STATIC / UTILITY
@@ -208,6 +242,8 @@ Route::post('/settings/investor/update', [InvestorDashboardController::class, 'u
         Route::post('/projects/{project}/start-scan', [ProjectController::class, 'startScan'])
             ->name('projects.startScan');
     });
+
+    
 
     // ------------------------
     // DEBUG

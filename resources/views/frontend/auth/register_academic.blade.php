@@ -4,59 +4,97 @@
 <div class="min-h-screen flex items-center justify-center py-12 bg-theme-bg transition-colors duration-300">
     <div class="w-full max-w-lg p-10 rounded-2xl theme-panel shadow-brand-soft">
 
-        <h2 class="text-3xl font-bold text-center text-theme-text mb-6">
-            {{ __('frontend.auth.academic') }} <span class="text-brand-accent">{{ __('frontend.auth.registration') }}</span>
-        </h2>
+        <div class="text-center mb-6">
+            <i class="fas fa-flask text-5xl text-brand-accent mb-4 block"
+               style="filter: drop-shadow(0 0 10px var(--brand-accent-glow));"></i>
 
-        <form method="POST" action="{{ route('register.student.post') }}" class="space-y-4">
+            <h2 class="text-3xl font-bold text-theme-text">
+                {{ __('frontend.auth.academic') }}
+                <span class="text-brand-accent">{{ __('frontend.auth.registration') }}</span>
+            </h2>
+
+            <p class="text-theme-muted mt-2">
+                {{ __('frontend.auth.academic_register_text') }}
+            </p>
+        </div>
+
+        @if ($errors->any())
+            <div class="mb-6 p-4 rounded-lg bg-red-500/10 border border-red-400/40 text-red-500 text-sm">
+                <ul class="list-disc list-inside space-y-1">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        <form method="POST" action="{{ route('register.student.post') }}" class="space-y-4" id="academicRegisterForm">
             @csrf
 
             <div>
-                <label class="block text-sm font-medium text-theme-muted mb-1">{{ __('frontend.auth.full_name') }}</label>
+                <label class="block text-sm font-medium text-theme-muted mb-1">
+                    {{ __('frontend.auth.full_name') }}
+                </label>
                 <input
                     type="text"
                     name="name"
+                    value="{{ old('name') }}"
                     required
-                    class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface-2 text-theme-text focus:ring-0 focus:border-brand-accent"
+                    autocomplete="name"
+                    class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface-2 text-theme-text placeholder:text-theme-muted focus:ring-0 focus:border-brand-accent"
                 >
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-theme-muted mb-1">{{ __('frontend.auth.username') }}</label>
+                <label class="block text-sm font-medium text-theme-muted mb-1">
+                    {{ __('frontend.auth.username') }}
+                </label>
                 <input
                     type="text"
                     name="username"
+                    value="{{ old('username') }}"
                     required
-                    class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface-2 text-theme-text focus:ring-0 focus:border-brand-accent"
+                    autocomplete="username"
+                    class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface-2 text-theme-text placeholder:text-theme-muted focus:ring-0 focus:border-brand-accent"
                 >
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-theme-muted mb-1">{{ __('frontend.auth.university_email') }}</label>
+                <label class="block text-sm font-medium text-theme-muted mb-1">
+                    {{ __('frontend.auth.university_email') }}
+                </label>
                 <input
                     type="email"
                     name="email"
+                    value="{{ old('email') }}"
                     required
-                    class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface-2 text-theme-text focus:ring-0 focus:border-brand-accent"
+                    autocomplete="email"
+                    class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface-2 text-theme-text placeholder:text-theme-muted focus:ring-0 focus:border-brand-accent"
                 >
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-theme-muted mb-1">{{ __('frontend.auth.password') }}</label>
+                <label class="block text-sm font-medium text-theme-muted mb-1">
+                    {{ __('frontend.auth.password') }}
+                </label>
                 <input
                     type="password"
                     name="password"
                     required
+                    autocomplete="new-password"
                     class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface-2 text-theme-text focus:ring-0 focus:border-brand-accent"
                 >
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-theme-muted mb-1">{{ __('frontend.auth.confirm_password') }}</label>
+                <label class="block text-sm font-medium text-theme-muted mb-1">
+                    {{ __('frontend.auth.confirm_password') }}
+                </label>
                 <input
                     type="password"
                     name="password_confirmation"
                     required
+                    autocomplete="new-password"
                     class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface-2 text-theme-text focus:ring-0 focus:border-brand-accent"
                 >
             </div>
@@ -68,15 +106,25 @@
                 {{ __('frontend.auth.create_academic_account') }}
             </button>
         </form>
+
+        <p class="mt-6 text-center text-theme-muted text-sm">
+            {{ __('frontend.auth.already_have_account') }}
+            <a href="{{ route('login.show') }}" class="text-brand-accent font-medium ml-1">
+                {{ __('frontend.auth.log_in') }}
+            </a>
+        </p>
     </div>
 </div>
+
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const panel = document.querySelector('.theme-panel');
     const heading = document.querySelector('h2');
-    const form = document.querySelector('form');
+    const subtitle = document.querySelector('h2 + p');
+    const errorBox = document.querySelector('.bg-red-500\\/10');
+    const form = document.getElementById('academicRegisterForm');
     const inputs = Array.from(document.querySelectorAll('input'));
     const passwordInput = document.querySelector('input[name="password"]');
     const confirmPasswordInput = document.querySelector('input[name="password_confirmation"]');
@@ -181,7 +229,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.head.appendChild(style);
     }
 
-    [panel, heading, form].filter(Boolean).forEach((el, index) => {
+    [panel, heading, subtitle, errorBox, form].filter(Boolean).forEach((el, index) => {
         el.classList.add('vg-reveal');
 
         if (prefersReducedMotion) {
@@ -189,7 +237,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        setTimeout(() => el.classList.add('is-visible'), 100 + (index * 120));
+        setTimeout(() => el.classList.add('is-visible'), 100 + (index * 110));
     });
 
     if (panel) panel.classList.add('vg-auth-panel');

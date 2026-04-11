@@ -1,155 +1,755 @@
-
-
-
 @extends('layouts.app')
 
 @section('title', 'Students')
 
 @section('content')
-<div class="container-fluid">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 
-    <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold mb-0">Students</h2>
-        <a href="{{ route('admin.students.create') }}" class="btn btn-primary">
-            <i class="bi bi-plus-lg"></i> Add Student
-        </a>
+<style>
+    :root {
+        --page-bg: #f5f7fb;
+        --card-bg: #ffffff;
+        --text-main: #172033;
+        --text-soft: #7b8497;
+        --border-color: #e8ecf4;
+        --primary-color: #4e73df;
+        --primary-soft: rgba(78, 115, 223, 0.10);
+        --info-color: #36b9cc;
+        --info-soft: rgba(54, 185, 204, 0.12);
+        --success-color: #1cc88a;
+        --success-soft: rgba(28, 200, 138, 0.12);
+        --warning-color: #f6c23e;
+        --warning-soft: rgba(246, 194, 62, 0.14);
+        --danger-color: #e74a3b;
+        --danger-soft: rgba(231, 74, 59, 0.12);
+        --shadow-sm: 0 8px 20px rgba(18, 38, 63, 0.06);
+        --shadow-md: 0 14px 36px rgba(18, 38, 63, 0.10);
+        --radius-xl: 24px;
+        --radius-lg: 20px;
+        --radius-md: 16px;
+        --radius-sm: 12px;
+    }
+
+    body {
+        background: var(--page-bg);
+    }
+
+    .students-page {
+        padding: 10px 0 24px;
+    }
+
+    .page-header-card {
+        background: linear-gradient(135deg, #ffffff 0%, #f9fbff 100%);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-xl);
+        padding: 26px 28px;
+        box-shadow: var(--shadow-sm);
+        margin-bottom: 24px;
+    }
+
+    .page-title {
+        margin: 0;
+        font-size: 1.65rem;
+        font-weight: 800;
+        color: var(--text-main);
+    }
+
+    .page-subtitle {
+        margin: 8px 0 0;
+        color: var(--text-soft);
+        font-size: 0.96rem;
+    }
+
+    .custom-alert {
+        border: none;
+        border-radius: 14px;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .stats-grid .col-lg-2,
+    .stats-grid .col-md-3,
+    .stats-grid .col-sm-6 {
+        display: flex;
+    }
+
+    .stat-card {
+        position: relative;
+        overflow: hidden;
+        width: 100%;
+        min-height: 132px;
+        border: 1px solid var(--border-color);
+        border-radius: 20px;
+        background: var(--card-bg);
+        padding: 20px 18px;
+        box-shadow: var(--shadow-sm);
+        transition: all 0.25s ease;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-md);
+    }
+
+    .stat-card::after {
+        content: "";
+        position: absolute;
+        top: -35px;
+        right: -35px;
+        width: 110px;
+        height: 110px;
+        border-radius: 50%;
+        opacity: 0.08;
+        background: currentColor;
+    }
+
+    .stat-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .stat-label {
+        font-size: 0.9rem;
+        color: var(--text-soft);
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .stat-icon {
+        width: 46px;
+        height: 46px;
+        border-radius: 14px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        background: rgba(255,255,255,0.65);
+        backdrop-filter: blur(4px);
+    }
+
+    .stat-value {
+        margin: 18px 0 0;
+        font-size: 1.9rem;
+        font-weight: 800;
+        color: var(--text-main);
+        line-height: 1;
+    }
+
+    .stat-note {
+        margin-top: 8px;
+        font-size: 0.82rem;
+        color: var(--text-soft);
+    }
+
+    .stat-card.stat-all {
+        color: var(--info-color);
+        background: linear-gradient(135deg, #ffffff 0%, #f2fcfe 100%);
+    }
+
+    .stat-card.stat-pending {
+        color: #b88900;
+        background: linear-gradient(135deg, #ffffff 0%, #fff9eb 100%);
+    }
+
+    .stat-card.stat-active {
+        color: var(--success-color);
+        background: linear-gradient(135deg, #ffffff 0%, #effcf7 100%);
+    }
+
+    .stat-card.stat-inactive {
+        color: #8a6d1d;
+        background: linear-gradient(135deg, #ffffff 0%, #fffaf0 100%);
+    }
+
+    .stat-card.stat-disabled {
+        color: var(--danger-color);
+        background: linear-gradient(135deg, #ffffff 0%, #fff3f1 100%);
+    }
+
+    .stat-card.stat-add {
+        color: var(--primary-color);
+        background: linear-gradient(135deg, #eef3ff 0%, #ffffff 100%);
+    }
+
+    .filter-panel {
+        background: #fff;
+        border: 1px solid var(--border-color);
+        border-radius: 20px;
+        box-shadow: var(--shadow-sm);
+        padding: 18px;
+        margin-bottom: 20px;
+    }
+
+    .filter-label {
+        font-size: 0.82rem;
+        color: var(--text-soft);
+        font-weight: 700;
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    .form-control.filter-input,
+    .form-select.filter-select {
+        min-height: 46px;
+        border-radius: 14px;
+        border: 1px solid #dfe5ef;
+        box-shadow: none;
+        padding: 12px 14px;
+    }
+
+    .form-control.filter-input:focus,
+    .form-select.filter-select:focus {
+        border-color: rgba(78, 115, 223, 0.5);
+        box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.12);
+    }
+
+    .search-btn {
+        min-height: 46px;
+        border-radius: 14px;
+        font-weight: 700;
+        padding: 10px 18px;
+    }
+
+    .reset-btn {
+        min-height: 46px;
+        border-radius: 14px;
+        font-weight: 700;
+        padding: 10px 18px;
+        background: #eef2f8;
+        color: #344054;
+        border: none;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .main-panel {
+        background: #fff;
+        border: 1px solid var(--border-color);
+        border-radius: 24px;
+        box-shadow: var(--shadow-sm);
+        overflow: hidden;
+    }
+
+    .panel-head {
+        padding: 22px 24px 10px;
+        border-bottom: 1px solid rgba(232, 236, 244, 0.7);
+    }
+
+    .panel-title {
+        margin: 0;
+        font-size: 1.08rem;
+        font-weight: 800;
+        color: var(--text-main);
+    }
+
+    .panel-subtitle {
+        margin-top: 6px;
+        color: var(--text-soft);
+        font-size: 0.9rem;
+    }
+
+    .table-wrap {
+        padding: 20px 24px 26px;
+    }
+
+    .students-table-card {
+        border: 1px solid var(--border-color);
+        border-radius: 20px;
+        overflow: hidden;
+        background: #fff;
+    }
+
+    .students-table {
+        margin-bottom: 0;
+    }
+
+    .students-table thead th {
+        background: #172033;
+        color: #fff;
+        border: none;
+        font-size: 0.84rem;
+        font-weight: 700;
+        padding: 15px 14px;
+        vertical-align: middle;
+        white-space: nowrap;
+    }
+
+    .students-table tbody td {
+        border-color: #eef2f7;
+        padding: 15px 14px;
+        vertical-align: middle;
+        font-size: 0.92rem;
+    }
+
+    .students-table tbody tr {
+        transition: background 0.2s ease;
+    }
+
+    .students-table tbody tr:hover {
+        background: #fafcff;
+    }
+
+    .student-name-cell {
+        font-weight: 700;
+        color: var(--text-main);
+    }
+
+    .student-email-cell,
+    .student-muted-cell {
+        color: #667085;
+        font-size: 0.9rem;
+    }
+
+    .badge-status {
+        border-radius: 999px;
+        font-weight: 700;
+        padding: 8px 12px;
+        font-size: 0.78rem;
+        letter-spacing: 0.2px;
+    }
+
+    .badge-active {
+        background: var(--success-soft);
+        color: #0f8f60;
+    }
+
+    .badge-inactive {
+        background: var(--warning-soft);
+        color: #9a7400;
+    }
+
+    .badge-pending {
+        background: #edf1f7;
+        color: #596579;
+    }
+
+    .badge-disabled {
+        background: var(--danger-soft);
+        color: #c7372b;
+    }
+
+    .badge-default {
+        background: #f5f7fb;
+        color: #667085;
+    }
+
+    .actions-group {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .action-btn {
+        width: 36px;
+        height: 36px;
+        border: none;
+        border-radius: 12px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.95rem;
+        transition: all 0.2s ease;
+        text-decoration: none;
+    }
+
+    .action-btn:hover {
+        transform: translateY(-2px);
+    }
+
+    .btn-view {
+        background: rgba(54, 185, 204, 0.12);
+        color: var(--info-color);
+    }
+
+    .btn-edit {
+        background: rgba(78, 115, 223, 0.12);
+        color: var(--primary-color);
+    }
+
+    .btn-delete {
+        background: rgba(231, 74, 59, 0.12);
+        color: var(--danger-color);
+    }
+
+    .sortable {
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .sortable i {
+        margin-left: 5px;
+        color: rgba(255,255,255,0.75);
+        font-size: 0.8rem;
+    }
+
+    .empty-state {
+        padding: 32px 18px !important;
+        color: var(--text-soft);
+        font-weight: 600;
+        text-align: center;
+        background: #fff;
+    }
+
+    .pagination-wrap {
+        padding: 0 24px 24px;
+    }
+
+    @media (max-width: 991px) {
+        .page-header-card {
+            padding: 22px 20px;
+        }
+
+        .panel-head,
+        .table-wrap,
+        .pagination-wrap {
+            padding-left: 18px;
+            padding-right: 18px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .page-title {
+            font-size: 1.3rem;
+        }
+
+        .stat-card {
+            min-height: 122px;
+        }
+
+        .students-table thead th,
+        .students-table tbody td {
+            white-space: nowrap;
+        }
+    }
+</style>
+
+@php
+    $studentsCollection = $students->getCollection();
+
+    $allCount = $students->total();
+    $activeCount = $studentsCollection->where('status', 'active')->count();
+    $pendingCount = $studentsCollection->where('status', 'pending')->count();
+    $inactiveCount = $studentsCollection->where('status', 'inactive')->count();
+    $disabledCount = $studentsCollection->where('status', 'disabled')->count();
+@endphp
+
+<div class="container-fluid students-page">
+
+    <div class="page-header-card">
+        <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3">
+            <div>
+                <h1 class="page-title">Students</h1>
+                <p class="page-subtitle">
+                    Browse, filter, search, and manage student records through one unified professional dashboard.
+                </p>
+            </div>
+
+            <div>
+                <a href="{{ route('admin.students.create') }}" class="btn btn-primary px-4 py-2 rounded-pill fw-semibold">
+                    <i class="bi bi-plus-lg me-2"></i>Add Student
+                </a>
+            </div>
+        </div>
     </div>
 
     @if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        {{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
+        <div class="alert alert-success alert-dismissible fade show custom-alert mb-4" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
     @endif
 
-    <!-- Filter Row -->
-    <div class="row mb-3 align-items-center">
-        <div class="col-md-2">
-            <label class="form-label small text-muted">Show entries</label>
-            <select id="entries" class="form-select form-select-sm" onchange="changeEntries(this)">
-                <option value="10" {{ request('per_page')==10?'selected':'' }}>10</option>
-                <option value="25" {{ request('per_page')==25?'selected':'' }}>25</option>
-                <option value="50" {{ request('per_page')==50?'selected':'' }}>50</option>
-                <option value="100" {{ request('per_page')==100?'selected':'' }}>100</option>
-            </select>
+    <div class="row g-3 stats-grid mb-4">
+        <div class="col-lg-2 col-md-4 col-sm-6">
+            <div class="stat-card stat-all" onclick="clearStatusFilter()">
+                <div class="stat-top">
+                    <p class="stat-label">All Students</p>
+                    <span class="stat-icon"><i class="bi bi-people-fill"></i></span>
+                </div>
+                <h3 class="stat-value">{{ $allCount }}</h3>
+                <div class="stat-note">Complete student overview</div>
+            </div>
         </div>
-        <div class="col-md-3">
-            <label class="form-label small text-muted">Status</label>
-            <select id="statusFilter" class="form-select form-select-sm" onchange="filterStatus(this)">
-                <option value="">All</option>
-                <option value="active" {{ request('status')=='active'?'selected':'' }}>Active</option>
-                <option value="pending" {{ request('status')=='pending'?'selected':'' }}>Pending</option>
-                <option value="inactive" {{ request('status')=='inactive'?'selected':'' }}>Inactive</option>
-            </select>
+
+        <div class="col-lg-2 col-md-4 col-sm-6">
+            <div class="stat-card stat-pending" onclick="setStatusFilter('pending')">
+                <div class="stat-top">
+                    <p class="stat-label">Pending</p>
+                    <span class="stat-icon"><i class="bi bi-hourglass-split"></i></span>
+                </div>
+                <h3 class="stat-value">{{ $pendingCount }}</h3>
+                <div class="stat-note">Awaiting confirmation</div>
+            </div>
+        </div>
+
+        <div class="col-lg-2 col-md-4 col-sm-6">
+            <div class="stat-card stat-active" onclick="setStatusFilter('active')">
+                <div class="stat-top">
+                    <p class="stat-label">Active</p>
+                    <span class="stat-icon"><i class="bi bi-check-circle-fill"></i></span>
+                </div>
+                <h3 class="stat-value">{{ $activeCount }}</h3>
+                <div class="stat-note">Enabled student accounts</div>
+            </div>
+        </div>
+
+        <div class="col-lg-2 col-md-4 col-sm-6">
+            <div class="stat-card stat-inactive" onclick="setStatusFilter('inactive')">
+                <div class="stat-top">
+                    <p class="stat-label">Inactive</p>
+                    <span class="stat-icon"><i class="bi bi-pause-circle-fill"></i></span>
+                </div>
+                <h3 class="stat-value">{{ $inactiveCount }}</h3>
+                <div class="stat-note">Temporarily inactive</div>
+            </div>
+        </div>
+
+        <div class="col-lg-2 col-md-4 col-sm-6">
+            <div class="stat-card stat-disabled" onclick="setStatusFilter('disabled')">
+                <div class="stat-top">
+                    <p class="stat-label">Disabled</p>
+                    <span class="stat-icon"><i class="bi bi-slash-circle-fill"></i></span>
+                </div>
+                <h3 class="stat-value">{{ $disabledCount }}</h3>
+                <div class="stat-note">Restricted accounts</div>
+            </div>
+        </div>
+
+        <div class="col-lg-2 col-md-4 col-sm-6">
+            <div class="stat-card stat-add" onclick="window.location.href='{{ route('admin.students.create') }}'">
+                <div class="stat-top">
+                    <p class="stat-label">Quick Create</p>
+                    <span class="stat-icon"><i class="bi bi-person-plus-fill"></i></span>
+                </div>
+                <h3 class="stat-value">New</h3>
+                <div class="stat-note">Create a student instantly</div>
+            </div>
         </div>
     </div>
 
-    <!-- Students Table -->
-    <div class="table-responsive shadow-sm rounded">
-        <table id="studentsTable" class="table table-hover align-middle mb-0">
-            <thead class="table-dark">
-                <tr>
-                    <th class="sortable text-center" data-column="name">Name <i class="bi"></i></th>
-                    <th class="sortable text-center" data-column="email">Email <i class="bi"></i></th>
-                    <th class="sortable text-center" data-column="major">Major <i class="bi"></i></th>
-                    <th class="sortable text-center" data-column="phone">Phone <i class="bi"></i></th>
-                    <th class="sortable text-center" data-column="address">Address <i class="bi"></i></th>
-                    <th class="sortable text-center" data-column="status">Status <i class="bi"></i></th>
-                    <th class="text-center">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($students as $user)
-                <tr>
-                    <td>{{ $user->name ?? '—' }}</td>
-                    <td>{{ $user->email ?? '—' }}</td>
-                    <td>{{ $user->student?->major ?? '—' }}</td>
-                    <td>{{ $user->student?->phone ?? '—' }}</td>
-                    <td>{{ $user->student?->address ?? '—' }}</td>
-                    <td class="text-center">
-                        <span class="badge 
-                            @if($user->status=='active') bg-success
-                            @elseif($user->status=='inactive') bg-warning
-                            @elseif($user->status=='pending') bg-secondary
-                            @else bg-light text-dark @endif">
-                            {{ ucfirst($user->status ?? '—') }}
-                        </span>
-                    </td>
-                    <td class="text-center">
-                        <div class="d-flex gap-1 flex-wrap justify-content-center">
-                            <a href="{{ route('admin.students.show', $user->id) }}" class="btn btn-sm btn-info"><i class="bi bi-eye"></i></a>
-                            <a href="{{ route('admin.students.edit', $user->id) }}" class="btn btn-sm btn-primary"><i class="bi bi-pencil-square"></i></a>
-                            <form action="{{ route('admin.students.destroy', $user->id) }}" method="POST" class="d-inline">
-                                @csrf @method('DELETE')
-                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')"><i class="bi bi-trash"></i></button>
-                            </form>
-                        </div>
-                    </td>
-                </tr>
-                @empty
-                <tr>
-                    <td colspan="7" class="text-center text-muted">No students found</td>
-                </tr>
-                @endforelse
-            </tbody>
-        </table>
+    <div class="filter-panel">
+        <form method="GET" action="{{ route('admin.students.index') }}" id="studentsFilterForm">
+            <div class="row g-3 align-items-end">
+                <div class="col-lg-4 col-md-6">
+                    <label class="filter-label">Search</label>
+                    <input
+                        type="text"
+                        name="search"
+                        value="{{ request('search') }}"
+                        class="form-control filter-input"
+                        placeholder="Search by name or email">
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <label class="filter-label">Status</label>
+                    <select id="statusFilter" name="status" class="form-select filter-select">
+                        <option value="">All</option>
+                        <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Active</option>
+                        <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
+                        <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>Inactive</option>
+                        <option value="disabled" {{ request('status') == 'disabled' ? 'selected' : '' }}>Disabled</option>
+                    </select>
+                </div>
+
+                <div class="col-lg-2 col-md-4">
+                    <label class="filter-label">Show entries</label>
+                    <select id="entries" name="per_page" class="form-select filter-select">
+                        <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
+                        <option value="15" {{ request('per_page', 15) == 15 ? 'selected' : '' }}>15</option>
+                        <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
+                        <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
+                        <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
+                    </select>
+                </div>
+
+                <div class="col-lg-3 col-md-8">
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary search-btn w-100">
+                            <i class="bi bi-search me-2"></i>Apply
+                        </button>
+                        <a href="{{ route('admin.students.index') }}" class="reset-btn w-100">
+                            <i class="bi bi-arrow-counterclockwise me-2"></i>Reset
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </form>
     </div>
 
-    <div class="mt-3">
-        {{ $students->appends(request()->query())->links() }}
-    </div>
+    <div class="main-panel">
+        <div class="panel-head">
+            <h2 class="panel-title">Students Directory</h2>
+            <div class="panel-subtitle">Sortable student records with quick actions and clear status management.</div>
+        </div>
 
+        <div class="table-wrap">
+            <div class="table-responsive students-table-card">
+                <table id="studentsTable" class="table students-table align-middle">
+                    <thead>
+                        <tr>
+                            <th class="sortable text-center">Name <i class="bi"></i></th>
+                            <th class="sortable text-center">Email <i class="bi"></i></th>
+                            <th class="sortable text-center">Major <i class="bi"></i></th>
+                            <th class="sortable text-center">Phone <i class="bi"></i></th>
+                            <th class="sortable text-center">Address <i class="bi"></i></th>
+                            <th class="sortable text-center">Status <i class="bi"></i></th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @forelse($students as $user)
+                            <tr>
+                                <td>
+                                    <div class="student-name-cell">{{ $user->name ?? '—' }}</div>
+                                </td>
+
+                                <td>
+                                    <div class="student-email-cell">{{ $user->email ?? '—' }}</div>
+                                </td>
+
+                                <td>
+                                    <div class="student-muted-cell">{{ $user->student?->major ?? '—' }}</div>
+                                </td>
+
+                                <td>
+                                    <div class="student-muted-cell">{{ $user->student?->phone ?? '—' }}</div>
+                                </td>
+
+                                <td>
+                                    <div class="student-muted-cell">{{ $user->student?->address ?? '—' }}</div>
+                                </td>
+
+                                <td class="text-center">
+                                    @php
+                                        $statusClass = match($user->status) {
+                                            'active' => 'badge-active',
+                                            'inactive' => 'badge-inactive',
+                                            'pending' => 'badge-pending',
+                                            'disabled' => 'badge-disabled',
+                                            default => 'badge-default',
+                                        };
+                                    @endphp
+
+                                    <span class="badge-status {{ $statusClass }}">
+                                        {{ ucfirst($user->status ?? '—') }}
+                                    </span>
+                                </td>
+
+                                <td class="text-center">
+                                    <div class="actions-group">
+                                        <a href="{{ route('admin.students.show', $user->id) }}" class="action-btn btn-view" title="View">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+
+                                        <a href="{{ route('admin.students.edit', $user->id) }}" class="action-btn btn-edit" title="Edit">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </a>
+
+                                        <form action="{{ route('admin.students.destroy', $user->id) }}" method="POST" class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="action-btn btn-delete" onclick="return confirm('Are you sure?')" title="Delete">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="7" class="empty-state">No students found</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="pagination-wrap">
+            {{ $students->appends(request()->query())->links() }}
+        </div>
+    </div>
 </div>
 
-<style>
-.sortable { cursor:pointer; user-select:none; }
-.sortable i { margin-left:5px; }
-</style>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
 <script>
-    
-function changeEntries(select){
-    const perPage = select.value;
-    const url = new URL(window.location.href);
-    url.searchParams.set('per_page', perPage);
-    window.location.href = url;
-}
+    function setStatusFilter(status) {
+        const url = new URL(window.location.href);
+        url.searchParams.set('status', status);
+        window.location.href = url.toString();
+    }
 
-function filterStatus(select){
-    const status = select.value;
-    const url = new URL(window.location.href);
-    if(status) url.searchParams.set('status', status);
-    else url.searchParams.delete('status');
-    window.location.href = url;
-}
+    function clearStatusFilter() {
+        const url = new URL(window.location.href);
+        url.searchParams.delete('status');
+        window.location.href = url.toString();
+    }
 
-// ================= Sortable Columns with small arrows like Investors =================
-document.addEventListener('DOMContentLoaded', function(){
-    const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
+    document.addEventListener('DOMContentLoaded', function () {
+        const entries = document.getElementById('entries');
+        const statusFilter = document.getElementById('statusFilter');
+        const filterForm = document.getElementById('studentsFilterForm');
 
-    const comparer = (idx, asc) => (a,b) => {
-        const v1 = getCellValue(asc ? a : b, idx);
-        const v2 = getCellValue(asc ? b : a, idx);
-        if(!isNaN(v1) && !isNaN(v2)) return v1 - v2;
-        return v1.toString().localeCompare(v2);
-    };
+        if (entries) {
+            entries.addEventListener('change', function () {
+                filterForm.submit();
+            });
+        }
 
-    document.querySelectorAll('.sortable').forEach(th=>{
-        th.addEventListener('click', function(){
-            const table = th.closest('table');
-            const tbody = table.querySelector('tbody');
-            Array.from(tbody.querySelectorAll('tr'))
-                 .sort(comparer(Array.from(th.parentNode.children).indexOf(th), this.asc = !this.asc))
-                 .forEach(tr => tbody.appendChild(tr));
+        if (statusFilter) {
+            statusFilter.addEventListener('change', function () {
+                filterForm.submit();
+            });
+        }
 
-            // Update arrows like Investors table
-            table.querySelectorAll('.sortable i').forEach(i=>i.className='');
-            this.querySelector('i').className = this.asc ? 'bi bi-caret-up-fill' : 'bi bi-caret-down-fill';
+        const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
+
+        const comparer = (idx, asc) => (a, b) => {
+            const v1 = getCellValue(asc ? a : b, idx).trim();
+            const v2 = getCellValue(asc ? b : a, idx).trim();
+
+            const n1 = parseFloat(v1);
+            const n2 = parseFloat(v2);
+
+            if (!isNaN(n1) && !isNaN(n2)) {
+                return n1 - n2;
+            }
+
+            return v1.localeCompare(v2);
+        };
+
+        document.querySelectorAll('.sortable').forEach(th => {
+            th.addEventListener('click', function () {
+                const table = th.closest('table');
+                const tbody = table.querySelector('tbody');
+                const rows = Array.from(tbody.querySelectorAll('tr')).filter(tr => tr.children.length > 1);
+                const index = Array.from(th.parentNode.children).indexOf(th);
+
+                rows.sort(comparer(index, this.asc = !this.asc)).forEach(tr => tbody.appendChild(tr));
+
+                table.querySelectorAll('.sortable i').forEach(i => i.className = 'bi');
+                this.querySelector('i').className = this.asc ? 'bi bi-caret-up-fill' : 'bi bi-caret-down-fill';
+            });
+        });
+
+        document.querySelectorAll('.stat-card').forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(10px)';
+
+            setTimeout(() => {
+                card.style.transition = 'all 0.35s ease';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, 80 * (index + 1));
         });
     });
-});
 </script>
 @endsection

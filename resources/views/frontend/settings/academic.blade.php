@@ -9,7 +9,6 @@
 <div class="min-h-screen pt-28 pb-12 bg-theme-bg transition-colors duration-300">
     <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        {{-- Header --}}
         <header class="mb-10">
             <div class="relative overflow-hidden theme-panel rounded-[2.5rem] shadow-brand-soft">
                 <div class="p-8 md:p-10">
@@ -69,7 +68,6 @@
             </div>
         </header>
 
-        {{-- Alerts --}}
         @if(session('success'))
             <div class="mb-6">
                 <div class="p-4 rounded-2xl border border-green-500/40 bg-green-500/10 text-green-600 shadow-brand-soft">
@@ -104,7 +102,6 @@
         <form action="{{ route('settings.academic.update') }}" method="POST" enctype="multipart/form-data" class="space-y-8">
             @csrf
 
-            {{-- Personal / Photo --}}
             <section class="theme-panel rounded-[2.5rem] p-6 md:p-8">
                 <div class="flex flex-col lg:flex-row gap-8">
                     <div class="lg:w-[320px] shrink-0">
@@ -227,7 +224,6 @@
                 </div>
             </section>
 
-            {{-- Institution --}}
             <section class="theme-panel rounded-[2.5rem] p-6 md:p-8">
                 <div class="flex items-center justify-between mb-6 flex-wrap gap-3">
                     <h2 class="text-xl font-black text-theme-text uppercase tracking-[0.16em]">
@@ -271,7 +267,6 @@
                 </div>
             </section>
 
-            {{-- Notifications --}}
             <section class="theme-panel rounded-[2.5rem] p-6 md:p-8">
                 <div class="flex items-center justify-between mb-6 flex-wrap gap-3">
                     <h2 class="text-xl font-black text-theme-text uppercase tracking-[0.16em]">
@@ -321,7 +316,40 @@
                 </div>
             </section>
 
-            {{-- Actions --}}
+            <section class="theme-panel rounded-[2.5rem] p-6 md:p-8">
+                <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+                    <div class="flex items-start gap-4">
+                        <div class="w-14 h-14 rounded-2xl bg-brand-accent-soft border border-brand-accent flex items-center justify-center shrink-0">
+                            <i class="fas fa-shield-alt text-2xl text-brand-accent"></i>
+                        </div>
+
+<div>
+    <div class="text-xs font-black uppercase tracking-[0.15em] text-brand-accent mb-2">
+        {{ __('frontend.security.badge') }}
+    </div>
+    <h2 class="text-xl font-black text-theme-text uppercase tracking-[0.16em]">
+        {{ __('frontend.security.security_center') }}
+    </h2>
+    <p class="text-sm text-theme-muted mt-2 max-w-2xl leading-7">
+        {{ __('frontend.security.security_card_text_academic') }}
+    </p>
+</div>
+
+<a href="{{ route('security.index') }}" class="{{ $btnSecondaryClass }}">
+    <i class="fas fa-arrow-up-right-from-square mr-2"></i>
+    {{ __('frontend.security.open_security_center') }}
+</a>
+                    </div>
+
+                    <div class="flex items-center">
+                        <a href="{{ route('security.index') }}" class="{{ $btnSecondaryClass }}">
+                            <i class="fas fa-arrow-up-right-from-square mr-2"></i>
+                            Open Security Center
+                        </a>
+                    </div>
+                </div>
+            </section>
+
             <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-3">
                 <a href="{{ route('dashboard.academic') }}" class="{{ $btnSecondaryClass }}">
                     {{ __('frontend.academic.cancel') }}
@@ -335,7 +363,7 @@
         </form>
     </div>
 </div>
-<script>
+    <script>
 document.addEventListener('DOMContentLoaded', () => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 

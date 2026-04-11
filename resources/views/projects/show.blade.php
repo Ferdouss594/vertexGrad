@@ -41,34 +41,46 @@
 @endphp
 
 <style>
-    .project-details-page .hero-card {
-        border: 0;
-        border-radius: 22px;
-        overflow: hidden;
-        box-shadow: 0 12px 35px rgba(15, 23, 42, 0.08);
-        background: linear-gradient(135deg, #0f172a 0%, #1d4ed8 100%);
-        color: #fff;
+    :root {
+        --page-bg: #f5f7fb;
+        --card-bg: #ffffff;
+        --text-main: #172033;
+        --text-soft: #7b8497;
+        --border-color: #e8ecf4;
+        --primary-color: #4e73df;
+        --shadow-sm: 0 8px 20px rgba(18, 38, 63, 0.06);
+        --radius-xl: 24px;
     }
 
-    .project-details-page .hero-card .card-body {
-        padding: 32px;
+    body { background: var(--page-bg); }
+
+    .project-details-page {
+        padding: 10px 0 24px;
     }
 
-    .project-details-page .hero-title {
-        font-size: 30px;
+    .page-header-card {
+        background: linear-gradient(135deg, #ffffff 0%, #f9fbff 100%);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-xl);
+        padding: 26px 28px;
+        box-shadow: var(--shadow-sm);
+        margin-bottom: 24px;
+    }
+
+    .page-title {
+        margin: 0;
+        font-size: 1.7rem;
         font-weight: 800;
-        margin-bottom: 10px;
-        color: #fff;
+        color: var(--text-main);
     }
 
-    .project-details-page .hero-desc {
-        color: rgba(255,255,255,.9);
-        max-width: 900px;
+    .page-subtitle {
+        margin: 10px 0 0;
+        color: var(--text-soft);
         line-height: 1.8;
-        margin-bottom: 18px;
     }
 
-    .project-details-page .hero-badges .badge {
+    .hero-badges .badge {
         font-size: 13px;
         padding: 8px 12px;
         border-radius: 999px;
@@ -76,75 +88,78 @@
         margin-bottom: 8px;
     }
 
-    .project-details-page .info-card {
-        border: 0;
-        border-radius: 18px;
-        box-shadow: 0 8px 25px rgba(15, 23, 42, 0.06);
+    .info-card {
+        background: #fff;
+        border: 1px solid var(--border-color);
+        border-radius: 20px;
+        box-shadow: var(--shadow-sm);
         height: 100%;
     }
 
-    .project-details-page .info-card .card-body {
+    .info-card .card-body {
         padding: 22px;
     }
 
-    .project-details-page .mini-stat-label {
+    .mini-stat-label {
         color: #64748b;
         font-size: 13px;
         font-weight: 600;
         margin-bottom: 6px;
     }
 
-    .project-details-page .mini-stat-value {
+    .mini-stat-value {
         color: #0f172a;
         font-size: 20px;
         font-weight: 800;
         line-height: 1.3;
     }
 
-    .project-details-page .section-card {
-        border: 0;
-        border-radius: 18px;
-        box-shadow: 0 8px 25px rgba(15, 23, 42, 0.06);
+    .section-card {
+        background: #fff;
+        border: 1px solid var(--border-color);
+        border-radius: 20px;
+        box-shadow: var(--shadow-sm);
         overflow: hidden;
+        margin-bottom: 24px;
     }
 
-    .project-details-page .section-card .card-header {
+    .section-card .card-header {
         background: #f8fafc;
         border-bottom: 1px solid #e2e8f0;
         padding: 16px 20px;
     }
 
-    .project-details-page .section-card .card-header h3,
-    .project-details-page .section-card .card-header h5 {
+    .section-card .card-header h3,
+    .section-card .card-header h5 {
         margin: 0;
         font-weight: 700;
         color: #0f172a;
     }
 
-    .project-details-page .detail-grid .item {
+    .detail-grid .item {
         padding: 14px 0;
         border-bottom: 1px dashed #e5e7eb;
     }
 
-    .project-details-page .detail-grid .item:last-child {
+    .detail-grid .item:last-child {
         border-bottom: 0;
     }
 
-    .project-details-page .detail-label {
+    .detail-label {
         font-size: 13px;
         color: #64748b;
         font-weight: 700;
         margin-bottom: 4px;
     }
 
-    .project-details-page .detail-value {
+    .detail-value {
         font-size: 15px;
         color: #0f172a;
         font-weight: 600;
         word-break: break-word;
     }
 
-    .project-details-page .summary-box {
+    .summary-box {
         background: #f8fafc;
         border: 1px solid #e2e8f0;
         border-radius: 16px;
@@ -152,29 +167,29 @@
         height: 100%;
     }
 
-    .project-details-page .summary-box h6 {
+    .summary-box h6 {
         font-weight: 700;
         margin-bottom: 12px;
         color: #0f172a;
     }
 
-    .project-details-page .summary-list {
+    .summary-list {
         list-style: none;
         padding: 0;
         margin: 0;
     }
 
-    .project-details-page .summary-list li {
+    .summary-list li {
         padding: 8px 0;
         border-bottom: 1px dashed #e5e7eb;
         color: #334155;
     }
 
-    .project-details-page .summary-list li:last-child {
+    .summary-list li:last-child {
         border-bottom: 0;
     }
 
-    .project-details-page .scan-score-box {
+    .scan-score-box {
         background: linear-gradient(135deg, #eff6ff, #dbeafe);
         border-radius: 18px;
         padding: 20px;
@@ -182,49 +197,51 @@
         border: 1px solid #bfdbfe;
     }
 
-    .project-details-page .scan-score-number {
+    .scan-score-number {
         font-size: 36px;
         font-weight: 800;
         color: #1d4ed8;
         line-height: 1;
     }
 
-    .project-details-page .scan-score-label {
+    .scan-score-label {
         margin-top: 8px;
         color: #475569;
         font-weight: 600;
     }
 
-    .project-details-page .highlight-list li,
-    .project-details-page .recommend-list li {
+    .highlight-list li,
+    .recommend-list li {
         margin-bottom: 10px;
         color: #334155;
     }
 
-    .project-details-page .table thead th {
+    .section-card .table thead th {
         white-space: nowrap;
     }
 
-    .project-details-page .action-btns form {
+    .action-btns form {
         display: inline-block;
+    }
+
+    @media (max-width: 576px) {
+        .page-title { font-size: 1.3rem; }
     }
 </style>
 
-<div class="container project-details-page">
+<div class="container-fluid project-details-page">
 
-    <div class="card hero-card mb-4">
-        <div class="card-body">
-            <div class="d-flex justify-content-between align-items-start flex-wrap" style="gap: 16px;">
-                <div>
-                    <h1 class="hero-title">{{ $project->name }}</h1>
-                    <p class="hero-desc mb-0">{{ $project->description ?? '-' }}</p>
-                </div>
+    <div class="page-header-card">
+        <div class="d-flex justify-content-between align-items-start flex-wrap" style="gap:16px;">
+            <div>
+                <h1 class="page-title">{{ $project->name }}</h1>
+                <p class="page-subtitle mb-0">{{ $project->description ?? '-' }}</p>
+            </div>
 
-                <div class="hero-badges text-md-right">
-                    <span class="badge badge-{{ $statusClass }}">Project: {{ ucfirst(str_replace('_', ' ', $project->status ?? 'unknown')) }}</span>
-                    <span class="badge badge-{{ $scannerStatusClass }}">Scan: {{ ucfirst(str_replace('_', ' ', $project->scanner_status ?? 'not scanned')) }}</span>
-                    <span class="badge badge-{{ $riskClass }}">Risk: {{ $riskLevel ?? '-' }}</span>
-                </div>
+            <div class="hero-badges text-md-right">
+                <span class="badge badge-{{ $statusClass }}">Project: {{ ucfirst(str_replace('_', ' ', $project->status ?? 'unknown')) }}</span>
+                <span class="badge badge-{{ $scannerStatusClass }}">Scan: {{ ucfirst(str_replace('_', ' ', $project->scanner_status ?? 'not scanned')) }}</span>
+                <span class="badge badge-{{ $riskClass }}">Risk: {{ $riskLevel ?? '-' }}</span>
             </div>
         </div>
     </div>
@@ -267,7 +284,7 @@
         </div>
     </div>
 
-    <div class="card section-card mb-4">
+    <div class="card section-card">
         <div class="card-header">
             <h3>Project Overview</h3>
         </div>
@@ -342,7 +359,7 @@
         </div>
     </div>
 
-    <div class="card section-card mb-4">
+    <div class="card section-card">
         <div class="card-header">
             <h3>People & Assignment</h3>
         </div>
@@ -369,7 +386,7 @@
         </div>
     </div>
 
-    <div class="card section-card mb-4">
+    <div class="card section-card">
         <div class="card-header">
             <h3>Scan Intelligence Summary</h3>
         </div>
@@ -451,7 +468,7 @@
         </div>
     </div>
 
-    <div class="card section-card mb-4">
+    <div class="card section-card">
         <div class="card-header">
             <h3 class="mb-0">Interested Investors</h3>
         </div>
@@ -491,7 +508,7 @@
         </div>
     </div>
 
-    <div class="card section-card mb-4">
+    <div class="card section-card">
         <div class="card-header">
             <h3 class="mb-0">Funding Requests</h3>
         </div>
@@ -549,7 +566,7 @@
         </div>
     </div>
 
-    <div class="card section-card mb-4">
+    <div class="card section-card">
         <div class="card-header">
             <h3 class="mb-0">Project Media</h3>
         </div>

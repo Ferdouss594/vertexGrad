@@ -4,34 +4,51 @@
 
 @section('content')
 <style>
+    .investor-show-page {
+        --page-bg: #f5f7fb;
+        --card-bg: #ffffff;
+        --text-main: #172033;
+        --text-soft: #7b8497;
+        --border-color: #e8ecf4;
+        --primary-color: #4e73df;
+        --primary-soft: rgba(78, 115, 223, 0.10);
+        --info-color: #36b9cc;
+        --info-soft: rgba(54, 185, 204, 0.12);
+        --success-soft: rgba(28, 200, 138, 0.12);
+        --warning-soft: rgba(246, 194, 62, 0.14);
+        --danger-soft: rgba(231, 74, 59, 0.12);
+        --shadow-sm: 0 8px 20px rgba(18, 38, 63, 0.06);
+    }
+
     .investor-show-page .page-header-card {
-        background: linear-gradient(135deg, #0d1b4c 0%, #1b00ff 100%);
-        border-radius: 22px;
-        padding: 30px 32px;
-        color: #fff;
-        box-shadow: 0 14px 34px rgba(27, 0, 255, 0.18);
+        background: linear-gradient(135deg, #ffffff 0%, #f9fbff 100%);
+        border-radius: 24px;
+        padding: 26px 28px;
+        color: var(--text-main);
+        box-shadow: var(--shadow-sm);
+        border: 1px solid var(--border-color);
         margin-bottom: 24px;
     }
 
     .investor-show-page .page-header-card h3 {
         margin: 0;
         font-weight: 800;
-        color: #fff;
+        color: var(--text-main);
         font-size: 30px;
     }
 
     .investor-show-page .page-header-card p {
         margin: 10px 0 0;
-        opacity: 0.92;
+        color: var(--text-soft);
         font-size: 15px;
     }
 
     .investor-show-page .info-card,
     .investor-show-page .section-card {
         background: #fff;
-        border-radius: 20px;
-        box-shadow: 0 10px 25px rgba(15, 23, 42, 0.06);
-        border: 1px solid #edf2f7;
+        border-radius: 24px;
+        box-shadow: var(--shadow-sm);
+        border: 1px solid var(--border-color);
         overflow: hidden;
         height: 100%;
     }
@@ -196,8 +213,8 @@
     }
 
     .investor-show-page .btn-back {
-        background: #fff;
-        border: 1px solid #dbe4f0;
+        background: #eef2f8;
+        border: none;
         color: #0f172a;
         border-radius: 12px;
         padding: 10px 16px;
@@ -205,28 +222,15 @@
         text-decoration: none;
     }
 
-    .investor-show-page .btn-back:hover {
-        text-decoration: none;
-        color: #0f172a;
-        background: #f8fafc;
-    }
-
     .investor-show-page .btn-edit,
     .investor-show-page .btn-primary-custom {
-        background: linear-gradient(135deg, #1b00ff, #4f46e5);
+        background: linear-gradient(135deg, #4e73df, #6f8df3);
         color: #fff;
         border: none;
         border-radius: 12px;
         padding: 10px 16px;
         font-weight: 700;
         text-decoration: none;
-    }
-
-    .investor-show-page .btn-edit:hover,
-    .investor-show-page .btn-primary-custom:hover {
-        color: #fff;
-        text-decoration: none;
-        opacity: 0.95;
     }
 
     .investor-show-page .btn-outline-danger-custom {
@@ -248,17 +252,28 @@
         font-weight: 700;
     }
 
-    .investor-show-page .name-link:hover {
-        color: #1b00ff;
-        text-decoration: none;
-    }
-
     .investor-show-page .mini-summary-card {
         background: #f8fafc;
         border: 1px solid #edf2f7;
         border-radius: 16px;
         padding: 16px;
         height: 100%;
+    }
+
+    .investor-show-page .icon-delete-btn {
+        width: 34px;
+        height: 34px;
+        border: none;
+        border-radius: 10px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(231, 74, 59, 0.12);
+        color: #dc2626;
+    }
+
+    .investor-show-page .auto-resize {
+        min-height: 120px;
     }
 
     @media (max-width: 991px) {
@@ -306,39 +321,16 @@
                 </div>
 
                 <div class="d-flex flex-wrap" style="gap: 10px;">
-                    <a href="{{ route('admin.investors.index') }}" class="btn-back">
-                        <i class="fa fa-arrow-left mr-1"></i> Back
-                    </a>
-
-                    <a href="{{ route('admin.investment-requests.index', ['search' => $investor->user?->email]) }}" class="btn-back">
-                        <i class="fa fa-hand-holding-usd mr-1"></i> Requests
-                    </a>
-                    <a href="{{ route('admin.investors.report', $investor->user_id) }}" class="btn-back">
-    <i class="fa fa-chart-bar mr-1"></i> Report
-</a>
-
-<a href="{{ route('admin.investors.meetings.index', $investor->user_id) }}" class="btn-back">
-    <i class="fa fa-calendar-alt mr-1"></i> Meetings
-</a>
-
-<a href="{{ route('admin.investors.contracts.index', $investor->user_id) }}" class="btn-back">
-    <i class="fa fa-file-contract mr-1"></i> Contracts
-</a>
-<a href="{{ route('admin.investors.email.create', $investor->user_id) }}" class="btn-back">
-    <i class="fa fa-envelope mr-1"></i> Email
-</a>
-<a href="{{ route('admin.investors.preferences.edit', $investor->user_id) }}" class="btn-back">
-    <i class="fa fa-sliders-h mr-1"></i> Preferences
-</a>
-<a href="{{ route('admin.investors.reminders.index', $investor->user_id) }}" class="btn-back">
-    <i class="fa fa-bell mr-1"></i> Reminders
-</a>
-<a href="{{ route('admin.investors.notify.create',$investor->user_id) }}" class="btn-back">
-    <i class="fa fa-bell mr-1"></i> Notify
-</a>
-                    <a href="{{ route('admin.investors.edit', $investor->user_id) }}" class="btn-edit">
-                        <i class="fa fa-pencil-alt mr-1"></i> Edit Investor
-                    </a>
+                    <a href="{{ route('admin.investors.index') }}" class="btn-back"><i class="fa fa-arrow-left mr-1"></i> Back</a>
+                    <a href="{{ route('admin.investment-requests.index', ['search' => $investor->user?->email]) }}" class="btn-back"><i class="fa fa-hand-holding-usd mr-1"></i> Requests</a>
+                    <a href="{{ route('admin.investors.report', $investor->user_id) }}" class="btn-back"><i class="fa fa-chart-bar mr-1"></i> Report</a>
+                    <a href="{{ route('admin.investors.meetings.index', $investor->user_id) }}" class="btn-back"><i class="fa fa-calendar-alt mr-1"></i> Meetings</a>
+                    <a href="{{ route('admin.investors.contracts.index', $investor->user_id) }}" class="btn-back"><i class="fa fa-file-contract mr-1"></i> Contracts</a>
+                    <a href="{{ route('admin.investors.email.create', $investor->user_id) }}" class="btn-back"><i class="fa fa-envelope mr-1"></i> Email</a>
+                    <a href="{{ route('admin.investors.preferences.edit', $investor->user_id) }}" class="btn-back"><i class="fa fa-sliders-h mr-1"></i> Preferences</a>
+                    <a href="{{ route('admin.investors.reminders.index', $investor->user_id) }}" class="btn-back"><i class="fa fa-bell mr-1"></i> Reminders</a>
+                    <a href="{{ route('admin.investors.notify.create',$investor->user_id) }}" class="btn-back"><i class="fa fa-bell mr-1"></i> Notify</a>
+                    <a href="{{ route('admin.investors.edit', $investor->user_id) }}" class="btn-edit"><i class="fa fa-pencil-alt mr-1"></i> Edit Investor</a>
                 </div>
             </div>
         </div>
@@ -355,61 +347,16 @@
 
                     <div class="section-body">
                         <div class="info-grid">
-                            <div class="info-item">
-                                <div class="info-label">Full Name</div>
-                                <div class="info-value">{{ $investor->user?->name ?? '—' }}</div>
-                            </div>
-
-                            <div class="info-item">
-                                <div class="info-label">Email</div>
-                                <div class="info-value">{{ $investor->user?->email ?? '—' }}</div>
-                            </div>
-
-                            <div class="info-item">
-                                <div class="info-label">Status</div>
-                                <div class="info-value">
-                                    <span class="badge-soft {{ $statusClass }}">
-                                        {{ ucfirst($investor->user?->status ?? '—') }}
-                                    </span>
-                                </div>
-                            </div>
-
-                            <div class="info-item">
-                                <div class="info-label">Phone</div>
-                                <div class="info-value">{{ $investor->phone ?? '—' }}</div>
-                            </div>
-
-                            <div class="info-item">
-                                <div class="info-label">Company</div>
-                                <div class="info-value">{{ $investor->company ?? '—' }}</div>
-                            </div>
-
-                            <div class="info-item">
-                                <div class="info-label">Position</div>
-                                <div class="info-value">{{ $investor->position ?? '—' }}</div>
-                            </div>
-
-                            <div class="info-item">
-                                <div class="info-label">Investment Type</div>
-                                <div class="info-value">{{ $investor->investment_type ?? '—' }}</div>
-                            </div>
-
-                            <div class="info-item">
-                                <div class="info-label">Budget</div>
-                                <div class="info-value">
-                                    {{ $investor->budget !== null ? '$' . number_format($investor->budget, 2) : '—' }}
-                                </div>
-                            </div>
-
-                            <div class="info-item">
-                                <div class="info-label">Source</div>
-                                <div class="info-value">{{ $investor->source ?? '—' }}</div>
-                            </div>
-
-                            <div class="info-item">
-                                <div class="info-label">Registered On</div>
-                                <div class="info-value">{{ optional($investor->created_at)->format('Y-m-d h:i A') ?? '—' }}</div>
-                            </div>
+                            <div class="info-item"><div class="info-label">Full Name</div><div class="info-value">{{ $investor->user?->name ?? '—' }}</div></div>
+                            <div class="info-item"><div class="info-label">Email</div><div class="info-value">{{ $investor->user?->email ?? '—' }}</div></div>
+                            <div class="info-item"><div class="info-label">Status</div><div class="info-value"><span class="badge-soft {{ $statusClass }}">{{ ucfirst($investor->user?->status ?? '—') }}</span></div></div>
+                            <div class="info-item"><div class="info-label">Phone</div><div class="info-value">{{ $investor->phone ?? '—' }}</div></div>
+                            <div class="info-item"><div class="info-label">Company</div><div class="info-value">{{ $investor->company ?? '—' }}</div></div>
+                            <div class="info-item"><div class="info-label">Position</div><div class="info-value">{{ $investor->position ?? '—' }}</div></div>
+                            <div class="info-item"><div class="info-label">Investment Type</div><div class="info-value">{{ $investor->investment_type ?? '—' }}</div></div>
+                            <div class="info-item"><div class="info-label">Budget</div><div class="info-value">{{ $investor->budget !== null ? '$' . number_format($investor->budget, 2) : '—' }}</div></div>
+                            <div class="info-item"><div class="info-label">Source</div><div class="info-value">{{ $investor->source ?? '—' }}</div></div>
+                            <div class="info-item"><div class="info-label">Registered On</div><div class="info-value">{{ optional($investor->created_at)->format('Y-m-d h:i A') ?? '—' }}</div></div>
                         </div>
                     </div>
                 </div>
@@ -425,145 +372,23 @@
                     </div>
 
                     <div class="section-body">
-                        <div class="mini-summary-card mb-3">
-                            <div class="info-label">Notes Count</div>
-                            <div class="info-value">{{ $investor->investorNotes->count() }}</div>
-                        </div>
-
-                        <div class="mini-summary-card mb-3">
-                            <div class="info-label">Files Count</div>
-                            <div class="info-value">{{ $investor->files->count() }}</div>
-                        </div>
-
-                        <div class="mini-summary-card mb-3">
-                            <div class="info-label">Activities Count</div>
-                            <div class="info-value">{{ $investor->activities->count() }}</div>
-                        </div>
-
-                        <div class="mini-summary-card">
-                            <div class="info-label">Funding Records</div>
-                            <div class="info-value">{{ $projectInvestments->count() }}</div>
-                        </div>
+                        <div class="mini-summary-card mb-3"><div class="info-label">Notes Count</div><div class="info-value">{{ $investor->investorNotes->count() }}</div></div>
+                        <div class="mini-summary-card mb-3"><div class="info-label">Files Count</div><div class="info-value">{{ $investor->files->count() }}</div></div>
+                        <div class="mini-summary-card mb-3"><div class="info-label">Activities Count</div><div class="info-value">{{ $investor->activities->count() }}</div></div>
+                        <div class="mini-summary-card"><div class="info-label">Funding Records</div><div class="info-value">{{ $projectInvestments->count() }}</div></div>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="row mb-4">
-            <div class="col-xl-3 col-md-6 mb-3">
-                <div class="info-item">
-                    <div class="info-label">Interested</div>
-                    <div class="info-value">{{ $fundingStats['interested'] }}</div>
-                </div>
-            </div>
-
-            <div class="col-xl-3 col-md-6 mb-3">
-                <div class="info-item">
-                    <div class="info-label">Requested</div>
-                    <div class="info-value">{{ $fundingStats['requested'] }}</div>
-                </div>
-            </div>
-
-            <div class="col-xl-3 col-md-6 mb-3">
-                <div class="info-item">
-                    <div class="info-label">Approved</div>
-                    <div class="info-value">{{ $fundingStats['approved'] }}</div>
-                </div>
-            </div>
-
-            <div class="col-xl-3 col-md-6 mb-3">
-                <div class="info-item">
-                    <div class="info-label">Rejected</div>
-                    <div class="info-value">{{ $fundingStats['rejected'] }}</div>
-                </div>
-            </div>
+            <div class="col-xl-3 col-md-6 mb-3"><div class="info-item"><div class="info-label">Interested</div><div class="info-value">{{ $fundingStats['interested'] }}</div></div></div>
+            <div class="col-xl-3 col-md-6 mb-3"><div class="info-item"><div class="info-label">Requested</div><div class="info-value">{{ $fundingStats['requested'] }}</div></div></div>
+            <div class="col-xl-3 col-md-6 mb-3"><div class="info-item"><div class="info-label">Approved</div><div class="info-value">{{ $fundingStats['approved'] }}</div></div></div>
+            <div class="col-xl-3 col-md-6 mb-3"><div class="info-item"><div class="info-label">Rejected</div><div class="info-value">{{ $fundingStats['rejected'] }}</div></div></div>
         </div>
 
-        <div class="section-card mb-4">
-            <div class="section-header">
-                <div class="title-wrap">
-                    <i class="fa fa-hand-holding-usd"></i>
-                    <span>Funding / Project Investments</span>
-                </div>
-            </div>
-
-            <div class="section-body p-0">
-                @if($projectInvestments->count() > 0)
-                    <div class="table-responsive">
-                        <table class="table modern-table">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Project</th>
-                                    <th>Student</th>
-                                    <th>Status</th>
-                                    <th>Amount</th>
-                                    <th>Message</th>
-                                    <th>Date</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($projectInvestments as $project)
-                                    @php
-                                        $fundingClass = match($project->pivot->status) {
-                                            'approved' => 'badge-funding-approved',
-                                            'rejected' => 'badge-funding-rejected',
-                                            'requested' => 'badge-funding-requested',
-                                            'interested' => 'badge-funding-interested',
-                                            default => 'badge-default',
-                                        };
-                                    @endphp
-                                    <tr>
-                                        <td>{{ $loop->iteration }}</td>
-
-                                        <td>
-                                            @if($project)
-                                                <a href="{{ route('admin.projects.show', $project->project_id) }}"
-                                                   class="name-link">
-                                                    {{ $project->name ?? 'Untitled Project' }}
-                                                </a>
-                                                <div class="record-meta">
-                                                    Project ID: {{ $project->project_id ?? '—' }}
-                                                </div>
-                                            @else
-                                                —
-                                            @endif
-                                        </td>
-
-                                        <td>{{ optional($project->student)->name ?? '—' }}</td>
-
-                                        <td>
-                                            <span class="badge-soft {{ $fundingClass }}">
-                                                {{ ucfirst($project->pivot->status ?? '—') }}
-                                            </span>
-                                        </td>
-
-                                        <td>
-                                            {{ $project->pivot->amount !== null ? '$' . number_format($project->pivot->amount, 2) : '—' }}
-                                        </td>
-
-                                        <td style="max-width: 260px;">
-                                            <div style="word-break: break-word; line-height:1.6;">
-                                                {{ $project->pivot->message ?: '—' }}
-                                            </div>
-                                        </td>
-
-                                        <td>
-                                            {{ optional($project->pivot->created_at)->format('Y-m-d h:i A') ?? '—' }}
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                @else
-                    <div class="empty-state">
-                        <i class="fa fa-hand-holding-usd"></i>
-                        <div>No funding activity found for this investor.</div>
-                    </div>
-                @endif
-            </div>
-        </div>
+      @include('investors._investments-section')
 
         <div class="row">
             <div class="col-xl-4 mb-4">
@@ -576,11 +401,14 @@
                     </div>
 
                     <div class="section-body">
-                        <form action="{{ route('admin.investors.notes.store', $investor->user_id) }}" method="POST" class="mb-4">
+                        <form action="{{ route('admin.investors.notes.store', $investor->user_id) }}"
+                              method="POST"
+                              class="mb-4 ajax-ui-form"
+                              data-loading-text="Saving...">
                             @csrf
                             <div class="mb-3">
                                 <label class="form-label" style="font-weight:700;">Add Note</label>
-                                <textarea name="note" rows="4" class="form-control" placeholder="Write a note about this investor..."></textarea>
+                                <textarea name="note" rows="4" class="form-control auto-resize" placeholder="Write a note about this investor..."></textarea>
                             </div>
 
                             <button type="submit" class="btn-primary-custom">
@@ -596,9 +424,9 @@
                                         <div class="record-meta">{{ $note->created_at?->format('Y-m-d h:i A') }}</div>
                                         <div class="record-text">{{ $note->note }}</div>
 
-<form action="{{ route('admin.investors.notes.delete', ['investor' => $investor->user_id, 'note' => $note->id]) }}"
-      method="POST"
-      style="margin-top:8px;">
+                                        <form action="{{ route('admin.investors.notes.delete', ['investor' => $investor->user_id, 'note' => $note->id]) }}"
+                                              method="POST"
+                                              style="margin-top:8px;">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit"
@@ -630,7 +458,11 @@
                     </div>
 
                     <div class="section-body">
-                        <form action="{{ route('admin.investors.files.upload', $investor->user_id) }}" method="POST" enctype="multipart/form-data" class="mb-4">
+                        <form action="{{ route('admin.investors.files.upload', $investor->user_id) }}"
+                              method="POST"
+                              enctype="multipart/form-data"
+                              class="mb-4 ajax-ui-form"
+                              data-loading-text="Uploading...">
                             @csrf
                             <div class="mb-3">
                                 <label class="form-label" style="font-weight:700;">Upload File</label>
@@ -652,13 +484,8 @@
                                             </a>
                                         </div>
 
-                                        <div class="record-meta">
-                                            Uploaded: {{ $file->created_at?->format('Y-m-d h:i A') }}
-                                        </div>
-
-                                        <div class="record-meta">
-                                            Size: {{ isset($file->size) ? number_format($file->size / 1024, 2) . ' KB' : '—' }}
-                                        </div>
+                                        <div class="record-meta">Uploaded: {{ $file->created_at?->format('Y-m-d h:i A') }}</div>
+                                        <div class="record-meta">Size: {{ isset($file->size) ? number_format($file->size / 1024, 2) . ' KB' : '—' }}</div>
 
                                         <form action="{{ route('admin.investors.files.delete', ['investor' => $investor->user_id, 'file' => $file->id]) }}"
                                               method="POST"
@@ -700,13 +527,12 @@
                                     <li>
                                         <div class="record-title">{{ $activity->user?->name ?? 'System' }}</div>
                                         <div class="record-meta">{{ $activity->created_at?->format('Y-m-d h:i A') }}</div>
-
                                         <div class="record-text">
                                             {{ ucfirst(str_replace('_', ' ', $activity->action)) }}
 
                                             @if($activity->meta)
                                                 <div class="record-meta mt-1">
-                                                    {{ json_encode($activity->meta) }}
+                                                    {{ is_array($activity->meta) ? json_encode($activity->meta, JSON_UNESCAPED_UNICODE) : $activity->meta }}
                                                 </div>
                                             @endif
                                         </div>
@@ -726,4 +552,36 @@
 
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.auto-resize').forEach(el => {
+        const resize = () => {
+            el.style.height = 'auto';
+            el.style.height = el.scrollHeight + 'px';
+        };
+        el.addEventListener('input', resize);
+        resize();
+    });
+
+    document.querySelectorAll('.ajax-ui-form').forEach(form => {
+        form.addEventListener('submit', function () {
+            const btn = form.querySelector('button[type="submit"]');
+            if (!btn) return;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa fa-spinner fa-spin mr-1"></i> ' + (form.dataset.loadingText || 'Processing...');
+        });
+    });
+
+    document.querySelectorAll('.info-card, .section-card').forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(10px)';
+        setTimeout(() => {
+            card.style.transition = 'all .35s ease';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, index * 50);
+    });
+});
+</script>
 @endsection

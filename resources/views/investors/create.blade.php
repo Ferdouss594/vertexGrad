@@ -3,68 +3,205 @@
 @section('title', 'Add New Investor')
 
 @section('content')
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
 <style>
-    .investor-create-page .page-header-card {
-        background: linear-gradient(135deg, #0d1b4c 0%, #1b00ff 100%);
-        border-radius: 20px;
-        padding: 28px 30px;
-        color: #fff;
-        box-shadow: 0 12px 30px rgba(27, 0, 255, 0.18);
+    :root {
+        --page-bg: #f5f7fb;
+        --card-bg: #ffffff;
+        --text-main: #172033;
+        --text-soft: #7b8497;
+        --border-color: #e8ecf4;
+        --primary-color: #4e73df;
+        --primary-soft: rgba(78, 115, 223, 0.10);
+        --info-color: #36b9cc;
+        --success-color: #1cc88a;
+        --warning-color: #f6c23e;
+        --danger-color: #e74a3b;
+        --shadow-sm: 0 8px 20px rgba(18, 38, 63, 0.06);
+        --shadow-md: 0 14px 36px rgba(18, 38, 63, 0.10);
+        --radius-xl: 24px;
+        --radius-lg: 20px;
+        --radius-md: 16px;
+        --radius-sm: 12px;
+    }
+
+    body {
+        background: var(--page-bg);
+    }
+
+    .investor-create-page {
+        padding: 10px 0 24px;
+    }
+
+    .page-header-card {
+        background: linear-gradient(135deg, #ffffff 0%, #f9fbff 100%);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-xl);
+        padding: 26px 28px;
+        box-shadow: var(--shadow-sm);
         margin-bottom: 24px;
     }
 
-    .investor-create-page .page-header-card h3 {
+    .page-title {
         margin: 0;
-        font-weight: 700;
-        color: #fff;
+        font-size: 1.65rem;
+        font-weight: 800;
+        color: var(--text-main);
     }
 
-    .investor-create-page .page-header-card p {
+    .page-subtitle {
         margin: 8px 0 0;
-        opacity: 0.9;
+        color: var(--text-soft);
+        font-size: 0.96rem;
     }
 
-    .investor-create-page .content-card {
+    .custom-alert {
+        border: none;
+        border-radius: 14px;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .reset-btn {
+        min-height: 46px;
+        border-radius: 14px;
+        font-weight: 700;
+        padding: 10px 18px;
+        background: #eef2f8;
+        color: #344054;
+        border: none;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .reset-btn:hover {
+        color: #344054;
+        text-decoration: none;
+    }
+
+    .main-panel {
         background: #fff;
-        border-radius: 20px;
-        box-shadow: 0 10px 25px rgba(15, 23, 42, 0.06);
-        border: 1px solid #edf2f7;
+        border: 1px solid var(--border-color);
+        border-radius: 24px;
+        box-shadow: var(--shadow-sm);
         overflow: hidden;
     }
 
-    .investor-create-page .content-card-body {
-        padding: 24px;
+    .panel-head {
+        padding: 22px 24px 10px;
+        border-bottom: 1px solid rgba(232, 236, 244, 0.7);
+    }
+
+    .panel-title {
+        margin: 0;
+        font-size: 1.08rem;
+        font-weight: 800;
+        color: var(--text-main);
+    }
+
+    .panel-subtitle {
+        margin-top: 6px;
+        color: var(--text-soft);
+        font-size: 0.9rem;
+    }
+
+    .table-wrap {
+        padding: 20px 24px 26px;
+    }
+
+    @media (max-width: 991px) {
+        .page-header-card {
+            padding: 22px 20px;
+        }
+
+        .panel-head,
+        .table-wrap {
+            padding-left: 18px;
+            padding-right: 18px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .page-title {
+            font-size: 1.3rem;
+        }
     }
 </style>
 
-<div class="pd-ltr-20 xs-pd-20-10 investor-create-page">
-    <div class="min-height-200px">
+<div class="container-fluid investor-create-page">
 
-        @if ($errors->any())
-            <div class="alert alert-danger border-0 shadow-sm" style="border-radius: 14px;">
-                <strong>Please fix the following errors:</strong>
-                <ul class="mb-0 mt-2">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-
-        <div class="page-header-card">
-            <h3>Add New Investor</h3>
-            <p>Create a complete investor account with profile information, source, investment type, and budget details.</p>
+    @if ($errors->any())
+        <div class="alert alert-danger custom-alert mb-4" role="alert">
+            <strong>Please fix the following errors:</strong>
+            <ul class="mb-0 mt-2">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
         </div>
+    @endif
 
-        <div class="content-card">
-            <div class="content-card-body">
-                <form action="{{ route('admin.investors.store') }}" method="POST">
-                    @csrf
-                    @include('investors._form')
-                </form>
+    <div class="page-header-card">
+        <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3">
+            <div>
+                <h1 class="page-title">Add New Investor</h1>
+                <p class="page-subtitle">
+                    Create a complete investor account with profile information, source, investment type, and budget details.
+                </p>
+            </div>
+
+            <div>
+                <a href="{{ route('admin.investors.index') }}" class="reset-btn px-4">
+                    <i class="fa fa-arrow-left mr-1"></i> Back
+                </a>
             </div>
         </div>
-
     </div>
+
+    <div class="main-panel">
+        <div class="panel-head">
+            <h2 class="panel-title">Investor Registration Form</h2>
+            <div class="panel-subtitle">Fill in the required account and profile information to create a new investor.</div>
+        </div>
+
+        <div class="table-wrap">
+            <form action="{{ route('admin.investors.store') }}"
+                  method="POST"
+                  class="ajax-ui-form"
+                  data-submit-text="Create Investor"
+                  data-loading-text="Creating...">
+                @csrf
+                @include('investors._form')
+            </form>
+        </div>
+    </div>
+
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.ajax-ui-form').forEach(form => {
+        form.addEventListener('submit', function () {
+            const btn = form.querySelector('button[type="submit"]');
+            if (!btn) return;
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa fa-spinner fa-spin mr-1"></i> ' + (form.dataset.loadingText || 'Processing...');
+        });
+    });
+
+    document.querySelectorAll('.page-header-card, .main-panel').forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(10px)';
+
+        setTimeout(() => {
+            card.style.transition = 'all 0.35s ease';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, 80 * (index + 1));
+    });
+});
+</script>
 @endsection

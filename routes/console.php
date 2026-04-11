@@ -8,3 +8,5 @@ Schedule::command('reports:run-scheduled')->everyMinute();
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
+
+Schedule::command('auth:clean-expired-otps')->hourly();

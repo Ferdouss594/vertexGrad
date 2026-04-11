@@ -3,88 +3,101 @@
 @endphp
 
 <style>
-    .investor-form-page .form-section-card {
+    .investor-form-page .main-panel {
         background: #fff;
-        border-radius: 20px;
-        box-shadow: 0 10px 25px rgba(15, 23, 42, 0.06);
-        border: 1px solid #edf2f7;
+        border: 1px solid #e8ecf4;
+        border-radius: 24px;
+        box-shadow: 0 8px 20px rgba(18, 38, 63, 0.06);
         overflow: hidden;
         margin-bottom: 24px;
     }
 
-    .investor-form-page .form-section-header {
-        padding: 18px 22px;
-        border-bottom: 1px solid #eef2f7;
-        font-weight: 700;
-        color: #0f172a;
-        display: flex;
-        align-items: center;
-        gap: 10px;
+    .investor-form-page .panel-head {
+        padding: 22px 24px 10px;
+        border-bottom: 1px solid rgba(232, 236, 244, 0.7);
     }
 
-    .investor-form-page .form-section-body {
-        padding: 22px;
+    .investor-form-page .panel-title {
+        margin: 0;
+        font-size: 1.08rem;
+        font-weight: 800;
+        color: #172033;
+    }
+
+    .investor-form-page .panel-subtitle {
+        margin-top: 6px;
+        color: #7b8497;
+        font-size: 0.9rem;
+    }
+
+    .investor-form-page .table-wrap {
+        padding: 20px 24px 26px;
     }
 
     .investor-form-page label {
-        font-size: 13px;
+        font-size: 0.82rem;
+        color: #7b8497;
         font-weight: 700;
-        color: #334155;
         margin-bottom: 8px;
+        display: block;
     }
 
     .investor-form-page .form-control,
     .investor-form-page .form-select {
-        border-radius: 12px;
-        min-height: 44px;
-        border: 1px solid #dbe4f0;
+        min-height: 46px;
+        border-radius: 14px;
+        border: 1px solid #dfe5ef;
         box-shadow: none;
+        padding: 12px 14px;
+    }
+
+    .investor-form-page .form-control:focus,
+    .investor-form-page .form-select:focus {
+        border-color: rgba(78, 115, 223, 0.5);
+        box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.12);
     }
 
     .investor-form-page textarea.form-control {
         min-height: 120px;
     }
 
-    .investor-form-page .btn-primary-custom {
-        background: linear-gradient(135deg, #1b00ff, #4f46e5);
-        color: #fff;
+    .investor-form-page .search-btn {
+        min-height: 46px;
+        border-radius: 14px;
+        font-weight: 700;
+        padding: 10px 18px;
+    }
+
+    .investor-form-page .reset-btn {
+        min-height: 46px;
+        border-radius: 14px;
+        font-weight: 700;
+        padding: 10px 18px;
+        background: #eef2f8;
+        color: #344054;
         border: none;
-        border-radius: 12px;
-        padding: 11px 20px;
-        font-weight: 700;
         text-decoration: none;
-        box-shadow: 0 10px 20px rgba(27, 0, 255, 0.15);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
     }
 
-    .investor-form-page .btn-primary-custom:hover {
-        color: #fff;
-        opacity: 0.96;
+    .investor-form-page .reset-btn:hover {
+        color: #344054;
         text-decoration: none;
-    }
-
-    .investor-form-page .btn-light-custom {
-        background: #fff;
-        border: 1px solid #dbe4f0;
-        color: #0f172a;
-        border-radius: 12px;
-        padding: 11px 20px;
-        font-weight: 700;
-        text-decoration: none;
-    }
-
-    .investor-form-page .btn-light-custom:hover {
-        text-decoration: none;
-        color: #0f172a;
-        background: #f8fafc;
     }
 </style>
 
 <div class="investor-form-page">
-    <div class="form-section-card">
-        <div class="form-section-header">
-            <i class="fa fa-user"></i> Account Information
+    <div class="main-panel">
+        <div class="panel-head">
+            <h2 class="panel-title">
+                <i class="fa fa-user mr-2"></i>Account Information
+            </h2>
+            <div class="panel-subtitle">Basic account details and access information for the investor.</div>
         </div>
-        <div class="form-section-body">
+
+        <div class="table-wrap">
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label>Username</label>
@@ -172,11 +185,15 @@
         </div>
     </div>
 
-    <div class="form-section-card">
-        <div class="form-section-header">
-            <i class="fa fa-briefcase"></i> Investor Profile
+    <div class="main-panel">
+        <div class="panel-head">
+            <h2 class="panel-title">
+                <i class="fa fa-briefcase mr-2"></i>Investor Profile
+            </h2>
+            <div class="panel-subtitle">Professional and investment-related information for this investor profile.</div>
         </div>
-        <div class="form-section-body">
+
+        <div class="table-wrap">
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label>Phone</label>
@@ -254,12 +271,12 @@
     </div>
 
     <div class="d-flex flex-wrap" style="gap: 12px;">
-        <button class="btn-primary-custom" type="submit">
+        <button class="btn btn-primary search-btn" type="submit">
             <i class="fa fa-save mr-1"></i>
             {{ $isEdit ? 'Update Investor' : 'Create Investor' }}
         </button>
 
-        <a href="{{ route('admin.investors.index') }}" class="btn-light-custom">
+        <a href="{{ route('admin.investors.index') }}" class="reset-btn">
             Cancel
         </a>
     </div>

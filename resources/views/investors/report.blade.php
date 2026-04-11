@@ -4,21 +4,30 @@
 
 @section('content')
 <style>
+    .single-investor-report-page {
+        --text-main: #172033;
+        --text-soft: #7b8497;
+        --border-color: #e8ecf4;
+        --primary-color: #4e73df;
+        --shadow-sm: 0 8px 20px rgba(18, 38, 63, 0.06);
+    }
+
     .single-investor-report-page .page-header-card {
-        background: linear-gradient(135deg, #0d1b4c 0%, #1b00ff 100%);
-        border-radius: 22px;
-        padding: 30px 32px;
-        color: #fff;
-        box-shadow: 0 14px 34px rgba(27, 0, 255, 0.18);
+        background: linear-gradient(135deg, #ffffff 0%, #f9fbff 100%);
+        border-radius: 24px;
+        padding: 26px 28px;
+        color: var(--text-main);
+        box-shadow: var(--shadow-sm);
+        border: 1px solid var(--border-color);
         margin-bottom: 24px;
     }
 
     .single-investor-report-page .stats-card,
     .single-investor-report-page .section-card {
         background: #fff;
-        border-radius: 20px;
-        box-shadow: 0 10px 25px rgba(15, 23, 42, 0.06);
-        border: 1px solid #edf2f7;
+        border-radius: 24px;
+        box-shadow: var(--shadow-sm);
+        border: 1px solid var(--border-color);
         height: 100%;
     }
 
@@ -76,20 +85,13 @@
 
     .single-investor-report-page .btn-export,
     .single-investor-report-page .btn-back {
-        background: #fff;
-        border: 1px solid #dbe4f0;
+        background: #eef2f8;
+        border: none;
         color: #0f172a;
         border-radius: 12px;
         padding: 10px 16px;
         font-weight: 700;
         text-decoration: none;
-    }
-
-    .single-investor-report-page .btn-export:hover,
-    .single-investor-report-page .btn-back:hover {
-        text-decoration: none;
-        color: #0f172a;
-        background: #f8fafc;
     }
 </style>
 
@@ -100,7 +102,7 @@
             <div class="d-flex justify-content-between align-items-center flex-wrap" style="gap: 15px;">
                 <div>
                     <h3 class="mb-1">{{ $investor->user?->name ?? 'Investor Report' }}</h3>
-                    <p class="mb-0">Detailed investor report including requests, funding activity, notes, files, and actions.</p>
+                    <p class="mb-0" style="color:#7b8497;">Detailed investor report including requests, funding activity, notes, files, and actions.</p>
                 </div>
 
                 <div class="d-flex flex-wrap" style="gap: 10px;">
@@ -171,4 +173,18 @@
 
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.stats-card, .section-card').forEach((el, i) => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(10px)';
+        setTimeout(() => {
+            el.style.transition = 'all .35s ease';
+            el.style.opacity = '1';
+            el.style.transform = 'translateY(0)';
+        }, i * 60);
+    });
+});
+</script>
 @endsection

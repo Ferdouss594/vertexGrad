@@ -3,690 +3,937 @@
 @section('title', 'Investors')
 
 @section('content')
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
 <style>
-    .investors-page .page-header-card {
-        background: linear-gradient(135deg, #0d1b4c 0%, #1b00ff 100%);
-        border-radius: 20px;
-        padding: 28px 30px;
-        color: #fff;
-        box-shadow: 0 12px 30px rgba(27, 0, 255, 0.18);
+    :root {
+        --page-bg: #f5f7fb;
+        --card-bg: #ffffff;
+        --text-main: #172033;
+        --text-soft: #7b8497;
+        --border-color: #e8ecf4;
+        --primary-color: #4e73df;
+        --primary-soft: rgba(78, 115, 223, 0.10);
+        --info-color: #36b9cc;
+        --info-soft: rgba(54, 185, 204, 0.12);
+        --success-color: #1cc88a;
+        --success-soft: rgba(28, 200, 138, 0.12);
+        --warning-color: #f6c23e;
+        --warning-soft: rgba(246, 194, 62, 0.14);
+        --danger-color: #e74a3b;
+        --danger-soft: rgba(231, 74, 59, 0.12);
+        --shadow-sm: 0 8px 20px rgba(18, 38, 63, 0.06);
+        --shadow-md: 0 14px 36px rgba(18, 38, 63, 0.10);
+        --radius-xl: 24px;
+        --radius-lg: 20px;
+        --radius-md: 16px;
+        --radius-sm: 12px;
     }
-    .badge-funding-requested {
-    background: #eff6ff;
-    color: #1d4ed8;
-}
 
-.badge-funding-interested {
-    background: #fff7ed;
-    color: #c2410c;
-}
+    body {
+        background: var(--page-bg);
+    }
 
-.badge-funding-approved {
-    background: #ecfdf5;
-    color: #15803d;
-}
+    .investors-page {
+        padding: 10px 0 24px;
+    }
 
-.badge-funding-rejected {
-    background: #fef2f2;
-    color: #dc2626;
-}
+    .page-header-card {
+        background: linear-gradient(135deg, #ffffff 0%, #f9fbff 100%);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-xl);
+        padding: 26px 28px;
+        box-shadow: var(--shadow-sm);
+        margin-bottom: 24px;
+    }
 
-    .investors-page .page-header-card h3 {
+    .page-title {
         margin: 0;
-        font-weight: 700;
-        color: #fff;
+        font-size: 1.65rem;
+        font-weight: 800;
+        color: var(--text-main);
     }
 
-    .investors-page .page-header-card p {
+    .page-subtitle {
         margin: 8px 0 0;
-        opacity: 0.9;
+        color: var(--text-soft);
+        font-size: 0.96rem;
     }
 
-    .investors-page .stats-card {
-        background: #fff;
-        border-radius: 18px;
-        padding: 22px;
-        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
-        border: 1px solid #eef2ff;
-        height: 100%;
-        transition: 0.3s ease;
+    .custom-alert {
+        border: none;
+        border-radius: 14px;
+        box-shadow: var(--shadow-sm);
     }
 
-    .investors-page .stats-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 14px 30px rgba(15, 23, 42, 0.10);
+    .stats-grid .col-lg-2,
+    .stats-grid .col-md-3,
+    .stats-grid .col-sm-6 {
+        display: flex;
     }
 
-    .investors-page .stats-icon {
-        width: 52px;
-        height: 52px;
+    .stat-card {
+        position: relative;
+        overflow: hidden;
+        width: 100%;
+        min-height: 132px;
+        border: 1px solid var(--border-color);
+        border-radius: 20px;
+        background: var(--card-bg);
+        padding: 20px 18px;
+        box-shadow: var(--shadow-sm);
+        transition: all 0.25s ease;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-md);
+    }
+
+    .stat-card::after {
+        content: "";
+        position: absolute;
+        top: -35px;
+        right: -35px;
+        width: 110px;
+        height: 110px;
+        border-radius: 50%;
+        opacity: 0.08;
+        background: currentColor;
+    }
+
+    .stat-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .stat-label {
+        font-size: 0.9rem;
+        color: var(--text-soft);
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .stat-icon {
+        width: 46px;
+        height: 46px;
         border-radius: 14px;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        font-size: 20px;
-        margin-bottom: 14px;
-        color: #fff;
+        font-size: 1.2rem;
+        background: rgba(255,255,255,0.65);
+        backdrop-filter: blur(4px);
     }
 
-    .investors-page .stats-icon.primary { background: linear-gradient(135deg, #1b00ff, #4f46e5); }
-    .investors-page .stats-icon.success { background: linear-gradient(135deg, #16a34a, #22c55e); }
-    .investors-page .stats-icon.danger { background: linear-gradient(135deg, #dc2626, #ef4444); }
-    .investors-page .stats-icon.warning { background: linear-gradient(135deg, #d97706, #f59e0b); }
-    .investors-page .stats-icon.info { background: linear-gradient(135deg, #0891b2, #06b6d4); }
-
-    .investors-page .stats-number {
-        font-size: 28px;
+    .stat-value {
+        margin: 18px 0 0;
+        font-size: 1.9rem;
         font-weight: 800;
-        color: #0f172a;
-        line-height: 1;
-        margin-bottom: 8px;
+        color: var(--text-main);
+        line-height: 1.1;
+        word-break: break-word;
     }
 
-    .investors-page .stats-label {
-        color: #64748b;
-        font-weight: 600;
-        margin-bottom: 0;
+    .stat-note {
+        margin-top: 8px;
+        font-size: 0.82rem;
+        color: var(--text-soft);
     }
 
-    .investors-page .table-card,
-    .investors-page .filter-card {
+    .stat-card.stat-all {
+        color: var(--info-color);
+        background: linear-gradient(135deg, #ffffff 0%, #f2fcfe 100%);
+    }
+
+    .stat-card.stat-pending {
+        color: #b88900;
+        background: linear-gradient(135deg, #ffffff 0%, #fff9eb 100%);
+    }
+
+    .stat-card.stat-active {
+        color: var(--success-color);
+        background: linear-gradient(135deg, #ffffff 0%, #effcf7 100%);
+    }
+
+    .stat-card.stat-inactive {
+        color: #8a6d1d;
+        background: linear-gradient(135deg, #ffffff 0%, #fffaf0 100%);
+    }
+
+    .stat-card.stat-disabled {
+        color: var(--danger-color);
+        background: linear-gradient(135deg, #ffffff 0%, #fff3f1 100%);
+    }
+
+    .stat-card.stat-add {
+        color: var(--primary-color);
+        background: linear-gradient(135deg, #eef3ff 0%, #ffffff 100%);
+    }
+
+    .filter-panel {
         background: #fff;
+        border: 1px solid var(--border-color);
         border-radius: 20px;
-        box-shadow: 0 10px 25px rgba(15, 23, 42, 0.06);
-        border: 1px solid #edf2f7;
-        overflow: hidden;
+        box-shadow: var(--shadow-sm);
+        padding: 18px;
+        margin-bottom: 20px;
     }
 
-    .investors-page .table-card-header,
-    .investors-page .filter-card-header {
-        padding: 20px 24px;
-        border-bottom: 1px solid #eef2f7;
+    .filter-header-row {
+        margin-bottom: 18px;
+    }
+
+    .filter-nav {
         display: flex;
-        justify-content: space-between;
-        align-items: center;
+        gap: 10px;
         flex-wrap: wrap;
-        gap: 12px;
+        justify-content: flex-end;
     }
 
-    .investors-page .table-card-header h5,
-    .investors-page .filter-card-header h5 {
-        margin: 0;
+    .filter-label {
+        font-size: 0.82rem;
+        color: var(--text-soft);
         font-weight: 700;
-        color: #0f172a;
+        margin-bottom: 8px;
+        display: block;
     }
-    .modern-table th {
-    white-space: nowrap;
-}
 
-    .investors-page .modern-table {
-        margin-bottom: 0;
-        width: 100%;
-        table-layout: auto;
+    .form-control.filter-input,
+    .form-select.filter-select {
+        min-height: 46px;
+        border-radius: 14px;
+        border: 1px solid #dfe5ef;
+        box-shadow: none;
+        padding: 12px 14px;
     }
-    .investors-page .modern-table thead th {
-        background: #f8fafc;
-        color: #334155;
+
+    .form-control.filter-input:focus,
+    .form-select.filter-select:focus {
+        border-color: rgba(78, 115, 223, 0.5);
+        box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.12);
+    }
+
+    .search-btn {
+        min-height: 46px;
+        border-radius: 14px;
         font-weight: 700;
-        border-bottom: 1px solid #e2e8f0;
-        padding: 12px 10px;
-        vertical-align: middle;
-        white-space: nowrap;
-        font-size: 13px;
+        padding: 10px 18px;
     }
 
-    .investors-page .modern-table tbody td {
-        padding: 14px 10px;
-        vertical-align: middle;
-        border-color: #f1f5f9;
-        font-size: 13px;
-        overflow: hidden;
+    .reset-btn {
+        min-height: 46px;
+        border-radius: 14px;
+        font-weight: 700;
+        padding: 10px 18px;
+        background: #eef2f8;
+        color: #344054;
+        border: none;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
     }
 
-    .investors-page .modern-table tbody tr:hover {
+    .reset-btn:hover {
+        color: #344054;
+        text-decoration: none;
+    }
+
+    .view-btn {
+        min-height: 46px;
+        border-radius: 14px;
+        font-weight: 700;
+        padding: 10px 16px;
+        background: #fff;
+        color: #344054;
+        border: 1px solid #dfe5ef;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: all .2s ease;
+    }
+
+    .view-btn:hover {
+        text-decoration: none;
+        color: #344054;
+        border-color: #cfd8e6;
         background: #fafcff;
     }
-.col-id { width: 50px; }
-.col-name { width: 200px; }
-.col-company { width: 160px; }
-.col-contact { width: 150px; }
-.col-type { width: 130px; }
-.col-budget { width: 110px; }
-.col-status { width: 100px; }
 
-/* 🔥 IMPORTANT */
-.col-engagement { width: 220px; }
+    .view-btn.active {
+        background: linear-gradient(135deg, #4e73df, #6f8df3);
+        color: #fff !important;
+        border-color: transparent;
+        box-shadow: 0 10px 20px rgba(78, 115, 223, 0.15);
+    }
 
-/* 🔥 FIX OVERLAP */
-.col-date { width: 140px; }
+    .main-panel {
+        background: #fff;
+        border: 1px solid var(--border-color);
+        border-radius: 24px;
+        box-shadow: var(--shadow-sm);
+        overflow: hidden;
+    }
 
-/* 🔥 REDUCE THIS */
-.col-actions { width: 160px; }
+    .panel-head {
+        padding: 22px 24px 10px;
+        border-bottom: 1px solid rgba(232, 236, 244, 0.7);
+    }
 
-    .investors-page .investor-name {
+    .panel-title {
+        margin: 0;
+        font-size: 1.08rem;
+        font-weight: 800;
+        color: var(--text-main);
+    }
+
+    .panel-subtitle {
+        margin-top: 6px;
+        color: var(--text-soft);
+        font-size: 0.9rem;
+    }
+
+    .table-wrap {
+        padding: 20px 24px 26px;
+    }
+
+    .students-table-card {
+        border: 1px solid var(--border-color);
+        border-radius: 20px;
+        overflow: hidden;
+        background: #fff;
+    }
+
+    .students-table {
+        margin-bottom: 0;
+    }
+
+    .students-table thead th {
+        background: #172033;
+        color: #fff;
+        border: none;
+        font-size: 0.84rem;
         font-weight: 700;
-        color: #1e293b;
-        text-decoration: none;
-        display: block;
-        max-width: 180px;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        padding: 15px 14px;
+        vertical-align: middle;
         white-space: nowrap;
     }
 
-    .investors-page .investor-name:hover {
-        color: #1b00ff;
-        text-decoration: none;
+    .students-table tbody td {
+        border-color: #eef2f7;
+        padding: 15px 14px;
+        vertical-align: middle;
+        font-size: 0.92rem;
     }
 
-    .investors-page .td-ellipsis {
-        display: block;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
+    .students-table tbody tr {
+        transition: background 0.2s ease;
     }
 
-    .investors-page .mini-text {
-        font-size: 11px;
-        color: #64748b;
+    .students-table tbody tr:hover {
+        background: #fafcff;
+    }
+
+    .student-name-cell {
+        font-weight: 700;
+        color: var(--text-main);
+    }
+
+    .student-email-cell,
+    .student-muted-cell {
+        color: #667085;
+        font-size: 0.9rem;
+    }
+
+    .mini-text {
+        color: #667085;
+        font-size: 0.84rem;
         margin-top: 3px;
-        line-height: 1.5;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
     }
 
-    .investors-page .badge-soft {
-        display: inline-block;
-        padding: 6px 10px;
+    .badge-status,
+    .badge-soft {
         border-radius: 999px;
-        font-size: 11px;
         font-weight: 700;
-        letter-spacing: .2px;
-        white-space: nowrap;
+        padding: 8px 12px;
+        font-size: 0.78rem;
+        letter-spacing: 0.2px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
     }
 
-    .investors-page .badge-status-active {
-        background: #ecfdf5;
-        color: #15803d;
+    .badge-status-active {
+        background: var(--success-soft);
+        color: #0f8f60;
     }
 
-    .investors-page .badge-status-inactive {
-        background: #fef2f2;
-        color: #dc2626;
+    .badge-status-inactive {
+        background: var(--warning-soft);
+        color: #9a7400;
     }
 
-    .investors-page .badge-status-default {
-        background: #f1f5f9;
-        color: #475569;
+    .badge-status-default {
+        background: #edf1f7;
+        color: #596579;
     }
 
-    .investors-page .badge-archived {
+    .badge-archived {
+        background: var(--danger-soft);
+        color: #c7372b;
+    }
+
+    .badge-funding-requested {
+        background: #eff6ff;
+        color: #1d4ed8;
+    }
+
+    .badge-funding-interested {
         background: #fff7ed;
         color: #c2410c;
     }
 
-    .investors-page .btn-add {
-        background: linear-gradient(135deg, #1b00ff, #4f46e5);
-        color: #fff;
-        border: none;
-        border-radius: 12px;
-        padding: 10px 18px;
-        font-weight: 700;
-        text-decoration: none;
-        box-shadow: 0 10px 20px rgba(27, 0, 255, 0.15);
+    .badge-funding-approved {
+        background: #ecfdf5;
+        color: #15803d;
     }
 
-    .investors-page .btn-add:hover {
-        color: #fff;
-        text-decoration: none;
-        opacity: 0.95;
+    .badge-funding-rejected {
+        background: #fef2f2;
+        color: #dc2626;
     }
 
-    .investors-page .btn-soft {
-        border-radius: 12px;
-        font-weight: 600;
-        padding: 9px 14px;
-        text-decoration: none;
-        border: 1px solid #dbe4f0;
-        background: #fff;
-        color: #0f172a;
-    }
-
-    .investors-page .btn-soft:hover {
-        text-decoration: none;
-        color: #0f172a;
-        background: #f8fafc;
-    }
-
-    .investors-page .btn-soft.active-filter {
-        background: linear-gradient(135deg, #1b00ff, #4f46e5);
-        color: #fff !important;
-        border-color: transparent;
-    }
-
-    .investors-page .action-buttons {
+    .actions-group {
         display: flex;
-        align-items: center;
-        gap: 6px;
+        justify-content: center;
         flex-wrap: wrap;
+        gap: 8px;
     }
 
-    .investors-page .icon-action {
-        width: 34px;
-        height: 34px;
+    .action-btn {
+        width: 36px;
+        height: 36px;
         border: none;
-        border-radius: 10px;
+        border-radius: 12px;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        color: #fff;
+        font-size: 0.95rem;
+        transition: all 0.2s ease;
         text-decoration: none;
-        transition: all 0.25s ease;
-        box-shadow: 0 6px 14px rgba(15, 23, 42, 0.10);
+        background: #f8fafc;
     }
 
-    .investors-page .icon-action:hover {
-        color: #fff;
-        text-decoration: none;
+    .action-btn:hover {
         transform: translateY(-2px);
+        text-decoration: none;
     }
 
-    .investors-page .icon-show { background: linear-gradient(135deg, #1b00ff, #4338ca); }
-    .investors-page .icon-edit { background: linear-gradient(135deg, #0ea5e9, #2563eb); }
-    .investors-page .icon-delete { background: linear-gradient(135deg, #dc2626, #ef4444); }
-    .investors-page .icon-restore { background: linear-gradient(135deg, #16a34a, #22c55e); }
-    .investors-page .icon-force { background: linear-gradient(135deg, #7f1d1d, #b91c1c); }
+    .btn-view {
+        background: rgba(54, 185, 204, 0.12);
+        color: var(--info-color);
+    }
 
-    .investors-page .empty-state {
-        padding: 50px 20px;
+    .btn-edit {
+        background: rgba(78, 115, 223, 0.12);
+        color: var(--primary-color);
+    }
+
+    .btn-delete {
+        background: rgba(231, 74, 59, 0.12);
+        color: var(--danger-color);
+    }
+
+    .btn-restore {
+        background: rgba(28, 200, 138, 0.12);
+        color: #0f8f60;
+    }
+
+    .sortable {
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .sortable i {
+        margin-left: 5px;
+        color: rgba(255,255,255,0.75);
+        font-size: 0.8rem;
+    }
+
+    .empty-state {
+        padding: 32px 18px !important;
+        color: var(--text-soft);
+        font-weight: 600;
         text-align: center;
-        color: #64748b;
+        background: #fff;
     }
 
-    .investors-page .empty-state i {
-        font-size: 42px;
-        margin-bottom: 12px;
-        color: #cbd5e1;
+    .pagination-wrap {
+        padding: 0 24px 24px;
     }
 
-    .investors-page .filter-label {
-        font-size: 12px;
-        font-weight: 700;
-        color: #475569;
-        margin-bottom: 6px;
+    @media (max-width: 991px) {
+        .page-header-card {
+            padding: 22px 20px;
+        }
+
+        .panel-head,
+        .table-wrap,
+        .pagination-wrap {
+            padding-left: 18px;
+            padding-right: 18px;
+        }
+
+        .filter-nav {
+            justify-content: flex-start;
+        }
     }
 
-    .investors-page .form-control,
-    .investors-page .form-select {
-        border-radius: 12px;
-        min-height: 42px;
-        border: 1px solid #dbe4f0;
-        box-shadow: none;
+    @media (max-width: 576px) {
+        .page-title {
+            font-size: 1.3rem;
+        }
+
+        .stat-card {
+            min-height: 122px;
+        }
+
+        .students-table thead th,
+        .students-table tbody td {
+            white-space: nowrap;
+        }
     }
 </style>
 
-<div class="pd-ltr-20 xs-pd-20-10 investors-page">
-    <div class="min-height-200px">
+<div class="container-fluid investors-page">
 
-        @if(session('success'))
-            <div class="alert alert-success border-0 shadow-sm" style="border-radius: 14px;">
-                {{ session('success') }}
+    <div class="page-header-card">
+        <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3">
+            <div>
+                <h1 class="page-title">Investors</h1>
+                <p class="page-subtitle">
+                    Professional overview of investor profiles, budgets, and engagement activity.
+                </p>
             </div>
-        @endif
 
-        @if(session('error'))
-            <div class="alert alert-danger border-0 shadow-sm" style="border-radius: 14px;">
-                {{ session('error') }}
-            </div>
-        @endif
+            <div class="d-flex flex-wrap gap-2">
+                <a href="{{ route('admin.investors.export', 'xlsx') }}" class="btn btn-light px-4 py-2 rounded-pill fw-semibold">
+                    <i class="fa fa-file-excel mr-1"></i> Export Excel
+                </a>
 
-        <div class="page-header-card mb-4">
-            <div class="d-flex justify-content-between align-items-center flex-wrap" style="gap: 15px;">
-                <div>
-                    <h3>Investors Management</h3>
-                    <p>Professional overview of investor profiles, budgets, statuses, archived records, and management actions.</p>
-                </div>
-
-                <div class="d-flex flex-wrap" style="gap: 10px;">
-                    <a href="{{ route('admin.investors.export', 'xlsx') }}" class="btn btn-light btn-soft">
-                        <i class="fa fa-file-excel mr-1"></i> Export Excel
-                    </a>
-                    <a href="{{ route('admin.investors.create') }}" class="btn-add">
-                        <i class="fa fa-plus mr-1"></i> Add Investor
-                    </a>
-                </div>
+                <a href="{{ route('admin.investors.create') }}" class="btn btn-primary px-4 py-2 rounded-pill fw-semibold">
+                    <i class="fa fa-plus mr-1"></i> Add Investor
+                </a>
             </div>
         </div>
-
-        <div class="row mb-4">
-            <div class="col-xl-2 col-md-4 col-6 mb-3">
-                <div class="stats-card">
-                    <div class="stats-icon primary">
-                        <i class="fa fa-users"></i>
-                    </div>
-                    <div class="stats-number">{{ $stats['total'] ?? 0 }}</div>
-                    <p class="stats-label">Total Investors</p>
-                </div>
-            </div>
-
-            <div class="col-xl-2 col-md-4 col-6 mb-3">
-                <div class="stats-card">
-                    <div class="stats-icon success">
-                        <i class="fa fa-user-check"></i>
-                    </div>
-                    <div class="stats-number">{{ $stats['active'] ?? 0 }}</div>
-                    <p class="stats-label">Active</p>
-                </div>
-            </div>
-
-            <div class="col-xl-2 col-md-4 col-6 mb-3">
-                <div class="stats-card">
-                    <div class="stats-icon danger">
-                        <i class="fa fa-user-times"></i>
-                    </div>
-                    <div class="stats-number">{{ $stats['inactive'] ?? 0 }}</div>
-                    <p class="stats-label">Inactive</p>
-                </div>
-            </div>
-
-            <div class="col-xl-2 col-md-4 col-6 mb-3">
-                <div class="stats-card">
-                    <div class="stats-icon info">
-                        <i class="fa fa-archive"></i>
-                    </div>
-                    <div class="stats-number">{{ $stats['archived'] ?? 0 }}</div>
-                    <p class="stats-label">Archived</p>
-                </div>
-            </div>
-
-            <div class="col-xl-2 col-md-6 col-6 mb-3">
-                <div class="stats-card">
-                    <div class="stats-icon warning">
-                        <i class="fa fa-dollar-sign"></i>
-                    </div>
-                    <div class="stats-number">${{ number_format($stats['budget'] ?? 0, 2) }}</div>
-                    <p class="stats-label">Total Budget</p>
-                </div>
-            </div>
-
-            <div class="col-xl-2 col-md-6 col-12 mb-3">
-                <div class="stats-card">
-                    <div class="stats-icon primary">
-                        <i class="fa fa-building"></i>
-                    </div>
-                    <div class="stats-number" style="font-size: 16px;">
-                        {{ $stats['top_company']->company ?? 'N/A' }}
-                    </div>
-                    <p class="stats-label">Top Company</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="filter-card mb-4">
-            <div class="filter-card-header">
-                <div>
-                    <h5>Filters</h5>
-                    <small class="text-muted">Search and navigate active, archived, or all investors.</small>
-                </div>
-
-                <div class="d-flex flex-wrap" style="gap: 10px;">
-                    <a href="{{ route('admin.investors.index', ['view' => 'active']) }}"
-                       class="btn-soft {{ $view === 'active' ? 'active-filter' : '' }}">
-                        <i class="fa fa-users mr-1"></i> Active Investors
-                    </a>
-
-                    <a href="{{ route('admin.investors.index', ['view' => 'archived']) }}"
-                       class="btn-soft {{ $view === 'archived' ? 'active-filter' : '' }}">
-                        <i class="fa fa-archive mr-1"></i> Archived Investors
-                    </a>
-
-                    <a href="{{ route('admin.investors.index', ['view' => 'all']) }}"
-                       class="btn-soft {{ $view === 'all' ? 'active-filter' : '' }}">
-                        <i class="fa fa-list mr-1"></i> All
-                    </a>
-                </div>
-            </div>
-
-            <div class="p-4">
-                <form method="GET" action="{{ route('admin.investors.index') }}">
-                    <input type="hidden" name="view" value="{{ request('view', 'active') }}">
-
-                    <div class="row">
-                        <div class="col-lg-4 col-md-6 mb-3">
-                            <label class="filter-label">Search</label>
-                            <input type="text" name="search" class="form-control" placeholder="Name, email, or username" value="{{ request('search') }}">
-                        </div>
-
-                        <div class="col-lg-2 col-md-6 mb-3">
-                            <label class="filter-label">Status</label>
-                            <select name="status" class="form-select">
-                                <option value="">All Statuses</option>
-                                <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Active</option>
-                                <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>Inactive</option>
-                            </select>
-                        </div>
-
-                        <div class="col-lg-2 col-md-6 mb-3">
-                            <label class="filter-label">City</label>
-                            <input type="text" name="city" class="form-control" placeholder="City" value="{{ request('city') }}">
-                        </div>
-
-                        <div class="col-lg-2 col-md-6 mb-3">
-                            <label class="filter-label">Per Page</label>
-                            <select name="per_page" class="form-select">
-                                <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
-                                <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
-                                <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
-                                <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
-                            </select>
-                        </div>
-
-                        <div class="col-lg-2 col-md-12 mb-3 d-flex align-items-end">
-                            <div class="w-100 d-flex" style="gap: 10px;">
-                                <button type="submit" class="btn btn-primary w-100" style="border-radius: 12px; font-weight: 700;">
-                                    <i class="fa fa-search mr-1"></i> Filter
-                                </button>
-                                <a href="{{ route('admin.investors.index', ['view' => request('view', 'active')]) }}"
-                                   class="btn btn-light w-100"
-                                   style="border-radius: 12px; font-weight: 700; border: 1px solid #dbe4f0;">
-                                    Reset
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <div class="table-card">
-            <div class="table-card-header">
-                <div>
-                    <h5>
-                        @if($view === 'archived')
-                            Archived Investors
-                        @elseif($view === 'all')
-                            All Investors
-                        @else
-                            Active Investors
-                        @endif
-                    </h5>
-                    <small class="text-muted">Professional investor listing with archive and restore actions.</small>
-                </div>
-            </div>
-
-            <div class="table-responsive">
-<table class="table modern-table">
-    <thead>
-        <tr>
-            <th class="col-id">#</th>
-            <th class="col-name">Investor</th>
-            <th class="col-company">Company</th>
-            <th class="col-contact">Contact</th>
-            <th class="col-type">Type</th>
-            <th class="col-budget">Budget</th>
-            <th class="col-status">Status</th>
-            <th class="col-engagement">Engagement</th>
-            <th class="col-date">Created</th>
-            <th class="col-actions">Actions</th>
-        </tr>
-    </thead>
-
-    <tbody>
-        @forelse($investors as $inv)
-
-            @php
-                $profile = $inv->investor;
-
-                $statusClass = match($inv->status) {
-                    'active' => 'badge-status-active',
-                    'inactive' => 'badge-status-inactive',
-                    default => 'badge-status-default',
-                };
-
-                $engagement = [
-                    'interested' => $profile?->investmentRequests?->where('status', 'interested')->count() ?? 0,
-                    'requested'  => $profile?->investmentRequests?->where('status', 'requested')->count() ?? 0,
-                    'approved'   => $profile?->investmentRequests?->where('status', 'approved')->count() ?? 0,
-                    'rejected'   => $profile?->investmentRequests?->where('status', 'rejected')->count() ?? 0,
-                ];
-            @endphp
-
-            <tr>
-                <td>{{ $loop->iteration + ($investors->currentPage() - 1) * $investors->perPage() }}</td>
-
-                {{-- Investor --}}
-                <td>
-                    @if($profile)
-                        <a href="{{ route('admin.investors.show', $profile->user_id) }}" class="investor-name">
-                            {{ $inv->name }}
-                        </a>
-                    @else
-                        <span class="investor-name">{{ $inv->name }}</span>
-                    @endif
-
-                    <div class="mini-text">{{ $inv->email }}</div>
-                    <div class="mini-text">Username: {{ $inv->username }}</div>
-                </td>
-
-                {{-- Company --}}
-                <td>
-                    <div>{{ $profile?->company ?? '—' }}</div>
-                    <div class="mini-text">Position: {{ $profile?->position ?? '—' }}</div>
-                </td>
-
-                {{-- Contact --}}
-                <td>
-                    <div>{{ $profile?->phone ?? '—' }}</div>
-                    <div class="mini-text">{{ $inv->city ?? '—' }}</div>
-                </td>
-
-                {{-- Type --}}
-                <td>
-                    <div>{{ $profile?->investment_type ?? '—' }}</div>
-                    <div class="mini-text">Source: {{ $profile?->source ?? '—' }}</div>
-                </td>
-
-                {{-- Budget --}}
-                <td>
-                    {{ $profile && $profile->budget ? '$'.number_format($profile->budget,2) : '—' }}
-                </td>
-
-                {{-- Status --}}
-                <td>
-                    @if($profile && $profile->trashed())
-                        <span class="badge-soft badge-archived">Archived</span>
-                    @else
-                        <span class="badge-soft {{ $statusClass }}">
-                            {{ $inv->status }}
-                        </span>
-                    @endif
-                </td>
-
-                {{-- Engagement --}}
-<td class="col-engagement">
-    <div style="font-size:11px; max-width:200px; overflow:hidden;">
-
-        <div style="display:flex; gap:4px; flex-wrap:wrap;">
-            <span class="badge-soft badge-funding-interested">I: {{ $engagement['interested'] }}</span>
-            <span class="badge-soft badge-funding-requested">R: {{ $engagement['requested'] }}</span>
-            <span class="badge-soft badge-funding-approved">A: {{ $engagement['approved'] }}</span>
-            <span class="badge-soft badge-funding-rejected">X: {{ $engagement['rejected'] }}</span>
-        </div>
-
-        @if($profile && $profile->investmentRequests->count())
-            <div style="font-size:10px; color:#64748b;">
-                @foreach($profile->investmentRequests->take(2) as $invItem)
-                    <div style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
-                        • {{ optional($invItem->project)->name }}
-                    </div>
-                @endforeach
-            </div>
-        @endif
-
     </div>
-</td>
 
-                {{-- Created --}}
-                <td>
-                    <div>{{ $inv->created_at?->format('Y-m-d') }}</div>
-                    <div class="mini-text">{{ $inv->created_at?->format('h:i A') }}</div>
-                </td>
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show custom-alert mb-4" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
 
-                {{-- Actions --}}
-                <td>
-                    <div class="action-buttons">
-                        @if($profile)
+    @if(session('error'))
+        <div class="alert alert-danger alert-dismissible fade show custom-alert mb-4" role="alert">
+            <i class="bi bi-exclamation-circle-fill me-2"></i>
+            {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
 
-                            <a href="{{ route('admin.investors.show', $profile->user_id) }}" class="icon-action icon-show">
-                                <i class="fa fa-eye"></i>
-                            </a>
-
-                            <a href="{{ route('admin.investors.edit', $profile->user_id) }}" class="icon-action icon-edit">
-                                <i class="fa fa-pencil-alt"></i>
-                            </a>
-
-                            @if($profile->trashed())
-                                <form action="{{ route('admin.investors.restore', $profile->user_id) }}" method="POST">
-                                    @csrf
-                                    <button class="icon-action icon-restore">
-                                        <i class="fa fa-undo"></i>
-                                    </button>
-                                </form>
-                            @else
-                                <form action="{{ route('admin.investors.destroy', $profile->user_id) }}" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="icon-action icon-delete">
-                                        <i class="fa fa-trash"></i>
-                                    </button>
-                                </form>
-                            @endif
-
-                        @endif
-                    </div>
-                </td>
-            </tr>
-
-        @empty
-            <tr>
-                <td colspan="10">
-                    <div class="empty-state">
-                        <i class="fa fa-users"></i>
-                        <div>No investors found.</div>
-                    </div>
-                </td>
-            </tr>
-        @endforelse
-    </tbody>
-</table>
-            </div>
-
-            <div class="p-3">
-                {{ $investors->links() }}
+    <div class="row g-3 stats-grid mb-4">
+        <div class="col-lg-2 col-md-4 col-sm-6">
+            <div class="stat-card stat-all">
+                <div class="stat-top">
+                    <p class="stat-label">Total Investors</p>
+                    <span class="stat-icon"><i class="bi bi-people-fill"></i></span>
+                </div>
+                <h3 class="stat-value">{{ $stats['total'] ?? 0 }}</h3>
+                <div class="stat-note">Complete investors overview</div>
             </div>
         </div>
 
+        <div class="col-lg-2 col-md-4 col-sm-6">
+            <div class="stat-card stat-active">
+                <div class="stat-top">
+                    <p class="stat-label">Active</p>
+                    <span class="stat-icon"><i class="bi bi-check-circle-fill"></i></span>
+                </div>
+                <h3 class="stat-value">{{ $stats['active'] ?? 0 }}</h3>
+                <div class="stat-note">Enabled investor accounts</div>
+            </div>
+        </div>
+
+        <div class="col-lg-2 col-md-4 col-sm-6">
+            <div class="stat-card stat-inactive">
+                <div class="stat-top">
+                    <p class="stat-label">Inactive</p>
+                    <span class="stat-icon"><i class="bi bi-pause-circle-fill"></i></span>
+                </div>
+                <h3 class="stat-value">{{ $stats['inactive'] ?? 0 }}</h3>
+                <div class="stat-note">Inactive investor accounts</div>
+            </div>
+        </div>
+
+        <div class="col-lg-2 col-md-4 col-sm-6">
+            <div class="stat-card stat-pending">
+                <div class="stat-top">
+                    <p class="stat-label">Archived</p>
+                    <span class="stat-icon"><i class="bi bi-archive-fill"></i></span>
+                </div>
+                <h3 class="stat-value">{{ $stats['archived'] ?? 0 }}</h3>
+                <div class="stat-note">Archived investor records</div>
+            </div>
+        </div>
+
+        <div class="col-lg-2 col-md-4 col-sm-6">
+            <div class="stat-card stat-add">
+                <div class="stat-top">
+                    <p class="stat-label">Total Budget</p>
+                    <span class="stat-icon"><i class="bi bi-cash-stack"></i></span>
+                </div>
+                <h3 class="stat-value" style="font-size: 1.15rem;">${{ number_format($stats['budget'] ?? 0, 2) }}</h3>
+                <div class="stat-note">Combined investor budgets</div>
+            </div>
+        </div>
+
+        <div class="col-lg-2 col-md-4 col-sm-6">
+            <div class="stat-card stat-disabled">
+                <div class="stat-top">
+                    <p class="stat-label">Top Company</p>
+                    <span class="stat-icon"><i class="bi bi-building-fill"></i></span>
+                </div>
+                <h3 class="stat-value" style="font-size: 1rem; line-height: 1.35;">
+                    {{ $stats['top_company']->company ?? 'N/A' }}
+                </h3>
+                <div class="stat-note">Most notable company record</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="filter-panel">
+        <div class="filter-header-row">
+            <div class="row g-3 align-items-center">
+                <div class="col-lg-5">
+                    <h2 class="panel-title mb-1">Filters</h2>
+                    <div class="panel-subtitle">Search and navigate active, archived, or all investors.</div>
+                </div>
+
+                <div class="col-lg-7">
+                    <div class="filter-nav">
+                        <a href="{{ route('admin.investors.index', ['view' => 'active']) }}"
+                           class="view-btn {{ $view === 'active' ? 'active' : '' }}">
+                            <i class="fa fa-users"></i> Active Investors
+                        </a>
+
+                        <a href="{{ route('admin.investors.index', ['view' => 'archived']) }}"
+                           class="view-btn {{ $view === 'archived' ? 'active' : '' }}">
+                            <i class="fa fa-archive"></i> Archived Investors
+                        </a>
+
+                        <a href="{{ route('admin.investors.index', ['view' => 'all']) }}"
+                           class="view-btn {{ $view === 'all' ? 'active' : '' }}">
+                            <i class="fa fa-list"></i> All
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <form method="GET" action="{{ route('admin.investors.index') }}" id="investorFilterForm">
+            <input type="hidden" name="view" value="{{ request('view', 'active') }}">
+
+            <div class="row g-3 align-items-end">
+                <div class="col-lg-4 col-md-6">
+                    <label class="filter-label">Search</label>
+                    <input
+                        type="text"
+                        name="search"
+                        class="form-control filter-input"
+                        placeholder="Name, email, or username"
+                        value="{{ request('search') }}">
+                </div>
+
+                <div class="col-lg-2 col-md-6">
+                    <label class="filter-label">Status</label>
+                    <select name="status" class="form-select filter-select auto-submit-filter">
+                        <option value="">All Statuses</option>
+                        <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Active</option>
+                        <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>Inactive</option>
+                    </select>
+                </div>
+
+                <div class="col-lg-2 col-md-6">
+                    <label class="filter-label">City</label>
+                    <input
+                        type="text"
+                        name="city"
+                        class="form-control filter-input"
+                        placeholder="City"
+                        value="{{ request('city') }}">
+                </div>
+
+                <div class="col-lg-2 col-md-6">
+                    <label class="filter-label">Per Page</label>
+                    <select name="per_page" class="form-select filter-select auto-submit-filter" id="entries">
+                        <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
+                        <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
+                        <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
+                        <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
+                    </select>
+                </div>
+
+                <div class="col-lg-2 col-md-12">
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary search-btn w-100">
+                            <i class="fa fa-search mr-1"></i> Filter
+                        </button>
+
+                        <a href="{{ route('admin.investors.index', ['view' => request('view', 'active')]) }}"
+                           class="reset-btn w-100">
+                            Reset
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="main-panel">
+        <div class="panel-head">
+            <h2 class="panel-title">
+                @if($view === 'archived')
+                    Archived Investors
+                @elseif($view === 'all')
+                    All Investors
+                @else
+                    Active Investors
+                @endif
+            </h2>
+            <div class="panel-subtitle">Professional investor listing with archive and restore actions.</div>
+        </div>
+
+        <div class="table-wrap">
+            <div class="table-responsive students-table-card">
+                <table class="table students-table align-middle" id="investorsTable">
+                    <thead>
+                        <tr>
+                            <th class="sortable text-center"># <i class="bi"></i></th>
+                            <th class="sortable">Investor <i class="bi"></i></th>
+                            <th class="sortable">Company <i class="bi"></i></th>
+                            <th class="sortable">Contact <i class="bi"></i></th>
+                            <th class="sortable">Type <i class="bi"></i></th>
+                            <th class="sortable text-center">Budget <i class="bi"></i></th>
+                            <th class="sortable text-center">Status <i class="bi"></i></th>
+                            <th>Engagement</th>
+                            <th class="sortable text-center">Created <i class="bi"></i></th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @forelse($investors as $inv)
+                            @php
+                                $profile = $inv->investor;
+
+                                $statusClass = match($inv->status) {
+                                    'active' => 'badge-status-active',
+                                    'inactive' => 'badge-status-inactive',
+                                    default => 'badge-status-default',
+                                };
+
+                                $engagement = [
+                                    'interested' => $profile?->investmentRequests?->where('status', 'interested')->count() ?? 0,
+                                    'requested'  => $profile?->investmentRequests?->where('status', 'requested')->count() ?? 0,
+                                    'approved'   => $profile?->investmentRequests?->where('status', 'approved')->count() ?? 0,
+                                    'rejected'   => $profile?->investmentRequests?->where('status', 'rejected')->count() ?? 0,
+                                ];
+                            @endphp
+
+                            <tr>
+                                <td class="text-center">
+                                    {{ $loop->iteration + ($investors->currentPage() - 1) * $investors->perPage() }}
+                                </td>
+
+                                <td>
+                                    @if($profile)
+                                        <div class="student-name-cell">
+                                            <a href="{{ route('admin.investors.show', $profile->user_id) }}" style="text-decoration:none; color:inherit;">
+                                                {{ $inv->name }}
+                                            </a>
+                                        </div>
+                                    @else
+                                        <div class="student-name-cell">{{ $inv->name }}</div>
+                                    @endif
+
+                                    <div class="student-email-cell">{{ $inv->email }}</div>
+                                    <div class="mini-text">Username: {{ $inv->username }}</div>
+                                </td>
+
+                                <td>
+                                    <div class="student-muted-cell">{{ $profile?->company ?? '—' }}</div>
+                                    <div class="mini-text">Position: {{ $profile?->position ?? '—' }}</div>
+                                </td>
+
+                                <td>
+                                    <div class="student-muted-cell">{{ $profile?->phone ?? '—' }}</div>
+                                    <div class="mini-text">{{ $inv->city ?? '—' }}</div>
+                                </td>
+
+                                <td>
+                                    <div class="student-muted-cell">{{ $profile?->investment_type ?? '—' }}</div>
+                                    <div class="mini-text">Source: {{ $profile?->source ?? '—' }}</div>
+                                </td>
+
+                                <td class="text-center">
+                                    <div class="student-muted-cell">
+                                        {{ $profile && $profile->budget ? '$'.number_format($profile->budget, 2) : '—' }}
+                                    </div>
+                                </td>
+
+                                <td class="text-center">
+                                    @if($profile && $profile->trashed())
+                                        <span class="badge-soft badge-archived">Archived</span>
+                                    @else
+                                        <span class="badge-soft {{ $statusClass }}">
+                                            {{ ucfirst($inv->status ?? '—') }}
+                                        </span>
+                                    @endif
+                                </td>
+
+                                <td>
+                                    <div class="d-flex flex-wrap gap-1 mb-1">
+                                        <span class="badge-soft badge-funding-interested">I: {{ $engagement['interested'] }}</span>
+                                        <span class="badge-soft badge-funding-requested">R: {{ $engagement['requested'] }}</span>
+                                        <span class="badge-soft badge-funding-approved">A: {{ $engagement['approved'] }}</span>
+                                        <span class="badge-soft badge-funding-rejected">X: {{ $engagement['rejected'] }}</span>
+                                    </div>
+
+                                    @if($profile && $profile->investmentRequests->count())
+                                        <div class="mini-text">
+                                            @foreach($profile->investmentRequests->take(2) as $invItem)
+                                                <div>• {{ optional($invItem->project)->name }}</div>
+                                            @endforeach
+                                        </div>
+                                    @endif
+                                </td>
+
+                                <td class="text-center">
+                                    <div class="student-muted-cell">{{ $inv->created_at?->format('Y-m-d') }}</div>
+                                    <div class="mini-text">{{ $inv->created_at?->format('h:i A') }}</div>
+                                </td>
+
+                                <td class="text-center">
+                                    <div class="actions-group">
+                                        @if($profile)
+                                            <a href="{{ route('admin.investors.show', $profile->user_id) }}" class="action-btn btn-view" title="View">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+
+                                            <a href="{{ route('admin.investors.edit', $profile->user_id) }}" class="action-btn btn-edit" title="Edit">
+                                                <i class="bi bi-pencil-square"></i>
+                                            </a>
+
+                                            @if($profile->trashed())
+                                                <form action="{{ route('admin.investors.restore', $profile->user_id) }}" method="POST" class="d-inline">
+                                                    @csrf
+                                                    <button type="submit" class="action-btn btn-restore" title="Restore">
+                                                        <i class="bi bi-arrow-counterclockwise"></i>
+                                                    </button>
+                                                </form>
+                                            @else
+                                                <form action="{{ route('admin.investors.destroy', $profile->user_id) }}" method="POST" class="d-inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="action-btn btn-delete" onclick="return confirm('Are you sure?')" title="Delete">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </form>
+                                            @endif
+                                        @endif
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="10" class="empty-state">No investors found</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="pagination-wrap">
+            {{ $investors->appends(request()->query())->links() }}
+        </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const filterForm = document.getElementById('investorFilterForm');
+
+        document.querySelectorAll('.auto-submit-filter').forEach(el => {
+            el.addEventListener('change', function () {
+                if (filterForm) filterForm.submit();
+            });
+        });
+
+        const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
+
+        const comparer = (idx, asc) => (a, b) => {
+            const v1 = getCellValue(asc ? a : b, idx).trim();
+            const v2 = getCellValue(asc ? b : a, idx).trim();
+
+            const n1 = parseFloat(v1.replace(/[^0-9.-]/g, ''));
+            const n2 = parseFloat(v2.replace(/[^0-9.-]/g, ''));
+
+            if (!isNaN(n1) && !isNaN(n2)) {
+                return n1 - n2;
+            }
+
+            return v1.localeCompare(v2);
+        };
+
+        document.querySelectorAll('.sortable').forEach(th => {
+            th.addEventListener('click', function () {
+                const table = th.closest('table');
+                const tbody = table.querySelector('tbody');
+                const rows = Array.from(tbody.querySelectorAll('tr')).filter(tr => tr.children.length > 1);
+                const index = Array.from(th.parentNode.children).indexOf(th);
+
+                rows.sort(comparer(index, this.asc = !this.asc)).forEach(tr => tbody.appendChild(tr));
+
+                table.querySelectorAll('.sortable i').forEach(i => i.className = 'bi');
+                const icon = this.querySelector('i');
+                if (icon) {
+                    icon.className = this.asc ? 'bi bi-caret-up-fill' : 'bi bi-caret-down-fill';
+                }
+            });
+        });
+
+        document.querySelectorAll('.stat-card, .filter-panel, .main-panel, .page-header-card').forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(10px)';
+
+            setTimeout(() => {
+                card.style.transition = 'all 0.35s ease';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, 70 * (index + 1));
+        });
+    });
+</script>
 @endsection

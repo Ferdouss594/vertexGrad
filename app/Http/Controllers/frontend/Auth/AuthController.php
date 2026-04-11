@@ -3,13 +3,19 @@
 namespace App\Http\Controllers\Frontend\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
 use App\Models\Investor;
+use App\Models\LoginOtp;
 use App\Models\Student;
+use App\Models\TrustedDevice;
+use App\Models\User;
+use App\Notifications\LoginOtpNotification;
+use App\Services\SecurityActivityLogger;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rules\Password as PasswordRule;
 
 class AuthController extends Controller
 {
@@ -32,6 +38,13 @@ class AuthController extends Controller
             ->first();
 
         if (! $user || ! Hash::check($request->password, $user->password)) {
+            SecurityActivityLogger::log(
+                $user?->id,
+                'password_login_failed',
+                $request,
+                false
+            );
+
             return back()
                 ->withErrors([
                     'login_id' => 'Invalid credentials. Please check your email/username and password.',
@@ -39,8 +52,14 @@ class AuthController extends Controller
                 ->withInput($request->only('login_id'));
         }
 
-        // Frontend login must only allow Student / Investor
         if (! in_array($user->role, ['Student', 'Investor'], true)) {
+            SecurityActivityLogger::log(
+                $user->id,
+                'password_login_blocked_role',
+                $request,
+                false
+            );
+
             return back()
                 ->withErrors([
                     'login_id' => 'This account is not allowed to sign in from the frontend portal.',
@@ -48,8 +67,14 @@ class AuthController extends Controller
                 ->withInput($request->only('login_id'));
         }
 
-        // Optional but professional: prevent inactive frontend accounts
         if (($user->status ?? null) !== 'active') {
+            SecurityActivityLogger::log(
+                $user->id,
+                'password_login_blocked_inactive',
+                $request,
+                false
+            );
+
             return back()
                 ->withErrors([
                     'login_id' => 'Your account is currently inactive. Please contact support.',
@@ -57,10 +82,71 @@ class AuthController extends Controller
                 ->withInput($request->only('login_id'));
         }
 
-        Auth::guard('web')->login($user, $request->boolean('remember'));
-        $request->session()->regenerate();
+        $trustedToken = $request->cookie('trusted_device_token');
 
-        return redirect()->to($this->redirectPathByRole($user->role));
+        if ($trustedToken) {
+            $trustedDevice = TrustedDevice::where('user_id', $user->id)
+                ->where('token_hash', hash('sha256', $trustedToken))
+                ->where('expires_at', '>', now())
+                ->first();
+
+            if ($trustedDevice) {
+                $trustedDevice->update([
+                    'last_used_at' => now(),
+                    'ip_address'   => $request->ip(),
+                ]);
+
+                Auth::guard('web')->login($user, $request->boolean('remember'));
+                $request->session()->regenerate();
+
+                SecurityActivityLogger::log(
+                    $user->id,
+                    'login_completed_trusted_device',
+                    $request,
+                    true,
+                    ['trusted_device_id' => $trustedDevice->id]
+                );
+
+                if (! $user->hasVerifiedEmail()) {
+                    return redirect()
+                        ->route('verification.notice')
+                        ->with('success', 'Login completed. Please verify your email to continue.');
+                }
+
+                return redirect()->to($this->redirectPathByRole($user->role));
+            }
+        }
+
+        LoginOtp::where('user_id', $user->id)
+            ->whereNull('verified_at')
+            ->delete();
+
+        $plainCode = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+
+        LoginOtp::create([
+            'user_id'    => $user->id,
+            'code'       => Hash::make($plainCode),
+            'expires_at' => now()->addMinutes(10),
+            'attempts'   => 0,
+            'ip_address' => $request->ip(),
+            'user_agent' => Str::limit((string) $request->userAgent(), 1000),
+        ]);
+
+        $user->notify(new LoginOtpNotification($plainCode));
+
+        SecurityActivityLogger::log(
+            $user->id,
+            'otp_sent',
+            $request,
+            true
+        );
+
+        $request->session()->put('otp_user_id', $user->id);
+        $request->session()->put('otp_remember', $request->boolean('remember'));
+
+        return redirect()
+            ->route('login.otp.show')
+            ->with('status', 'We sent a verification code to your email.');
     }
 
     protected function redirectPathByRole(string $role): string
@@ -75,10 +161,10 @@ class AuthController extends Controller
     public function registerInvestor(Request $request)
     {
         $request->validate([
-            'username' => 'required|string|max:50|unique:users,username',
-            'name'     => 'required|string|max:150',
-            'email'    => 'required|email|unique:users,email',
-            'password' => 'required|min:6|confirmed',
+            'username' => ['required', 'string', 'max:50', 'unique:users,username'],
+            'name'     => ['required', 'string', 'max:150'],
+            'email'    => ['required', 'email', 'max:150', 'unique:users,email'],
+            'password' => ['required', 'confirmed', PasswordRule::min(8)->letters()->mixedCase()->numbers()],
         ]);
 
         try {
@@ -100,9 +186,14 @@ class AuthController extends Controller
 
             DB::commit();
 
+            Auth::guard('web')->login($user);
+            $request->session()->regenerate();
+
+            $user->sendEmailVerificationNotification();
+
             return redirect()
-                ->route('login.show')
-                ->with('success', 'Investor account created successfully!');
+                ->route('verification.notice')
+                ->with('success', 'Investor account created successfully. We sent a verification link to your email.');
         } catch (\Throwable $e) {
             DB::rollBack();
 
@@ -121,10 +212,10 @@ class AuthController extends Controller
     public function registerStudent(Request $request)
     {
         $request->validate([
-            'username' => 'required|string|max:50|unique:users,username',
-            'name'     => 'required|string|max:150',
-            'email'    => 'required|email|unique:users,email',
-            'password' => 'required|confirmed|min:6',
+            'username' => ['required', 'string', 'max:50', 'unique:users,username'],
+            'name'     => ['required', 'string', 'max:150'],
+            'email'    => ['required', 'email', 'max:150', 'unique:users,email'],
+            'password' => ['required', 'confirmed', PasswordRule::min(8)->letters()->mixedCase()->numbers()],
         ]);
 
         try {
@@ -147,16 +238,18 @@ class AuthController extends Controller
                 ->where('status', 'active')
                 ->get();
 
-            \Notification::send(
-                $managers,
-                new \App\Notifications\NewStudentRegisteredNotification($user)
-            );
+            \Notification::send($managers, new \App\Notifications\NewStudentRegisteredNotification($user));
 
             DB::commit();
 
+            Auth::guard('web')->login($user);
+            $request->session()->regenerate();
+
+            $user->sendEmailVerificationNotification();
+
             return redirect()
-                ->route('login.show')
-                ->with('success', 'Student account created!');
+                ->route('verification.notice')
+                ->with('success', 'Student account created successfully. We sent a verification link to your email.');
         } catch (\Throwable $e) {
             DB::rollBack();
 
@@ -174,6 +267,13 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
+        SecurityActivityLogger::log(
+            auth('web')->id(),
+            'logout',
+            $request,
+            true
+        );
+
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();

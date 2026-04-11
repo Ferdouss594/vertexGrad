@@ -3,352 +3,410 @@
 @section('title', 'Projects')
 
 @section('content')
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
 <style>
-    .projects-page .page-header-card {
-        background: linear-gradient(135deg, #0d1b4c 0%, #1b00ff 100%);
-        border-radius: 20px;
+    :root {
+        --page-bg: #f5f7fb;
+        --card-bg: #ffffff;
+        --text-main: #172033;
+        --text-soft: #7b8497;
+        --border-color: #e8ecf4;
+        --primary-color: #4e73df;
+        --primary-soft: rgba(78, 115, 223, 0.10);
+        --info-color: #36b9cc;
+        --info-soft: rgba(54, 185, 204, 0.12);
+        --success-color: #1cc88a;
+        --success-soft: rgba(28, 200, 138, 0.12);
+        --warning-color: #f6c23e;
+        --warning-soft: rgba(246, 194, 62, 0.14);
+        --danger-color: #e74a3b;
+        --danger-soft: rgba(231, 74, 59, 0.12);
+        --shadow-sm: 0 8px 20px rgba(18, 38, 63, 0.06);
+        --shadow-md: 0 14px 36px rgba(18, 38, 63, 0.10);
+        --radius-xl: 24px;
+        --radius-lg: 20px;
+        --radius-md: 16px;
+        --radius-sm: 12px;
+    }
+
+    body {
+        background: var(--page-bg);
+    }
+
+    .projects-page {
+        padding: 10px 0 24px;
+    }
+
+    .page-header-card {
+        background: linear-gradient(135deg, #ffffff 0%, #f9fbff 100%);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-xl);
         padding: 26px 28px;
-        color: #fff;
-        box-shadow: 0 12px 30px rgba(27, 0, 255, 0.18);
+        box-shadow: var(--shadow-sm);
+        margin-bottom: 24px;
     }
 
-    .projects-page .page-header-card h3 {
+    .page-title {
         margin: 0;
-        font-weight: 700;
-        color: #fff;
-        font-size: 28px;
+        font-size: 1.65rem;
+        font-weight: 800;
+        color: var(--text-main);
     }
 
-    .projects-page .page-header-card p {
+    .page-subtitle {
         margin: 8px 0 0;
-        opacity: 0.9;
-        font-size: 14px;
+        color: var(--text-soft);
+        font-size: 0.96rem;
     }
 
-    .projects-page .stats-card {
-        background: #fff;
-        border-radius: 18px;
-        padding: 20px;
-        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
-        border: 1px solid #eef2ff;
-        height: 100%;
-        transition: 0.3s ease;
+    .custom-alert {
+        border: none;
+        border-radius: 14px;
+        box-shadow: var(--shadow-sm);
     }
 
-    .projects-page .stats-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 14px 30px rgba(15, 23, 42, 0.10);
+    .stats-grid .col-lg-3,
+    .stats-grid .col-md-6,
+    .stats-grid .col-sm-6 {
+        display: flex;
     }
 
-    .projects-page .stats-icon {
-        width: 48px;
-        height: 48px;
+    .stat-card {
+        position: relative;
+        overflow: hidden;
+        width: 100%;
+        min-height: 132px;
+        border: 1px solid var(--border-color);
+        border-radius: 20px;
+        background: var(--card-bg);
+        padding: 20px 18px;
+        box-shadow: var(--shadow-sm);
+        transition: all 0.25s ease;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-md);
+    }
+
+    .stat-card::after {
+        content: "";
+        position: absolute;
+        top: -35px;
+        right: -35px;
+        width: 110px;
+        height: 110px;
+        border-radius: 50%;
+        opacity: 0.08;
+        background: currentColor;
+    }
+
+    .stat-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .stat-label {
+        font-size: 0.9rem;
+        color: var(--text-soft);
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .stat-icon {
+        width: 46px;
+        height: 46px;
         border-radius: 14px;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        font-size: 18px;
-        margin-bottom: 12px;
-        color: #fff;
+        font-size: 1.2rem;
+        background: rgba(255,255,255,0.65);
+        backdrop-filter: blur(4px);
     }
 
-    .projects-page .stats-icon.primary { background: linear-gradient(135deg, #1b00ff, #4f46e5); }
-    .projects-page .stats-icon.success { background: linear-gradient(135deg, #16a34a, #22c55e); }
-    .projects-page .stats-icon.warning { background: linear-gradient(135deg, #d97706, #f59e0b); }
-    .projects-page .stats-icon.info { background: linear-gradient(135deg, #0891b2, #06b6d4); }
-
-    .projects-page .stats-number {
-        font-size: 26px;
+    .stat-value {
+        margin: 18px 0 0;
+        font-size: 1.9rem;
         font-weight: 800;
-        color: #0f172a;
+        color: var(--text-main);
         line-height: 1;
-        margin-bottom: 8px;
     }
 
-    .projects-page .stats-label {
-        color: #64748b;
-        font-weight: 600;
-        margin-bottom: 0;
-        font-size: 13px;
+    .stat-note {
+        margin-top: 8px;
+        font-size: 0.82rem;
+        color: var(--text-soft);
     }
 
-    .projects-page .table-card {
+    .stat-card.stat-all {
+        color: var(--info-color);
+        background: linear-gradient(135deg, #ffffff 0%, #f2fcfe 100%);
+    }
+
+    .stat-card.stat-active {
+        color: var(--success-color);
+        background: linear-gradient(135deg, #ffffff 0%, #effcf7 100%);
+    }
+
+    .stat-card.stat-pending {
+        color: #b88900;
+        background: linear-gradient(135deg, #ffffff 0%, #fff9eb 100%);
+    }
+
+    .stat-card.stat-add {
+        color: var(--primary-color);
+        background: linear-gradient(135deg, #eef3ff 0%, #ffffff 100%);
+    }
+
+    .main-panel {
         background: #fff;
-        border-radius: 20px;
-        box-shadow: 0 10px 25px rgba(15, 23, 42, 0.06);
-        border: 1px solid #edf2f7;
+        border: 1px solid var(--border-color);
+        border-radius: 24px;
+        box-shadow: var(--shadow-sm);
         overflow: hidden;
     }
 
-    .projects-page .table-card-header {
-        padding: 18px 22px;
-        border-bottom: 1px solid #eef2f7;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 12px;
+    .panel-head {
+        padding: 22px 24px 10px;
+        border-bottom: 1px solid rgba(232, 236, 244, 0.7);
     }
 
-    .projects-page .table-card-header h5 {
+    .panel-title {
         margin: 0;
-        font-weight: 700;
-        color: #0f172a;
-        font-size: 18px;
-    }
-
-    .projects-page .modern-table {
-        margin-bottom: 0;
-        width: 100%;
-        table-layout: fixed;
-    }
-
-    .projects-page .modern-table thead th {
-        background: #f8fafc;
-        color: #334155;
+        font-size: 1.08rem;
         font-weight: 800;
-        border-bottom: 1px solid #e2e8f0;
-        padding: 11px 6px;
-        vertical-align: middle;
-   
-    white-space: normal;
-    line-height: 1.25;
-    text-align: center;
-    font-size: 12px;
-
+        color: var(--text-main);
     }
 
-    .projects-page .modern-table tbody td {
-        padding: 11px 6px;
-        vertical-align: middle;
-        border-color: #f1f5f9;
-        font-size: 16px;
+    .panel-subtitle {
+        margin-top: 6px;
+        color: var(--text-soft);
+        font-size: 0.9rem;
+    }
+
+    .table-wrap {
+        padding: 20px 24px 26px;
+    }
+
+    .students-table-card {
+        border: 1px solid var(--border-color);
+        border-radius: 20px;
         overflow: hidden;
+        background: #fff;
     }
 
-    .projects-page .modern-table tbody tr:hover {
+    .students-table {
+        margin-bottom: 0;
+    }
+
+    .students-table thead th {
+        background: #172033;
+        color: #fff;
+        border: none;
+        font-size: 0.84rem;
+        font-weight: 700;
+        padding: 15px 12px;
+        vertical-align: middle;
+        white-space: nowrap;
+        text-align: center;
+    }
+
+    .students-table tbody td {
+        border-color: #eef2f7;
+        padding: 14px 12px;
+        vertical-align: middle;
+        font-size: 0.9rem;
+    }
+
+    .students-table tbody tr {
+        transition: background 0.2s ease;
+    }
+
+    .students-table tbody tr:hover {
         background: #fafcff;
     }
 
-    .projects-page .col-id { width: 38px; }
-    .projects-page .col-project { width: 160px; }
-    .projects-page .col-student { width: 130px; }
-    .projects-page .col-scan { width: 92px; }
-    .projects-page .col-score { width: 72px; }
-    .projects-page .col-reviews { width: 95px; }
-    .projects-page .col-supervisor-score { width: 82px; }
-    .projects-page .col-final-decision { width: 108px; }
-    .projects-page .col-budget { width: 78px; }
-    .projects-page .col-date { width: 88px; }
-    .projects-page .col-actions { width: 124px; }
-
-    .projects-page .project-name {
+    .student-name-cell {
         font-weight: 700;
-        color: #1e293b;
+        color: var(--text-main);
+    }
+
+    .student-muted-cell {
+        color: #667085;
+        font-size: 0.88rem;
+    }
+
+    .project-name-link {
         text-decoration: none;
-        display: block;
-        max-width: 140px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        font-size: 12px;
+        color: inherit;
     }
 
-    .projects-page .project-name:hover {
-        color: #1b00ff;
+    .project-name-link:hover {
         text-decoration: none;
+        color: var(--primary-color);
     }
 
-    .projects-page .td-ellipsis {
-        display: block;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
+    .mini-text {
+        font-size: 0.78rem;
+        color: #667085;
+        margin-top: 3px;
+        line-height: 1.45;
     }
 
-    .projects-page .mini-text {
-        font-size: 9px;
-        color: #64748b;
-        margin-top: 2px;
-        line-height: 1.35;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
-
-    .projects-page .badge-soft {
+    .badge-soft {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        padding: 5px 8px;
+        padding: 7px 10px;
         border-radius: 999px;
-        font-size: 9px;
-        font-weight: 800;
+        font-size: 0.76rem;
+        font-weight: 700;
         letter-spacing: .2px;
         white-space: nowrap;
-        max-width: 100%;
     }
 
-    .projects-page .badge-scan-completed {
+    .badge-scan-completed {
         background: #ecfdf5;
         color: #15803d;
     }
 
-    .projects-page .badge-scan-pending {
+    .badge-scan-pending {
         background: #fff7ed;
         color: #c2410c;
     }
 
-    .projects-page .badge-scan-failed {
+    .badge-scan-failed {
         background: #fef2f2;
         color: #dc2626;
     }
 
-    .projects-page .badge-status-default {
+    .badge-status-default {
         background: #f1f5f9;
         color: #475569;
     }
 
-    .projects-page .badge-final-published {
+    .badge-final-published {
         background: #dcfce7;
         color: #166534;
     }
 
-    .projects-page .badge-final-revision {
+    .badge-final-revision {
         background: #fef3c7;
         color: #92400e;
     }
 
-    .projects-page .badge-final-rejected {
+    .badge-final-rejected {
         background: #fee2e2;
         color: #991b1b;
     }
 
-    .projects-page .badge-final-pending {
+    .badge-final-pending {
         background: #e2e8f0;
         color: #334155;
     }
 
-    .projects-page .review-chip {
+    .review-chip {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        min-width: 22px;
-        height: 22px;
+        min-width: 24px;
+        height: 24px;
         border-radius: 7px;
         font-weight: 800;
-        font-size: 9px;
-        margin-right: 2px;
+        font-size: 0.76rem;
+        margin-right: 4px;
     }
 
-    .projects-page .review-approved {
+    .review-approved {
         background: #dcfce7;
         color: #166534;
     }
 
-    .projects-page .review-revision {
+    .review-revision {
         background: #fef3c7;
         color: #92400e;
     }
 
-    .projects-page .review-rejected {
+    .review-rejected {
         background: #fee2e2;
         color: #991b1b;
     }
 
-    .projects-page .score-box {
+    .score-box {
         font-weight: 800;
         color: #0f172a;
-        font-size: 12px;
+        font-size: 0.9rem;
     }
 
-    .projects-page .btn-add {
-        background: linear-gradient(135deg, #1b00ff, #4f46e5);
-        color: #fff;
+    .actions-group {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .action-btn {
+        width: 34px;
+        height: 34px;
         border: none;
         border-radius: 12px;
-        padding: 10px 16px;
-        font-weight: 700;
-        text-decoration: none;
-        box-shadow: 0 10px 20px rgba(27, 0, 255, 0.15);
-        font-size: 13px;
-    }
-
-    .projects-page .btn-add:hover {
-        color: #fff;
-        text-decoration: none;
-        opacity: 0.95;
-    }
-
-    .projects-page .action-buttons {
-        display: flex;
-        align-items: center;
-        gap: 4px;
-        flex-wrap: wrap;
-    }
-
-    .projects-page .icon-action {
-        width: 28px;
-        height: 28px;
-        border: none;
-        border-radius: 9px;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        color: #fff;
+        font-size: 0.9rem;
+        transition: all 0.2s ease;
         text-decoration: none;
-        transition: all 0.25s ease;
-        box-shadow: 0 6px 14px rgba(15, 23, 42, 0.10);
-        font-size: 11px;
     }
 
-    .projects-page .icon-action:hover {
-        color: #fff;
-        text-decoration: none;
+    .action-btn:hover {
         transform: translateY(-2px);
+        text-decoration: none;
     }
 
-    .projects-page .icon-show { background: linear-gradient(135deg, #1b00ff, #4338ca); }
-    .projects-page .icon-edit { background: linear-gradient(135deg, #0ea5e9, #2563eb); }
-    .projects-page .icon-approve { background: linear-gradient(135deg, #16a34a, #22c55e); }
-    .projects-page .icon-publish { background: linear-gradient(135deg, #7c3aed, #a855f7); }
-    .projects-page .icon-delete { background: linear-gradient(135deg, #dc2626, #ef4444); }
-
-    .projects-page .action-form {
-        display: inline-block;
-        margin: 0;
+    .btn-view {
+        background: rgba(54, 185, 204, 0.12);
+        color: var(--info-color);
     }
 
-    .projects-page .action-form button {
-        cursor: pointer;
+    .btn-edit {
+        background: rgba(78, 115, 223, 0.12);
+        color: var(--primary-color);
     }
 
-    .projects-page .empty-state {
-        padding: 50px 20px;
+    .btn-approve {
+        background: rgba(28, 200, 138, 0.12);
+        color: #15803d;
+    }
+
+    .btn-publish {
+        background: rgba(139, 92, 246, 0.14);
+        color: #7c3aed;
+    }
+
+    .btn-delete {
+        background: rgba(231, 74, 59, 0.12);
+        color: var(--danger-color);
+    }
+
+    .empty-state {
+        padding: 32px 18px !important;
+        color: var(--text-soft);
+        font-weight: 600;
         text-align: center;
-        color: #64748b;
-    }
-
-    .projects-page .empty-state i {
-        font-size: 42px;
-        margin-bottom: 12px;
-        color: #cbd5e1;
-    }
-
-    .projects-page .pagination-wrapper {
-        padding: 22px 20px 26px;
-        border-top: 1px solid #eef2f7;
         background: #fff;
-        text-align: center;
     }
 
-    .projects-page .pagination-info {
-        font-size: 12px;
-        color: #64748b;
-        margin-bottom: 14px;
+    .pagination-wrap {
+        padding: 0 24px 24px;
     }
 
-    .projects-page .clean-pagination {
+    .clean-pagination {
         display: inline-flex;
         align-items: center;
         justify-content: center;
@@ -356,7 +414,7 @@
         flex-wrap: wrap;
     }
 
-    .projects-page .clean-page-link {
+    .clean-page-link {
         width: 40px;
         height: 40px;
         border-radius: 12px;
@@ -373,137 +431,151 @@
         transition: all 0.22s ease;
     }
 
-    .projects-page .clean-page-link:hover {
+    .clean-page-link:hover {
         text-decoration: none;
-        color: #1b00ff;
+        color: var(--primary-color);
         border-color: #c7d2fe;
         background: #f8fafc;
         transform: translateY(-1px);
     }
 
-    .projects-page .clean-page-link.active {
-        background: linear-gradient(135deg, #1b00ff, #4f46e5);
+    .clean-page-link.active {
+        background: linear-gradient(135deg, #4e73df, #6f8df3);
         color: #fff;
         border-color: transparent;
         box-shadow: 0 10px 18px rgba(79, 70, 229, 0.25);
     }
 
-    @media (max-width: 1400px) {
-        .projects-page .modern-table thead th,
-        .projects-page .modern-table tbody td {
-            font-size: 10px;
-            padding: 9px 5px;
+    @media (max-width: 991px) {
+        .page-header-card {
+            padding: 22px 20px;
         }
 
-        .projects-page .project-name {
-            max-width: 128px;
-            font-size: 11px;
+        .panel-head,
+        .table-wrap,
+        .pagination-wrap {
+            padding-left: 18px;
+            padding-right: 18px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .page-title {
+            font-size: 1.3rem;
         }
 
-        .projects-page .mini-text {
-            font-size: 8px;
+        .stat-card {
+            min-height: 122px;
         }
 
-        .projects-page .col-project { width: 150px; }
-        .projects-page .col-student { width: 120px; }
-        .projects-page .col-final-decision { width: 100px; }
-        .projects-page .col-actions { width: 116px; }
+        .students-table thead th,
+        .students-table tbody td {
+            white-space: nowrap;
+        }
     }
 </style>
 
-<div class="pd-ltr-20 xs-pd-20-10 projects-page">
-    <div class="min-height-200px">
+<div class="container-fluid projects-page">
 
-        @if(session('success'))
-            <div class="alert alert-success border-0 shadow-sm" style="border-radius: 14px;">
-                {{ session('success') }}
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show custom-alert mb-4" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="alert alert-danger alert-dismissible fade show custom-alert mb-4" role="alert">
+            {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
+
+    <div class="page-header-card">
+        <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3">
+            <div>
+                <h1 class="page-title">Projects Management</h1>
+                <p class="page-subtitle">
+                    Clean professional overview of projects, scan results, supervisor reviews, final decisions, and actions.
+                </p>
             </div>
-        @endif
 
-        @if(session('error'))
-            <div class="alert alert-danger border-0 shadow-sm" style="border-radius: 14px;">
-                {{ session('error') }}
-            </div>
-        @endif
-
-        <div class="page-header-card mb-4">
-            <div class="d-flex justify-content-between align-items-center flex-wrap" style="gap: 15px;">
-                <div>
-                    <h3>Projects Management</h3>
-                    <p>Clean professional overview of projects, scan results, supervisor reviews, final decisions, and actions.</p>
-                </div>
-
-                <a href="{{ route('admin.projects.create') }}" class="btn-add">
+            <div>
+                <a href="{{ route('admin.projects.create') }}" class="btn btn-primary px-4 py-2 rounded-pill fw-semibold">
                     <i class="fa fa-plus mr-1"></i> Add Project
                 </a>
             </div>
         </div>
+    </div>
 
-        <div class="row mb-4">
-            <div class="col-xl-3 col-md-6 mb-3">
-                <div class="stats-card">
-                    <div class="stats-icon primary">
-                        <i class="fa fa-folder-open"></i>
-                    </div>
-                    <div class="stats-number">{{ $totalProjects ?? 0 }}</div>
-                    <p class="stats-label">Total Projects</p>
+    <div class="row g-3 stats-grid mb-4">
+        <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="stat-card stat-all">
+                <div class="stat-top">
+                    <p class="stat-label">Total Projects</p>
+                    <span class="stat-icon"><i class="bi bi-folder-fill"></i></span>
                 </div>
-            </div>
-
-            <div class="col-xl-3 col-md-6 mb-3">
-                <div class="stats-card">
-                    <div class="stats-icon success">
-                        <i class="fa fa-check-circle"></i>
-                    </div>
-                    <div class="stats-number">{{ $completedProjects ?? 0 }}</div>
-                    <p class="stats-label">Completed Projects</p>
-                </div>
-            </div>
-
-            <div class="col-xl-3 col-md-6 mb-3">
-                <div class="stats-card">
-                    <div class="stats-icon warning">
-                        <i class="fa fa-clock"></i>
-                    </div>
-                    <div class="stats-number">{{ $pendingProjects ?? 0 }}</div>
-                    <p class="stats-label">Pending / Review</p>
-                </div>
-            </div>
-
-            <div class="col-xl-3 col-md-6 mb-3">
-                <div class="stats-card">
-                    <div class="stats-icon info">
-                        <i class="fa fa-chart-line"></i>
-                    </div>
-                    <div class="stats-number">{{ isset($avgScore) && $avgScore !== null ? number_format($avgScore, 1) : '0.0' }}</div>
-                    <p class="stats-label">Average Scan Score</p>
-                </div>
+                <h3 class="stat-value">{{ $totalProjects ?? 0 }}</h3>
+                <div class="stat-note">Complete project overview</div>
             </div>
         </div>
 
-        <div class="table-card">
-            <div class="table-card-header">
-                <div>
-                    <h5>All Projects</h5>
-                    <small class="text-muted">Compact clean view without unnecessary columns.</small>
+        <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="stat-card stat-active">
+                <div class="stat-top">
+                    <p class="stat-label">Completed Projects</p>
+                    <span class="stat-icon"><i class="bi bi-check-circle-fill"></i></span>
                 </div>
+                <h3 class="stat-value">{{ $completedProjects ?? 0 }}</h3>
+                <div class="stat-note">Successfully completed projects</div>
             </div>
+        </div>
 
-            <div class="table-responsive">
-                <table class="table modern-table">
+        <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="stat-card stat-pending">
+                <div class="stat-top">
+                    <p class="stat-label">Pending / Review</p>
+                    <span class="stat-icon"><i class="bi bi-hourglass-split"></i></span>
+                </div>
+                <h3 class="stat-value">{{ $pendingProjects ?? 0 }}</h3>
+                <div class="stat-note">Awaiting action or review</div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="stat-card stat-add">
+                <div class="stat-top">
+                    <p class="stat-label">Average Scan Score</p>
+                    <span class="stat-icon"><i class="bi bi-graph-up-arrow"></i></span>
+                </div>
+                <h3 class="stat-value">{{ isset($avgScore) && $avgScore !== null ? number_format($avgScore, 1) : '0.0' }}</h3>
+                <div class="stat-note">Scanner performance average</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-panel">
+        <div class="panel-head">
+            <h2 class="panel-title">All Projects</h2>
+            <div class="panel-subtitle">Compact clean view without unnecessary columns.</div>
+        </div>
+
+        <div class="table-wrap">
+            <div class="table-responsive students-table-card">
+                <table class="table students-table align-middle mb-0">
                     <thead>
                         <tr>
-                            <th class="col-id">#</th>
-                            <th class="col-project">Project</th>
-                           <th class="col-student">Student<br>Team</th>
-                            <th class="col-scan">Scan</th>
-                            <th class="col-score">Score</th>
-                            <th class="col-reviews">Reviews</th>
-                            <th class="col-supervisor-score">Supervisor<br>Avg</th>
-                        <th class="col-final-decision">Final<br>Decision</th>
-                            <th class="col-budget">Budget</th>
-                            <th class="col-date">Created</th>
-                            <th class="col-actions">Actions</th>
+                            <th class="text-center">#</th>
+                            <th>Project</th>
+                            <th>Student / Team</th>
+                            <th class="text-center">Scan</th>
+                            <th class="text-center">Score</th>
+                            <th class="text-center">Reviews</th>
+                            <th class="text-center">Supervisor Avg</th>
+                            <th class="text-center">Final Decision</th>
+                            <th class="text-center">Budget</th>
+                            <th class="text-center">Created</th>
+                            <th class="text-center">Actions</th>
                         </tr>
                     </thead>
 
@@ -538,78 +610,82 @@
                             @endphp
 
                             <tr>
-                                <td>{{ $projects->firstItem() + $loop->index }}</td>
+                                <td class="text-center">{{ $projects->firstItem() + $loop->index }}</td>
 
                                 <td>
-                                    <a href="{{ route('admin.projects.show', $project) }}" class="project-name">
-                                        {{ $project->name ?? 'Untitled Project' }}
-                                    </a>
-                                    <div class="mini-text td-ellipsis">#{{ $project->project_id ?? $project->id }}</div>
-                                    <div class="mini-text td-ellipsis">{{ $project->category ?? 'No category' }}</div>
+                                    <div class="student-name-cell">
+                                        <a href="{{ route('admin.projects.show', $project) }}" class="project-name-link">
+                                            {{ $project->name ?? 'Untitled Project' }}
+                                        </a>
+                                    </div>
+                                    <div class="mini-text">#{{ $project->project_id ?? $project->id }}</div>
+                                    <div class="mini-text">{{ $project->category ?? 'No category' }}</div>
                                 </td>
 
                                 <td>
-                                    <div class="td-ellipsis">{{ $project->student->name ?? '—' }}</div>
-                                    <div class="mini-text td-ellipsis">{{ $project->student->email ?? 'No email' }}</div>
-                                    <div class="mini-text td-ellipsis">{{ $project->supervisor->name ?? 'No supervisor' }}</div>
+                                    <div class="student-name-cell">{{ $project->student->name ?? '—' }}</div>
+                                    <div class="mini-text">{{ $project->student->email ?? 'No email' }}</div>
+                                    <div class="mini-text">{{ $project->supervisor->name ?? 'No supervisor' }}</div>
                                 </td>
 
-                                <td>
+                                <td class="text-center">
                                     <span class="badge-soft {{ $scanClass }}">
                                         {{ ucfirst(str_replace('_', ' ', $project->scanner_status ?? 'not scanned')) }}
                                     </span>
-                                    <div class="mini-text td-ellipsis">ID: {{ $project->scanner_project_id ?? '—' }}</div>
+                                    <div class="mini-text">ID: {{ $project->scanner_project_id ?? '—' }}</div>
                                 </td>
 
-                                <td>
+                                <td class="text-center">
                                     <div class="score-box">
                                         {{ $project->scan_score !== null ? number_format($project->scan_score, 2) : '—' }}
                                     </div>
-                                    <div class="mini-text td-ellipsis">{{ $project->grade ?? 'No grade' }}</div>
+                                    <div class="mini-text">{{ $project->grade ?? 'No grade' }}</div>
                                 </td>
 
-                                <td>
+                                <td class="text-center">
                                     <span class="review-chip review-approved" title="Approved">{{ $approvedReviews }}</span>
                                     <span class="review-chip review-revision" title="Revision Requested">{{ $revisionReviews }}</span>
                                     <span class="review-chip review-rejected" title="Rejected">{{ $rejectedReviews }}</span>
                                 </td>
 
-                                <td>
+                                <td class="text-center">
                                     <div class="score-box">
                                         {{ $project->reviews->count() ? number_format($supervisorAvgScore, 1) : '—' }}
                                     </div>
                                 </td>
 
-                                <td>
+                                <td class="text-center">
                                     <span class="badge-soft {{ $finalDecisionClass }}">
                                         {{ $finalDecisionText }}
                                     </span>
-                                    <div class="mini-text td-ellipsis">{{ $project->finalDecisionMaker->name ?? '—' }}</div>
+                                    <div class="mini-text">{{ $project->finalDecisionMaker->name ?? '—' }}</div>
                                 </td>
 
-                                <td>
-                                    {{ $project->budget !== null ? number_format($project->budget, 0) : '—' }}
+                                <td class="text-center">
+                                    <div class="student-muted-cell">
+                                        {{ $project->budget !== null ? number_format($project->budget, 0) : '—' }}
+                                    </div>
                                 </td>
 
-                                <td>
-                                    <div>{{ optional($project->created_at)->format('Y-m-d') ?? '—' }}</div>
+                                <td class="text-center">
+                                    <div class="student-muted-cell">{{ optional($project->created_at)->format('Y-m-d') ?? '—' }}</div>
                                 </td>
 
-                                <td>
-                                    <div class="action-buttons">
-                                        <a href="{{ route('admin.projects.show', $project) }}" class="icon-action icon-show" title="View">
+                                <td class="text-center">
+                                    <div class="actions-group">
+                                        <a href="{{ route('admin.projects.show', $project) }}" class="action-btn btn-view" title="View">
                                             <i class="fa fa-eye"></i>
                                         </a>
 
-                                        <a href="{{ route('admin.projects.edit', $project) }}" class="icon-action icon-edit" title="Edit">
+                                        <a href="{{ route('admin.projects.edit', $project) }}" class="action-btn btn-edit" title="Edit">
                                             <i class="fa fa-pencil-alt"></i>
                                         </a>
 
                                         @if(in_array($project->status, ['pending', 'scan_requested', 'awaiting_manual_review']))
-                                            <form action="{{ route('admin.projects.approve', $project) }}" method="POST" class="action-form">
+                                            <form action="{{ route('admin.projects.approve', $project) }}" method="POST" class="d-inline">
                                                 @csrf
                                                 @method('PATCH')
-                                                <button type="submit" class="icon-action icon-approve" title="Approve"
+                                                <button type="submit" class="action-btn btn-approve" title="Approve"
                                                     onclick="return confirm('Approve this project?')">
                                                     <i class="fa fa-check"></i>
                                                 </button>
@@ -617,20 +693,20 @@
                                         @endif
 
                                         @if(in_array($project->status, ['active', 'approved']))
-                                            <form action="{{ route('admin.projects.publish', $project) }}" method="POST" class="action-form">
+                                            <form action="{{ route('admin.projects.publish', $project) }}" method="POST" class="d-inline">
                                                 @csrf
                                                 @method('PATCH')
-                                                <button type="submit" class="icon-action icon-publish" title="Publish"
+                                                <button type="submit" class="action-btn btn-publish" title="Publish"
                                                     onclick="return confirm('Publish this project?')">
                                                     <i class="fa fa-upload"></i>
                                                 </button>
                                             </form>
                                         @endif
 
-                                        <form action="{{ route('admin.projects.destroy', $project) }}" method="POST" class="action-form">
+                                        <form action="{{ route('admin.projects.destroy', $project) }}" method="POST" class="d-inline">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="icon-action icon-delete" title="Delete"
+                                            <button type="submit" class="action-btn btn-delete" title="Delete"
                                                 onclick="return confirm('Delete this project?')">
                                                 <i class="fa fa-trash"></i>
                                             </button>
@@ -640,37 +716,46 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="11">
-                                    <div class="empty-state">
-                                        <i class="fa fa-folder-open"></i>
-                                        <div>No projects found.</div>
-                                    </div>
-                                </td>
+                                <td colspan="11" class="empty-state">No projects found.</td>
                             </tr>
                         @endforelse
                     </tbody>
                 </table>
             </div>
-
-            @if(method_exists($projects, 'links') && $projects->lastPage() > 1)
-                <div class="pagination-wrapper">
-                    <div class="pagination-info">
-                        Showing {{ $projects->firstItem() ?? 0 }} to {{ $projects->lastItem() ?? 0 }}
-                        of {{ $projects->total() ?? 0 }} projects
-                    </div>
-
-                    <div class="clean-pagination">
-                        @for($page = 1; $page <= $projects->lastPage(); $page++)
-                            <a href="{{ $projects->url($page) }}"
-                               class="clean-page-link {{ $projects->currentPage() === $page ? 'active' : '' }}">
-                                {{ $page }}
-                            </a>
-                        @endfor
-                    </div>
-                </div>
-            @endif
         </div>
 
+        @if(method_exists($projects, 'links') && $projects->lastPage() > 1)
+            <div class="pagination-wrap text-center">
+                <div class="mini-text mb-3">
+                    Showing {{ $projects->firstItem() ?? 0 }} to {{ $projects->lastItem() ?? 0 }}
+                    of {{ $projects->total() ?? 0 }} projects
+                </div>
+
+                <div class="clean-pagination">
+                    @for($page = 1; $page <= $projects->lastPage(); $page++)
+                        <a href="{{ $projects->url($page) }}"
+                           class="clean-page-link {{ $projects->currentPage() === $page ? 'active' : '' }}">
+                            {{ $page }}
+                        </a>
+                    @endfor
+                </div>
+            </div>
+        @endif
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.stat-card, .main-panel, .page-header-card').forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(10px)';
+
+        setTimeout(() => {
+            card.style.transition = 'all 0.35s ease';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, 70 * (index + 1));
+    });
+});
+</script>
 @endsection

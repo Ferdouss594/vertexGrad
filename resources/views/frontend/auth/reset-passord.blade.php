@@ -1,95 +1,131 @@
 @extends('frontend.layouts.app')
 
 @section('content')
-<div class="min-h-screen flex items-center justify-center py-12 bg-theme-bg transition-colors duration-300">
-    <div class="w-full max-w-md p-8 rounded-xl theme-panel shadow-brand-soft">
+<div class="min-h-screen bg-theme-bg transition-colors duration-300 relative overflow-hidden">
+    <div class="absolute inset-0 pointer-events-none">
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 h-72 w-72 rounded-full blur-3xl opacity-20"
+             style="background: radial-gradient(circle, var(--brand-accent) 0%, transparent 70%);"></div>
+        <div class="absolute bottom-0 left-0 h-64 w-64 rounded-full blur-3xl opacity-10"
+             style="background: radial-gradient(circle, var(--brand-accent) 0%, transparent 70%);"></div>
+    </div>
 
-        <i class="fas fa-key text-4xl text-brand-accent mb-4 block text-center"
-           style="filter: drop-shadow(0 0 8px var(--brand-accent-glow));"></i>
+    <div class="relative min-h-screen flex items-center justify-center py-12 px-4">
+        <div class="w-full max-w-md">
+            <div class="theme-panel rounded-2xl shadow-brand-soft border border-theme-border/60 p-8 backdrop-blur-sm">
 
-        <h2 class="text-3xl font-bold text-center text-theme-text mb-2">
-            {{ __('frontend.auth.reset_password_title') }}
-        </h2>
+                <div class="text-center mb-8">
+                    <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-accent/10 border border-brand-accent/20">
+                        <i class="fas fa-key text-3xl text-brand-accent"></i>
+                    </div>
 
-        <p class="text-center text-theme-muted mb-8">
-            {{ __('frontend.auth.reset_password_subtitle') }}
-        </p>
+                    <h2 class="text-3xl font-bold text-theme-text mb-2">
+                        {{ __('frontend.auth.reset_password_title') }}
+                    </h2>
 
-        <form action="/reset-password" method="POST">
-            @csrf
+                    <p class="text-theme-muted leading-relaxed">
+                        {{ __('frontend.auth.reset_password_subtitle') }}
+                    </p>
+                </div>
 
-            <input type="hidden" name="token" value="{{ $token ?? '' }}">
+                @if ($errors->any())
+                    <div class="mb-6 rounded-xl border border-red-400/30 bg-red-500/10 px-4 py-3 text-sm text-red-500">
+                        <ul class="list-disc list-inside space-y-1">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
 
-            <div class="mb-6">
-                <label for="email" class="block text-sm font-medium text-theme-muted mb-2">
-                    {{ __('frontend.auth.email') }}
-                </label>
-                <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    required
-                    value="{{ $email ?? old('email') }}"
-                    readonly
-                    class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface-2 text-theme-text placeholder:text-theme-muted opacity-70 focus:ring-0 focus:border-brand-accent"
-                >
+                <form action="{{ route('password.update') }}" method="POST" id="resetPasswordForm" class="space-y-5">
+                    @csrf
+
+                    <input type="hidden" name="token" value="{{ $token ?? '' }}">
+
+                    <div>
+                        <label for="email" class="mb-2 block text-sm font-medium text-theme-muted">
+                            {{ __('frontend.auth.email') }}
+                        </label>
+
+                        <div class="relative">
+                            <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-theme-muted">
+                                <i class="fas fa-envelope"></i>
+                            </span>
+
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                required
+                                value="{{ $email ?? old('email') }}"
+                                readonly
+                                class="w-full rounded-xl border border-theme-border bg-theme-surface-2 py-3 pl-11 pr-4 text-theme-text opacity-70 focus:border-brand-accent focus:ring-0"
+                            >
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="password" class="mb-2 block text-sm font-medium text-theme-muted">
+                            {{ __('frontend.auth.new_password') }}
+                        </label>
+
+                        <div class="relative password-wrapper">
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                required
+                                autocomplete="new-password"
+                                class="w-full rounded-xl border border-theme-border bg-theme-surface-2 py-3 pl-4 pr-12 text-theme-text focus:border-brand-accent focus:ring-0"
+                            >
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="password_confirmation" class="mb-2 block text-sm font-medium text-theme-muted">
+                            {{ __('frontend.auth.confirm_new_password') }}
+                        </label>
+
+                        <div class="relative password-wrapper">
+                            <input
+                                type="password"
+                                id="password_confirmation"
+                                name="password_confirmation"
+                                required
+                                autocomplete="new-password"
+                                class="w-full rounded-xl border border-theme-border bg-theme-surface-2 py-3 pl-4 pr-12 text-theme-text focus:border-brand-accent focus:ring-0"
+                            >
+                        </div>
+                    </div>
+
+                    <button
+                        type="submit"
+                        class="w-full inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-base font-semibold bg-brand-accent text-white hover:bg-brand-accent-strong transition duration-300 shadow-brand-soft"
+                    >
+                        <i class="fas fa-rotate"></i>
+                        <span>{{ __('frontend.auth.reset_password_button') }}</span>
+                    </button>
+                </form>
+
+                <div class="mt-8 border-t border-theme-border/60 pt-6 text-center">
+                    <a href="{{ route('login.show') }}" class="inline-flex items-center gap-2 text-sm font-medium text-brand-accent hover:underline">
+                        <i class="fas fa-arrow-left"></i>
+                        <span>{{ __('frontend.auth.back_to_login') }}</span>
+                    </a>
+                </div>
             </div>
-
-            <div class="mb-6">
-                <label for="password" class="block text-sm font-medium text-theme-muted mb-2">
-                    {{ __('frontend.auth.new_password') }}
-                </label>
-                <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    required
-                    class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface-2 text-theme-text placeholder:text-theme-muted focus:ring-0 focus:border-brand-accent"
-                >
-            </div>
-
-            <div class="mb-8">
-                <label for="password_confirmation" class="block text-sm font-medium text-theme-muted mb-2">
-                    {{ __('frontend.auth.confirm_new_password') }}
-                </label>
-                <input
-                    type="password"
-                    id="password_confirmation"
-                    name="password_confirmation"
-                    required
-                    class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface-2 text-theme-text placeholder:text-theme-muted focus:ring-0 focus:border-brand-accent"
-                >
-            </div>
-
-            <button
-                type="submit"
-                class="w-full inline-flex items-center justify-center rounded-lg px-6 py-3 text-lg font-semibold bg-brand-accent text-white hover:bg-brand-accent-strong transition duration-300 shadow-brand-soft"
-            >
-                {{ __('frontend.auth.reset_password_button') }}
-            </button>
-        </form>
-
-        <p class="mt-8 text-center text-theme-muted text-sm">
-            <a href="/login" class="text-brand-accent font-medium ml-1">
-                <i class="fas fa-arrow-left mr-1"></i> {{ __('frontend.auth.back_to_login') }}
-            </a>
-        </p>
+        </div>
     </div>
 </div>
+
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
     const panel = document.querySelector('.theme-panel');
-    const topIcon = document.querySelector('.theme-panel > i');
-    const heading = document.querySelector('h2');
-    const subtitle = document.querySelector('h2 + p');
-    const form = document.querySelector('form');
-    const emailInput = document.getElementById('email');
+    const form = document.getElementById('resetPasswordForm');
+    const submitButton = form?.querySelector('button[type="submit"]');
     const passwordInput = document.getElementById('password');
     const confirmPasswordInput = document.getElementById('password_confirmation');
-    const submitButton = form?.querySelector('button[type="submit"]');
-    const backLink = document.querySelector('a[href*="login"]');
 
     if (!document.getElementById('vg-reset-password-style')) {
         const style = document.createElement('style');
@@ -107,36 +143,16 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             .vg-auth-panel {
-                transition: box-shadow .28s ease, transform .28s ease;
+                transition: transform .28s ease, box-shadow .28s ease, border-color .28s ease;
             }
 
             .vg-auth-panel:hover {
+                transform: translateY(-2px);
                 box-shadow: 0 22px 52px rgba(0,0,0,.10);
             }
 
-            .vg-auth-input {
-                transition: border-color .2s ease, box-shadow .2s ease, background-color .2s ease;
-            }
-
-            .vg-auth-input:focus {
-                box-shadow: 0 0 0 4px rgba(99,102,241,.10);
-            }
-
-            .vg-readonly-field {
-                cursor: not-allowed;
-            }
-
-            .vg-field-ok {
-                border-color: rgba(34,197,94,.45) !important;
-            }
-
-            .vg-field-mismatch {
-                border-color: rgba(239,68,68,.45) !important;
-                box-shadow: 0 0 0 4px rgba(239,68,68,.08);
-            }
-
             .vg-auth-btn {
-                transition: transform .22s ease, box-shadow .22s ease, opacity .22s ease;
+                transition: transform .22s ease, opacity .22s ease, box-shadow .22s ease;
             }
 
             .vg-auth-btn:hover {
@@ -148,8 +164,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 opacity: .92;
             }
 
-            .vg-password-wrap {
-                position: relative;
+            .vg-field-ok {
+                border-color: rgba(34,197,94,.45) !important;
+            }
+
+            .vg-field-mismatch {
+                border-color: rgba(239,68,68,.45) !important;
+                box-shadow: 0 0 0 4px rgba(239,68,68,.08);
             }
 
             .vg-password-toggle {
@@ -169,20 +190,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 opacity: 1;
             }
 
-            .vg-password-input {
-                padding-right: 42px !important;
-            }
-
-            .vg-focus-ring:focus-visible {
-                outline: none;
-                box-shadow: 0 0 0 3px rgba(99,102,241,.16);
-                border-radius: 12px;
-            }
-
             @media (prefers-reduced-motion: reduce) {
                 .vg-reveal,
                 .vg-auth-panel,
-                .vg-auth-input,
                 .vg-auth-btn,
                 .vg-password-toggle {
                     transition: none !important;
@@ -194,7 +204,17 @@ document.addEventListener('DOMContentLoaded', () => {
         document.head.appendChild(style);
     }
 
-    [panel, topIcon, heading, subtitle, form].filter(Boolean).forEach((el, index) => {
+    const revealItems = [
+        document.querySelector('.theme-panel .mx-auto'),
+        document.querySelector('h2'),
+        document.querySelector('h2 + p'),
+        document.querySelector('form'),
+        document.querySelector('.border-t')
+    ].filter(Boolean);
+
+    if (panel) panel.classList.add('vg-auth-panel');
+
+    revealItems.forEach((el, index) => {
         el.classList.add('vg-reveal');
 
         if (prefersReducedMotion) {
@@ -202,30 +222,14 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        setTimeout(() => el.classList.add('is-visible'), 100 + (index * 110));
+        setTimeout(() => el.classList.add('is-visible'), 100 + (index * 100));
     });
-
-    if (panel) panel.classList.add('vg-auth-panel');
-
-    [emailInput, passwordInput, confirmPasswordInput].filter(Boolean).forEach(input => {
-        input.classList.add('vg-auth-input', 'vg-focus-ring');
-    });
-
-    if (emailInput && emailInput.hasAttribute('readonly')) {
-        emailInput.classList.add('vg-readonly-field');
-    }
-
-    if (backLink) backLink.classList.add('vg-focus-ring');
 
     function addPasswordToggle(input) {
         if (!input || input.dataset.toggleApplied === 'true') return;
 
-        const wrapper = document.createElement('div');
-        wrapper.className = 'vg-password-wrap';
-        input.parentNode.insertBefore(wrapper, input);
-        wrapper.appendChild(input);
-
-        input.classList.add('vg-password-input');
+        const wrapper = input.closest('.password-wrapper');
+        if (!wrapper) return;
 
         const toggle = document.createElement('button');
         toggle.type = 'button';
@@ -268,7 +272,7 @@ document.addEventListener('DOMContentLoaded', () => {
     confirmPasswordInput?.addEventListener('input', validatePasswords);
 
     if (submitButton) {
-        submitButton.classList.add('vg-auth-btn', 'vg-focus-ring');
+        submitButton.classList.add('vg-auth-btn');
 
         form?.addEventListener('submit', () => {
             submitButton.classList.add('is-loading');
