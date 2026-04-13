@@ -1,8 +1,9 @@
 import './bootstrap';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
 import Alpine from 'alpinejs';
+import NotificationCenter from './notification-center';
+
 window.Alpine = Alpine;
 Alpine.start();
 
@@ -49,4 +50,28 @@ document.addEventListener('DOMContentLoaded', () => {
             ease: 'power2.out'
         });
     });
+
+    const frontendBell = document.getElementById('frontend-notification-bell');
+    if (frontendBell) {
+        NotificationCenter.start({
+            latestUrl: frontendBell.dataset.latestUrl,
+            badgeSelector: '#frontendUnreadBadge',
+            unreadTextSelector: '#frontendUnreadText',
+            listSelector: '#frontendNotificationList',
+            readRouteBuilder: (id) => `/notifications/${id}/read`,
+            hiddenClass: 'hidden',
+        });
+    }
+
+    const adminBell = document.getElementById('admin-notification-bell');
+    if (adminBell) {
+        NotificationCenter.start({
+            latestUrl: adminBell.dataset.latestUrl,
+            badgeSelector: '#adminUnreadBadge',
+            unreadTextSelector: '#adminUnreadText',
+            listSelector: '#adminNotificationList',
+            readRouteBuilder: (id) => `/admin/notifications/${id}/read`,
+            hiddenClass: 'd-none',
+        });
+    }
 });

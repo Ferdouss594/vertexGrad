@@ -378,14 +378,6 @@
 
 <div class="container-fluid managers-page">
 
-    @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show custom-alert mb-4" role="alert">
-            <i class="fa fa-check-circle me-2"></i>
-            {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    @endif
-
     <div class="page-header-card">
         <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3">
             <div>

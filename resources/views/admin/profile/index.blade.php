@@ -107,13 +107,7 @@
             border-radius: 0 14px 14px 0;
         }
     </style>
-
-    @if(session('success'))
-        <div class="alert alert-success border-0 shadow-sm rounded-4">
-            {{ session('success') }}
-        </div>
-    @endif
-
+    
     <div class="card profile-header-card mb-4">
         <div class="card-body p-4 p-lg-5 overlay">
             <div class="row align-items-center">

@@ -39,6 +39,8 @@ use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\AdminProfileController;
+use App\Http\Controllers\Admin\AuthPolicyManagementController;
+use App\Http\Controllers\Admin\AuthRolePolicyController;
 
 use App\Http\Controllers\Report\PlatformReportController;
 
@@ -88,10 +90,7 @@ Route::middleware(['web', 'backend.locale'])->group(function () {
     | Permission Management + Contact Messages (Manager only)
     |--------------------------------------------------------------------------
     */
-    Route::middleware(['auth:admin', 'role:Manager'])
-        ->prefix('admin')
-        ->name('admin.')
-        ->group(function () {
+    Route::middleware(['auth:admin', 'role:Manager'])->prefix('admin')->name('admin.')->group(function () {
             Route::get('/permissions', [PermissionManagementController::class, 'index'])->name('permissions.index');
             Route::get('/permissions/{user}', [PermissionManagementController::class, 'show'])->name('permissions.show');
             Route::post('/permissions/{user}/sync', [PermissionManagementController::class, 'sync'])->name('permissions.sync');
@@ -101,6 +100,15 @@ Route::middleware(['web', 'backend.locale'])->group(function () {
             Route::patch('/contact-messages/{contactMessage}/status', [ContactMessageController::class, 'updateStatus'])->name('contact-messages.update-status');
             Route::post('/contact-messages/{contactMessage}/reply', [ContactMessageController::class, 'sendReply'])->name('contact-messages.reply');
             Route::post('/contact-messages/{contactMessage}/notes', [ContactMessageController::class, 'storeNote'])->name('contact-messages.notes.store');
+
+
+            Route::get('/auth-policies', [AuthPolicyManagementController::class, 'index'])->name('auth-policies.index');
+Route::get('/auth-policies/{user}', [AuthPolicyManagementController::class, 'show'])->name('auth-policies.show');
+Route::post('/auth-policies/{user}', [AuthPolicyManagementController::class, 'update'])->name('auth-policies.update');
+Route::get('/auth-role-policies', [AuthRolePolicyController::class, 'index'])->name('auth-role-policies.index');
+Route::get('/auth-role-policies/{rolePolicy}', [AuthRolePolicyController::class, 'show'])->name('auth-role-policies.show');
+Route::post('/auth-role-policies/{rolePolicy}', [AuthRolePolicyController::class, 'update'])->name('auth-role-policies.update');
+
         });
 
     /*
@@ -380,7 +388,8 @@ Route::put('/profile/password', [AdminProfileController::class, 'updatePassword'
 
         Route::get('notifications/unread-count', [AdminNotificationController::class, 'unreadCount'])
             ->name('notifications.count');
-
+Route::get('notifications/latest', [AdminNotificationController::class, 'latest'])
+    ->name('notifications.latest');
         Route::post('notifications/{id}/read', [AdminNotificationController::class, 'markAsRead'])
             ->name('notifications.read');
 

@@ -53,10 +53,16 @@ Route::middleware(['web', 'frontend.locale'])->group(function () {
 
         Route::get('/login', [FrontendAuth::class, 'showLogin'])->name('login.show');
         Route::post('/login', [FrontendAuth::class, 'login'])->middleware('throttle:login')->name('login.post');
-    Route::get('/login/otp', [LoginOtpController::class, 'show'])->name('login.otp.show');
-    Route::post('/login/otp', [LoginOtpController::class, 'verify'])->name('login.otp.verify');
-    Route::post('/login/otp/resend', [LoginOtpController::class, 'resend'])->middleware('throttle:6,1')->name('login.otp.resend');
-       Route::post('/login/otp/recovery', [LoginOtpController::class, 'verifyRecoveryCode'])->name('login.otp.recovery');
+
+
+        Route::get('/login/otp', [LoginOtpController::class, 'show'])->name('login.otp.show');
+Route::post('/login/otp', [LoginOtpController::class, 'verify'])->name('login.otp.verify');
+Route::post('/login/otp/resend', [LoginOtpController::class, 'resend'])
+    ->middleware('throttle:6,1')
+    ->name('login.otp.resend');
+Route::post('/login/otp/recovery', [LoginOtpController::class, 'verifyRecoveryCode'])
+    ->middleware('throttle:6,1')
+    ->name('login.otp.recovery');
        Route::get('/recovery-codes/download', [SecurityController::class, 'downloadRecoveryCodes'])->name('recovery-codes.download');
     Route::get('/register', fn () => view('frontend.auth.register'))->name('register.show');
         Route::get('/register/investor', fn () => view('frontend.auth.register_investor'))->name('register.investor');
@@ -72,25 +78,87 @@ Route::middleware(['web', 'frontend.locale'])->group(function () {
     // ------------------------
     // FRONTEND AUTH (AUTHENTICATED)
     // ------------------------
-    Route::middleware('auth:web')->group(function () {
-        Route::post('/auth/logout', [FrontendAuth::class, 'logout'])->name('frontend.logout');
+   Route::middleware('auth:web')->group(function () {
+    Route::post('/auth/logout', [FrontendAuth::class, 'logout'])->name('frontend.logout');
 
-        Route::get('/auth/email/verify', function () {
-            return view('frontend.auth.verify-email');
-        })->name('verification.notice');
+    Route::get('/auth/email/verify', function () {
+        $user = auth('web')->user();
 
-        Route::get('/auth/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+        if (! $user) {
+            return redirect()->route('login.show');
+        }
+
+        if ($user->hasVerifiedEmail()) {
+            return redirect()->to(match ($user->role) {
+                'Investor' => route('dashboard.investor'),
+                'Student'  => route('dashboard.academic'),
+                default    => route('home'),
+            });
+        }
+
+        return view('frontend.auth.verify-email');
+    })->name('verification.notice');
+
+    Route::get('/auth/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+        $user = $request->user();
+
+        if (! $user) {
+            return redirect()->route('login.show');
+        }
+
+        $policy = \App\Services\AuthPolicyResolverService::resolveForUser($user);
+
+        if ($policy['email_verification_mode'] === 'disabled') {
+            return redirect()->to(match ($user->role) {
+                'Investor' => route('dashboard.investor'),
+                'Student'  => route('dashboard.academic'),
+                default    => route('home'),
+            });
+        }
+
+        if (! $user->hasVerifiedEmail()) {
             $request->fulfill();
+        }
 
-            return redirect()->route('profile')->with('success', 'Email verified successfully.');
-        })->middleware('signed')->name('verification.verify');
+        return redirect()
+            ->to(match ($user->role) {
+                'Investor' => route('dashboard.investor'),
+                'Student'  => route('dashboard.academic'),
+                default    => route('home'),
+            })
+            ->with('success', 'Email verified successfully.');
+    })->middleware('signed')->name('verification.verify');
 
-        Route::post('/auth/email/verification-notification', function (Request $request) {
-            $request->user()->sendEmailVerificationNotification();
+    Route::post('/auth/email/verification-notification', function (Request $request) {
+        $user = $request->user();
 
-            return back()->with('status', 'Verification link sent successfully.');
-        })->middleware('throttle:6,1')->name('verification.send');
-    });
+        if (! $user) {
+            return redirect()->route('login.show');
+        }
+
+        $policy = \App\Services\AuthPolicyResolverService::resolveForUser($user);
+
+        if ($policy['email_verification_mode'] === 'disabled') {
+            return redirect()->to(match ($user->role) {
+                'Investor' => route('dashboard.investor'),
+                'Student'  => route('dashboard.academic'),
+                default    => route('home'),
+            });
+        }
+
+        if ($user->hasVerifiedEmail()) {
+            return redirect()->to(match ($user->role) {
+                'Investor' => route('dashboard.investor'),
+                'Student'  => route('dashboard.academic'),
+                default    => route('home'),
+            });
+        }
+
+        $user->sendEmailVerificationNotification();
+
+        return back()->with('status', 'Verification link sent successfully.');
+    })->middleware('throttle:6,1')->name('verification.send');
+});
 
     // ------------------------
     // FRONTEND MARKETPLACE (PUBLIC BROWSING)
@@ -183,7 +251,8 @@ Route::middleware(['web', 'frontend.locale'])->group(function () {
 
         Route::get('/notifications/unread-count', [FrontNotificationController::class, 'unreadCount'])
             ->name('frontend.notifications.count');
-
+Route::get('/notifications/latest', [FrontNotificationController::class, 'latest'])
+    ->name('frontend.notifications.latest');
         Route::post('/notifications/{id}/read', [FrontNotificationController::class, 'markAsRead'])
             ->name('frontend.notifications.read');
 

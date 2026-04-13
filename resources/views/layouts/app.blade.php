@@ -627,7 +627,12 @@
             <i class="bi bi-moon-stars-fill" id="themeSwitchIcon"></i>
         </button>
 
-        <div class="dropdown" id="admin-notification-bell" data-count-url="{{ route('admin.notifications.count') }}">
+        <div
+    class="dropdown"
+    id="admin-notification-bell"
+    data-count-url="{{ route('admin.notifications.count') }}"
+    data-latest-url="{{ route('admin.notifications.latest') }}"
+>
             <a class="dropdown-toggle position-relative d-inline-flex align-items-center justify-content-center text-decoration-none header-circle-btn"
                href="#"
                role="button"
@@ -653,7 +658,7 @@
                     </div>
                 </div>
 
-                <div style="max-height: 340px; overflow-y: auto; background: var(--vg-dropdown-bg);">
+                <div id="adminNotificationList" style="max-height: 340px; overflow-y: auto; background: var(--vg-dropdown-bg);">
                     @forelse($latestNotifications as $notification)
                         @php
                             $title = $notification->data['title'] ?? 'Notification';
@@ -818,22 +823,6 @@
                 </li>
 
                 <li>
-                    <a href="{{ route('admin.investor-reports.index') }}"
-                       class="dropdown-toggle no-arrow {{ request()->routeIs('admin.investor-reports.*') ? 'active' : '' }}">
-                        <span class="micon bi bi-graph-up-arrow"></span>
-                        <span class="mtext">Investor Reports</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="{{ route('admin.investor-calendar.index') }}"
-                       class="dropdown-toggle no-arrow {{ request()->routeIs('admin.investor-calendar.*') ? 'active' : '' }}">
-                        <span class="micon bi bi-calendar-event"></span>
-                        <span class="mtext">Investor Calendar</span>
-                    </a>
-                </li>
-
-                <li>
                     <a href="{{ route('admin.projects.index') }}"
                        class="dropdown-toggle no-arrow {{ request()->routeIs('admin.projects.*') ? 'active' : '' }}">
                         <span class="micon bi bi-briefcase-fill"></span>
@@ -886,7 +875,25 @@
                         </a>
                     </li>
                 @endif
+@if(Route::has('admin.auth-role-policies.index'))
+    <li>
+        <a href="{{ route('admin.auth-role-policies.index') }}"
+           class="dropdown-toggle no-arrow {{ request()->routeIs('admin.auth-role-policies.*') ? 'active' : '' }}">
+            <span class="micon fas fa-user-shield"></span>
+            <span class="mtext">Role Auth Policies</span>
+        </a>
+    </li>
+@endif
 
+@if(Route::has('admin.auth-policies.index'))
+    <li>
+        <a href="{{ route('admin.auth-policies.index') }}"
+           class="dropdown-toggle no-arrow {{ request()->routeIs('admin.auth-policies.*') ? 'active' : '' }}">
+            <span class="micon fas fa-user-lock"></span>
+            <span class="mtext">User Auth Policies</span>
+        </a>
+    </li>
+@endif
                 @if(Route::has('admin.announcements.index'))
                     <li>
                         <a href="{{ route('admin.announcements.index') }}"
@@ -971,43 +978,6 @@
 <script src="{{ asset('src/plugins/datatables/js/dataTables.responsive.min.js') }}" defer></script>
 <script src="{{ asset('src/plugins/datatables/js/responsive.bootstrap4.min.js') }}" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" defer></script>
-
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    const bell = document.getElementById('admin-notification-bell');
-    if (!bell) return;
-
-    const countUrl = bell.dataset.countUrl;
-    const badge = document.getElementById('adminUnreadBadge');
-    const unreadText = document.getElementById('adminUnreadText');
-
-    function refreshUnreadCount() {
-        fetch(countUrl, {
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-                'Accept': 'application/json'
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            const count = data.count ?? 0;
-            if (unreadText) unreadText.textContent = count;
-
-            if (badge) {
-                if (count > 0) {
-                    badge.classList.remove('d-none');
-                    badge.textContent = count > 9 ? '9+' : count;
-                } else {
-                    badge.classList.add('d-none');
-                }
-            }
-        })
-        .catch(() => {});
-    }
-
-    setInterval(refreshUnreadCount, 30000);
-});
-</script>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {

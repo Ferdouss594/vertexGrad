@@ -162,10 +162,6 @@
         <div class="alert alert-danger custom-alert mb-4">{{ session('error') }}</div>
     @endif
 
-    @if(session('success'))
-        <div class="alert alert-success custom-alert mb-4">{{ session('success') }}</div>
-    @endif
-
     <div class="page-header-card">
         <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3">
             <div>

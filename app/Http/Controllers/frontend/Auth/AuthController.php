@@ -9,6 +9,7 @@ use App\Models\Student;
 use App\Models\TrustedDevice;
 use App\Models\User;
 use App\Notifications\LoginOtpNotification;
+use App\Services\AuthPolicyResolverService;
 use App\Services\SecurityActivityLogger;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -34,6 +35,7 @@ class AuthController extends Controller
         $fieldType = filter_var($request->login_id, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 
         $user = User::query()
+            ->with('authPolicyOverride')
             ->where($fieldType, $request->login_id)
             ->first();
 
@@ -82,39 +84,88 @@ class AuthController extends Controller
                 ->withInput($request->only('login_id'));
         }
 
-        $trustedToken = $request->cookie('trusted_device_token');
+        $policy = AuthPolicyResolverService::resolveForUser($user);
 
-        if ($trustedToken) {
-            $trustedDevice = TrustedDevice::where('user_id', $user->id)
-                ->where('token_hash', hash('sha256', $trustedToken))
-                ->where('expires_at', '>', now())
-                ->first();
+        $remember = $policy['remember_me_enabled']
+            ? $request->boolean('remember')
+            : false;
 
-            if ($trustedDevice) {
-                $trustedDevice->update([
-                    'last_used_at' => now(),
-                    'ip_address'   => $request->ip(),
-                ]);
+        if ($policy['emergency_bypass_enabled']) {
+            Auth::guard('web')->login($user, $remember);
+            $request->session()->regenerate();
 
-                Auth::guard('web')->login($user, $request->boolean('remember'));
-                $request->session()->regenerate();
+            SecurityActivityLogger::log(
+                $user->id,
+                'login_completed_emergency_bypass',
+                $request,
+                true
+            );
 
-                SecurityActivityLogger::log(
-                    $user->id,
-                    'login_completed_trusted_device',
-                    $request,
-                    true,
-                    ['trusted_device_id' => $trustedDevice->id]
-                );
+            return redirect()->to($this->redirectPathByRole($user->role));
+        }
 
-                if (! $user->hasVerifiedEmail()) {
-                    return redirect()
-                        ->route('verification.notice')
-                        ->with('success', 'Login completed. Please verify your email to continue.');
+        if ($policy['otp_mode'] === 'required' && $policy['trusted_devices_enabled']) {
+            $trustedToken = $request->cookie('trusted_device_token');
+
+            if ($trustedToken) {
+                $trustedDevice = TrustedDevice::where('user_id', $user->id)
+                    ->where('token_hash', hash('sha256', $trustedToken))
+                    ->where('expires_at', '>', now())
+                    ->first();
+
+                if ($trustedDevice) {
+                    $trustedDevice->update([
+                        'last_used_at' => now(),
+                        'ip_address'   => $request->ip(),
+                    ]);
+
+                    Auth::guard('web')->login($user, $remember);
+                    $request->session()->regenerate();
+
+                    SecurityActivityLogger::log(
+                        $user->id,
+                        'login_completed_trusted_device',
+                        $request,
+                        true,
+                        ['trusted_device_id' => $trustedDevice->id]
+                    );
+
+                    if (
+                        $policy['email_verification_mode'] === 'required'
+                        && ! $user->hasVerifiedEmail()
+                    ) {
+                        return redirect()
+                            ->route('verification.notice')
+                            ->with('success', 'Login completed. Please verify your email to continue.');
+                    }
+
+                    return redirect()->to($this->redirectPathByRole($user->role));
                 }
-
-                return redirect()->to($this->redirectPathByRole($user->role));
             }
+        }
+
+        if ($policy['otp_mode'] !== 'required') {
+            Auth::guard('web')->login($user, $remember);
+            $request->session()->regenerate();
+
+            SecurityActivityLogger::log(
+                $user->id,
+                'login_completed_no_otp',
+                $request,
+                true,
+                ['otp_mode' => $policy['otp_mode']]
+            );
+
+            if (
+                $policy['email_verification_mode'] === 'required'
+                && ! $user->hasVerifiedEmail()
+            ) {
+                return redirect()
+                    ->route('verification.notice')
+                    ->with('success', 'Login completed. Please verify your email to continue.');
+            }
+
+            return redirect()->to($this->redirectPathByRole($user->role));
         }
 
         LoginOtp::where('user_id', $user->id)
@@ -142,7 +193,13 @@ class AuthController extends Controller
         );
 
         $request->session()->put('otp_user_id', $user->id);
-        $request->session()->put('otp_remember', $request->boolean('remember'));
+        $request->session()->put('otp_remember', $remember);
+        $request->session()->put('otp_auth_policy', [
+            'email_verification_mode' => $policy['email_verification_mode'],
+            'trusted_devices_enabled' => $policy['trusted_devices_enabled'],
+            'recovery_codes_enabled' => $policy['recovery_codes_enabled'],
+            'suspicious_login_alerts_enabled' => $policy['suspicious_login_alerts_enabled'],
+        ]);
 
         return redirect()
             ->route('login.otp.show')
@@ -156,6 +213,37 @@ class AuthController extends Controller
             'Student'  => route('dashboard.academic'),
             default    => route('home'),
         };
+    }
+
+    protected function redirectAfterRegistration(User $user, Request $request)
+    {
+        $policy = AuthPolicyResolverService::resolveForUser($user);
+
+        if ($policy['emergency_bypass_enabled']) {
+            return redirect()
+                ->to($this->redirectPathByRole($user->role))
+                ->with('success', 'Account created successfully.');
+        }
+
+        if ($policy['email_verification_mode'] === 'required') {
+            $user->sendEmailVerificationNotification();
+
+            return redirect()
+                ->route('verification.notice')
+                ->with('success', 'Account created successfully. We sent a verification link to your email.');
+        }
+
+        if ($policy['email_verification_mode'] === 'optional') {
+            $user->sendEmailVerificationNotification();
+
+            return redirect()
+                ->to($this->redirectPathByRole($user->role))
+                ->with('success', 'Account created successfully. You can verify your email later from your account.');
+        }
+
+        return redirect()
+            ->to($this->redirectPathByRole($user->role))
+            ->with('success', 'Account created successfully.');
     }
 
     public function registerInvestor(Request $request)
@@ -189,11 +277,7 @@ class AuthController extends Controller
             Auth::guard('web')->login($user);
             $request->session()->regenerate();
 
-            $user->sendEmailVerificationNotification();
-
-            return redirect()
-                ->route('verification.notice')
-                ->with('success', 'Investor account created successfully. We sent a verification link to your email.');
+            return $this->redirectAfterRegistration($user, $request);
         } catch (\Throwable $e) {
             DB::rollBack();
 
@@ -245,11 +329,7 @@ class AuthController extends Controller
             Auth::guard('web')->login($user);
             $request->session()->regenerate();
 
-            $user->sendEmailVerificationNotification();
-
-            return redirect()
-                ->route('verification.notice')
-                ->with('success', 'Student account created successfully. We sent a verification link to your email.');
+            return $this->redirectAfterRegistration($user, $request);
         } catch (\Throwable $e) {
             DB::rollBack();
 

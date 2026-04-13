@@ -24,7 +24,7 @@ class LoginOtpNotification extends Notification implements ShouldQueue
     {
         return (new MailMessage)
             ->subject('Your VertexGrad Login Verification Code')
-            ->greeting('Hello '.$notifiable->name.',')
+            ->greeting('Hello ' . $notifiable->name . ',')
             ->line('Use the following verification code to complete your login:')
             ->line($this->code)
             ->line('This code expires in 10 minutes.')

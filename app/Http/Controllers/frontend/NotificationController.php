@@ -22,7 +22,32 @@ class NotificationController extends Controller
             'count' => auth('web')->user()->unreadNotifications()->count()
         ]);
     }
+public function latest()
+{
+    $user = auth('web')->user();
 
+    $notifications = $user->notifications()
+        ->latest()
+        ->take(10)
+        ->get()
+        ->map(function ($notification) {
+            return [
+                'id' => $notification->id,
+                'title' => $notification->data['title'] ?? 'Notification',
+                'message' => $notification->data['message'] ?? '',
+                'url' => $notification->data['url'] ?? null,
+                'icon' => $notification->data['icon'] ?? 'fas fa-bell',
+                'type' => $notification->data['type'] ?? 'info',
+                'read_at' => $notification->read_at,
+                'created_at_human' => $notification->created_at?->diffForHumans(),
+            ];
+        });
+
+    return response()->json([
+        'notifications' => $notifications,
+        'unread_count' => $user->unreadNotifications()->count(),
+    ]);
+}
     public function markAsRead(Request $request, $id)
     {
         $notification = auth('web')->user()

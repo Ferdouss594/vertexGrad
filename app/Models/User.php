@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use App\Models\UserAuthPolicyOverride;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -112,7 +113,10 @@ protected $casts = [
     {
         return $this->hasOne(Supervisor::class);
     }
-
+public function authPolicyOverride()
+{
+    return $this->hasOne(UserAuthPolicyOverride::class);
+}
     public function manager()
     {
         return $this->hasOne(Manager::class);

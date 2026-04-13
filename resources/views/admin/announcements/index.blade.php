@@ -25,14 +25,6 @@
         </div>
     </div>
 
-    {{-- Success --}}
-    @if(session('success'))
-        <div class="alert alert-success border-0 shadow-sm rounded-4 px-4 py-3 mb-4 d-flex align-items-center">
-            <i class="bi bi-check-circle-fill me-2 fs-5"></i>
-            <span>{{ session('success') }}</span>
-        </div>
-    @endif
-
     {{-- Card --}}
     <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
         <div class="announcement-header-gradient"></div>

@@ -9,7 +9,9 @@ class ProjectRejectedNotification extends Notification
 {
     use Queueable;
 
-    public function __construct(public $project) {}
+    public function __construct(public $project)
+    {
+    }
 
     public function via($notifiable)
     {
@@ -23,8 +25,14 @@ class ProjectRejectedNotification extends Notification
             'message'      => 'Your project "' . $this->project->name . '" was reviewed and rejected.',
             'project_id'   => $this->project->project_id,
             'project_name' => $this->project->name,
-            'url'          => route('frontend.projects.show', $this->project),
+            'url'          => route('frontend.projects.show', $this->project, false),
             'icon'         => 'fas fa-times-circle',
+            'type'         => 'project_rejected',
         ];
+    }
+
+    public function toArray($notifiable)
+    {
+        return $this->toDatabase($notifiable);
     }
 }

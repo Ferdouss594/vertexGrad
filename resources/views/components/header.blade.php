@@ -147,19 +147,12 @@
                 @endphp
 
                 {{-- NOTIFICATIONS --}}
-                <div class="relative flex items-center"
-                     x-data="{
-                        open:false,
-                        unreadCount: {{ $initialUnread }},
-                        init() {
-                            setInterval(() => {
-                                fetch('{{ route('frontend.notifications.count') }}')
-                                    .then(r => r.json())
-                                    .then(d => { this.unreadCount = d.count ?? 0; })
-                                    .catch(() => {});
-                            }, 30000);
-                        }
-                     }">
+<div
+    id="frontend-notification-bell"
+    class="relative flex items-center"
+    x-data="{ open:false }"
+    data-latest-url="{{ route('frontend.notifications.latest') }}"
+>
 
                     <button type="button"
                             @click="open = !open"
@@ -168,11 +161,12 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V4a2 2 0 10-4 0v1.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0a3 3 0 11-6 0m6 0H9" />
                         </svg>
 
-                        <template x-if="unreadCount > 0">
-                            <span class="absolute -top-1 -right-1 flex h-4 min-w-[16px] px-1 items-center justify-center rounded-full bg-red-500 text-[10px] font-black text-white shadow">
-                                <span x-text="unreadCount > 9 ? '9+' : unreadCount"></span>
-                            </span>
-                        </template>
+<span
+    id="frontendUnreadBadge"
+    class="absolute -top-1 -right-1 {{ $initialUnread > 0 ? 'flex' : 'hidden' }} h-4 min-w-[16px] px-1 items-center justify-center rounded-full bg-red-500 text-[10px] font-black text-white shadow"
+>
+    {{ $initialUnread > 9 ? '9+' : $initialUnread }}
+</span>
                     </button>
 
                     <div x-show="open"
@@ -188,10 +182,12 @@
                             <h3 class="text-xs font-black uppercase tracking-widest text-brand-accent">
                                 {{ __('frontend.header.alerts') }}
                             </h3>
-                            <span class="text-[10px] text-theme-muted" x-text="unreadCount + ' {{ __('frontend.header.unread') }}'"></span>
+                            <span class="text-[10px] text-theme-muted">
+    <span id="frontendUnreadText">{{ $initialUnread }}</span> {{ __('frontend.header.unread') }}
+</span>
                         </div>
 
-                        <div class="max-h-80 overflow-y-auto">
+                        <div id="frontendNotificationList" class="max-h-80 overflow-y-auto">
                             @forelse($latestNotifications as $n)
                                 @php
                                     $title = $n->data['title'] ?? __('frontend.header.notification');

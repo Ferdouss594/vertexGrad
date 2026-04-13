@@ -85,12 +85,6 @@
 </style>
 
 <div class="pd-ltr-20 xs-pd-20-10 report-templates-page">
-    @if(session('success'))
-        <div class="alert alert-success border-0 shadow-sm" style="border-radius: 16px;">
-            {{ session('success') }}
-        </div>
-    @endif
-
     <div class="hero-card">
         <div class="hero-title">Saved Report Templates</div>
         <p class="hero-text">

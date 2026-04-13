@@ -9,23 +9,34 @@ use Illuminate\Notifications\Notification;
 class ProjectRevisionRequested extends Notification
 {
     use Queueable;
-    protected $project;
-    protected $reason;
 
-    public function __construct(Project $project, $reason = '') { 
-        $this->project = $project; 
-        $this->reason = $reason;
+    protected Project $project;
+    protected string $reason;
+
+    public function __construct(Project $project, $reason = '')
+    {
+        $this->project = $project;
+        $this->reason = (string) $reason;
     }
 
-    public function via($notifiable) { return ['database']; }
+    public function via($notifiable)
+    {
+        return ['database'];
+    }
 
-    public function toArray($notifiable)
+    public function toDatabase($notifiable)
     {
         return [
             'title'   => 'Revision Required',
-            'message' => 'Manager requested changes for "'.$this->project->name.'". Reason: '.$this->reason,
-            'url'     => route('dashboard.academic'),
+            'message' => 'Manager requested changes for "' . $this->project->name . '". Reason: ' . $this->reason,
+            'url'     => route('dashboard.academic', [], false),
             'icon'    => 'fas fa-exclamation-triangle',
+            'type'    => 'project_revision_requested',
         ];
+    }
+
+    public function toArray($notifiable)
+    {
+        return $this->toDatabase($notifiable);
     }
 }

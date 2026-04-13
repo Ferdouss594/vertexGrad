@@ -9,11 +9,8 @@ class FundingRequestApprovedNotification extends Notification
 {
     use Queueable;
 
-    public $project;
-
-    public function __construct($project)
+    public function __construct(public $project)
     {
-        $this->project = $project;
     }
 
     public function via($notifiable)
@@ -28,8 +25,14 @@ class FundingRequestApprovedNotification extends Notification
             'message' => 'Your funding request for project "' . $this->project->name . '" has been approved.',
             'project_id' => $this->project->project_id,
             'project_name' => $this->project->name,
-            'url' => route('frontend.projects.show', $this->project),
+            'url' => route('frontend.projects.show', $this->project, false),
             'icon' => 'fas fa-check-circle',
+            'type' => 'funding_request_approved',
         ];
+    }
+
+    public function toArray($notifiable)
+    {
+        return $this->toDatabase($notifiable);
     }
 }

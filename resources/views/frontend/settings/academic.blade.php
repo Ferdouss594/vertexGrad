@@ -68,14 +68,6 @@
             </div>
         </header>
 
-        @if(session('success'))
-            <div class="mb-6">
-                <div class="p-4 rounded-2xl border border-green-500/40 bg-green-500/10 text-green-600 shadow-brand-soft">
-                    {{ session('success') }}
-                </div>
-            </div>
-        @endif
-
         @if(session('error'))
             <div class="mb-6">
                 <div class="p-4 rounded-2xl border border-red-500/40 bg-red-500/10 text-red-600 shadow-brand-soft">

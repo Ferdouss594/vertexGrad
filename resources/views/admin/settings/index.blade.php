@@ -30,12 +30,6 @@
     </div>
 
     {{-- Alerts --}}
-    @if(session('success'))
-        <div class="alert alert-success settings-alert-success mb-4">
-            <i class="bi bi-check-circle-fill me-2"></i>
-            {{ session('success') }}
-        </div>
-    @endif
 
     @if ($errors->any())
         <div class="alert alert-danger rounded-4 border-0 shadow-sm mb-4">

@@ -9,23 +9,34 @@ use Illuminate\Notifications\Notification;
 class NewInvestmentInterest extends Notification
 {
     use Queueable;
-    protected $project;
-    protected $investorName;
 
-    public function __construct(Project $project, $investorName) { 
-        $this->project = $project; 
+    protected Project $project;
+    protected string $investorName;
+
+    public function __construct(Project $project, $investorName)
+    {
+        $this->project = $project;
         $this->investorName = $investorName;
     }
 
-    public function via($notifiable) { return ['database']; }
+    public function via($notifiable)
+    {
+        return ['database'];
+    }
 
-    public function toArray($notifiable)
+    public function toDatabase($notifiable)
     {
         return [
             'title'   => 'New Investor Interest!',
-            'message' => $this->investorName . ' is interested in your project "'.$this->project->name.'".',
-            'url'     => route('dashboard.academic'),
+            'message' => $this->investorName . ' is interested in your project "' . $this->project->name . '".',
+            'url'     => route('dashboard.academic', [], false),
             'icon'    => 'fas fa-hand-holding-usd',
+            'type'    => 'new_investment_interest',
         ];
+    }
+
+    public function toArray($notifiable)
+    {
+        return $this->toDatabase($notifiable);
     }
 }

@@ -9,7 +9,9 @@ class InvestorInterestApprovedNotification extends Notification
 {
     use Queueable;
 
-    public function __construct(public $project) {}
+    public function __construct(public $project)
+    {
+    }
 
     public function via($notifiable)
     {
@@ -23,8 +25,14 @@ class InvestorInterestApprovedNotification extends Notification
             'message' => 'Your interest in project "' . $this->project->name . '" has been approved.',
             'project_id' => $this->project->project_id,
             'project_name' => $this->project->name,
-            'url' => route('frontend.projects.show', $this->project),
+            'url' => route('frontend.projects.show', $this->project, false),
             'icon' => 'fas fa-check-circle',
+            'type' => 'investor_interest_approved',
         ];
+    }
+
+    public function toArray($notifiable)
+    {
+        return $this->toDatabase($notifiable);
     }
 }

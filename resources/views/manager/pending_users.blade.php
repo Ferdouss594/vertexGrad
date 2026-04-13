@@ -3,13 +3,7 @@
 @section('title', 'Users Management')
 
 @section('content')
-@if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show custom-alert" role="alert">
-        <i class="bi bi-check-circle-fill me-2"></i>
-        {{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-@endif
+
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">

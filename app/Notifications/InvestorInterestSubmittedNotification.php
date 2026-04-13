@@ -9,7 +9,9 @@ class InvestorInterestSubmittedNotification extends Notification
 {
     use Queueable;
 
-    public function __construct(public $project, public $investor) {}
+    public function __construct(public $project, public $investor)
+    {
+    }
 
     public function via($notifiable)
     {
@@ -25,8 +27,14 @@ class InvestorInterestSubmittedNotification extends Notification
             'investor_id' => $this->investor->id,
             'project_name' => $this->project->name,
             'investor_name' => $this->investor->name,
-            'url' => route('admin.projects.show', $this->project),
+            'url' => route('admin.projects.show', ['project' => $this->project->project_id], false),
             'icon' => 'fas fa-handshake',
+            'type' => 'investor_interest_submitted',
         ];
+    }
+
+    public function toArray($notifiable)
+    {
+        return $this->toDatabase($notifiable);
     }
 }

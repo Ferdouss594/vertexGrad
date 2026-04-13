@@ -9,27 +9,31 @@ class GeneralNotification extends Notification
 {
     use Queueable;
 
-    protected $details;
+    protected array $details;
 
     public function __construct($details)
     {
-        // $details = ['title' => '...', 'message' => '...', 'url' => '...']
         $this->details = $details;
     }
 
     public function via($notifiable)
     {
-        // We store it in the database for the "Bell" icon
         return ['database'];
+    }
+
+    public function toDatabase($notifiable)
+    {
+        return [
+            'title'   => $this->details['title'] ?? 'Notification',
+            'message' => $this->details['message'] ?? '',
+            'url'     => $this->details['url'] ?? '#',
+            'icon'    => $this->details['icon'] ?? 'fas fa-info-circle',
+            'type'    => $this->details['type'] ?? 'general',
+        ];
     }
 
     public function toArray($notifiable)
     {
-        return [
-            'title'   => $this->details['title'],
-            'message' => $this->details['message'],
-            'url'     => $this->details['url'] ?? '#',
-            'icon'    => $this->details['icon'] ?? 'fas fa-info-circle',
-        ];
+        return $this->toDatabase($notifiable);
     }
 }

@@ -253,12 +253,6 @@
 
 <div class="container-fluid manager-decision-page">
 
-    @if(session('success'))
-        <div class="alert alert-success border-0 shadow-sm" style="border-radius: 16px;">
-            {{ session('success') }}
-        </div>
-    @endif
-
     @if($errors->any())
         <div class="alert alert-danger border-0 shadow-sm" style="border-radius: 16px;">
             <ul class="mb-0 ps-3">

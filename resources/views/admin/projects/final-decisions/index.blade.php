@@ -210,12 +210,6 @@
 
 <div class="container-fluid final-decisions-page">
 
-    @if(session('success'))
-        <div class="alert alert-success border-0 shadow-sm" style="border-radius: 16px;">
-            {{ session('success') }}
-        </div>
-    @endif
-
     <div class="page-header-card">
         <div class="page-header-title">Final Project Decisions</div>
         <p class="page-header-text">

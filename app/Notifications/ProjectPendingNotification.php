@@ -9,7 +9,9 @@ class ProjectPendingNotification extends Notification
 {
     use Queueable;
 
-    public function __construct(public $project) {}
+    public function __construct(public $project)
+    {
+    }
 
     public function via($notifiable)
     {
@@ -23,8 +25,14 @@ class ProjectPendingNotification extends Notification
             'message'      => 'Your project "' . $this->project->name . '" was submitted successfully and is now pending review.',
             'project_id'   => $this->project->project_id,
             'project_name' => $this->project->name,
-            'url'          => route('frontend.projects.show', $this->project),
+            'url'          => route('frontend.projects.show', $this->project, false),
             'icon'         => 'fas fa-hourglass-half',
+            'type'         => 'project_pending',
         ];
+    }
+
+    public function toArray($notifiable)
+    {
+        return $this->toDatabase($notifiable);
     }
 }

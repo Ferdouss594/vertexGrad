@@ -271,11 +271,6 @@
 <div class="pd-ltr-20 xs-pd-20-10 investment-requests-page">
     <div class="min-height-200px">
 
-        @if(session('success'))
-            <div class="alert alert-success border-0 shadow-sm" style="border-radius: 14px;">
-                {{ session('success') }}
-            </div>
-        @endif
 
         @if(session('error'))
             <div class="alert alert-danger border-0 shadow-sm" style="border-radius: 14px;">

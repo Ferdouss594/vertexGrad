@@ -27,12 +27,12 @@ class SuspiciousLoginAlertNotification extends Notification
     {
         return (new MailMessage)
             ->subject('New sign-in detected on your VertexGrad account')
-            ->greeting('Hello '.$notifiable->name.',')
+            ->greeting('Hello ' . $notifiable->name . ',')
             ->line('We detected a sign-in from a device or environment that looks new.')
-            ->line('IP: '.$this->ip)
-            ->line('Browser: '.$this->browser)
-            ->line('OS: '.$this->os)
-            ->line('Device: '.$this->device)
+            ->line('IP: ' . $this->ip)
+            ->line('Browser: ' . $this->browser)
+            ->line('OS: ' . $this->os)
+            ->line('Device: ' . $this->device)
             ->line('If this was you, no action is needed.')
             ->line('If this was not you, please reset your password immediately.');
     }

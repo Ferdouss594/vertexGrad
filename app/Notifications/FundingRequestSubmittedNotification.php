@@ -27,8 +27,14 @@ class FundingRequestSubmittedNotification extends Notification
             'project_name' => $this->project->name,
             'investor_id' => $this->investor->id,
             'amount' => $this->amount,
-            'url' => route('admin.projects.show',$this->project),
+            'url' => route('admin.projects.show', ['project' => $this->project->project_id], false),
             'icon' => 'fas fa-hand-holding-usd',
+            'type' => 'funding_request_submitted',
         ];
+    }
+
+    public function toArray($notifiable)
+    {
+        return $this->toDatabase($notifiable);
     }
 }

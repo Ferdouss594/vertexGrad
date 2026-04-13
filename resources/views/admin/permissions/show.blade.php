@@ -291,12 +291,6 @@
 <div class="pd-ltr-20 xs-pd-20-10 permissions-page">
     <div class="min-height-200px">
 
-        @if(session('success'))
-            <div class="alert alert-success border-0 shadow-sm mb-4" style="border-radius: 14px;">
-                {{ session('success') }}
-            </div>
-        @endif
-
         <div class="hero-card">
             <div class="hero-content d-flex justify-content-between align-items-start flex-wrap" style="gap: 16px;">
                 <div>

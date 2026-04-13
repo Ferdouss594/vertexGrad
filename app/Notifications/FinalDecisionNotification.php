@@ -10,9 +10,9 @@ class FinalDecisionNotification extends Notification
 {
     use Queueable;
 
-    protected $project;
-    protected $decision;
-    protected $managerNote;
+    protected Project $project;
+    protected string $decision;
+    protected ?string $managerNote;
 
     public function __construct(Project $project, string $decision, ?string $managerNote = null)
     {
@@ -26,7 +26,7 @@ class FinalDecisionNotification extends Notification
         return ['database'];
     }
 
-    public function toArray(object $notifiable): array
+    public function toDatabase(object $notifiable): array
     {
         $title = 'Final Decision on Your Project';
         $message = 'A final decision has been made on your project.';
@@ -52,10 +52,17 @@ class FinalDecisionNotification extends Notification
             'title' => $title,
             'message' => $message,
             'project_id' => $this->project->project_id,
-            'project_title' => $this->project->title ?? 'Project',
+            'project_title' => $this->project->title ?? $this->project->name ?? 'Project',
             'decision' => $this->decision,
             'manager_note' => $this->managerNote,
-            'url' => route('student.projects.show', $this->project->project_id),
+            'url' => route('frontend.projects.show', $this->project, false),
+            'icon' => 'fas fa-gavel',
+            'type' => 'final_decision',
         ];
+    }
+
+    public function toArray(object $notifiable): array
+    {
+        return $this->toDatabase($notifiable);
     }
 }

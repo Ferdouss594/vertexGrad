@@ -12,19 +12,6 @@
             <button type="submit" class="btn btn-outline-primary btn-sm">Mark all as read</button>
         </form>
     </div>
-
-    @if(session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-    @endif
-
-    @if(session('error'))
-        <div class="alert alert-danger">
-            {{ session('error') }}
-        </div>
-    @endif
-
     <div class="card shadow-sm border-0">
         <div class="card-body p-0">
             @forelse($notifications as $n)

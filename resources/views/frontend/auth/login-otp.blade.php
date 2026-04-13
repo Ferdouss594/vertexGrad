@@ -1,6 +1,13 @@
 @extends('frontend.layouts.app')
 
 @section('content')
+@php
+    $policy = $policy ?? [
+        'trusted_devices_enabled' => true,
+        'recovery_codes_enabled' => true,
+    ];
+@endphp
+
 <div class="min-h-screen bg-theme-bg transition-colors duration-300 relative overflow-hidden">
     <div class="absolute inset-0 pointer-events-none">
         <div class="absolute top-0 left-1/2 -translate-x-1/2 h-72 w-72 rounded-full blur-3xl opacity-20"
@@ -68,17 +75,19 @@
                         >
                     </div>
 
-                    <div class="flex items-center justify-start">
-                        <label class="inline-flex items-center gap-2 text-sm text-theme-muted cursor-pointer">
-                            <input
-                                type="checkbox"
-                                name="trust_device"
-                                value="1"
-                                class="rounded border-theme-border bg-theme-surface-2 text-brand-accent focus:ring-brand-accent"
-                            >
-                            <span>{{ __('frontend.auth.trust_device_30_days') }}</span>
-                        </label>
-                    </div>
+                    @if(($policy['trusted_devices_enabled'] ?? true) === true)
+                        <div class="flex items-center justify-start">
+                            <label class="inline-flex items-center gap-2 text-sm text-theme-muted cursor-pointer">
+                                <input
+                                    type="checkbox"
+                                    name="trust_device"
+                                    value="1"
+                                    class="rounded border-theme-border bg-theme-surface-2 text-brand-accent focus:ring-brand-accent"
+                                >
+                                <span>{{ __('frontend.auth.trust_device_30_days') }}</span>
+                            </label>
+                        </div>
+                    @endif
 
                     <button
                         type="submit"
@@ -100,41 +109,43 @@
                     </button>
                 </form>
 
-                <div class="mt-6 pt-6 border-t border-theme-border/60">
-                    <p class="text-sm text-theme-muted mb-3 text-center">
-                        {{ __('frontend.auth.cant_access_email_code') }}
-                    </p>
+                @if(($policy['recovery_codes_enabled'] ?? true) === true)
+                    <div class="mt-6 pt-6 border-t border-theme-border/60">
+                        <p class="text-sm text-theme-muted mb-3 text-center">
+                            {{ __('frontend.auth.cant_access_email_code') }}
+                        </p>
 
-                    <button
-                        type="button"
-                        onclick="document.getElementById('recoveryCodeBox').classList.toggle('hidden')"
-                        class="w-full text-brand-accent text-sm font-semibold hover:underline"
-                    >
-                        {{ __('frontend.auth.use_recovery_code_instead') }}
-                    </button>
+                        <button
+                            type="button"
+                            onclick="document.getElementById('recoveryCodeBox').classList.toggle('hidden')"
+                            class="w-full text-brand-accent text-sm font-semibold hover:underline"
+                        >
+                            {{ __('frontend.auth.use_recovery_code_instead') }}
+                        </button>
 
-                    <div id="recoveryCodeBox" class="hidden mt-4">
-                        <form method="POST" action="{{ route('login.otp.recovery') }}" class="space-y-4">
-                            @csrf
+                        <div id="recoveryCodeBox" class="hidden mt-4">
+                            <form method="POST" action="{{ route('login.otp.recovery') }}" class="space-y-4">
+                                @csrf
 
-                            <input
-                                type="text"
-                                name="recovery_code"
-                                required
-                                placeholder="{{ __('frontend.auth.recovery_code_placeholder') }}"
-                                class="w-full rounded-xl border border-theme-border bg-theme-surface-2 py-3 px-4 text-theme-text focus:border-brand-accent focus:ring-0"
-                            >
+                                <input
+                                    type="text"
+                                    name="recovery_code"
+                                    required
+                                    placeholder="{{ __('frontend.auth.recovery_code_placeholder') }}"
+                                    class="w-full rounded-xl border border-theme-border bg-theme-surface-2 py-3 px-4 text-theme-text focus:border-brand-accent focus:ring-0"
+                                >
 
-                            <button
-                                type="submit"
-                                class="w-full inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold border border-theme-border text-theme-text hover:bg-theme-surface-2 transition duration-300"
-                            >
-                                <i class="fas fa-key"></i>
-                                <span>{{ __('frontend.auth.use_recovery_code') }}</span>
-                            </button>
-                        </form>
+                                <button
+                                    type="submit"
+                                    class="w-full inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold border border-theme-border text-theme-text hover:bg-theme-surface-2 transition duration-300"
+                                >
+                                    <i class="fas fa-key"></i>
+                                    <span>{{ __('frontend.auth.use_recovery_code') }}</span>
+                                </button>
+                            </form>
+                        </div>
                     </div>
-                </div>
+                @endif
 
                 <div class="mt-8 border-t border-theme-border/60 pt-6 text-center">
                     <a href="{{ route('login.show') }}" class="inline-flex items-center gap-2 text-sm font-medium text-brand-accent hover:underline">

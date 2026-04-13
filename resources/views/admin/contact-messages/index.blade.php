@@ -260,13 +260,6 @@
 
 <div class="pd-ltr-20 xs-pd-20-10 contact-messages-page">
     <div class="min-height-200px">
-
-        @if(session('success'))
-            <div class="alert alert-success border-0 shadow-sm" style="border-radius: 14px;">
-                {{ session('success') }}
-            </div>
-        @endif
-
         <div class="page-header-card mb-4">
             <div class="d-flex justify-content-between align-items-center flex-wrap" style="gap: 15px;">
                 <div>

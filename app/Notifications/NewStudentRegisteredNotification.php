@@ -9,7 +9,9 @@ class NewStudentRegisteredNotification extends Notification
 {
     use Queueable;
 
-    public function __construct(public $student) {}
+    public function __construct(public $student)
+    {
+    }
 
     public function via($notifiable)
     {
@@ -24,8 +26,14 @@ class NewStudentRegisteredNotification extends Notification
             'user_id' => $this->student->id,
             'name'    => $this->student->name,
             'email'   => $this->student->email,
-            'url'     => route('admin.students.index'),
+            'url'     => route('admin.students.index', [], false),
             'icon'    => 'fas fa-user-plus',
+            'type'    => 'new_student_registered',
         ];
+    }
+
+    public function toArray($notifiable)
+    {
+        return $this->toDatabase($notifiable);
     }
 }

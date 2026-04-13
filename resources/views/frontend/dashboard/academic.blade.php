@@ -137,14 +137,6 @@
             </section>
         @endif
 
-        @if(session('success'))
-            <div class="max-w-6xl mx-auto px-4 mb-6">
-                <div class="p-4 rounded-xl border border-green-500/40 bg-green-500/10 text-green-600">
-                    {{ session('success') }}
-                </div>
-            </div>
-        @endif
-
         @if(session('error'))
             <div class="max-w-6xl mx-auto px-4 mb-6">
                 <div class="p-4 rounded-xl border border-red-500/40 bg-red-500/10 text-red-600">

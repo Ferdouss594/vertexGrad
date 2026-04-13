@@ -459,14 +459,6 @@
         </div>
     </div>
 
-    @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show custom-alert mb-4" role="alert">
-            <i class="bi bi-check-circle-fill me-2"></i>
-            {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    @endif
-
     <div class="row g-3 stats-grid mb-4">
         <div class="col-lg-2 col-md-4 col-sm-6">
             <div class="stat-card stat-all" onclick="clearStatusFilter()">

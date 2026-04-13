@@ -5,9 +5,9 @@ namespace App\Http\Controllers\Frontend\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\LoginActivity;
 use App\Models\LoginOtp;
+use App\Models\RecoveryCode;
 use App\Models\TrustedDevice;
 use App\Models\User;
-use App\Models\RecoveryCode;
 use App\Notifications\LoginOtpNotification;
 use App\Notifications\SuspiciousLoginAlertNotification;
 use App\Services\SecurityActivityLogger;
@@ -24,7 +24,12 @@ class LoginOtpController extends Controller
             return redirect()->route('login.show');
         }
 
-        return view('frontend.auth.login-otp');
+        $policy = session('otp_auth_policy', [
+            'trusted_devices_enabled' => true,
+            'recovery_codes_enabled' => true,
+        ]);
+
+        return view('frontend.auth.login-otp', compact('policy'));
     }
 
     public function verify(Request $request)
@@ -34,6 +39,7 @@ class LoginOtpController extends Controller
         ]);
 
         $userId = session('otp_user_id');
+        $policy = session('otp_auth_policy', []);
 
         if (! $userId) {
             return redirect()->route('login.show');
@@ -65,7 +71,7 @@ class LoginOtpController extends Controller
                 false
             );
 
-            session()->forget(['otp_user_id', 'otp_remember']);
+            session()->forget(['otp_user_id', 'otp_remember', 'otp_auth_policy']);
 
             return redirect()
                 ->route('login.show')
@@ -80,7 +86,7 @@ class LoginOtpController extends Controller
                 false
             );
 
-            session()->forget(['otp_user_id', 'otp_remember']);
+            session()->forget(['otp_user_id', 'otp_remember', 'otp_auth_policy']);
 
             return redirect()
                 ->route('login.show')
@@ -119,33 +125,38 @@ class LoginOtpController extends Controller
         $os = SecurityActivityLogger::detectOs((string) $request->userAgent());
         $device = SecurityActivityLogger::detectDevice((string) $request->userAgent());
 
-        $knownLogin = LoginActivity::where('user_id', $user->id)
-            ->whereIn('event', ['login_completed', 'login_completed_trusted_device'])
-            ->where('ip_address', $request->ip())
-            ->where('browser', $browser)
-            ->where('os', $os)
-            ->exists();
+        if (($policy['suspicious_login_alerts_enabled'] ?? true) === true) {
+            $knownLogin = LoginActivity::where('user_id', $user->id)
+                ->whereIn('event', ['login_completed', 'login_completed_trusted_device', 'login_completed_no_otp'])
+                ->where('ip_address', $request->ip())
+                ->where('browser', $browser)
+                ->where('os', $os)
+                ->exists();
 
-        if (! $knownLogin) {
-            $user->notify(new SuspiciousLoginAlertNotification(
-                $request->ip(),
-                $browser,
-                $os,
-                $device
-            ));
+            if (! $knownLogin) {
+                $user->notify(new SuspiciousLoginAlertNotification(
+                    $request->ip(),
+                    $browser,
+                    $os,
+                    $device
+                ));
 
-            SecurityActivityLogger::log(
-                $user->id,
-                'suspicious_login_alert_sent',
-                $request,
-                true
-            );
+                SecurityActivityLogger::log(
+                    $user->id,
+                    'suspicious_login_alert_sent',
+                    $request,
+                    true
+                );
+            }
         }
 
         Auth::guard('web')->login($user, session('otp_remember', false));
         $request->session()->regenerate();
 
-        if ($request->boolean('trust_device')) {
+        if (
+            $request->boolean('trust_device')
+            && (($policy['trusted_devices_enabled'] ?? true) === true)
+        ) {
             $plainTrustedToken = Str::random(64);
 
             $trustedDevice = TrustedDevice::create([
@@ -182,7 +193,7 @@ class LoginOtpController extends Controller
             );
         }
 
-        session()->forget(['otp_user_id', 'otp_remember']);
+        session()->forget(['otp_user_id', 'otp_remember', 'otp_auth_policy']);
 
         SecurityActivityLogger::log(
             $user->id,
@@ -191,7 +202,84 @@ class LoginOtpController extends Controller
             true
         );
 
-        if (! $user->hasVerifiedEmail()) {
+        if (
+            ($policy['email_verification_mode'] ?? 'required') === 'required'
+            && ! $user->hasVerifiedEmail()
+        ) {
+            return redirect()
+                ->route('verification.notice')
+                ->with('success', 'Login verified successfully. Please verify your email to continue.');
+        }
+
+        return redirect()->to(match ($user->role) {
+            'Investor' => route('dashboard.investor'),
+            'Student'  => route('dashboard.academic'),
+            default    => route('home'),
+        });
+    }
+
+    public function verifyRecoveryCode(Request $request)
+    {
+        $request->validate([
+            'recovery_code' => ['required', 'string'],
+        ]);
+
+        $userId = session('otp_user_id');
+        $policy = session('otp_auth_policy', []);
+
+        if (! $userId) {
+            return redirect()->route('login.show');
+        }
+
+        if (($policy['recovery_codes_enabled'] ?? true) !== true) {
+            return back()->withErrors([
+                'recovery_code' => 'Recovery codes are disabled for this account.',
+            ]);
+        }
+
+        $user = User::findOrFail($userId);
+
+        $codes = RecoveryCode::where('user_id', $user->id)
+            ->whereNull('used_at')
+            ->get();
+
+        $matchedCode = $codes->first(function ($code) use ($request) {
+            return Hash::check($request->recovery_code, $code->code_hash);
+        });
+
+        if (! $matchedCode) {
+            SecurityActivityLogger::log(
+                $user->id,
+                'recovery_code_failed',
+                $request,
+                false
+            );
+
+            return back()->withErrors([
+                'recovery_code' => 'Invalid recovery code.',
+            ]);
+        }
+
+        $matchedCode->update([
+            'used_at' => now(),
+        ]);
+
+        Auth::guard('web')->login($user, session('otp_remember', false));
+        $request->session()->regenerate();
+
+        session()->forget(['otp_user_id', 'otp_remember', 'otp_auth_policy']);
+
+        SecurityActivityLogger::log(
+            $user->id,
+            'recovery_code_used',
+            $request,
+            true
+        );
+
+        if (
+            ($policy['email_verification_mode'] ?? 'required') === 'required'
+            && ! $user->hasVerifiedEmail()
+        ) {
             return redirect()
                 ->route('verification.notice')
                 ->with('success', 'Login verified successfully. Please verify your email to continue.');
@@ -240,66 +328,4 @@ class LoginOtpController extends Controller
 
         return back()->with('status', 'A new verification code has been sent to your email.');
     }
-    public function verifyRecoveryCode(Request $request)
-{
-    $request->validate([
-        'recovery_code' => ['required', 'string'],
-    ]);
-
-    $userId = session('otp_user_id');
-
-    if (! $userId) {
-        return redirect()->route('login.show');
-    }
-
-    $user = User::findOrFail($userId);
-
-    $codes = RecoveryCode::where('user_id', $user->id)
-        ->whereNull('used_at')
-        ->get();
-
-    $matchedCode = $codes->first(function ($code) use ($request) {
-        return Hash::check($request->recovery_code, $code->code_hash);
-    });
-
-    if (! $matchedCode) {
-        SecurityActivityLogger::log(
-            $user->id,
-            'recovery_code_failed',
-            $request,
-            false
-        );
-
-        return back()->withErrors([
-            'recovery_code' => 'Invalid recovery code.',
-        ]);
-    }
-
-    $matchedCode->update([
-        'used_at' => now(),
-    ]);
-
-    Auth::guard('web')->login($user, session('otp_remember', false));
-    $request->session()->regenerate();
-    session()->forget(['otp_user_id', 'otp_remember']);
-
-    SecurityActivityLogger::log(
-        $user->id,
-        'recovery_code_used',
-        $request,
-        true
-    );
-
-    if (! $user->hasVerifiedEmail()) {
-        return redirect()
-            ->route('verification.notice')
-            ->with('success', 'Login verified successfully. Please verify your email to continue.');
-    }
-
-    return redirect()->to(match ($user->role) {
-        'Investor' => route('dashboard.investor'),
-        'Student'  => route('dashboard.academic'),
-        default    => route('home'),
-    });
-}
 }

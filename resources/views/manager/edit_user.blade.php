@@ -7,12 +7,6 @@
     <h3 class="mb-4">Edit User: {{ $user->name }}</h3>
 
     <!-- رسائل النجاح أو الخطأ -->
-    @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show">
-            {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    @endif
 
     @if(session('error'))
         <div class="alert alert-danger alert-dismissible fade show">
