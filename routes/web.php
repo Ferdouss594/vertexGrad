@@ -169,24 +169,30 @@ Route::post('/login/otp/recovery', [LoginOtpController::class, 'verifyRecoveryCo
     // ------------------------
     // FRONTEND PROFILE
     // ------------------------
-    Route::middleware(['auth:web'])->get('/profile', function () {
-        $user = auth('web')->user();
+Route::middleware(['auth:web'])->get('/profile', function () {
+    $user = auth('web')->user();
 
-        if (method_exists($user, 'hasVerifiedEmail') && ! $user->hasVerifiedEmail()) {
-            return redirect()->route('verification.notice');
-        }
+    $policy = \App\Services\AuthPolicyResolverService::resolveForUser($user);
 
-        return match ($user->role) {
-            'Investor' => redirect()->route('dashboard.investor'),
-            'Student'  => redirect()->route('dashboard.academic'),
-            default    => redirect()->route('home'),
-        };
-    })->name('profile');
+    if (
+        ($policy['email_verification_mode'] ?? 'required') === 'required'
+        && method_exists($user, 'hasVerifiedEmail')
+        && ! $user->hasVerifiedEmail()
+    ) {
+        return redirect()->route('verification.notice');
+    }
+
+    return match ($user->role) {
+        'Investor' => redirect()->route('dashboard.investor'),
+        'Student'  => redirect()->route('dashboard.academic'),
+        default    => redirect()->route('home'),
+    };
+})->name('profile');
 
     // ------------------------
     // FRONTEND VERIFIED USER AREA
     // ------------------------
-    Route::middleware(['auth:web', 'verified'])->group(function () {
+    Route::middleware(['auth:web', 'frontend.verified.policy'])->group(function () {
 
                     Route::prefix('security')->name('security.')->group(function () {
     Route::get('/', [SecurityController::class, 'index'])->name('index');
