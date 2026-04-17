@@ -12,13 +12,8 @@ use Illuminate\Support\Facades\Hash;
 class AuthController extends Controller
 {
     // 🟢 عرض صفحة تسجيل الدخول
-   public function showLogin(Request $request)
+  public function showLogin(Request $request)
 {
-    if (Auth::guard('admin')->check()) {
-        Auth::guard('admin')->logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-    }
 
     return view('auth.login');
 }

@@ -11,8 +11,7 @@ class RoleMiddleware
     public function handle(Request $request, Closure $next, $role)
     {
         // Use 'admin' guard for Manager/Supervisor, 'web' for others
-        $guard = ($request->is('admin*') || $request->is('manager*') || $request->is('Supervisior*')) ? 'admin' : 'web';
-        
+$guard = ($request->is('admin*') || $request->is('manager*') || $request->is('supervisor*')) ? 'admin' : 'web';        
         $user = Auth::guard($guard)->user();
 
         // Use strtolower to prevent "Manager" vs "manager" mistakes
