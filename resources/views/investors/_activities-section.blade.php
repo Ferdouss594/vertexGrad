@@ -1,9 +1,9 @@
 <div class="main-panel h-100">
     <div class="panel-head">
         <h2 class="panel-title">
-            <i class="fa fa-history mr-2"></i>Activities
+            <i class="fa fa-history mr-2"></i>{{ __('backend.investors_show.activities') }}
         </h2>
-        <div class="panel-subtitle">Recent activity history and recorded actions for this investor.</div>
+        <div class="panel-subtitle">{{ __('backend.investors_show.activities_subtitle') }}</div>
     </div>
 
     <div class="table-wrap">
@@ -15,7 +15,7 @@
                             <li class="py-3 {{ !$loop->last ? 'border-bottom' : '' }}" style="border-color: #eef2f7 !important;">
                                 <div class="d-flex flex-column gap-1">
                                     <div class="student-name-cell">
-                                        {{ $activity->user?->name ?? 'System' }}
+                                        {{ $activity->user?->name ?? __('backend.investors_show.system') }}
                                     </div>
 
                                     <div class="student-muted-cell">
@@ -41,7 +41,7 @@
             <div class="students-table-card">
                 <div class="empty-state">
                     <i class="fa fa-history mb-2"></i>
-                    <div>No activities recorded.</div>
+                    <div>{{ __('backend.investors_show.no_activities_recorded') }}</div>
                 </div>
             </div>
         @endif

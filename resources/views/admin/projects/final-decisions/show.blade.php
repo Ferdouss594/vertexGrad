@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Final Decision Review')
+@section('title', __('backend.final_decisions_show.page_title'))
 
 @section('content')
 @php
@@ -12,10 +12,10 @@
     };
 
     $finalDecisionText = match($project->final_decision) {
-        'published' => 'Published',
-        'revision_requested' => 'Revision Requested',
-        'rejected' => 'Rejected',
-        default => 'Pending',
+        'published' => __('backend.final_decisions_show.final_decision_published'),
+        'revision_requested' => __('backend.final_decisions_show.final_decision_revision_requested'),
+        'rejected' => __('backend.final_decisions_show.final_decision_rejected'),
+        default => __('backend.final_decisions_show.final_decision_pending'),
     };
 
     $statusClass = match($project->status) {
@@ -272,16 +272,16 @@
 
                 <div>
                     <div class="project-alert-title">
-                        New Project Notification
+                        {{ __('backend.final_decisions_show.new_project_notification') }}
                     </div>
                     <p class="project-alert-text">
-                        This project was recently added and needs management review and final decision.
+                        {{ __('backend.final_decisions_show.new_project_notification_text') }}
                     </p>
                 </div>
             </div>
 
             <div>
-                <span class="project-alert-badge">New Project</span>
+                <span class="project-alert-badge">{{ __('backend.final_decisions_show.new_project') }}</span>
             </div>
         </div>
     @endif
@@ -291,23 +291,23 @@
             <div>
                 <div class="hero-title">{{ $project->name }}</div>
                 <p class="hero-text">
-                    Review all supervisor evaluations and record the final management decision for this project.
+                    {{ __('backend.final_decisions_show.subtitle') }}
                 </p>
             </div>
 
             <div class="d-flex flex-wrap" style="gap: 10px;">
                 @if(isset($projectAddedNotification) && $projectAddedNotification)
                     <span class="badge-soft badge-new-project">
-                        New Project Added
+                        {{ __('backend.final_decisions_show.new_project_added') }}
                     </span>
                 @endif
 
                 <span class="badge-soft {{ $statusClass }}">
-                    Project Status: {{ ucfirst(str_replace('_', ' ', $project->status ?? 'draft')) }}
+                    {{ __('backend.final_decisions_show.project_status') }} {{ ucfirst(str_replace('_', ' ', $project->status ?? 'draft')) }}
                 </span>
 
                 <span class="badge-soft {{ $finalDecisionClass }}">
-                    Final Decision: {{ $finalDecisionText }}
+                    {{ __('backend.final_decisions_show.final_decision') }} {{ $finalDecisionText }}
                 </span>
             </div>
         </div>
@@ -316,28 +316,28 @@
     <div class="row mb-4">
         <div class="col-lg-3 col-md-6 mb-3">
             <div class="stats-card">
-                <div class="stats-label">Average Score</div>
+                <div class="stats-label">{{ __('backend.final_decisions_show.average_score') }}</div>
                 <div class="stats-value">{{ $averageScore }}</div>
             </div>
         </div>
 
         <div class="col-lg-3 col-md-6 mb-3">
             <div class="stats-card">
-                <div class="stats-label">Approved Reviews</div>
+                <div class="stats-label">{{ __('backend.final_decisions_show.approved_reviews') }}</div>
                 <div class="stats-value">{{ $approvedCount }}</div>
             </div>
         </div>
 
         <div class="col-lg-3 col-md-6 mb-3">
             <div class="stats-card">
-                <div class="stats-label">Revision Requests</div>
+                <div class="stats-label">{{ __('backend.final_decisions_show.revision_requests') }}</div>
                 <div class="stats-value">{{ $revisionCount }}</div>
             </div>
         </div>
 
         <div class="col-lg-3 col-md-6 mb-3">
             <div class="stats-card">
-                <div class="stats-label">Rejected Reviews</div>
+                <div class="stats-label">{{ __('backend.final_decisions_show.rejected_reviews') }}</div>
                 <div class="stats-value">{{ $rejectedCount }}</div>
             </div>
         </div>
@@ -347,57 +347,57 @@
         <div class="col-lg-5">
             <div class="section-card">
                 <div class="card-header">
-                    <h5>Project Overview</h5>
+                    <h5>{{ __('backend.final_decisions_show.project_overview') }}</h5>
                 </div>
                 <div class="card-body">
                     <div class="row detail-grid">
                         <div class="col-md-6 item">
-                            <div class="detail-label">Project ID</div>
+                            <div class="detail-label">{{ __('backend.final_decisions_show.project_id') }}</div>
                             <div class="detail-value">#{{ $project->project_id }}</div>
                         </div>
 
                         <div class="col-md-6 item">
-                            <div class="detail-label">Category</div>
+                            <div class="detail-label">{{ __('backend.final_decisions_show.category') }}</div>
                             <div class="detail-value">{{ $project->category ?? '-' }}</div>
                         </div>
 
                         <div class="col-md-6 item">
-                            <div class="detail-label">Student</div>
+                            <div class="detail-label">{{ __('backend.final_decisions_show.student') }}</div>
                             <div class="detail-value">{{ $project->student?->name ?? '-' }}</div>
                         </div>
 
                         <div class="col-md-6 item">
-                            <div class="detail-label">Student Email</div>
+                            <div class="detail-label">{{ __('backend.final_decisions_show.student_email') }}</div>
                             <div class="detail-value">{{ $project->student?->email ?? '-' }}</div>
                         </div>
 
                         <div class="col-md-6 item">
-                            <div class="detail-label">Budget</div>
+                            <div class="detail-label">{{ __('backend.final_decisions_show.budget') }}</div>
                             <div class="detail-value">{{ $project->budget ?? '-' }}</div>
                         </div>
 
                         <div class="col-md-6 item">
-                            <div class="detail-label">Priority</div>
+                            <div class="detail-label">{{ __('backend.final_decisions_show.priority') }}</div>
                             <div class="detail-value">{{ $project->priority ?? '-' }}</div>
                         </div>
 
                         <div class="col-md-6 item">
-                            <div class="detail-label">Current Status</div>
+                            <div class="detail-label">{{ __('backend.final_decisions_show.current_status') }}</div>
                             <div class="detail-value">{{ ucfirst(str_replace('_', ' ', $project->status ?? 'draft')) }}</div>
                         </div>
 
                         <div class="col-md-6 item">
-                            <div class="detail-label">Current Final Decision</div>
+                            <div class="detail-label">{{ __('backend.final_decisions_show.current_final_decision') }}</div>
                             <div class="detail-value">{{ $finalDecisionText }}</div>
                         </div>
 
                         <div class="col-md-12 item">
-                            <div class="detail-label">Project Description</div>
+                            <div class="detail-label">{{ __('backend.final_decisions_show.project_description') }}</div>
                             <div class="detail-value">{{ $project->description ?? '-' }}</div>
                         </div>
 
                         <div class="col-md-12 item">
-                            <div class="detail-label">Last Decision By</div>
+                            <div class="detail-label">{{ __('backend.final_decisions_show.last_decision_by') }}</div>
                             <div class="detail-value">
                                 @if($project->finalDecisionMaker)
                                     {{ $project->finalDecisionMaker->name }}
@@ -411,7 +411,7 @@
                         </div>
 
                         <div class="col-md-12 item">
-                            <div class="detail-label">Last Final Notes</div>
+                            <div class="detail-label">{{ __('backend.final_decisions_show.last_final_notes') }}</div>
                             <div class="detail-value">{{ $project->final_notes ?? '-' }}</div>
                         </div>
                     </div>
@@ -420,44 +420,44 @@
 
             <div class="section-card">
                 <div class="card-header">
-                    <h5>Final Decision Form</h5>
+                    <h5>{{ __('backend.final_decisions_show.final_decision_form') }}</h5>
                 </div>
                 <div class="card-body">
                     <form method="POST" action="{{ route('admin.projects.final-decisions.store', $project->project_id) }}">
                         @csrf
 
                         <div class="decision-form-box mb-3">
-                            <label>Final Decision</label>
+                            <label>{{ __('backend.final_decisions_show.final_decision_label') }}</label>
                             <select name="final_decision" class="form-control" required>
-                                <option value="">Select final decision</option>
+                                <option value="">{{ __('backend.final_decisions_show.select_final_decision') }}</option>
                                 <option value="published" {{ old('final_decision', $project->final_decision) === 'published' ? 'selected' : '' }}>
-                                    Publish Project
+                                    {{ __('backend.final_decisions_show.publish_project') }}
                                 </option>
                                 <option value="revision_requested" {{ old('final_decision', $project->final_decision) === 'revision_requested' ? 'selected' : '' }}>
-                                    Request Revision
+                                    {{ __('backend.final_decisions_show.request_revision') }}
                                 </option>
                                 <option value="rejected" {{ old('final_decision', $project->final_decision) === 'rejected' ? 'selected' : '' }}>
-                                    Reject Project
+                                    {{ __('backend.final_decisions_show.reject_project') }}
                                 </option>
                             </select>
                         </div>
 
                         <div class="decision-form-box mb-3">
-                            <label>Manager Notes</label>
+                            <label>{{ __('backend.final_decisions_show.manager_notes') }}</label>
                             <textarea
                                 name="final_notes"
                                 rows="6"
                                 class="form-control"
-                                placeholder="Write the final management justification, summary of supervisor evaluations, and final publication/revision/rejection rationale..."
+                                placeholder="{{ __('backend.final_decisions_show.manager_notes_placeholder') }}"
                             >{{ old('final_notes', $project->final_notes) }}</textarea>
                         </div>
 
                         <button type="submit" class="btn btn-primary action-btn">
-                            Save Final Decision
+                            {{ __('backend.final_decisions_show.save_final_decision') }}
                         </button>
 
                         <a href="{{ route('admin.projects.final-decisions.index') }}" class="btn btn-light action-btn">
-                            Back to List
+                            {{ __('backend.final_decisions_show.back_to_list') }}
                         </a>
                     </form>
                 </div>
@@ -467,7 +467,7 @@
         <div class="col-lg-7">
             <div class="section-card">
                 <div class="card-header">
-                    <h5>Supervisor Evaluations</h5>
+                    <h5>{{ __('backend.final_decisions_show.supervisor_evaluations') }}</h5>
                 </div>
                 <div class="card-body">
                     @forelse($project->reviews as $review)
@@ -486,17 +486,17 @@
                             <div class="d-flex justify-content-between align-items-start flex-wrap" style="gap: 10px;">
                                 <div>
                                     <div class="review-title">
-                                        {{ $review->supervisor?->name ?? 'Supervisor' }}
+                                        {{ $review->supervisor?->name ?? __('backend.final_decisions_show.supervisor') }}
                                     </div>
                                     <div class="review-meta">
                                         @if(!is_null($review->score))
-                                            Score: <strong>{{ $review->score }}/100</strong>
+                                            {{ __('backend.final_decisions_show.score') }} <strong>{{ $review->score }}/100</strong>
                                         @else
-                                            Score: <strong>-</strong>
+                                            {{ __('backend.final_decisions_show.score') }} <strong>-</strong>
                                         @endif
 
                                         @if($review->reviewed_at)
-                                            • Reviewed: {{ $review->reviewed_at->format('d/m/Y h:i A') }}
+                                            • {{ __('backend.final_decisions_show.reviewed') }} {{ $review->reviewed_at->format('d/m/Y h:i A') }}
                                         @endif
                                     </div>
                                 </div>
@@ -513,7 +513,7 @@
                             </div>
                         </div>
                     @empty
-                        <div class="text-muted">No supervisor reviews available yet.</div>
+                        <div class="text-muted">{{ __('backend.final_decisions_show.no_supervisor_reviews_yet') }}</div>
                     @endforelse
                 </div>
             </div>

@@ -2,19 +2,19 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Scheduled Report Ready</title>
+    <title>{{ __('backend.mail_scheduled_report_ready.title') }}</title>
 </head>
 <body style="font-family: Arial, sans-serif; color: #1e293b; line-height: 1.8;">
-    <h2 style="margin-bottom: 10px;">Scheduled Report Ready</h2>
+    <h2 style="margin-bottom: 10px;">{{ __('backend.mail_scheduled_report_ready.heading') }}</h2>
 
-    <p>Your scheduled report has been generated successfully.</p>
+    <p>{{ __('backend.mail_scheduled_report_ready.generated_successfully') }}</p>
 
-    <p><strong>Report Name:</strong> {{ $reportName }}</p>
-    <p><strong>Frequency:</strong> {{ ucfirst($frequency) }}</p>
-    <p><strong>Generated At:</strong> {{ $generatedAt }}</p>
+    <p><strong>{{ __('backend.mail_scheduled_report_ready.report_name') }}</strong> {{ $reportName }}</p>
+    <p><strong>{{ __('backend.mail_scheduled_report_ready.frequency') }}</strong> {{ ucfirst($frequency) }}</p>
+    <p><strong>{{ __('backend.mail_scheduled_report_ready.generated_at') }}</strong> {{ $generatedAt }}</p>
 
-    <p>The report PDF is attached to this email.</p>
+    <p>{{ __('backend.mail_scheduled_report_ready.attachment_notice') }}</p>
 
-    <p>Regards,<br>VertexGrad System</p>
+    <p>{{ __('backend.mail_scheduled_report_ready.regards') }}<br>{{ __('backend.mail_scheduled_report_ready.system_name') }}</p>
 </body>
 </html>

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Investor Preferences')
+@section('title', __('backend.investors_preferences.page_title'))
 
 @section('content')
 <style>
@@ -137,13 +137,13 @@
     <div class="page-header-card">
         <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3">
             <div>
-                <h1 class="page-title">Investor Preferences</h1>
-                <p class="page-subtitle">Manage communication preferences for {{ $investor->user?->name }}.</p>
+                <h1 class="page-title">{{ __('backend.investors_preferences.heading') }}</h1>
+                <p class="page-subtitle">{{ __('backend.investors_preferences.subtitle', ['name' => $investor->user?->name]) }}</p>
             </div>
 
             <div>
                 <a href="{{ route('admin.investors.show', $investor->user_id) }}" class="reset-btn px-4">
-                    Back
+                    {{ __('backend.investors_preferences.back') }}
                 </a>
             </div>
         </div>
@@ -151,8 +151,8 @@
 
     <div class="main-panel">
         <div class="panel-head">
-            <h2 class="panel-title">Notification Preferences</h2>
-            <div class="panel-subtitle">Control how this investor receives platform communication and reminders.</div>
+            <h2 class="panel-title">{{ __('backend.investors_preferences.notification_preferences') }}</h2>
+            <div class="panel-subtitle">{{ __('backend.investors_preferences.notification_preferences_subtitle') }}</div>
         </div>
 
         <div class="table-wrap">
@@ -163,8 +163,8 @@
                 <div class="d-flex flex-column gap-3 mb-4">
                     <div class="preference-item d-flex justify-content-between align-items-center gap-3">
                         <div>
-                            <div class="preference-title">Enable In-App Notifications</div>
-                            <p class="preference-desc mb-0">Allow notifications inside the platform dashboard.</p>
+                            <div class="preference-title">{{ __('backend.investors_preferences.enable_in_app_notifications') }}</div>
+                            <p class="preference-desc mb-0">{{ __('backend.investors_preferences.enable_in_app_notifications_desc') }}</p>
                         </div>
                         <div class="form-check form-switch m-0">
                             <input class="form-check-input" type="checkbox" name="pref_in_app_notifications" value="1"
@@ -174,8 +174,8 @@
 
                     <div class="preference-item d-flex justify-content-between align-items-center gap-3">
                         <div>
-                            <div class="preference-title">Enable Email Notifications</div>
-                            <p class="preference-desc mb-0">Send important notifications by email as well.</p>
+                            <div class="preference-title">{{ __('backend.investors_preferences.enable_email_notifications') }}</div>
+                            <p class="preference-desc mb-0">{{ __('backend.investors_preferences.enable_email_notifications_desc') }}</p>
                         </div>
                         <div class="form-check form-switch m-0">
                             <input class="form-check-input" type="checkbox" name="pref_email_notifications" value="1"
@@ -185,8 +185,8 @@
 
                     <div class="preference-item d-flex justify-content-between align-items-center gap-3">
                         <div>
-                            <div class="preference-title">Enable Meeting Reminders</div>
-                            <p class="preference-desc mb-0">Notify the investor before important meetings.</p>
+                            <div class="preference-title">{{ __('backend.investors_preferences.enable_meeting_reminders') }}</div>
+                            <p class="preference-desc mb-0">{{ __('backend.investors_preferences.enable_meeting_reminders_desc') }}</p>
                         </div>
                         <div class="form-check form-switch m-0">
                             <input class="form-check-input" type="checkbox" name="pref_meeting_reminders" value="1"
@@ -196,8 +196,8 @@
 
                     <div class="preference-item d-flex justify-content-between align-items-center gap-3">
                         <div>
-                            <div class="preference-title">Enable Announcements</div>
-                            <p class="preference-desc mb-0">Receive general announcements and broadcast updates.</p>
+                            <div class="preference-title">{{ __('backend.investors_preferences.enable_announcements') }}</div>
+                            <p class="preference-desc mb-0">{{ __('backend.investors_preferences.enable_announcements_desc') }}</p>
                         </div>
                         <div class="form-check form-switch m-0">
                             <input class="form-check-input" type="checkbox" name="pref_announcements" value="1"
@@ -207,7 +207,7 @@
                 </div>
 
                 <button type="submit" class="btn btn-primary search-btn">
-                    Save Preferences
+                    {{ __('backend.investors_preferences.save_preferences') }}
                 </button>
             </form>
         </div>

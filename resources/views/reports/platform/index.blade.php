@@ -1,15 +1,15 @@
 @extends('layouts.app')
 
-@section('title','Platform Reports')
+@section('title', __('backend.platform_reports.page_title'))
 
 @section('content')
 <div class="container-fluid reports-page">
     <div class="page-header-card">
         <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3">
             <div>
-                <h1 class="page-title">Platform Reports</h1>
+                <h1 class="page-title">{{ __('backend.platform_reports.heading') }}</h1>
                 <p class="page-subtitle">
-                    Export, print, and review summarized reports for investors, students, and projects.
+                    {{ __('backend.platform_reports.subtitle') }}
                 </p>
             </div>
         </div>
@@ -20,17 +20,17 @@
             <div class="report-card report-investors">
                 <div class="report-top">
                     <div>
-                        <p class="report-label">Investors</p>
+                        <p class="report-label">{{ __('backend.platform_reports.investors') }}</p>
                         <h3 class="report-value">{{ $investors->count() }}</h3>
-                        <div class="report-note">Total investor records available</div>
+                        <div class="report-note">{{ __('backend.platform_reports.investors_note') }}</div>
                     </div>
                     <span class="report-icon">👥</span>
                 </div>
 
                 <div class="report-actions">
-                    <a href="{{ route('admin.reports.investors.excel') }}" class="report-btn">Excel</a>
-                    <a href="{{ route('admin.reports.investors.pdf') }}" class="report-btn">PDF</a>
-                    <button onclick="printReport('investors')" class="report-btn">Print</button>
+                    <a href="{{ route('admin.reports.investors.excel') }}" class="report-btn">{{ __('backend.platform_reports.excel') }}</a>
+                    <a href="{{ route('admin.reports.investors.pdf') }}" class="report-btn">{{ __('backend.platform_reports.pdf') }}</a>
+                    <button onclick="printReport('investors')" class="report-btn">{{ __('backend.platform_reports.print') }}</button>
                 </div>
             </div>
         </div>
@@ -39,17 +39,17 @@
             <div class="report-card report-students">
                 <div class="report-top">
                     <div>
-                        <p class="report-label">Students</p>
+                        <p class="report-label">{{ __('backend.platform_reports.students') }}</p>
                         <h3 class="report-value">{{ $students->count() }}</h3>
-                        <div class="report-note">Total student records available</div>
+                        <div class="report-note">{{ __('backend.platform_reports.students_note') }}</div>
                     </div>
                     <span class="report-icon">🎓</span>
                 </div>
 
                 <div class="report-actions">
-                    <a href="{{ route('admin.reports.students.excel') }}" class="report-btn">Excel</a>
-                    <a href="{{ route('admin.reports.students.pdf') }}" class="report-btn">PDF</a>
-                    <button onclick="printReport('students')" class="report-btn">Print</button>
+                    <a href="{{ route('admin.reports.students.excel') }}" class="report-btn">{{ __('backend.platform_reports.excel') }}</a>
+                    <a href="{{ route('admin.reports.students.pdf') }}" class="report-btn">{{ __('backend.platform_reports.pdf') }}</a>
+                    <button onclick="printReport('students')" class="report-btn">{{ __('backend.platform_reports.print') }}</button>
                 </div>
             </div>
         </div>
@@ -58,17 +58,17 @@
             <div class="report-card report-projects">
                 <div class="report-top">
                     <div>
-                        <p class="report-label">Projects</p>
+                        <p class="report-label">{{ __('backend.platform_reports.projects') }}</p>
                         <h3 class="report-value">{{ $projects->count() }}</h3>
-                        <div class="report-note">Total project records available</div>
+                        <div class="report-note">{{ __('backend.platform_reports.projects_note') }}</div>
                     </div>
                     <span class="report-icon">🚀</span>
                 </div>
 
                 <div class="report-actions">
-                    <a href="{{ route('admin.reports.projects.excel') }}" class="report-btn">Excel</a>
-                    <a href="{{ route('admin.reports.projects.pdf') }}" class="report-btn">PDF</a>
-                    <button onclick="printReport('projects')" class="report-btn">Print</button>
+                    <a href="{{ route('admin.reports.projects.excel') }}" class="report-btn">{{ __('backend.platform_reports.excel') }}</a>
+                    <a href="{{ route('admin.reports.projects.pdf') }}" class="report-btn">{{ __('backend.platform_reports.pdf') }}</a>
+                    <button onclick="printReport('projects')" class="report-btn">{{ __('backend.platform_reports.print') }}</button>
                 </div>
             </div>
         </div>
@@ -236,7 +236,7 @@
 
 <script>
 function printReport(type){
-    let html = `<html><head><title>Report</title>
+    let html = `<html><head><title>{{ __('backend.platform_reports.print_report_title') }}</title>
     <style>
         body { font-family: Arial, sans-serif; padding:20px; color:#172033; }
         h1 { text-align:center; margin-bottom:10px; color:#172033; }
@@ -249,9 +249,9 @@ function printReport(type){
     </head><body>`;
 
     if(type==='investors'){
-        html += `<h1>Investors Report</h1>`;
-        html += `<p class="total">Total Investors: {{ $investors->count() }}</p>`;
-        html += `<table><thead><tr><th>#</th><th>Name</th><th>Email</th><th>Status</th></tr></thead><tbody>`;
+        html += `<h1>{{ __('backend.platform_reports.investors_report') }}</h1>`;
+        html += `<p class="total">{{ __('backend.platform_reports.total_investors') }}: {{ $investors->count() }}</p>`;
+        html += `<table><thead><tr><th>#</th><th>{{ __('backend.platform_reports.name') }}</th><th>{{ __('backend.platform_reports.email') }}</th><th>{{ __('backend.platform_reports.status') }}</th></tr></thead><tbody>`;
         @foreach($investors as $investor)
         html += `<tr>
             <td>{{ $loop->iteration }}</td>
@@ -263,35 +263,35 @@ function printReport(type){
         html += `</tbody></table>`;
     }
     else if(type==='students'){
-        html += `<h1>Students Report</h1>`;
-        html += `<p class="total">Total Students: {{ $students->count() }}</p>`;
-        html += `<table><thead><tr><th>#</th><th>Name</th><th>Email</th><th>Major</th><th>Status</th></tr></thead><tbody>`;
+        html += `<h1>{{ __('backend.platform_reports.students_report') }}</h1>`;
+        html += `<p class="total">{{ __('backend.platform_reports.total_students') }}: {{ $students->count() }}</p>`;
+        html += `<table><thead><tr><th>#</th><th>{{ __('backend.platform_reports.name') }}</th><th>{{ __('backend.platform_reports.email') }}</th><th>{{ __('backend.platform_reports.major') }}</th><th>{{ __('backend.platform_reports.status') }}</th></tr></thead><tbody>`;
         @foreach($students as $student)
         html += `<tr>
             <td>{{ $loop->iteration }}</td>
             <td>{{ $student->name }}</td>
             <td>{{ $student->email }}</td>
-            <td>{{ $student->student->major ?? '—' }}</td>
+            <td>{{ $student->student->major ?? __('backend.platform_reports.empty') }}</td>
             <td>{{ $student->status }}</td>
         </tr>`;
         @endforeach
         html += `</tbody></table>`;
     }
     else if(type==='projects'){
-        html += `<h1>Projects Report</h1>`;
-        html += `<p class="total">Total Projects: {{ $projects->count() }}</p>`;
+        html += `<h1>{{ __('backend.platform_reports.projects_report') }}</h1>`;
+        html += `<p class="total">{{ __('backend.platform_reports.total_projects') }}: {{ $projects->count() }}</p>`;
         html += `<table><thead><tr>
-            <th>#</th><th>Project Name</th><th>Student</th><th>Supervisor</th>
-            <th>Manager</th><th>Investor</th><th>Status</th>
+            <th>#</th><th>{{ __('backend.platform_reports.project_name') }}</th><th>{{ __('backend.platform_reports.student') }}</th><th>{{ __('backend.platform_reports.supervisor') }}</th>
+            <th>{{ __('backend.platform_reports.manager') }}</th><th>{{ __('backend.platform_reports.investor') }}</th><th>{{ __('backend.platform_reports.status') }}</th>
         </tr></thead><tbody>`;
         @foreach($projects as $project)
         html += `<tr>
             <td>{{ $loop->iteration }}</td>
             <td>{{ $project->name }}</td>
-            <td>{{ $project->student->name ?? '—' }}</td>
-            <td>{{ $project->supervisor->name ?? '—' }}</td>
-            <td>{{ $project->manager->name ?? '—' }}</td>
-            <td>{{ $project->investor->name ?? '—' }}</td>
+            <td>{{ $project->student->name ?? __('backend.platform_reports.empty') }}</td>
+            <td>{{ $project->supervisor->name ?? __('backend.platform_reports.empty') }}</td>
+            <td>{{ $project->manager->name ?? __('backend.platform_reports.empty') }}</td>
+            <td>{{ $project->investor->name ?? __('backend.platform_reports.empty') }}</td>
             <td>{{ $project->status }}</td>
         </tr>`;
         @endforeach

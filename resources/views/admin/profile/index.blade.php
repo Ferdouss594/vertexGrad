@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'My Profile')
+@section('title', __('backend.manager_profile.page_title'))
 
 @section('content')
 <div class="container-fluid py-4 profile-page">
@@ -114,19 +114,19 @@
                 <div class="col-lg-8 d-flex flex-column flex-md-row align-items-center align-items-md-start gap-4">
                     <img
                         src="{{ !empty($user->profile_image) ? asset('storage/' . $user->profile_image) : asset('vendors/images/photo1.jpg') }}"
-                        alt="Manager Avatar"
+                        alt="{{ __('backend.manager_profile.manager_avatar') }}"
                         class="profile-avatar"
                     >
 
                     <div class="text-center text-md-start">
                         <div class="mb-2">
                             <span class="profile-stat-badge">
-                                <i class="bi bi-person-badge-fill"></i> Manager Account
+                                <i class="bi bi-person-badge-fill"></i> {{ __('backend.manager_profile.manager_account') }}
                             </span>
                         </div>
 
                         <h2 class="mb-2 fw-bold">{{ $user->name }}</h2>
-                        <p class="mb-1 opacity-75">{{ $user->role ?? 'Manager' }}</p>
+                        <p class="mb-1 opacity-75">{{ $user->role ?? __('backend.manager_profile.manager') }}</p>
                         <p class="mb-1 opacity-75">{{ $user->email }}</p>
 
                         @if(!empty($user->manager?->department))
@@ -139,7 +139,7 @@
 
                 <div class="col-lg-4 text-lg-end mt-4 mt-lg-0">
                     <a href="{{ route('manager.dashboard') }}" class="btn btn-light rounded-pill px-4">
-                        <i class="bi bi-speedometer2 me-2"></i>Back to Dashboard
+                        <i class="bi bi-speedometer2 me-2"></i>{{ __('backend.manager_profile.back_to_dashboard') }}
                     </a>
                 </div>
             </div>
@@ -150,14 +150,14 @@
         <div class="col-xl-4">
             <div class="card content-card h-100">
                 <div class="card-body p-4">
-                    <h5 class="section-title">Account Overview</h5>
+                    <h5 class="section-title">{{ __('backend.manager_profile.account_overview') }}</h5>
 
                     <div class="info-item">
                         <div class="info-icon">
                             <i class="bi bi-person"></i>
                         </div>
                         <div>
-                            <div class="text-muted small">Full Name</div>
+                            <div class="text-muted small">{{ __('backend.manager_profile.full_name') }}</div>
                             <div class="fw-semibold">{{ $user->name }}</div>
                         </div>
                     </div>
@@ -167,7 +167,7 @@
                             <i class="bi bi-envelope"></i>
                         </div>
                         <div>
-                            <div class="text-muted small">Email Address</div>
+                            <div class="text-muted small">{{ __('backend.manager_profile.email_address') }}</div>
                             <div class="fw-semibold">{{ $user->email }}</div>
                         </div>
                     </div>
@@ -177,8 +177,8 @@
                             <i class="bi bi-diagram-3"></i>
                         </div>
                         <div>
-                            <div class="text-muted small">Department</div>
-                            <div class="fw-semibold">{{ $user->manager?->department ?: 'Not assigned' }}</div>
+                            <div class="text-muted small">{{ __('backend.manager_profile.department') }}</div>
+                            <div class="fw-semibold">{{ $user->manager?->department ?: __('backend.manager_profile.not_assigned') }}</div>
                         </div>
                     </div>
 
@@ -187,9 +187,9 @@
                             <i class="bi bi-clock-history"></i>
                         </div>
                         <div>
-                            <div class="text-muted small">Last Login</div>
+                            <div class="text-muted small">{{ __('backend.manager_profile.last_login') }}</div>
                             <div class="fw-semibold">
-                                {{ $user->manager?->last_login ? \Carbon\Carbon::parse($user->manager->last_login)->format('M d, Y h:i A') : 'No record available' }}
+                                {{ $user->manager?->last_login ? \Carbon\Carbon::parse($user->manager->last_login)->format('M d, Y h:i A') : __('backend.manager_profile.no_record_available') }}
                             </div>
                         </div>
                     </div>
@@ -199,8 +199,8 @@
                             <i class="bi bi-award"></i>
                         </div>
                         <div>
-                            <div class="text-muted small">Role</div>
-                            <div class="fw-semibold">{{ $user->role ?? 'Manager' }}</div>
+                            <div class="text-muted small">{{ __('backend.manager_profile.role') }}</div>
+                            <div class="fw-semibold">{{ $user->role ?? __('backend.manager_profile.manager') }}</div>
                         </div>
                     </div>
                 </div>
@@ -210,7 +210,7 @@
         <div class="col-xl-8">
             <div class="card content-card mb-4">
                 <div class="card-body p-4">
-                    <h5 class="section-title">Update Profile Information</h5>
+                    <h5 class="section-title">{{ __('backend.manager_profile.update_profile_information') }}</h5>
 
                     <form action="{{ route('admin.profile.update') }}" method="POST" enctype="multipart/form-data">
                         @csrf
@@ -218,7 +218,7 @@
 
                         <div class="row g-3">
                             <div class="col-md-6">
-                                <label class="form-label">Full Name</label>
+                                <label class="form-label">{{ __('backend.manager_profile.full_name') }}</label>
                                 <input
                                     type="text"
                                     name="name"
@@ -231,7 +231,7 @@
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label">Email Address</label>
+                                <label class="form-label">{{ __('backend.manager_profile.email_address') }}</label>
                                 <input
                                     type="email"
                                     name="email"
@@ -244,7 +244,7 @@
                             </div>
 
                             <div class="col-md-12">
-                                <label class="form-label">Department</label>
+                                <label class="form-label">{{ __('backend.manager_profile.department') }}</label>
                                 <input
                                     type="text"
                                     name="department"
@@ -257,7 +257,7 @@
                             </div>
 
                             <div class="col-md-12">
-                                <label class="form-label">Profile Image</label>
+                                <label class="form-label">{{ __('backend.manager_profile.profile_image') }}</label>
                                 <input
                                     type="file"
                                     name="profile_image"
@@ -271,7 +271,7 @@
 
                         <div class="mt-4">
                             <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-check2-circle me-2"></i>Save Changes
+                                <i class="bi bi-check2-circle me-2"></i>{{ __('backend.manager_profile.save_changes') }}
                             </button>
                         </div>
                     </form>
@@ -280,7 +280,7 @@
 
             <div class="card content-card">
                 <div class="card-body p-4">
-                    <h5 class="section-title">Change Password</h5>
+                    <h5 class="section-title">{{ __('backend.manager_profile.change_password') }}</h5>
 
                     <form action="{{ route('admin.profile.password.update') }}" method="POST">
                         @csrf
@@ -288,7 +288,7 @@
 
                         <div class="row g-3">
                             <div class="col-md-12">
-                                <label class="form-label">Current Password</label>
+                                <label class="form-label">{{ __('backend.manager_profile.current_password') }}</label>
                                 <div class="input-group">
                                     <input
                                         type="password"
@@ -306,7 +306,7 @@
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label">New Password</label>
+                                <label class="form-label">{{ __('backend.manager_profile.new_password') }}</label>
                                 <div class="input-group">
                                     <input
                                         type="password"
@@ -324,7 +324,7 @@
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label">Confirm New Password</label>
+                                <label class="form-label">{{ __('backend.manager_profile.confirm_new_password') }}</label>
                                 <div class="input-group">
                                     <input
                                         type="password"
@@ -341,7 +341,7 @@
 
                         <div class="mt-4">
                             <button type="submit" class="btn btn-danger">
-                                <i class="bi bi-shield-lock me-2"></i>Update Password
+                                <i class="bi bi-shield-lock me-2"></i>{{ __('backend.manager_profile.update_password') }}
                             </button>
                         </div>
                     </form>

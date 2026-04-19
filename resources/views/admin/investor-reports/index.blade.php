@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Investor Reports')
+@section('title', __('backend.investor_reports.title'))
 
 @section('content')
 <style>
@@ -100,51 +100,51 @@
         <div class="page-header-card">
             <div class="d-flex justify-content-between align-items-center flex-wrap" style="gap: 15px;">
                 <div>
-                    <h3 class="mb-1">Investor Reports</h3>
-                    <p class="mb-0">Investor analytics, funding activity, request trends, and recent actions.</p>
+                    <h3 class="mb-1">{{ __('backend.investor_reports.page_title') }}</h3>
+                    <p class="mb-0">{{ __('backend.investor_reports.page_subtitle') }}</p>
                 </div>
 
                 <a href="{{ route('admin.investor-reports.export') }}" class="btn-export">
-                    <i class="fa fa-file-excel mr-1"></i> Export Report
+                    <i class="fa fa-file-excel mr-1"></i> {{ __('backend.investor_reports.export_report') }}
                 </a>
             </div>
         </div>
 
         <div class="row mb-4">
-            <div class="col-xl-3 col-md-6 mb-3"><div class="stats-card"><div class="stats-number">{{ $stats['total_investors'] }}</div><p class="stats-label">Total Investors</p></div></div>
-            <div class="col-xl-3 col-md-6 mb-3"><div class="stats-card"><div class="stats-number">{{ $stats['active_investors'] }}</div><p class="stats-label">Active Investors</p></div></div>
-            <div class="col-xl-3 col-md-6 mb-3"><div class="stats-card"><div class="stats-number">{{ $stats['inactive_investors'] }}</div><p class="stats-label">Inactive Investors</p></div></div>
-            <div class="col-xl-3 col-md-6 mb-3"><div class="stats-card"><div class="stats-number">{{ $stats['archived_investors'] }}</div><p class="stats-label">Archived Investors</p></div></div>
+            <div class="col-xl-3 col-md-6 mb-3"><div class="stats-card"><div class="stats-number">{{ $stats['total_investors'] }}</div><p class="stats-label">{{ __('backend.investor_reports.total_investors') }}</p></div></div>
+            <div class="col-xl-3 col-md-6 mb-3"><div class="stats-card"><div class="stats-number">{{ $stats['active_investors'] }}</div><p class="stats-label">{{ __('backend.investor_reports.active_investors') }}</p></div></div>
+            <div class="col-xl-3 col-md-6 mb-3"><div class="stats-card"><div class="stats-number">{{ $stats['inactive_investors'] }}</div><p class="stats-label">{{ __('backend.investor_reports.inactive_investors') }}</p></div></div>
+            <div class="col-xl-3 col-md-6 mb-3"><div class="stats-card"><div class="stats-number">{{ $stats['archived_investors'] }}</div><p class="stats-label">{{ __('backend.investor_reports.archived_investors') }}</p></div></div>
         </div>
 
         <div class="row mb-4">
-            <div class="col-xl-2 col-md-4 col-6 mb-3"><div class="stats-card"><div class="stats-number">{{ $stats['total_requests'] }}</div><p class="stats-label">Total Requests</p></div></div>
-            <div class="col-xl-2 col-md-4 col-6 mb-3"><div class="stats-card"><div class="stats-number">{{ $stats['interested'] }}</div><p class="stats-label">Interested</p></div></div>
-            <div class="col-xl-2 col-md-4 col-6 mb-3"><div class="stats-card"><div class="stats-number">{{ $stats['requested'] }}</div><p class="stats-label">Requested</p></div></div>
-            <div class="col-xl-2 col-md-4 col-6 mb-3"><div class="stats-card"><div class="stats-number">{{ $stats['approved'] }}</div><p class="stats-label">Approved</p></div></div>
-            <div class="col-xl-2 col-md-4 col-6 mb-3"><div class="stats-card"><div class="stats-number">{{ $stats['rejected'] }}</div><p class="stats-label">Rejected</p></div></div>
-            <div class="col-xl-2 col-md-4 col-12 mb-3"><div class="stats-card"><div class="stats-number">${{ number_format($stats['approved_amount'], 2) }}</div><p class="stats-label">Approved Amount</p></div></div>
+            <div class="col-xl-2 col-md-4 col-6 mb-3"><div class="stats-card"><div class="stats-number">{{ $stats['total_requests'] }}</div><p class="stats-label">{{ __('backend.investor_reports.total_requests') }}</p></div></div>
+            <div class="col-xl-2 col-md-4 col-6 mb-3"><div class="stats-card"><div class="stats-number">{{ $stats['interested'] }}</div><p class="stats-label">{{ __('backend.investor_reports.interested') }}</p></div></div>
+            <div class="col-xl-2 col-md-4 col-6 mb-3"><div class="stats-card"><div class="stats-number">{{ $stats['requested'] }}</div><p class="stats-label">{{ __('backend.investor_reports.requested') }}</p></div></div>
+            <div class="col-xl-2 col-md-4 col-6 mb-3"><div class="stats-card"><div class="stats-number">{{ $stats['approved'] }}</div><p class="stats-label">{{ __('backend.investor_reports.approved') }}</p></div></div>
+            <div class="col-xl-2 col-md-4 col-6 mb-3"><div class="stats-card"><div class="stats-number">{{ $stats['rejected'] }}</div><p class="stats-label">{{ __('backend.investor_reports.rejected') }}</p></div></div>
+            <div class="col-xl-2 col-md-4 col-12 mb-3"><div class="stats-card"><div class="stats-number">${{ number_format($stats['approved_amount'], 2) }}</div><p class="stats-label">{{ __('backend.investor_reports.approved_amount') }}</p></div></div>
         </div>
 
         <div class="row">
             <div class="col-xl-4 mb-4">
                 <div class="section-card">
-                    <div class="section-header">Top Investors by Approved Amount</div>
+                    <div class="section-header">{{ __('backend.investor_reports.top_investors_by_approved_amount') }}</div>
                     <div class="section-body">
                         @if($topApprovedInvestors->count())
                             <ul class="list-clean">
                                 @foreach($topApprovedInvestors as $row)
                                     <li>
-                                        <div class="record-title">{{ optional($row->investor)->name ?? 'Unknown Investor' }}</div>
+                                        <div class="record-title">{{ optional($row->investor)->name ?? __('backend.investor_reports.unknown_investor') }}</div>
                                         <div class="record-meta">
-                                            Approved Requests: {{ $row->approved_count }} |
-                                            Approved Amount: ${{ number_format($row->approved_amount, 2) }}
+                                            {{ __('backend.investor_reports.approved_requests') }}: {{ $row->approved_count }} |
+                                            {{ __('backend.investor_reports.approved_amount') }}: ${{ number_format($row->approved_amount, 2) }}
                                         </div>
                                     </li>
                                 @endforeach
                             </ul>
                         @else
-                            <div class="text-muted">No approved investment data yet.</div>
+                            <div class="text-muted">{{ __('backend.investor_reports.no_approved_investment_data_yet') }}</div>
                         @endif
                     </div>
                 </div>
@@ -152,21 +152,21 @@
 
             <div class="col-xl-4 mb-4">
                 <div class="section-card">
-                    <div class="section-header">Top Investors by Total Requests</div>
+                    <div class="section-header">{{ __('backend.investor_reports.top_investors_by_total_requests') }}</div>
                     <div class="section-body">
                         @if($topRequestInvestors->count())
                             <ul class="list-clean">
                                 @foreach($topRequestInvestors as $row)
                                     <li>
-                                        <div class="record-title">{{ optional($row->investor)->name ?? 'Unknown Investor' }}</div>
+                                        <div class="record-title">{{ optional($row->investor)->name ?? __('backend.investor_reports.unknown_investor') }}</div>
                                         <div class="record-meta">
-                                            Total Requests: {{ $row->total_requests }}
+                                            {{ __('backend.investor_reports.total_requests') }}: {{ $row->total_requests }}
                                         </div>
                                     </li>
                                 @endforeach
                             </ul>
                         @else
-                            <div class="text-muted">No request data yet.</div>
+                            <div class="text-muted">{{ __('backend.investor_reports.no_request_data_yet') }}</div>
                         @endif
                     </div>
                 </div>
@@ -174,7 +174,7 @@
 
             <div class="col-xl-4 mb-4">
                 <div class="section-card">
-                    <div class="section-header">Latest Investor Activities</div>
+                    <div class="section-header">{{ __('backend.investor_reports.latest_investor_activities') }}</div>
                     <div class="section-body">
                         @if($latestActivities->count())
                             <ul class="list-clean">
@@ -184,8 +184,8 @@
                                             {{ ucfirst(str_replace('_', ' ', $activity->action)) }}
                                         </div>
                                         <div class="record-meta">
-                                            Investor: {{ optional(optional($activity->investor)->user)->name ?? 'Unknown' }} |
-                                            By: {{ optional($activity->user)->name ?? 'System' }}
+                                            {{ __('backend.investor_reports.investor') }}: {{ optional(optional($activity->investor)->user)->name ?? __('backend.investor_reports.unknown') }} |
+                                            {{ __('backend.investor_reports.by') }}: {{ optional($activity->user)->name ?? __('backend.investor_reports.system') }}
                                         </div>
                                         <div class="record-meta">
                                             {{ optional($activity->created_at)->format('Y-m-d h:i A') }}
@@ -194,7 +194,7 @@
                                 @endforeach
                             </ul>
                         @else
-                            <div class="text-muted">No investor activity found.</div>
+                            <div class="text-muted">{{ __('backend.investor_reports.no_investor_activity_found') }}</div>
                         @endif
                     </div>
                 </div>

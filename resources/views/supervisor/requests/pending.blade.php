@@ -1,6 +1,6 @@
 @extends('supervisor.layout.app_super')
 
-@section('title', 'Pending Requests')
+@section('title', __('backend.supervisor_pending_requests.page_title'))
 
 @section('content')
 @php
@@ -288,16 +288,16 @@
         <div class="page-header-card mb-4">
             <div class="d-flex justify-content-between align-items-center flex-wrap" style="gap: 15px;">
                 <div>
-                    <h3>Pending Requests</h3>
-                    <p>Requests that still need a response or completion from students.</p>
+                    <h3>{{ __('backend.supervisor_pending_requests.heading') }}</h3>
+                    <p>{{ __('backend.supervisor_pending_requests.subtitle') }}</p>
                 </div>
 
                 <div class="header-actions">
                     <a href="{{ route('supervisor.requests.index') }}" class="btn-outline-header">
-                        <i class="fa fa-list mr-1"></i> All Requests
+                        <i class="fa fa-list mr-1"></i> {{ __('backend.supervisor_pending_requests.all_requests') }}
                     </a>
                     <a href="{{ route('supervisor.dashboard') }}" class="btn-outline-header">
-                        <i class="fa fa-home mr-1"></i> Dashboard
+                        <i class="fa fa-home mr-1"></i> {{ __('backend.supervisor_pending_requests.dashboard') }}
                     </a>
                 </div>
             </div>
@@ -310,7 +310,7 @@
                         <i class="fa fa-inbox"></i>
                     </div>
                     <div class="stats-number">{{ $totalRequests }}</div>
-                    <p class="stats-label">Pending Requests</p>
+                    <p class="stats-label">{{ __('backend.supervisor_pending_requests.total_requests') }}</p>
                 </div>
             </div>
 
@@ -320,7 +320,7 @@
                         <i class="fa fa-clock-o"></i>
                     </div>
                     <div class="stats-number">{{ $pendingRequests }}</div>
-                    <p class="stats-label">Need Action</p>
+                    <p class="stats-label">{{ __('backend.supervisor_pending_requests.need_action') }}</p>
                 </div>
             </div>
 
@@ -330,7 +330,7 @@
                         <i class="fa fa-cogs"></i>
                     </div>
                     <div class="stats-number">{{ $systemRequests }}</div>
-                    <p class="stats-label">System Verification</p>
+                    <p class="stats-label">{{ __('backend.supervisor_pending_requests.system_verification') }}</p>
                 </div>
             </div>
 
@@ -340,7 +340,7 @@
                         <i class="fa fa-calendar"></i>
                     </div>
                     <div class="stats-number">{{ $withDueDate }}</div>
-                    <p class="stats-label">With Due Date</p>
+                    <p class="stats-label">{{ __('backend.supervisor_pending_requests.with_due_date') }}</p>
                 </div>
             </div>
         </div>
@@ -348,8 +348,8 @@
         <div class="table-card">
             <div class="table-card-header">
                 <div>
-                    <h5>Pending Requests List</h5>
-                    <small class="text-muted">Focused view of requests awaiting completion.</small>
+                    <h5>{{ __('backend.supervisor_pending_requests.list_title') }}</h5>
+                    <small class="text-muted">{{ __('backend.supervisor_pending_requests.list_subtitle') }}</small>
                 </div>
             </div>
 
@@ -357,13 +357,13 @@
                 <table class="table modern-table">
                     <thead>
                         <tr>
-                            <th class="col-id">#</th>
-                            <th class="col-project">Project</th>
-                            <th class="col-student">Student</th>
-                            <th class="col-title">Title</th>
-                            <th class="col-type">Type</th>
-                            <th class="col-date">Due Date</th>
-                            <th class="col-status">Status</th>
+                            <th class="col-id">{{ __('backend.supervisor_pending_requests.table_number') }}</th>
+                            <th class="col-project">{{ __('backend.supervisor_pending_requests.project') }}</th>
+                            <th class="col-student">{{ __('backend.supervisor_pending_requests.student') }}</th>
+                            <th class="col-title">{{ __('backend.supervisor_pending_requests.title') }}</th>
+                            <th class="col-type">{{ __('backend.supervisor_pending_requests.type') }}</th>
+                            <th class="col-date">{{ __('backend.supervisor_pending_requests.due_date') }}</th>
+                            <th class="col-status">{{ __('backend.supervisor_pending_requests.status') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -372,16 +372,16 @@
                                 <td>{{ $requestItem->id }}</td>
 
                                 <td>
-                                    <div class="td-ellipsis">{{ $requestItem->project->name ?? '—' }}</div>
+                                    <div class="td-ellipsis">{{ $requestItem->project->name ?? __('backend.supervisor_pending_requests.empty_project') }}</div>
                                     <div class="mini-text td-ellipsis">
-                                        Project ID: {{ $requestItem->project->project_id ?? '—' }}
+                                        {{ __('backend.supervisor_pending_requests.project_id') }} {{ $requestItem->project->project_id ?? __('backend.supervisor_pending_requests.empty_project') }}
                                     </div>
                                 </td>
 
                                 <td>
-                                    <div class="td-ellipsis">{{ $requestItem->student->name ?? '—' }}</div>
+                                    <div class="td-ellipsis">{{ $requestItem->student->name ?? __('backend.supervisor_pending_requests.empty_student') }}</div>
                                     <div class="mini-text td-ellipsis">
-                                        {{ $requestItem->student->email ?? 'No email' }}
+                                        {{ $requestItem->student->email ?? __('backend.supervisor_pending_requests.no_email') }}
                                     </div>
                                 </td>
 
@@ -396,11 +396,11 @@
                                 </td>
 
                                 <td>
-                                    {{ $requestItem->due_date ? \Carbon\Carbon::parse($requestItem->due_date)->format('Y-m-d') : '—' }}
+                                    {{ $requestItem->due_date ? \Carbon\Carbon::parse($requestItem->due_date)->format('Y-m-d') : __('backend.supervisor_pending_requests.empty_date') }}
                                 </td>
 
                                 <td>
-                                    <span class="badge-soft badge-status-pending">
+                                    <span class="badge-soft {{ strtolower($requestItem->status ?? '') === 'pending' ? 'badge-status-pending' : 'badge-status-default' }}">
                                         {{ ucfirst($requestItem->status) }}
                                     </span>
                                 </td>
@@ -410,7 +410,7 @@
                                 <td colspan="7">
                                     <div class="empty-state">
                                         <i class="fa fa-inbox"></i>
-                                        <div>No pending requests found.</div>
+                                        <div>{{ __('backend.supervisor_pending_requests.empty_title') }}</div>
                                     </div>
                                 </td>
                             </tr>

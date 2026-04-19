@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Investors')
+@section('title', __('backend.investors_index.page_title'))
 
 @section('content')
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
@@ -518,19 +518,19 @@
     <div class="page-header-card">
         <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3">
             <div>
-                <h1 class="page-title">Investors</h1>
+                <h1 class="page-title">{{ __('backend.investors_index.heading') }}</h1>
                 <p class="page-subtitle">
-                    Professional overview of investor profiles, budgets, and engagement activity.
+                    {{ __('backend.investors_index.subtitle') }}
                 </p>
             </div>
 
             <div class="d-flex flex-wrap gap-2">
                 <a href="{{ route('admin.investors.export', 'xlsx') }}" class="btn btn-light px-4 py-2 rounded-pill fw-semibold">
-                    <i class="fa fa-file-excel mr-1"></i> Export Excel
+                    <i class="fa fa-file-excel mr-1"></i> {{ __('backend.investors_index.export_excel') }}
                 </a>
 
                 <a href="{{ route('admin.investors.create') }}" class="btn btn-primary px-4 py-2 rounded-pill fw-semibold">
-                    <i class="fa fa-plus mr-1"></i> Add Investor
+                    <i class="fa fa-plus mr-1"></i> {{ __('backend.investors_index.add_investor') }}
                 </a>
             </div>
         </div>
@@ -548,68 +548,68 @@
         <div class="col-lg-2 col-md-4 col-sm-6">
             <div class="stat-card stat-all">
                 <div class="stat-top">
-                    <p class="stat-label">Total Investors</p>
+                    <p class="stat-label">{{ __('backend.investors_index.total_investors') }}</p>
                     <span class="stat-icon"><i class="bi bi-people-fill"></i></span>
                 </div>
                 <h3 class="stat-value">{{ $stats['total'] ?? 0 }}</h3>
-                <div class="stat-note">Complete investors overview</div>
+                <div class="stat-note">{{ __('backend.investors_index.total_investors_note') }}</div>
             </div>
         </div>
 
         <div class="col-lg-2 col-md-4 col-sm-6">
             <div class="stat-card stat-active">
                 <div class="stat-top">
-                    <p class="stat-label">Active</p>
+                    <p class="stat-label">{{ __('backend.investors_index.active') }}</p>
                     <span class="stat-icon"><i class="bi bi-check-circle-fill"></i></span>
                 </div>
                 <h3 class="stat-value">{{ $stats['active'] ?? 0 }}</h3>
-                <div class="stat-note">Enabled investor accounts</div>
+                <div class="stat-note">{{ __('backend.investors_index.active_note') }}</div>
             </div>
         </div>
 
         <div class="col-lg-2 col-md-4 col-sm-6">
             <div class="stat-card stat-inactive">
                 <div class="stat-top">
-                    <p class="stat-label">Inactive</p>
+                    <p class="stat-label">{{ __('backend.investors_index.inactive') }}</p>
                     <span class="stat-icon"><i class="bi bi-pause-circle-fill"></i></span>
                 </div>
                 <h3 class="stat-value">{{ $stats['inactive'] ?? 0 }}</h3>
-                <div class="stat-note">Inactive investor accounts</div>
+                <div class="stat-note">{{ __('backend.investors_index.inactive_note') }}</div>
             </div>
         </div>
 
         <div class="col-lg-2 col-md-4 col-sm-6">
             <div class="stat-card stat-pending">
                 <div class="stat-top">
-                    <p class="stat-label">Archived</p>
+                    <p class="stat-label">{{ __('backend.investors_index.archived') }}</p>
                     <span class="stat-icon"><i class="bi bi-archive-fill"></i></span>
                 </div>
                 <h3 class="stat-value">{{ $stats['archived'] ?? 0 }}</h3>
-                <div class="stat-note">Archived investor records</div>
+                <div class="stat-note">{{ __('backend.investors_index.archived_note') }}</div>
             </div>
         </div>
 
         <div class="col-lg-2 col-md-4 col-sm-6">
             <div class="stat-card stat-add">
                 <div class="stat-top">
-                    <p class="stat-label">Total Budget</p>
+                    <p class="stat-label">{{ __('backend.investors_index.total_budget') }}</p>
                     <span class="stat-icon"><i class="bi bi-cash-stack"></i></span>
                 </div>
                 <h3 class="stat-value" style="font-size: 1.15rem;">${{ number_format($stats['budget'] ?? 0, 2) }}</h3>
-                <div class="stat-note">Combined investor budgets</div>
+                <div class="stat-note">{{ __('backend.investors_index.total_budget_note') }}</div>
             </div>
         </div>
 
         <div class="col-lg-2 col-md-4 col-sm-6">
             <div class="stat-card stat-disabled">
                 <div class="stat-top">
-                    <p class="stat-label">Top Company</p>
+                    <p class="stat-label">{{ __('backend.investors_index.top_company') }}</p>
                     <span class="stat-icon"><i class="bi bi-building-fill"></i></span>
                 </div>
                 <h3 class="stat-value" style="font-size: 1rem; line-height: 1.35;">
-                    {{ $stats['top_company']->company ?? 'N/A' }}
+                    {{ $stats['top_company']->company ?? __('backend.investors_index.not_available') }}
                 </h3>
-                <div class="stat-note">Most notable company record</div>
+                <div class="stat-note">{{ __('backend.investors_index.top_company_note') }}</div>
             </div>
         </div>
     </div>
@@ -618,25 +618,25 @@
         <div class="filter-header-row">
             <div class="row g-3 align-items-center">
                 <div class="col-lg-5">
-                    <h2 class="panel-title mb-1">Filters</h2>
-                    <div class="panel-subtitle">Search and navigate active, archived, or all investors.</div>
+                    <h2 class="panel-title mb-1">{{ __('backend.investors_index.filters') }}</h2>
+                    <div class="panel-subtitle">{{ __('backend.investors_index.filters_subtitle') }}</div>
                 </div>
 
                 <div class="col-lg-7">
                     <div class="filter-nav">
                         <a href="{{ route('admin.investors.index', ['view' => 'active']) }}"
                            class="view-btn {{ $view === 'active' ? 'active' : '' }}">
-                            <i class="fa fa-users"></i> Active Investors
+                            <i class="fa fa-users"></i> {{ __('backend.investors_index.active_investors') }}
                         </a>
 
                         <a href="{{ route('admin.investors.index', ['view' => 'archived']) }}"
                            class="view-btn {{ $view === 'archived' ? 'active' : '' }}">
-                            <i class="fa fa-archive"></i> Archived Investors
+                            <i class="fa fa-archive"></i> {{ __('backend.investors_index.archived_investors') }}
                         </a>
 
                         <a href="{{ route('admin.investors.index', ['view' => 'all']) }}"
                            class="view-btn {{ $view === 'all' ? 'active' : '' }}">
-                            <i class="fa fa-list"></i> All
+                            <i class="fa fa-list"></i> {{ __('backend.investors_index.all') }}
                         </a>
                     </div>
                 </div>
@@ -648,36 +648,36 @@
 
             <div class="row g-3 align-items-end">
                 <div class="col-lg-4 col-md-6">
-                    <label class="filter-label">Search</label>
+                    <label class="filter-label">{{ __('backend.investors_index.search') }}</label>
                     <input
                         type="text"
                         name="search"
                         class="form-control filter-input"
-                        placeholder="Name, email, or username"
+                        placeholder="{{ __('backend.investors_index.search_placeholder') }}"
                         value="{{ request('search') }}">
                 </div>
 
                 <div class="col-lg-2 col-md-6">
-                    <label class="filter-label">Status</label>
+                    <label class="filter-label">{{ __('backend.investors_index.status') }}</label>
                     <select name="status" class="form-select filter-select auto-submit-filter">
-                        <option value="">All Statuses</option>
-                        <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Active</option>
-                        <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>Inactive</option>
+                        <option value="">{{ __('backend.investors_index.all_statuses') }}</option>
+                        <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>{{ __('backend.investors_index.active') }}</option>
+                        <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>{{ __('backend.investors_index.inactive') }}</option>
                     </select>
                 </div>
 
                 <div class="col-lg-2 col-md-6">
-                    <label class="filter-label">City</label>
+                    <label class="filter-label">{{ __('backend.investors_index.city') }}</label>
                     <input
                         type="text"
                         name="city"
                         class="form-control filter-input"
-                        placeholder="City"
+                        placeholder="{{ __('backend.investors_index.city') }}"
                         value="{{ request('city') }}">
                 </div>
 
                 <div class="col-lg-2 col-md-6">
-                    <label class="filter-label">Per Page</label>
+                    <label class="filter-label">{{ __('backend.investors_index.per_page') }}</label>
                     <select name="per_page" class="form-select filter-select auto-submit-filter" id="entries">
                         <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
                         <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
@@ -689,12 +689,12 @@
                 <div class="col-lg-2 col-md-12">
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-primary search-btn w-100">
-                            <i class="fa fa-search mr-1"></i> Filter
+                            <i class="fa fa-search mr-1"></i> {{ __('backend.investors_index.filter') }}
                         </button>
 
                         <a href="{{ route('admin.investors.index', ['view' => request('view', 'active')]) }}"
                            class="reset-btn w-100">
-                            Reset
+                            {{ __('backend.investors_index.reset') }}
                         </a>
                     </div>
                 </div>
@@ -706,14 +706,14 @@
         <div class="panel-head">
             <h2 class="panel-title">
                 @if($view === 'archived')
-                    Archived Investors
+                    {{ __('backend.investors_index.archived_investors') }}
                 @elseif($view === 'all')
-                    All Investors
+                    {{ __('backend.investors_index.all_investors') }}
                 @else
-                    Active Investors
+                    {{ __('backend.investors_index.active_investors') }}
                 @endif
             </h2>
-            <div class="panel-subtitle">Professional investor listing with archive and restore actions.</div>
+            <div class="panel-subtitle">{{ __('backend.investors_index.list_subtitle') }}</div>
         </div>
 
         <div class="table-wrap">
@@ -722,15 +722,15 @@
                     <thead>
                         <tr>
                             <th class="sortable text-center"># <i class="bi"></i></th>
-                            <th class="sortable">Investor <i class="bi"></i></th>
-                            <th class="sortable">Company <i class="bi"></i></th>
-                            <th class="sortable">Contact <i class="bi"></i></th>
-                            <th class="sortable">Type <i class="bi"></i></th>
-                            <th class="sortable text-center">Budget <i class="bi"></i></th>
-                            <th class="sortable text-center">Status <i class="bi"></i></th>
-                            <th>Engagement</th>
-                            <th class="sortable text-center">Created <i class="bi"></i></th>
-                            <th class="text-center">Actions</th>
+                            <th class="sortable">{{ __('backend.investors_index.investor') }} <i class="bi"></i></th>
+                            <th class="sortable">{{ __('backend.investors_index.company') }} <i class="bi"></i></th>
+                            <th class="sortable">{{ __('backend.investors_index.contact') }} <i class="bi"></i></th>
+                            <th class="sortable">{{ __('backend.investors_index.type') }} <i class="bi"></i></th>
+                            <th class="sortable text-center">{{ __('backend.investors_index.budget') }} <i class="bi"></i></th>
+                            <th class="sortable text-center">{{ __('backend.investors_index.status') }} <i class="bi"></i></th>
+                            <th>{{ __('backend.investors_index.engagement') }}</th>
+                            <th class="sortable text-center">{{ __('backend.investors_index.created') }} <i class="bi"></i></th>
+                            <th class="text-center">{{ __('backend.investors_index.actions') }}</th>
                         </tr>
                     </thead>
 
@@ -770,46 +770,46 @@
                                     @endif
 
                                     <div class="student-email-cell">{{ $inv->email }}</div>
-                                    <div class="mini-text">Username: {{ $inv->username }}</div>
+                                    <div class="mini-text">{{ __('backend.investors_index.username') }}: {{ $inv->username }}</div>
                                 </td>
 
                                 <td>
-                                    <div class="student-muted-cell">{{ $profile?->company ?? '—' }}</div>
-                                    <div class="mini-text">Position: {{ $profile?->position ?? '—' }}</div>
+                                    <div class="student-muted-cell">{{ $profile?->company ?? __('backend.investors_index.empty') }}</div>
+                                    <div class="mini-text">{{ __('backend.investors_index.position') }}: {{ $profile?->position ?? __('backend.investors_index.empty') }}</div>
                                 </td>
 
                                 <td>
-                                    <div class="student-muted-cell">{{ $profile?->phone ?? '—' }}</div>
-                                    <div class="mini-text">{{ $inv->city ?? '—' }}</div>
+                                    <div class="student-muted-cell">{{ $profile?->phone ?? __('backend.investors_index.empty') }}</div>
+                                    <div class="mini-text">{{ $inv->city ?? __('backend.investors_index.empty') }}</div>
                                 </td>
 
                                 <td>
-                                    <div class="student-muted-cell">{{ $profile?->investment_type ?? '—' }}</div>
-                                    <div class="mini-text">Source: {{ $profile?->source ?? '—' }}</div>
+                                    <div class="student-muted-cell">{{ $profile?->investment_type ?? __('backend.investors_index.empty') }}</div>
+                                    <div class="mini-text">{{ __('backend.investors_index.source') }}: {{ $profile?->source ?? __('backend.investors_index.empty') }}</div>
                                 </td>
 
                                 <td class="text-center">
                                     <div class="student-muted-cell">
-                                        {{ $profile && $profile->budget ? '$'.number_format($profile->budget, 2) : '—' }}
+                                        {{ $profile && $profile->budget ? '$'.number_format($profile->budget, 2) : __('backend.investors_index.empty') }}
                                     </div>
                                 </td>
 
                                 <td class="text-center">
                                     @if($profile && $profile->trashed())
-                                        <span class="badge-soft badge-archived">Archived</span>
+                                        <span class="badge-soft badge-archived">{{ __('backend.investors_index.archived') }}</span>
                                     @else
                                         <span class="badge-soft {{ $statusClass }}">
-                                            {{ ucfirst($inv->status ?? '—') }}
+                                            {{ ucfirst($inv->status ?? __('backend.investors_index.empty')) }}
                                         </span>
                                     @endif
                                 </td>
 
                                 <td>
                                     <div class="d-flex flex-wrap gap-1 mb-1">
-                                        <span class="badge-soft badge-funding-interested">I: {{ $engagement['interested'] }}</span>
-                                        <span class="badge-soft badge-funding-requested">R: {{ $engagement['requested'] }}</span>
-                                        <span class="badge-soft badge-funding-approved">A: {{ $engagement['approved'] }}</span>
-                                        <span class="badge-soft badge-funding-rejected">X: {{ $engagement['rejected'] }}</span>
+                                        <span class="badge-soft badge-funding-interested">{{ __('backend.investors_index.engagement_interested') }}: {{ $engagement['interested'] }}</span>
+                                        <span class="badge-soft badge-funding-requested">{{ __('backend.investors_index.engagement_requested') }}: {{ $engagement['requested'] }}</span>
+                                        <span class="badge-soft badge-funding-approved">{{ __('backend.investors_index.engagement_approved') }}: {{ $engagement['approved'] }}</span>
+                                        <span class="badge-soft badge-funding-rejected">{{ __('backend.investors_index.engagement_rejected') }}: {{ $engagement['rejected'] }}</span>
                                     </div>
 
                                     @if($profile && $profile->investmentRequests->count())
@@ -829,18 +829,18 @@
                                 <td class="text-center">
                                     <div class="actions-group">
                                         @if($profile)
-                                            <a href="{{ route('admin.investors.show', $profile->user_id) }}" class="action-btn btn-view" title="View">
+                                            <a href="{{ route('admin.investors.show', $profile->user_id) }}" class="action-btn btn-view" title="{{ __('backend.investors_index.view') }}">
                                                 <i class="bi bi-eye"></i>
                                             </a>
 
-                                            <a href="{{ route('admin.investors.edit', $profile->user_id) }}" class="action-btn btn-edit" title="Edit">
+                                            <a href="{{ route('admin.investors.edit', $profile->user_id) }}" class="action-btn btn-edit" title="{{ __('backend.investors_index.edit') }}">
                                                 <i class="bi bi-pencil-square"></i>
                                             </a>
 
                                             @if($profile->trashed())
                                                 <form action="{{ route('admin.investors.restore', $profile->user_id) }}" method="POST" class="d-inline">
                                                     @csrf
-                                                    <button type="submit" class="action-btn btn-restore" title="Restore">
+                                                    <button type="submit" class="action-btn btn-restore" title="{{ __('backend.investors_index.restore') }}">
                                                         <i class="bi bi-arrow-counterclockwise"></i>
                                                     </button>
                                                 </form>
@@ -848,7 +848,7 @@
                                                 <form action="{{ route('admin.investors.destroy', $profile->user_id) }}" method="POST" class="d-inline">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="action-btn btn-delete" onclick="return confirm('Are you sure?')" title="Delete">
+                                                    <button type="submit" class="action-btn btn-delete" onclick="return confirm('{{ __('backend.investors_index.confirm_delete') }}')" title="{{ __('backend.investors_index.delete') }}">
                                                         <i class="bi bi-trash"></i>
                                                     </button>
                                                 </form>
@@ -859,7 +859,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="10" class="empty-state">No investors found</td>
+                                <td colspan="10" class="empty-state">{{ __('backend.investors_index.no_investors_found') }}</td>
                             </tr>
                         @endforelse
                     </tbody>

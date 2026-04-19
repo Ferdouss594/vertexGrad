@@ -1,6 +1,6 @@
 @extends('supervisor.layout.app_super')
 
-@section('title', 'Supervisor Profile')
+@section('title', __('backend.supervisor_profile.title'))
 
 @section('content')
 <style>
@@ -243,13 +243,13 @@
         <div class="page-header-card">
             <div class="d-flex justify-content-between align-items-center flex-wrap" style="gap: 15px;">
                 <div>
-                    <h3>Profile Settings</h3>
-                    <p>Manage your supervisor account information, credentials, and personal profile details.</p>
+                    <h3>{{ __('backend.supervisor_profile.page_title') }}</h3>
+                    <p>{{ __('backend.supervisor_profile.page_subtitle') }}</p>
                 </div>
 
                 <div>
                     <a href="{{ route('supervisor.dashboard') }}" class="btn-outline-profile">
-                        <i class="fa fa-home mr-1"></i> Dashboard
+                        <i class="fa fa-home mr-1"></i> {{ __('backend.supervisor_profile.dashboard') }}
                     </a>
                 </div>
             </div>
@@ -261,7 +261,7 @@
                     <div class="info-icon primary">
                         <i class="fa fa-user"></i>
                     </div>
-                    <div class="info-label">Current Name</div>
+                    <div class="info-label">{{ __('backend.supervisor_profile.current_name') }}</div>
                     <div class="info-value">{{ $user->name }}</div>
                 </div>
             </div>
@@ -271,7 +271,7 @@
                     <div class="info-icon info">
                         <i class="fa fa-envelope"></i>
                     </div>
-                    <div class="info-label">Current Email</div>
+                    <div class="info-label">{{ __('backend.supervisor_profile.current_email') }}</div>
                     <div class="info-value">{{ $user->email }}</div>
                 </div>
             </div>
@@ -280,14 +280,14 @@
         <div class="profile-card">
             <div class="profile-card-header">
                 <div>
-                    <h5>Update Supervisor Profile</h5>
-                    <small>Keep your account details updated for secure and professional access.</small>
+                    <h5>{{ __('backend.supervisor_profile.update_supervisor_profile') }}</h5>
+                    <small>{{ __('backend.supervisor_profile.update_supervisor_profile_subtitle') }}</small>
                 </div>
             </div>
 
             <div class="profile-card-body">
                 <div class="password-note">
-                    Leave the password fields empty if you do not want to change your current password.
+                    {{ __('backend.supervisor_profile.password_note') }}
                 </div>
 
                 <form action="{{ route('supervisor.profile.update') }}" method="POST" enctype="multipart/form-data">
@@ -296,26 +296,26 @@
                     <div class="profile-avatar-wrapper">
                         <img
                             src="{{ !empty($user->profile_image) ? asset('storage/' . $user->profile_image) : asset('vendors/images/photo1.jpg') }}"
-                            alt="Supervisor Avatar"
+                            alt="{{ __('backend.supervisor_profile.supervisor_avatar') }}"
                             class="profile-avatar"
                         >
 
                         <div class="avatar-meta">
-                            <h6>Profile Photo</h6>
-                            <p>Upload a new profile image for your supervisor account.</p>
+                            <h6>{{ __('backend.supervisor_profile.profile_photo') }}</h6>
+                            <p>{{ __('backend.supervisor_profile.profile_photo_text') }}</p>
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <div class="form-group-modern">
-                                <label>Full Name</label>
+                                <label>{{ __('backend.supervisor_profile.full_name') }}</label>
                                 <input
                                     type="text"
                                     name="name"
                                     class="form-control @error('name') is-invalid @enderror"
                                     value="{{ old('name', $user->name) }}"
-                                    placeholder="Enter full name"
+                                    placeholder="{{ __('backend.supervisor_profile.full_name_placeholder') }}"
                                     required
                                 >
                                 @error('name')
@@ -326,13 +326,13 @@
 
                         <div class="col-md-6 mb-3">
                             <div class="form-group-modern">
-                                <label>Email Address</label>
+                                <label>{{ __('backend.supervisor_profile.email_address') }}</label>
                                 <input
                                     type="email"
                                     name="email"
                                     class="form-control @error('email') is-invalid @enderror"
                                     value="{{ old('email', $user->email) }}"
-                                    placeholder="Enter email address"
+                                    placeholder="{{ __('backend.supervisor_profile.email_address_placeholder') }}"
                                     required
                                 >
                                 @error('email')
@@ -343,7 +343,7 @@
 
                         <div class="col-md-12 mb-3">
                             <div class="form-group-modern">
-                                <label>Profile Image</label>
+                                <label>{{ __('backend.supervisor_profile.profile_image') }}</label>
                                 <input
                                     type="file"
                                     name="profile_image"
@@ -358,12 +358,12 @@
 
                         <div class="col-md-6 mb-3">
                             <div class="form-group-modern">
-                                <label>New Password</label>
+                                <label>{{ __('backend.supervisor_profile.new_password') }}</label>
                                 <input
                                     type="password"
                                     name="password"
                                     class="form-control @error('password') is-invalid @enderror"
-                                    placeholder="Enter new password"
+                                    placeholder="{{ __('backend.supervisor_profile.new_password_placeholder') }}"
                                 >
                                 @error('password')
                                     <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -373,19 +373,19 @@
 
                         <div class="col-md-6 mb-3">
                             <div class="form-group-modern">
-                                <label>Confirm Password</label>
+                                <label>{{ __('backend.supervisor_profile.confirm_password') }}</label>
                                 <input
                                     type="password"
                                     name="password_confirmation"
                                     class="form-control"
-                                    placeholder="Confirm new password"
+                                    placeholder="{{ __('backend.supervisor_profile.confirm_password_placeholder') }}"
                                 >
                             </div>
                         </div>
 
                         <div class="col-12 mt-2">
                             <button class="btn-save-profile" type="submit">
-                                <i class="fa fa-save mr-1"></i> Update Profile
+                                <i class="fa fa-save mr-1"></i> {{ __('backend.supervisor_profile.update_profile') }}
                             </button>
                         </div>
                     </div>

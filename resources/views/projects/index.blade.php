@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Projects')
+@section('title', __('backend.projects_index.page_title'))
 
 @section('content')
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
@@ -477,7 +477,6 @@
 
 <div class="container-fluid projects-page">
 
-
     @if(session('error'))
         <div class="alert alert-danger alert-dismissible fade show custom-alert mb-4" role="alert">
             {{ session('error') }}
@@ -488,15 +487,15 @@
     <div class="page-header-card">
         <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3">
             <div>
-                <h1 class="page-title">Projects Management</h1>
+                <h1 class="page-title">{{ __('backend.projects_index.heading') }}</h1>
                 <p class="page-subtitle">
-                    Clean professional overview of projects, scan results, supervisor reviews, final decisions, and actions.
+                    {{ __('backend.projects_index.subtitle') }}
                 </p>
             </div>
 
             <div>
                 <a href="{{ route('admin.projects.create') }}" class="btn btn-primary px-4 py-2 rounded-pill fw-semibold">
-                    <i class="fa fa-plus mr-1"></i> Add Project
+                    <i class="fa fa-plus mr-1"></i> {{ __('backend.projects_index.add_project') }}
                 </a>
             </div>
         </div>
@@ -506,52 +505,52 @@
         <div class="col-lg-3 col-md-6 col-sm-6">
             <div class="stat-card stat-all">
                 <div class="stat-top">
-                    <p class="stat-label">Total Projects</p>
+                    <p class="stat-label">{{ __('backend.projects_index.total_projects') }}</p>
                     <span class="stat-icon"><i class="bi bi-folder-fill"></i></span>
                 </div>
                 <h3 class="stat-value">{{ $totalProjects ?? 0 }}</h3>
-                <div class="stat-note">Complete project overview</div>
+                <div class="stat-note">{{ __('backend.projects_index.total_projects_note') }}</div>
             </div>
         </div>
 
         <div class="col-lg-3 col-md-6 col-sm-6">
             <div class="stat-card stat-active">
                 <div class="stat-top">
-                    <p class="stat-label">Completed Projects</p>
+                    <p class="stat-label">{{ __('backend.projects_index.completed_projects') }}</p>
                     <span class="stat-icon"><i class="bi bi-check-circle-fill"></i></span>
                 </div>
                 <h3 class="stat-value">{{ $completedProjects ?? 0 }}</h3>
-                <div class="stat-note">Successfully completed projects</div>
+                <div class="stat-note">{{ __('backend.projects_index.completed_projects_note') }}</div>
             </div>
         </div>
 
         <div class="col-lg-3 col-md-6 col-sm-6">
             <div class="stat-card stat-pending">
                 <div class="stat-top">
-                    <p class="stat-label">Pending / Review</p>
+                    <p class="stat-label">{{ __('backend.projects_index.pending_review') }}</p>
                     <span class="stat-icon"><i class="bi bi-hourglass-split"></i></span>
                 </div>
                 <h3 class="stat-value">{{ $pendingProjects ?? 0 }}</h3>
-                <div class="stat-note">Awaiting action or review</div>
+                <div class="stat-note">{{ __('backend.projects_index.pending_review_note') }}</div>
             </div>
         </div>
 
         <div class="col-lg-3 col-md-6 col-sm-6">
             <div class="stat-card stat-add">
                 <div class="stat-top">
-                    <p class="stat-label">Average Scan Score</p>
+                    <p class="stat-label">{{ __('backend.projects_index.average_scan_score') }}</p>
                     <span class="stat-icon"><i class="bi bi-graph-up-arrow"></i></span>
                 </div>
                 <h3 class="stat-value">{{ isset($avgScore) && $avgScore !== null ? number_format($avgScore, 1) : '0.0' }}</h3>
-                <div class="stat-note">Scanner performance average</div>
+                <div class="stat-note">{{ __('backend.projects_index.average_scan_score_note') }}</div>
             </div>
         </div>
     </div>
 
     <div class="main-panel">
         <div class="panel-head">
-            <h2 class="panel-title">All Projects</h2>
-            <div class="panel-subtitle">Compact clean view without unnecessary columns.</div>
+            <h2 class="panel-title">{{ __('backend.projects_index.all_projects') }}</h2>
+            <div class="panel-subtitle">{{ __('backend.projects_index.all_projects_subtitle') }}</div>
         </div>
 
         <div class="table-wrap">
@@ -560,16 +559,16 @@
                     <thead>
                         <tr>
                             <th class="text-center">#</th>
-                            <th>Project</th>
-                            <th>Student / Team</th>
-                            <th class="text-center">Scan</th>
-                            <th class="text-center">Score</th>
-                            <th class="text-center">Reviews</th>
-                            <th class="text-center">Supervisor Avg</th>
-                            <th class="text-center">Final Decision</th>
-                            <th class="text-center">Budget</th>
-                            <th class="text-center">Created</th>
-                            <th class="text-center">Actions</th>
+                            <th>{{ __('backend.projects_index.project') }}</th>
+                            <th>{{ __('backend.projects_index.student_team') }}</th>
+                            <th class="text-center">{{ __('backend.projects_index.scan') }}</th>
+                            <th class="text-center">{{ __('backend.projects_index.score') }}</th>
+                            <th class="text-center">{{ __('backend.projects_index.reviews') }}</th>
+                            <th class="text-center">{{ __('backend.projects_index.supervisor_avg') }}</th>
+                            <th class="text-center">{{ __('backend.projects_index.final_decision') }}</th>
+                            <th class="text-center">{{ __('backend.projects_index.budget') }}</th>
+                            <th class="text-center">{{ __('backend.projects_index.created') }}</th>
+                            <th class="text-center">{{ __('backend.projects_index.actions') }}</th>
                         </tr>
                     </thead>
 
@@ -596,10 +595,10 @@
                                 };
 
                                 $finalDecisionText = match($project->final_decision) {
-                                    'published' => 'Published',
-                                    'revision_requested' => 'Revision Requested',
-                                    'rejected' => 'Rejected',
-                                    default => 'Pending',
+                                    'published' => __('backend.projects_index.final_decision_published'),
+                                    'revision_requested' => __('backend.projects_index.final_decision_revision_requested'),
+                                    'rejected' => __('backend.projects_index.final_decision_rejected'),
+                                    default => __('backend.projects_index.final_decision_pending'),
                                 };
                             @endphp
 
@@ -609,37 +608,37 @@
                                 <td>
                                     <div class="student-name-cell">
                                         <a href="{{ route('admin.projects.show', $project) }}" class="project-name-link">
-                                            {{ $project->name ?? 'Untitled Project' }}
+                                            {{ $project->name ?? __('backend.projects_index.untitled_project') }}
                                         </a>
                                     </div>
                                     <div class="mini-text">#{{ $project->project_id ?? $project->id }}</div>
-                                    <div class="mini-text">{{ $project->category ?? 'No category' }}</div>
+                                    <div class="mini-text">{{ $project->category ?? __('backend.projects_index.no_category') }}</div>
                                 </td>
 
                                 <td>
                                     <div class="student-name-cell">{{ $project->student->name ?? '—' }}</div>
-                                    <div class="mini-text">{{ $project->student->email ?? 'No email' }}</div>
-                                    <div class="mini-text">{{ $project->supervisor->name ?? 'No supervisor' }}</div>
+                                    <div class="mini-text">{{ $project->student->email ?? __('backend.projects_index.no_email') }}</div>
+                                    <div class="mini-text">{{ $project->supervisor->name ?? __('backend.projects_index.no_supervisor') }}</div>
                                 </td>
 
                                 <td class="text-center">
                                     <span class="badge-soft {{ $scanClass }}">
-                                        {{ ucfirst(str_replace('_', ' ', $project->scanner_status ?? 'not scanned')) }}
+                                        {{ ucfirst(str_replace('_', ' ', $project->scanner_status ?? __('backend.projects_index.not_scanned'))) }}
                                     </span>
-                                    <div class="mini-text">ID: {{ $project->scanner_project_id ?? '—' }}</div>
+                                    <div class="mini-text">{{ __('backend.projects_index.id_label') }}: {{ $project->scanner_project_id ?? '—' }}</div>
                                 </td>
 
                                 <td class="text-center">
                                     <div class="score-box">
                                         {{ $project->scan_score !== null ? number_format($project->scan_score, 2) : '—' }}
                                     </div>
-                                    <div class="mini-text">{{ $project->grade ?? 'No grade' }}</div>
+                                    <div class="mini-text">{{ $project->grade ?? __('backend.projects_index.no_grade') }}</div>
                                 </td>
 
                                 <td class="text-center">
-                                    <span class="review-chip review-approved" title="Approved">{{ $approvedReviews }}</span>
-                                    <span class="review-chip review-revision" title="Revision Requested">{{ $revisionReviews }}</span>
-                                    <span class="review-chip review-rejected" title="Rejected">{{ $rejectedReviews }}</span>
+                                    <span class="review-chip review-approved" title="{{ __('backend.projects_index.approved') }}">{{ $approvedReviews }}</span>
+                                    <span class="review-chip review-revision" title="{{ __('backend.projects_index.revision_requested') }}">{{ $revisionReviews }}</span>
+                                    <span class="review-chip review-rejected" title="{{ __('backend.projects_index.rejected') }}">{{ $rejectedReviews }}</span>
                                 </td>
 
                                 <td class="text-center">
@@ -667,11 +666,11 @@
 
                                 <td class="text-center">
                                     <div class="actions-group">
-                                        <a href="{{ route('admin.projects.show', $project) }}" class="action-btn btn-view" title="View">
+                                        <a href="{{ route('admin.projects.show', $project) }}" class="action-btn btn-view" title="{{ __('backend.projects_index.view') }}">
                                             <i class="fa fa-eye"></i>
                                         </a>
 
-                                        <a href="{{ route('admin.projects.edit', $project) }}" class="action-btn btn-edit" title="Edit">
+                                        <a href="{{ route('admin.projects.edit', $project) }}" class="action-btn btn-edit" title="{{ __('backend.projects_index.edit') }}">
                                             <i class="fa fa-pencil-alt"></i>
                                         </a>
 
@@ -679,8 +678,8 @@
                                             <form action="{{ route('admin.projects.approve', $project) }}" method="POST" class="d-inline">
                                                 @csrf
                                                 @method('PATCH')
-                                                <button type="submit" class="action-btn btn-approve" title="Approve"
-                                                    onclick="return confirm('Approve this project?')">
+                                                <button type="submit" class="action-btn btn-approve" title="{{ __('backend.projects_index.approve') }}"
+                                                    onclick="return confirm('{{ __('backend.projects_index.confirm_approve') }}')">
                                                     <i class="fa fa-check"></i>
                                                 </button>
                                             </form>
@@ -690,8 +689,8 @@
                                             <form action="{{ route('admin.projects.publish', $project) }}" method="POST" class="d-inline">
                                                 @csrf
                                                 @method('PATCH')
-                                                <button type="submit" class="action-btn btn-publish" title="Publish"
-                                                    onclick="return confirm('Publish this project?')">
+                                                <button type="submit" class="action-btn btn-publish" title="{{ __('backend.projects_index.publish') }}"
+                                                    onclick="return confirm('{{ __('backend.projects_index.confirm_publish') }}')">
                                                     <i class="fa fa-upload"></i>
                                                 </button>
                                             </form>
@@ -700,8 +699,8 @@
                                         <form action="{{ route('admin.projects.destroy', $project) }}" method="POST" class="d-inline">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="action-btn btn-delete" title="Delete"
-                                                onclick="return confirm('Delete this project?')">
+                                            <button type="submit" class="action-btn btn-delete" title="{{ __('backend.projects_index.delete') }}"
+                                                onclick="return confirm('{{ __('backend.projects_index.confirm_delete') }}')">
                                                 <i class="fa fa-trash"></i>
                                             </button>
                                         </form>
@@ -710,7 +709,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="11" class="empty-state">No projects found.</td>
+                                <td colspan="11" class="empty-state">{{ __('backend.projects_index.no_projects_found') }}</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -721,8 +720,11 @@
         @if(method_exists($projects, 'links') && $projects->lastPage() > 1)
             <div class="pagination-wrap text-center">
                 <div class="mini-text mb-3">
-                    Showing {{ $projects->firstItem() ?? 0 }} to {{ $projects->lastItem() ?? 0 }}
-                    of {{ $projects->total() ?? 0 }} projects
+                    {{ __('backend.projects_index.showing_results', [
+                        'from' => $projects->firstItem() ?? 0,
+                        'to' => $projects->lastItem() ?? 0,
+                        'total' => $projects->total() ?? 0,
+                    ]) }}
                 </div>
 
                 <div class="clean-pagination">

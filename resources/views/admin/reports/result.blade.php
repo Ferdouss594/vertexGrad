@@ -279,20 +279,20 @@
                 <div>
                     <div class="report-title">{{ $report['title'] }}</div>
                     <p class="report-subtitle">
-                        Review the generated report, inspect the summary, and export the final output in PDF or Excel format.
+                        {{ __('backend.report_result.subtitle') }}
                     </p>
 
                     <div class="hero-badges">
                         <span class="hero-badge">
-                            Period: {{ $report['from']->format('Y-m-d') }} → {{ $report['to']->format('Y-m-d') }}
+                            {{ __('backend.report_result.period') }}: {{ $report['from']->format('Y-m-d') }} → {{ $report['to']->format('Y-m-d') }}
                         </span>
 
                         <span class="hero-badge">
-                            Rows: {{ count($report['rows'] ?? []) }}
+                            {{ __('backend.report_result.rows') }}: {{ count($report['rows'] ?? []) }}
                         </span>
 
                         <span class="hero-badge">
-                            Columns: {{ count($report['headings'] ?? []) }}
+                            {{ __('backend.report_result.columns') }}: {{ count($report['headings'] ?? []) }}
                         </span>
                     </div>
                 </div>
@@ -310,7 +310,7 @@
                             @endif
                         @endforeach
                         <button type="submit" class="btn btn-action btn-pdf">
-                            <i class="icon-copy dw dw-download mr-1"></i> Export PDF
+                            <i class="icon-copy dw dw-download mr-1"></i> {{ __('backend.report_result.export_pdf') }}
                         </button>
                     </form>
 
@@ -326,12 +326,12 @@
                             @endif
                         @endforeach
                         <button type="submit" class="btn btn-action btn-excel">
-                            <i class="icon-copy dw dw-download mr-1"></i> Export Excel
+                            <i class="icon-copy dw dw-download mr-1"></i> {{ __('backend.report_result.export_excel') }}
                         </button>
                     </form>
 
                     <a href="{{ route('admin.reports.index') }}" class="btn btn-action btn-back">
-                        <i class="icon-copy dw dw-left-arrow1 mr-1"></i> Back
+                        <i class="icon-copy dw dw-left-arrow1 mr-1"></i> {{ __('backend.report_result.back') }}
                     </a>
                 </div>
             </div>
@@ -353,8 +353,8 @@
 
     <div class="section-card">
         <div class="section-header">
-            <h4>Report Data Table</h4>
-            <p>Detailed output of the generated report based on the selected filters and column configuration.</p>
+            <h4>{{ __('backend.report_result.report_data_table') }}</h4>
+            <p>{{ __('backend.report_result.report_data_table_subtitle') }}</p>
         </div>
 
         <div class="section-body">
@@ -384,9 +384,9 @@
                     <div class="empty-state-icon">
                         <i class="icon-copy dw dw-analytics-21"></i>
                     </div>
-                    <div class="empty-state-title">No Report Data Found</div>
+                    <div class="empty-state-title">{{ __('backend.report_result.no_report_data_found') }}</div>
                     <p class="empty-state-text">
-                        No results were found for the selected filters. Try adjusting the date range, entity, or report conditions.
+                        {{ __('backend.report_result.no_report_data_found_text') }}
                     </p>
                 </div>
             @endif

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Announcement Details')
+@section('title', __('backend.announcements_show.title'))
 
 @section('content')
 <div class="container-fluid py-4 px-lg-5">
@@ -8,12 +8,12 @@
     {{-- Header --}}
     <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
         <div>
-            <h3 class="fw-bold mb-1 text-dark">Announcement Details</h3>
-            <p class="text-muted small mb-0">Full preview of the announcement as users will see it.</p>
+            <h3 class="fw-bold mb-1 text-dark">{{ __('backend.announcements_show.page_title') }}</h3>
+            <p class="text-muted small mb-0">{{ __('backend.announcements_show.page_subtitle') }}</p>
         </div>
 
         <a href="{{ route('admin.announcements.index') }}" class="btn btn-light border rounded-3 px-3 py-2 fw-semibold">
-            <i class="bi bi-arrow-left me-1"></i> Back
+            <i class="bi bi-arrow-left me-1"></i> {{ __('backend.announcements_show.back') }}
         </a>
     </div>
 
@@ -27,14 +27,14 @@
 
                     @if($announcement->is_pinned)
                         <span class="badge badge-pinned">
-                            <i class="fa fa-thumbtack me-1"></i> Pinned
+                            <i class="fa fa-thumbtack me-1"></i> {{ __('backend.announcements_show.pinned') }}
                         </span>
                     @endif
 
                     @if($announcement->is_active)
-                        <span class="badge badge-active">Active</span>
+                        <span class="badge badge-active">{{ __('backend.announcements_show.active') }}</span>
                     @else
-                        <span class="badge badge-inactive">Disabled</span>
+                        <span class="badge badge-inactive">{{ __('backend.announcements_show.disabled') }}</span>
                     @endif
 
                     <span class="badge badge-audience">
@@ -61,18 +61,18 @@
 
         <div class="col-md-6">
             <div class="info-card">
-                <div class="info-label">Publish Date</div>
+                <div class="info-label">{{ __('backend.announcements_show.publish_date') }}</div>
                 <div class="info-value">
-                    {{ $announcement->publish_at?->format('M d, Y • h:i A') ?? 'Not scheduled' }}
+                    {{ $announcement->publish_at?->format('M d, Y • h:i A') ?? __('backend.announcements_show.not_scheduled') }}
                 </div>
             </div>
         </div>
 
         <div class="col-md-6">
             <div class="info-card">
-                <div class="info-label">Expiration Date</div>
+                <div class="info-label">{{ __('backend.announcements_show.expiration_date') }}</div>
                 <div class="info-value">
-                    {{ $announcement->expires_at?->format('M d, Y • h:i A') ?? 'No expiration' }}
+                    {{ $announcement->expires_at?->format('M d, Y • h:i A') ?? __('backend.announcements_show.no_expiration') }}
                 </div>
             </div>
         </div>
@@ -82,7 +82,7 @@
     {{-- Actions --}}
     <div class="d-flex justify-content-end gap-2 mt-4">
         <a href="{{ route('admin.announcements.edit', $announcement) }}" class="btn btn-warning text-white rounded-3 px-4">
-            <i class="bi bi-pencil me-1"></i> Edit
+            <i class="bi bi-pencil me-1"></i> {{ __('backend.announcements_show.edit') }}
         </a>
     </div>
 

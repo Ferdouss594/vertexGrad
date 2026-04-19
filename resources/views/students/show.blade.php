@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Student Details')
+@section('title', __('backend.students_show.title'))
 
 @section('content')
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
@@ -237,15 +237,15 @@
     <div class="page-header-card">
         <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3">
             <div>
-                <h1 class="page-title">Student Details</h1>
+                <h1 class="page-title">{{ __('backend.students_show.page_title') }}</h1>
                 <p class="page-subtitle">
-                    Review the student profile, account status, and academic information in a clear professional layout.
+                    {{ __('backend.students_show.page_subtitle') }}
                 </p>
             </div>
 
             <div>
                 <a href="{{ route('admin.students.index') }}" class="btn-soft-back">
-                    <i class="bi bi-arrow-left me-2"></i>Back to Students
+                    <i class="bi bi-arrow-left me-2"></i>{{ __('backend.students_show.back_to_students') }}
                 </a>
             </div>
         </div>
@@ -254,8 +254,8 @@
     <div class="main-grid">
         <div class="info-card">
             <div class="card-head">
-                <h2 class="card-title">Basic Information</h2>
-                <div class="card-subtitle">Primary student account and profile details.</div>
+                <h2 class="card-title">{{ __('backend.students_show.basic_information') }}</h2>
+                <div class="card-subtitle">{{ __('backend.students_show.basic_information_subtitle') }}</div>
             </div>
 
             <div class="card-body-custom">
@@ -267,38 +267,54 @@
                     <div>
                         <h3 class="student-name">{{ $student->name }}</h3>
                         <div class="student-email">{{ $student->email }}</div>
-                        <span class="status-badge {{ $statusClass }}">{{ ucfirst($student->status) }}</span>
+                        <span class="status-badge {{ $statusClass }}">
+                            {{ match($student->status) {
+                                'active' => __('backend.students_show.status_active'),
+                                'inactive' => __('backend.students_show.status_inactive'),
+                                'disabled' => __('backend.students_show.status_disabled'),
+                                'pending' => __('backend.students_show.status_pending'),
+                                default => __('backend.students_show.status_pending'),
+                            } }}
+                        </span>
                     </div>
                 </div>
 
                 <div class="details-grid">
                     <div class="detail-item">
-                        <span class="detail-label">Name</span>
+                        <span class="detail-label">{{ __('backend.students_show.name') }}</span>
                         <div class="detail-value">{{ $student->name }}</div>
                     </div>
 
                     <div class="detail-item">
-                        <span class="detail-label">Email</span>
+                        <span class="detail-label">{{ __('backend.students_show.email') }}</span>
                         <div class="detail-value">{{ $student->email }}</div>
                     </div>
 
                     <div class="detail-item">
-                        <span class="detail-label">Status</span>
-                        <div class="detail-value">{{ ucfirst($student->status) }}</div>
+                        <span class="detail-label">{{ __('backend.students_show.status') }}</span>
+                        <div class="detail-value">
+                            {{ match($student->status) {
+                                'active' => __('backend.students_show.status_active'),
+                                'inactive' => __('backend.students_show.status_inactive'),
+                                'disabled' => __('backend.students_show.status_disabled'),
+                                'pending' => __('backend.students_show.status_pending'),
+                                default => __('backend.students_show.status_pending'),
+                            } }}
+                        </div>
                     </div>
 
                     <div class="detail-item">
-                        <span class="detail-label">Major</span>
+                        <span class="detail-label">{{ __('backend.students_show.major') }}</span>
                         <div class="detail-value">{{ $student->student->major ?? '—' }}</div>
                     </div>
 
                     <div class="detail-item">
-                        <span class="detail-label">Phone</span>
+                        <span class="detail-label">{{ __('backend.students_show.phone') }}</span>
                         <div class="detail-value">{{ $student->student->phone ?? '—' }}</div>
                     </div>
 
                     <div class="detail-item">
-                        <span class="detail-label">Address</span>
+                        <span class="detail-label">{{ __('backend.students_show.address') }}</span>
                         <div class="detail-value">{{ $student->student->address ?? '—' }}</div>
                     </div>
                 </div>
@@ -307,8 +323,8 @@
 
         <div class="info-card">
             <div class="card-head">
-                <h2 class="card-title">Projects</h2>
-                <div class="card-subtitle">Projects associated with this student account.</div>
+                <h2 class="card-title">{{ __('backend.students_show.projects') }}</h2>
+                <div class="card-subtitle">{{ __('backend.students_show.projects_subtitle') }}</div>
             </div>
 
             <div class="card-body-custom">
@@ -316,7 +332,7 @@
                     <div class="mb-2">
                         <i class="bi bi-folder2-open fs-2"></i>
                     </div>
-                    <div class="fw-bold mb-1">Projects Section</div>
+                    <div class="fw-bold mb-1">{{ __('backend.students_show.projects_section') }}</div>
                     <div>
                         {{-- عرض المشاريع إذا كانت مرتبطة --}}
                     </div>
@@ -327,7 +343,7 @@
 
     <div class="mt-4">
         <a href="{{ route('admin.students.index') }}" class="btn-soft-back">
-            <i class="bi bi-arrow-left me-2"></i>Back
+            <i class="bi bi-arrow-left me-2"></i>{{ __('backend.students_show.back') }}
         </a>
     </div>
 </div>

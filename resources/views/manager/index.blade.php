@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title','Managers')
+@section('title', __('backend.managers_index.page_title'))
 
 @section('content')
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
@@ -381,19 +381,19 @@
     <div class="page-header-card">
         <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3">
             <div>
-                <h1 class="page-title">Managers</h1>
+                <h1 class="page-title">{{ __('backend.managers_index.heading') }}</h1>
                 <p class="page-subtitle">
-                    Browse, filter, and manage manager accounts with a clean and unified professional dashboard.
+                    {{ __('backend.managers_index.subtitle') }}
                 </p>
             </div>
 
             <div class="d-flex flex-wrap gap-2">
                 <a href="{{ route('manager.index') }}" class="btn btn-light px-4 py-2 rounded-pill fw-semibold">
-                    <i class="fa fa-users me-1"></i> All
+                    <i class="fa fa-users me-1"></i> {{ __('backend.managers_index.all') }}
                 </a>
 
                 <a href="{{ route('manager.create') }}" class="btn btn-primary px-4 py-2 rounded-pill fw-semibold">
-                    <i class="fa fa-plus me-1"></i> Add Manager
+                    <i class="fa fa-plus me-1"></i> {{ __('backend.managers_index.add_manager') }}
                 </a>
             </div>
         </div>
@@ -403,44 +403,44 @@
         <div class="col-lg-2 col-md-4 col-sm-6">
             <div class="stat-card stat-all">
                 <div class="stat-top">
-                    <p class="stat-label">Total Managers</p>
+                    <p class="stat-label">{{ __('backend.managers_index.total_managers') }}</p>
                     <span class="stat-icon"><i class="bi bi-people-fill"></i></span>
                 </div>
                 <h3 class="stat-value">{{ $stats['total'] }}</h3>
-                <div class="stat-note">Complete managers overview</div>
+                <div class="stat-note">{{ __('backend.managers_index.total_managers_note') }}</div>
             </div>
         </div>
 
         <div class="col-lg-2 col-md-4 col-sm-6">
             <div class="stat-card stat-active">
                 <div class="stat-top">
-                    <p class="stat-label">Active</p>
+                    <p class="stat-label">{{ __('backend.managers_index.active') }}</p>
                     <span class="stat-icon"><i class="bi bi-check-circle-fill"></i></span>
                 </div>
                 <h3 class="stat-value">{{ $stats['active'] }}</h3>
-                <div class="stat-note">Enabled manager accounts</div>
+                <div class="stat-note">{{ __('backend.managers_index.active_note') }}</div>
             </div>
         </div>
 
         <div class="col-lg-2 col-md-4 col-sm-6">
             <div class="stat-card stat-disabled">
                 <div class="stat-top">
-                    <p class="stat-label">Inactive</p>
+                    <p class="stat-label">{{ __('backend.managers_index.inactive') }}</p>
                     <span class="stat-icon"><i class="bi bi-slash-circle-fill"></i></span>
                 </div>
                 <h3 class="stat-value">{{ $stats['inactive'] }}</h3>
-                <div class="stat-note">Inactive manager accounts</div>
+                <div class="stat-note">{{ __('backend.managers_index.inactive_note') }}</div>
             </div>
         </div>
 
         <div class="col-lg-2 col-md-4 col-sm-6">
             <div class="stat-card stat-pending">
                 <div class="stat-top">
-                    <p class="stat-label">Departments</p>
+                    <p class="stat-label">{{ __('backend.managers_index.departments') }}</p>
                     <span class="stat-icon"><i class="bi bi-building-fill"></i></span>
                 </div>
                 <h3 class="stat-value">{{ $stats['departments'] ?? 0 }}</h3>
-                <div class="stat-note">Managed departments</div>
+                <div class="stat-note">{{ __('backend.managers_index.departments_note') }}</div>
             </div>
         </div>
     </div>
@@ -449,7 +449,7 @@
         <form method="GET" action="{{ route('manager.index') }}" id="managerFilterForm">
             <div class="row g-3 align-items-end">
                 <div class="col-lg-2 col-md-6">
-                    <label class="filter-label">Show entries</label>
+                    <label class="filter-label">{{ __('backend.managers_index.show_entries') }}</label>
                     <select name="per_page" id="entries" class="form-select filter-select auto-submit-filter">
                         <option value="10" {{ request('per_page')==10?'selected':'' }}>10</option>
                         <option value="25" {{ request('per_page')==25?'selected':'' }}>25</option>
@@ -459,22 +459,22 @@
                 </div>
 
                 <div class="col-lg-3 col-md-6">
-                    <label class="filter-label">Status</label>
+                    <label class="filter-label">{{ __('backend.managers_index.status') }}</label>
                     <select name="status" id="statusFilter" class="form-select filter-select auto-submit-filter">
-                        <option value="">All</option>
-                        <option value="active" {{ request('status')=='active'?'selected':'' }}>Active</option>
-                        <option value="inactive" {{ request('status')=='inactive'?'selected':'' }}>Inactive</option>
+                        <option value="">{{ __('backend.managers_index.all') }}</option>
+                        <option value="active" {{ request('status')=='active'?'selected':'' }}>{{ __('backend.managers_index.active') }}</option>
+                        <option value="inactive" {{ request('status')=='inactive'?'selected':'' }}>{{ __('backend.managers_index.inactive') }}</option>
                     </select>
                 </div>
 
                 <div class="col-lg-3 col-md-6">
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-primary search-btn w-100">
-                            <i class="fa fa-search me-1"></i> Apply
+                            <i class="fa fa-search me-1"></i> {{ __('backend.managers_index.apply') }}
                         </button>
 
                         <a href="{{ route('manager.index') }}" class="reset-btn w-100">
-                            Reset
+                            {{ __('backend.managers_index.reset') }}
                         </a>
                     </div>
                 </div>
@@ -484,8 +484,8 @@
 
     <div class="main-panel">
         <div class="panel-head">
-            <h2 class="panel-title">Managers List</h2>
-            <div class="panel-subtitle">Manager records with filtering, editing, deleting, and DataTable support.</div>
+            <h2 class="panel-title">{{ __('backend.managers_index.managers_list') }}</h2>
+            <div class="panel-subtitle">{{ __('backend.managers_index.list_subtitle') }}</div>
         </div>
 
         <div class="table-wrap">
@@ -494,11 +494,11 @@
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Department</th>
-                            <th>Last Login</th>
-                            <th>Actions</th>
+                            <th>{{ __('backend.managers_index.name') }}</th>
+                            <th>{{ __('backend.managers_index.email') }}</th>
+                            <th>{{ __('backend.managers_index.department') }}</th>
+                            <th>{{ __('backend.managers_index.last_login') }}</th>
+                            <th>{{ __('backend.managers_index.actions') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -521,14 +521,14 @@
                                 </td>
                                 <td class="text-center">
                                     <div class="actions-group">
-                                        <a href="{{ route('manager.edit', $manager->id) }}" class="action-btn btn-edit" title="Edit">
+                                        <a href="{{ route('manager.edit', $manager->id) }}" class="action-btn btn-edit" title="{{ __('backend.managers_index.edit') }}">
                                             <i class="fa fa-edit"></i>
                                         </a>
 
                                         <form action="{{ route('manager.destroy', $manager->id) }}" method="POST" class="d-inline">
                                             @csrf
                                             @method('DELETE')
-                                            <button class="action-btn btn-delete" onclick="return confirm('Are you sure?')" title="Delete">
+                                            <button class="action-btn btn-delete" onclick="return confirm('{{ __('backend.managers_index.delete_confirm') }}')" title="{{ __('backend.managers_index.delete') }}">
                                                 <i class="fa fa-trash"></i>
                                             </button>
                                         </form>
@@ -537,7 +537,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="empty-state">No managers found</td>
+                                <td colspan="6" class="empty-state">{{ __('backend.managers_index.no_managers_found') }}</td>
                             </tr>
                         @endforelse
                     </tbody>

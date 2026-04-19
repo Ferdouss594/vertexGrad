@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Edit Investor')
+@section('title', __('backend.investors_edit.page_title'))
 
 @section('content')
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
@@ -182,7 +182,7 @@
 
     @if ($errors->any())
         <div class="alert alert-danger custom-alert mb-4">
-            <strong>Please fix the following errors:</strong>
+            <strong>{{ __('backend.investors_edit.fix_errors') }}</strong>
             <ul class="mb-0 mt-2">
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
@@ -194,15 +194,15 @@
     <div class="page-header-card">
         <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3">
             <div>
-                <h1 class="page-title">Edit Investor</h1>
+                <h1 class="page-title">{{ __('backend.investors_edit.heading') }}</h1>
                 <p class="page-subtitle">
-                    Update investor account information, profile details, business data, and financial preferences professionally.
+                    {{ __('backend.investors_edit.subtitle') }}
                 </p>
             </div>
 
             <div>
                 <a href="{{ route('admin.investors.show', $investor->user_id) }}" class="reset-btn px-4">
-                    <i class="fa fa-arrow-left mr-1"></i> Back
+                    <i class="fa fa-arrow-left mr-1"></i> {{ __('backend.investors_edit.back') }}
                 </a>
             </div>
         </div>
@@ -211,23 +211,23 @@
     <form action="{{ route('admin.investors.update', $investor->user_id) }}"
           method="POST"
           class="ajax-ui-form"
-          data-submit-text="Update Investor"
-          data-loading-text="Updating...">
+          data-submit-text="{{ __('backend.investors_edit.update_investor') }}"
+          data-loading-text="{{ __('backend.investors_edit.updating') }}">
         @csrf
         @method('PUT')
 
         <div class="main-panel form-animate">
             <div class="panel-head">
                 <h2 class="panel-title">
-                    <i class="fa fa-user mr-2"></i> Account Information
+                    <i class="fa fa-user mr-2"></i> {{ __('backend.investors_edit.account_information') }}
                 </h2>
-                <div class="panel-subtitle">Basic account details and access information for the investor.</div>
+                <div class="panel-subtitle">{{ __('backend.investors_edit.account_information_subtitle') }}</div>
             </div>
 
             <div class="table-wrap">
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <label class="form-label-custom">Username</label>
+                        <label class="form-label-custom">{{ __('backend.investors_edit.username') }}</label>
                         <input type="text" name="username" class="form-control custom-input"
                                value="{{ old('username', $investor->user->username ?? '') }}">
                         @error('username')
@@ -236,7 +236,7 @@
                     </div>
 
                     <div class="col-md-6 mb-3">
-                        <label class="form-label-custom">Full Name <span class="text-danger">*</span></label>
+                        <label class="form-label-custom">{{ __('backend.investors_edit.full_name') }} <span class="text-danger">*</span></label>
                         <input type="text" name="name" class="form-control custom-input"
                                value="{{ old('name', $investor->user->name ?? '') }}" required>
                         @error('name')
@@ -245,7 +245,7 @@
                     </div>
 
                     <div class="col-md-6 mb-3">
-                        <label class="form-label-custom">Email <span class="text-danger">*</span></label>
+                        <label class="form-label-custom">{{ __('backend.investors_edit.email') }} <span class="text-danger">*</span></label>
                         <input type="email" name="email" class="form-control custom-input"
                                value="{{ old('email', $investor->user->email ?? '') }}" required>
                         @error('email')
@@ -254,10 +254,10 @@
                     </div>
 
                     <div class="col-md-6 mb-3">
-                        <label class="form-label-custom">Status</label>
+                        <label class="form-label-custom">{{ __('backend.investors_edit.status') }}</label>
                         <select name="status" class="form-select custom-input">
-                            <option value="Active" {{ old('status', $investor->user->status ?? 'Active') == 'Active' ? 'selected' : '' }}>Active</option>
-                            <option value="Inactive" {{ old('status', $investor->user->status ?? '') == 'Inactive' ? 'selected' : '' }}>Inactive</option>
+                            <option value="Active" {{ old('status', $investor->user->status ?? 'Active') == 'Active' ? 'selected' : '' }}>{{ __('backend.investors_edit.status_active') }}</option>
+                            <option value="Inactive" {{ old('status', $investor->user->status ?? '') == 'Inactive' ? 'selected' : '' }}>{{ __('backend.investors_edit.status_inactive') }}</option>
                         </select>
                         @error('status')
                             <small class="text-danger">{{ $message }}</small>
@@ -265,11 +265,11 @@
                     </div>
 
                     <div class="col-md-6 mb-3">
-                        <label class="form-label-custom">Gender</label>
+                        <label class="form-label-custom">{{ __('backend.investors_edit.gender') }}</label>
                         <select name="gender" class="form-select custom-input">
-                            <option value="">Select Gender</option>
-                            <option value="male" {{ old('gender', $investor->user->gender ?? '') == 'male' ? 'selected' : '' }}>Male</option>
-                            <option value="female" {{ old('gender', $investor->user->gender ?? '') == 'female' ? 'selected' : '' }}>Female</option>
+                            <option value="">{{ __('backend.investors_edit.select_gender') }}</option>
+                            <option value="male" {{ old('gender', $investor->user->gender ?? '') == 'male' ? 'selected' : '' }}>{{ __('backend.investors_edit.gender_male') }}</option>
+                            <option value="female" {{ old('gender', $investor->user->gender ?? '') == 'female' ? 'selected' : '' }}>{{ __('backend.investors_edit.gender_female') }}</option>
                         </select>
                         @error('gender')
                             <small class="text-danger">{{ $message }}</small>
@@ -277,7 +277,7 @@
                     </div>
 
                     <div class="col-md-6 mb-3">
-                        <label class="form-label-custom">City</label>
+                        <label class="form-label-custom">{{ __('backend.investors_edit.city') }}</label>
                         <input type="text" name="city" class="form-control custom-input"
                                value="{{ old('city', $investor->user->city ?? '') }}">
                         @error('city')
@@ -286,7 +286,7 @@
                     </div>
 
                     <div class="col-md-6 mb-3">
-                        <label class="form-label-custom">State</label>
+                        <label class="form-label-custom">{{ __('backend.investors_edit.state') }}</label>
                         <input type="text" name="state" class="form-control custom-input"
                                value="{{ old('state', $investor->user->state ?? '') }}">
                         @error('state')
@@ -300,15 +300,15 @@
         <div class="main-panel form-animate">
             <div class="panel-head">
                 <h2 class="panel-title">
-                    <i class="fa fa-briefcase mr-2"></i> Investor Profile
+                    <i class="fa fa-briefcase mr-2"></i> {{ __('backend.investors_edit.investor_profile') }}
                 </h2>
-                <div class="panel-subtitle">Professional and investment-related information for this investor profile.</div>
+                <div class="panel-subtitle">{{ __('backend.investors_edit.investor_profile_subtitle') }}</div>
             </div>
 
             <div class="table-wrap">
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <label class="form-label-custom">Phone</label>
+                        <label class="form-label-custom">{{ __('backend.investors_edit.phone') }}</label>
                         <input type="text" name="phone" class="form-control custom-input"
                                value="{{ old('phone', $investor->phone ?? '') }}">
                         @error('phone')
@@ -317,7 +317,7 @@
                     </div>
 
                     <div class="col-md-6 mb-3">
-                        <label class="form-label-custom">Company</label>
+                        <label class="form-label-custom">{{ __('backend.investors_edit.company') }}</label>
                         <input type="text" name="company" class="form-control custom-input"
                                value="{{ old('company', $investor->company ?? '') }}">
                         @error('company')
@@ -326,7 +326,7 @@
                     </div>
 
                     <div class="col-md-6 mb-3">
-                        <label class="form-label-custom">Position</label>
+                        <label class="form-label-custom">{{ __('backend.investors_edit.position') }}</label>
                         <input type="text" name="position" class="form-control custom-input"
                                value="{{ old('position', $investor->position ?? '') }}">
                         @error('position')
@@ -335,13 +335,13 @@
                     </div>
 
                     <div class="col-md-6 mb-3">
-                        <label class="form-label-custom">Investment Type</label>
+                        <label class="form-label-custom">{{ __('backend.investors_edit.investment_type') }}</label>
                         <select name="investment_type" class="form-select custom-input">
-                            <option value="">-- Select --</option>
-                            <option value="Angel" {{ old('investment_type', $investor->investment_type ?? '') == 'Angel' ? 'selected' : '' }}>Angel</option>
-                            <option value="Venture Capital" {{ old('investment_type', $investor->investment_type ?? '') == 'Venture Capital' ? 'selected' : '' }}>Venture Capital</option>
-                            <option value="Private Equity" {{ old('investment_type', $investor->investment_type ?? '') == 'Private Equity' ? 'selected' : '' }}>Private Equity</option>
-                            <option value="Business Incubator" {{ old('investment_type', $investor->investment_type ?? '') == 'Business Incubator' ? 'selected' : '' }}>Business Incubator</option>
+                            <option value="">{{ __('backend.investors_edit.select_option') }}</option>
+                            <option value="Angel" {{ old('investment_type', $investor->investment_type ?? '') == 'Angel' ? 'selected' : '' }}>{{ __('backend.investors_edit.investment_type_angel') }}</option>
+                            <option value="Venture Capital" {{ old('investment_type', $investor->investment_type ?? '') == 'Venture Capital' ? 'selected' : '' }}>{{ __('backend.investors_edit.investment_type_venture_capital') }}</option>
+                            <option value="Private Equity" {{ old('investment_type', $investor->investment_type ?? '') == 'Private Equity' ? 'selected' : '' }}>{{ __('backend.investors_edit.investment_type_private_equity') }}</option>
+                            <option value="Business Incubator" {{ old('investment_type', $investor->investment_type ?? '') == 'Business Incubator' ? 'selected' : '' }}>{{ __('backend.investors_edit.investment_type_business_incubator') }}</option>
                         </select>
                         @error('investment_type')
                             <small class="text-danger">{{ $message }}</small>
@@ -349,7 +349,7 @@
                     </div>
 
                     <div class="col-md-6 mb-3">
-                        <label class="form-label-custom">Budget</label>
+                        <label class="form-label-custom">{{ __('backend.investors_edit.budget') }}</label>
                         <input type="number" name="budget" class="form-control custom-input" step="0.01"
                                value="{{ old('budget', $investor->budget ?? '') }}">
                         @error('budget')
@@ -358,13 +358,13 @@
                     </div>
 
                     <div class="col-md-6 mb-3">
-                        <label class="form-label-custom">Source</label>
+                        <label class="form-label-custom">{{ __('backend.investors_edit.source') }}</label>
                         <select name="source" class="form-select custom-input">
-                            <option value="">-- Select --</option>
-                            <option value="LinkedIn" {{ old('source', $investor->source ?? '') == 'LinkedIn' ? 'selected' : '' }}>LinkedIn</option>
-                            <option value="Email" {{ old('source', $investor->source ?? '') == 'Email' ? 'selected' : '' }}>Email</option>
-                            <option value="Event" {{ old('source', $investor->source ?? '') == 'Event' ? 'selected' : '' }}>Event</option>
-                            <option value="Website" {{ old('source', $investor->source ?? '') == 'Website' ? 'selected' : '' }}>Website</option>
+                            <option value="">{{ __('backend.investors_edit.select_option') }}</option>
+                            <option value="LinkedIn" {{ old('source', $investor->source ?? '') == 'LinkedIn' ? 'selected' : '' }}>{{ __('backend.investors_edit.source_linkedin') }}</option>
+                            <option value="Email" {{ old('source', $investor->source ?? '') == 'Email' ? 'selected' : '' }}>{{ __('backend.investors_edit.source_email') }}</option>
+                            <option value="Event" {{ old('source', $investor->source ?? '') == 'Event' ? 'selected' : '' }}>{{ __('backend.investors_edit.source_event') }}</option>
+                            <option value="Website" {{ old('source', $investor->source ?? '') == 'Website' ? 'selected' : '' }}>{{ __('backend.investors_edit.source_website') }}</option>
                         </select>
                         @error('source')
                             <small class="text-danger">{{ $message }}</small>
@@ -372,7 +372,7 @@
                     </div>
 
                     <div class="col-md-12 mb-3">
-                        <label class="form-label-custom">Notes</label>
+                        <label class="form-label-custom">{{ __('backend.investors_edit.notes') }}</label>
                         <textarea name="notes" class="form-control custom-input auto-resize" rows="4">{{ old('notes', $investor->investorNotes ?? '') }}</textarea>
                         @error('notes')
                             <small class="text-danger">{{ $message }}</small>
@@ -384,11 +384,11 @@
 
         <div class="action-bar">
             <button class="btn btn-primary search-btn" type="submit">
-                <i class="fa fa-save mr-1"></i> Update Investor
+                <i class="fa fa-save mr-1"></i> {{ __('backend.investors_edit.update_investor') }}
             </button>
 
             <a href="{{ route('admin.investors.show', $investor->user_id) }}" class="reset-btn">
-                Cancel
+                {{ __('backend.investors_edit.cancel') }}
             </a>
         </div>
     </form>
@@ -413,7 +413,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!btn) return;
 
             btn.disabled = true;
-            btn.innerHTML = '<i class="fa fa-spinner fa-spin mr-1"></i> ' + (form.dataset.loadingText || 'Processing...');
+            btn.innerHTML = '<i class="fa fa-spinner fa-spin mr-1"></i> ' + (form.dataset.loadingText || '{{ __('backend.investors_edit.processing') }}');
         });
     });
 

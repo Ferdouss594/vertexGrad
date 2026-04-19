@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Investment Requests')
+@section('title', __('backend.investment_requests.title'))
 
 @section('content')
 <style>
@@ -281,8 +281,8 @@
         <div class="page-header-card">
             <div class="d-flex justify-content-between align-items-center flex-wrap" style="gap: 15px;">
                 <div>
-                    <h3>Investment Requests Management</h3>
-                    <p>Global manager view for investor interest, funding requests, approval workflow, and request tracking.</p>
+                    <h3>{{ __('backend.investment_requests.page_title') }}</h3>
+                    <p>{{ __('backend.investment_requests.page_subtitle') }}</p>
                 </div>
             </div>
         </div>
@@ -292,7 +292,7 @@
                 <div class="stats-card">
                     <div class="stats-icon primary"><i class="fa fa-list"></i></div>
                     <div class="stats-number">{{ $stats['total'] ?? 0 }}</div>
-                    <p class="stats-label">Total Requests</p>
+                    <p class="stats-label">{{ __('backend.investment_requests.total_requests') }}</p>
                 </div>
             </div>
 
@@ -300,7 +300,7 @@
                 <div class="stats-card">
                     <div class="stats-icon warning"><i class="fa fa-star"></i></div>
                     <div class="stats-number">{{ $stats['interested'] ?? 0 }}</div>
-                    <p class="stats-label">Interested</p>
+                    <p class="stats-label">{{ __('backend.investment_requests.interested') }}</p>
                 </div>
             </div>
 
@@ -308,7 +308,7 @@
                 <div class="stats-card">
                     <div class="stats-icon info"><i class="fa fa-clock"></i></div>
                     <div class="stats-number">{{ $stats['requested'] ?? 0 }}</div>
-                    <p class="stats-label">Requested</p>
+                    <p class="stats-label">{{ __('backend.investment_requests.requested') }}</p>
                 </div>
             </div>
 
@@ -316,7 +316,7 @@
                 <div class="stats-card">
                     <div class="stats-icon success"><i class="fa fa-check"></i></div>
                     <div class="stats-number">{{ $stats['approved'] ?? 0 }}</div>
-                    <p class="stats-label">Approved</p>
+                    <p class="stats-label">{{ __('backend.investment_requests.approved') }}</p>
                 </div>
             </div>
 
@@ -324,7 +324,7 @@
                 <div class="stats-card">
                     <div class="stats-icon danger"><i class="fa fa-times"></i></div>
                     <div class="stats-number">{{ $stats['rejected'] ?? 0 }}</div>
-                    <p class="stats-label">Rejected</p>
+                    <p class="stats-label">{{ __('backend.investment_requests.rejected') }}</p>
                 </div>
             </div>
 
@@ -332,7 +332,7 @@
                 <div class="stats-card">
                     <div class="stats-icon primary"><i class="fa fa-dollar-sign"></i></div>
                     <div class="stats-number">${{ number_format($stats['amount'] ?? 0, 2) }}</div>
-                    <p class="stats-label">Approved Amount</p>
+                    <p class="stats-label">{{ __('backend.investment_requests.approved_amount') }}</p>
                 </div>
             </div>
         </div>
@@ -340,34 +340,34 @@
         <div class="filter-card mb-4">
             <div class="filter-card-header">
                 <div>
-                    <h5>Filters</h5>
-                    <small class="text-muted">Search by investor, project, category, email, or message.</small>
+                    <h5>{{ __('backend.investment_requests.filters') }}</h5>
+                    <small class="text-muted">{{ __('backend.investment_requests.filters_subtitle') }}</small>
                 </div>
 
                 <div class="d-flex flex-wrap" style="gap: 10px;">
                     <a href="{{ route('admin.investment-requests.index') }}"
                        class="btn-soft {{ request('status') === null ? 'active-filter' : '' }}">
-                        All
+                        {{ __('backend.investment_requests.all') }}
                     </a>
 
                     <a href="{{ route('admin.investment-requests.index', ['status' => 'interested']) }}"
                        class="btn-soft {{ request('status') === 'interested' ? 'active-filter' : '' }}">
-                        Interested
+                        {{ __('backend.investment_requests.interested') }}
                     </a>
 
                     <a href="{{ route('admin.investment-requests.index', ['status' => 'requested']) }}"
                        class="btn-soft {{ request('status') === 'requested' ? 'active-filter' : '' }}">
-                        Requested
+                        {{ __('backend.investment_requests.requested') }}
                     </a>
 
                     <a href="{{ route('admin.investment-requests.index', ['status' => 'approved']) }}"
                        class="btn-soft {{ request('status') === 'approved' ? 'active-filter' : '' }}">
-                        Approved
+                        {{ __('backend.investment_requests.approved') }}
                     </a>
 
                     <a href="{{ route('admin.investment-requests.index', ['status' => 'rejected']) }}"
                        class="btn-soft {{ request('status') === 'rejected' ? 'active-filter' : '' }}">
-                        Rejected
+                        {{ __('backend.investment_requests.rejected') }}
                     </a>
                 </div>
             </div>
@@ -376,35 +376,35 @@
                 <form method="GET" action="{{ route('admin.investment-requests.index') }}">
                     <div class="row">
                         <div class="col-lg-5 col-md-6 mb-3">
-                            <label class="filter-label">Search</label>
+                            <label class="filter-label">{{ __('backend.investment_requests.search') }}</label>
                             <input type="text"
                                    name="search"
                                    class="form-control"
-                                   placeholder="Investor, project, email, category, or message"
+                                   placeholder="{{ __('backend.investment_requests.search_placeholder') }}"
                                    value="{{ request('search') }}">
                         </div>
 
                         <div class="col-lg-2 col-md-6 mb-3">
-                            <label class="filter-label">Status</label>
+                            <label class="filter-label">{{ __('backend.investment_requests.status') }}</label>
                             <select name="status" class="form-select">
-                                <option value="">All Statuses</option>
-                                <option value="interested" {{ request('status') === 'interested' ? 'selected' : '' }}>Interested</option>
-                                <option value="requested" {{ request('status') === 'requested' ? 'selected' : '' }}>Requested</option>
-                                <option value="approved" {{ request('status') === 'approved' ? 'selected' : '' }}>Approved</option>
-                                <option value="rejected" {{ request('status') === 'rejected' ? 'selected' : '' }}>Rejected</option>
+                                <option value="">{{ __('backend.investment_requests.all_statuses') }}</option>
+                                <option value="interested" {{ request('status') === 'interested' ? 'selected' : '' }}>{{ __('backend.investment_requests.interested') }}</option>
+                                <option value="requested" {{ request('status') === 'requested' ? 'selected' : '' }}>{{ __('backend.investment_requests.requested') }}</option>
+                                <option value="approved" {{ request('status') === 'approved' ? 'selected' : '' }}>{{ __('backend.investment_requests.approved') }}</option>
+                                <option value="rejected" {{ request('status') === 'rejected' ? 'selected' : '' }}>{{ __('backend.investment_requests.rejected') }}</option>
                             </select>
                         </div>
 
                         <div class="col-lg-2 col-md-6 mb-3">
-                            <label class="filter-label">Sort</label>
+                            <label class="filter-label">{{ __('backend.investment_requests.sort') }}</label>
                             <select name="sort_by" class="form-select">
-                                <option value="latest" {{ request('sort_by', 'latest') === 'latest' ? 'selected' : '' }}>Latest</option>
-                                <option value="oldest" {{ request('sort_by') === 'oldest' ? 'selected' : '' }}>Oldest</option>
+                                <option value="latest" {{ request('sort_by', 'latest') === 'latest' ? 'selected' : '' }}>{{ __('backend.investment_requests.latest') }}</option>
+                                <option value="oldest" {{ request('sort_by') === 'oldest' ? 'selected' : '' }}>{{ __('backend.investment_requests.oldest') }}</option>
                             </select>
                         </div>
 
                         <div class="col-lg-1 col-md-6 mb-3">
-                            <label class="filter-label">Per Page</label>
+                            <label class="filter-label">{{ __('backend.investment_requests.per_page') }}</label>
                             <select name="per_page" class="form-select">
                                 <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
                                 <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
@@ -416,13 +416,13 @@
                         <div class="col-lg-2 col-md-12 mb-3 d-flex align-items-end">
                             <div class="w-100 d-flex" style="gap: 10px;">
                                 <button type="submit" class="btn btn-primary w-100" style="border-radius: 12px; font-weight: 700;">
-                                    <i class="fa fa-search mr-1"></i> Filter
+                                    <i class="fa fa-search mr-1"></i> {{ __('backend.investment_requests.filter') }}
                                 </button>
 
                                 <a href="{{ route('admin.investment-requests.index') }}"
                                    class="btn btn-light w-100"
                                    style="border-radius: 12px; font-weight: 700; border: 1px solid #dbe4f0;">
-                                    Reset
+                                    {{ __('backend.investment_requests.reset') }}
                                 </a>
                             </div>
                         </div>
@@ -434,8 +434,8 @@
         <div class="table-card">
             <div class="table-card-header">
                 <div>
-                    <h5>All Investment Requests</h5>
-                    <small class="text-muted">Manager-level control for investor project engagement and funding decisions.</small>
+                    <h5>{{ __('backend.investment_requests.table_title') }}</h5>
+                    <small class="text-muted">{{ __('backend.investment_requests.table_subtitle') }}</small>
                 </div>
             </div>
 
@@ -444,13 +444,13 @@
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Investor</th>
-                            <th>Project</th>
-                            <th>Status</th>
-                            <th>Amount</th>
-                            <th>Message</th>
-                            <th>Date</th>
-                            <th>Actions</th>
+                            <th>{{ __('backend.investment_requests.investor') }}</th>
+                            <th>{{ __('backend.investment_requests.project') }}</th>
+                            <th>{{ __('backend.investment_requests.status') }}</th>
+                            <th>{{ __('backend.investment_requests.amount') }}</th>
+                            <th>{{ __('backend.investment_requests.message') }}</th>
+                            <th>{{ __('backend.investment_requests.date') }}</th>
+                            <th>{{ __('backend.investment_requests.actions') }}</th>
                         </tr>
                     </thead>
 
@@ -480,7 +480,7 @@
 
                                     <div class="mini-text">{{ optional($item->investor)->email ?? '—' }}</div>
                                     <div class="mini-text">
-                                        Company: {{ optional(optional($item->investor)->investor)->company ?? '—' }}
+                                        {{ __('backend.investment_requests.company') }}: {{ optional(optional($item->investor)->investor)->company ?? '—' }}
                                     </div>
                                 </td>
 
@@ -493,7 +493,7 @@
                                         <div class="name-link">—</div>
                                     @endif
                                     <div class="mini-text">
-                                        Category: {{ optional($item->project)->category ?? '—' }}
+                                        {{ __('backend.investment_requests.category') }}: {{ optional($item->project)->category ?? '—' }}
                                     </div>
                                 </td>
 
@@ -523,7 +523,7 @@
                                         @if($item->investor)
                                             <a href="{{ route('admin.investors.show', $item->investor->id) }}"
                                                class="icon-action icon-view"
-                                               title="View Investor">
+                                               title="{{ __('backend.investment_requests.view_investor') }}">
                                                 <i class="fa fa-eye"></i>
                                             </a>
                                         @endif
@@ -531,7 +531,7 @@
                                         @if($item->project)
                                             <a href="{{ route('admin.projects.show', $item->project->project_id) }}"
                                                class="icon-action icon-project"
-                                               title="View Project">
+                                               title="{{ __('backend.investment_requests.view_project') }}">
                                                 <i class="fa fa-briefcase"></i>
                                             </a>
                                         @endif
@@ -543,8 +543,8 @@
                                                 <input type="hidden" name="status" value="interested">
                                                 <button type="submit"
                                                         class="icon-action icon-interested"
-                                                        title="Mark as Interested"
-                                                        onclick="return confirm('Move this request to Interested?')">
+                                                        title="{{ __('backend.investment_requests.mark_as_interested') }}"
+                                                        onclick="return confirm('{{ __('backend.investment_requests.confirm_interested') }}')">
                                                     <i class="fa fa-star"></i>
                                                 </button>
                                             </form>
@@ -557,8 +557,8 @@
                                                 <input type="hidden" name="status" value="requested">
                                                 <button type="submit"
                                                         class="icon-action icon-requested"
-                                                        title="Mark as Requested"
-                                                        onclick="return confirm('Move this request to Requested?')">
+                                                        title="{{ __('backend.investment_requests.mark_as_requested') }}"
+                                                        onclick="return confirm('{{ __('backend.investment_requests.confirm_requested') }}')">
                                                     <i class="fa fa-clock"></i>
                                                 </button>
                                             </form>
@@ -571,8 +571,8 @@
                                                 <input type="hidden" name="status" value="approved">
                                                 <button type="submit"
                                                         class="icon-action icon-approve"
-                                                        title="Approve"
-                                                        onclick="return confirm('Approve this investment request?')">
+                                                        title="{{ __('backend.investment_requests.approve') }}"
+                                                        onclick="return confirm('{{ __('backend.investment_requests.confirm_approve') }}')">
                                                     <i class="fa fa-check"></i>
                                                 </button>
                                             </form>
@@ -585,8 +585,8 @@
                                                 <input type="hidden" name="status" value="rejected">
                                                 <button type="submit"
                                                         class="icon-action icon-reject"
-                                                        title="Reject"
-                                                        onclick="return confirm('Reject this investment request?')">
+                                                        title="{{ __('backend.investment_requests.reject') }}"
+                                                        onclick="return confirm('{{ __('backend.investment_requests.confirm_reject') }}')">
                                                     <i class="fa fa-times"></i>
                                                 </button>
                                             </form>
@@ -599,7 +599,7 @@
                                 <td colspan="8">
                                     <div class="empty-state">
                                         <i class="fa fa-hand-holding-usd"></i>
-                                        <div>No investment requests found.</div>
+                                        <div>{{ __('backend.investment_requests.no_investment_requests_found') }}</div>
                                     </div>
                                 </td>
                             </tr>

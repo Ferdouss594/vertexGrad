@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Dashboard')
+@section('title', __('backend.manager_dashboard.page_title'))
 
 @section('content')
 @php
@@ -32,17 +32,17 @@
 
     <div class="platform-bar-v3">
         <div class="platform-bar-left">
-            <div class="platform-bar-label">Platform Overview</div>
+            <div class="platform-bar-label">{{ __('backend.manager_dashboard.platform_overview') }}</div>
             <h1 class="platform-bar-title">{{ setting('platform_name', 'VertexGrad') }}</h1>
             <p class="platform-bar-text">
-                {{ setting('platform_tagline', 'Where Innovation Meets Opportunity') }}
+                {{ setting('platform_tagline', __('backend.manager_dashboard.default_platform_tagline')) }}
             </p>
         </div>
 
         <div class="platform-bar-right">
             <div class="platform-badge-v3">
                 <i class="fa fa-chart-network"></i>
-                <span>Executive Dashboard</span>
+                <span>{{ __('backend.manager_dashboard.executive_dashboard') }}</span>
             </div>
         </div>
     </div>
@@ -51,9 +51,9 @@
         <div class="kpi-card-v3 kpi-card-primary">
             <div class="kpi-card-head-v3">
                 <div>
-                    <div class="kpi-label-v3">Total Projects</div>
+                    <div class="kpi-label-v3">{{ __('backend.manager_dashboard.total_projects') }}</div>
                     <div class="kpi-value-v3">{{ number_format($stats['total_projects'] ?? 0) }}</div>
-                    <div class="kpi-note-v3">All tracked projects across the system</div>
+                    <div class="kpi-note-v3">{{ __('backend.manager_dashboard.total_projects_note') }}</div>
                 </div>
                 <div class="kpi-icon-v3"><i class="fa fa-briefcase"></i></div>
             </div>
@@ -62,9 +62,9 @@
         <div class="kpi-card-v3 kpi-card-success">
             <div class="kpi-card-head-v3">
                 <div>
-                    <div class="kpi-label-v3">Students</div>
+                    <div class="kpi-label-v3">{{ __('backend.manager_dashboard.students') }}</div>
                     <div class="kpi-value-v3">{{ number_format($stats['students'] ?? 0) }}</div>
-                    <div class="kpi-note-v3">Registered academic contributors</div>
+                    <div class="kpi-note-v3">{{ __('backend.manager_dashboard.students_note') }}</div>
                 </div>
                 <div class="kpi-icon-v3"><i class="fa fa-user-graduate"></i></div>
             </div>
@@ -73,9 +73,9 @@
         <div class="kpi-card-v3 kpi-card-warning">
             <div class="kpi-card-head-v3">
                 <div>
-                    <div class="kpi-label-v3">Investors</div>
+                    <div class="kpi-label-v3">{{ __('backend.manager_dashboard.investors') }}</div>
                     <div class="kpi-value-v3">{{ number_format($stats['investors'] ?? 0) }}</div>
-                    <div class="kpi-note-v3">Accounts tracking opportunities</div>
+                    <div class="kpi-note-v3">{{ __('backend.manager_dashboard.investors_note') }}</div>
                 </div>
                 <div class="kpi-icon-v3"><i class="fa fa-chart-line"></i></div>
             </div>
@@ -84,9 +84,9 @@
         <div class="kpi-card-v3 kpi-card-violet">
             <div class="kpi-card-head-v3">
                 <div>
-                    <div class="kpi-label-v3">Reports</div>
+                    <div class="kpi-label-v3">{{ __('backend.manager_dashboard.reports') }}</div>
                     <div class="kpi-value-v3">{{ number_format($reportsCount) }}</div>
-                    <div class="kpi-note-v3">Generated platform report records</div>
+                    <div class="kpi-note-v3">{{ __('backend.manager_dashboard.reports_note') }}</div>
                 </div>
                 <div class="kpi-icon-v3"><i class="fa fa-chart-pie"></i></div>
             </div>
@@ -98,16 +98,16 @@
             <div class="panel-card-v3 flow-panel-v3">
                 <div class="panel-head-v3">
                     <div>
-                        <div class="panel-title-v3">Project Flow Intelligence</div>
+                        <div class="panel-title-v3">{{ __('backend.manager_dashboard.project_flow_intelligence') }}</div>
                         <div class="panel-subtitle-v3">
-                            Submission, approval, and rejection movement with flexible time-range switching.
+                            {{ __('backend.manager_dashboard.project_flow_intelligence_subtitle') }}
                         </div>
                     </div>
 
                     <div class="chart-range-switch-v3" id="chartRangeSwitch">
-                        <button class="chart-range-btn-v3 active" data-range="daily">Daily</button>
-                        <button class="chart-range-btn-v3" data-range="weekly">Weekly</button>
-                        <button class="chart-range-btn-v3" data-range="monthly">Monthly</button>
+                        <button class="chart-range-btn-v3 active" data-range="daily">{{ __('backend.manager_dashboard.daily') }}</button>
+                        <button class="chart-range-btn-v3" data-range="weekly">{{ __('backend.manager_dashboard.weekly') }}</button>
+                        <button class="chart-range-btn-v3" data-range="monthly">{{ __('backend.manager_dashboard.monthly') }}</button>
                     </div>
                 </div>
 
@@ -115,21 +115,21 @@
 
                 <div class="mini-summary-row-v3">
                     <div class="mini-summary-card-v3 pending">
-                        <span>Pending Projects</span>
+                        <span>{{ __('backend.manager_dashboard.pending_projects') }}</span>
                         <strong>{{ number_format($stats['pending_projects'] ?? 0) }}</strong>
-                        <small>Awaiting manager review</small>
+                        <small>{{ __('backend.manager_dashboard.pending_projects_note') }}</small>
                     </div>
 
                     <div class="mini-summary-card-v3 active">
-                        <span>Active Projects</span>
+                        <span>{{ __('backend.manager_dashboard.active_projects') }}</span>
                         <strong>{{ number_format($stats['active_projects'] ?? 0) }}</strong>
-                        <small>Visible and progressing</small>
+                        <small>{{ __('backend.manager_dashboard.active_projects_note') }}</small>
                     </div>
 
                     <div class="mini-summary-card-v3 rejected">
-                        <span>Rejected Projects</span>
+                        <span>{{ __('backend.manager_dashboard.rejected_projects') }}</span>
                         <strong>{{ number_format($stats['rejected_projects'] ?? 0) }}</strong>
-                        <small>Declined after assessment</small>
+                        <small>{{ __('backend.manager_dashboard.rejected_projects_note') }}</small>
                     </div>
                 </div>
             </div>
@@ -139,9 +139,9 @@
             <div class="panel-card-v3 status-panel-v3">
                 <div class="panel-head-v3">
                     <div>
-                        <div class="panel-title-v3">Project Status Overview</div>
+                        <div class="panel-title-v3">{{ __('backend.manager_dashboard.project_status_overview') }}</div>
                         <div class="panel-subtitle-v3">
-                            Executive distribution of project states across the platform.
+                            {{ __('backend.manager_dashboard.project_status_overview_subtitle') }}
                         </div>
                     </div>
                 </div>
@@ -152,9 +152,9 @@
             <div class="panel-card-v3 momentum-panel-v3">
                 <div class="panel-head-v3">
                     <div>
-                        <div class="panel-title-v3">Approval Momentum</div>
+                        <div class="panel-title-v3">{{ __('backend.manager_dashboard.approval_momentum') }}</div>
                         <div class="panel-subtitle-v3">
-                            A premium comparison of accepted versus rejected decision flow.
+                            {{ __('backend.manager_dashboard.approval_momentum_subtitle') }}
                         </div>
                     </div>
                 </div>
@@ -163,12 +163,12 @@
 
                 <div class="approval-stats-v3">
                     <div class="approval-stat-card-v3 good">
-                        <span>Approved</span>
+                        <span>{{ __('backend.manager_dashboard.approved') }}</span>
                         <strong>{{ number_format($stats['active_projects'] ?? 0) }}</strong>
                     </div>
 
                     <div class="approval-stat-card-v3 bad">
-                        <span>Rejected</span>
+                        <span>{{ __('backend.manager_dashboard.rejected') }}</span>
                         <strong>{{ number_format($stats['rejected_projects'] ?? 0) }}</strong>
                     </div>
                 </div>
@@ -180,8 +180,8 @@
         <div class="panel-card-v3">
             <div class="panel-head-v3">
                 <div>
-                    <div class="panel-title-v3 small">Recent Students</div>
-                    <div class="panel-subtitle-v3">Newest academic users entering the platform.</div>
+                    <div class="panel-title-v3 small">{{ __('backend.manager_dashboard.recent_students') }}</div>
+                    <div class="panel-subtitle-v3">{{ __('backend.manager_dashboard.recent_students_subtitle') }}</div>
                 </div>
             </div>
 
@@ -196,12 +196,12 @@
                             </div>
                         </div>
 
-                        <span class="row-pill-v3">{{ $student->status ?? 'Active' }}</span>
+                        <span class="row-pill-v3">{{ $student->status ?? __('backend.manager_dashboard.active') }}</span>
                     </div>
                 @empty
                     <div class="empty-box-v3">
                         <i class="fa fa-users mb-2"></i>
-                        <span>No recent students found.</span>
+                        <span>{{ __('backend.manager_dashboard.no_recent_students_found') }}</span>
                     </div>
                 @endforelse
             </div>
@@ -210,8 +210,8 @@
         <div class="panel-card-v3">
             <div class="panel-head-v3">
                 <div>
-                    <div class="panel-title-v3 small">Recent Projects</div>
-                    <div class="panel-subtitle-v3">Latest projects entering the review process.</div>
+                    <div class="panel-title-v3 small">{{ __('backend.manager_dashboard.recent_projects') }}</div>
+                    <div class="panel-subtitle-v3">{{ __('backend.manager_dashboard.recent_projects_subtitle') }}</div>
                 </div>
             </div>
 
@@ -234,7 +234,7 @@
                 @empty
                     <div class="empty-box-v3">
                         <i class="fa fa-folder-open mb-2"></i>
-                        <span>No recent projects found.</span>
+                        <span>{{ __('backend.manager_dashboard.no_recent_projects_found') }}</span>
                     </div>
                 @endforelse
             </div>
@@ -244,8 +244,8 @@
     <div class="quick-wrap-v3">
         <div class="panel-head-v3 mb-0">
             <div>
-                <div class="panel-title-v3">Quick Access</div>
-                <div class="panel-subtitle-v3">Fast access to the most-used operational modules.</div>
+                <div class="panel-title-v3">{{ __('backend.manager_dashboard.quick_access') }}</div>
+                <div class="panel-subtitle-v3">{{ __('backend.manager_dashboard.quick_access_subtitle') }}</div>
             </div>
         </div>
 
@@ -253,32 +253,32 @@
             <a href="{{ route('admin.projects.index') }}" class="quick-card-v3">
                 <div class="quick-icon-v3 blue"><i class="fa fa-briefcase"></i></div>
                 <div>
-                    <strong>Projects</strong>
-                    <span>Review pipeline and submissions</span>
+                    <strong>{{ __('backend.manager_dashboard.projects') }}</strong>
+                    <span>{{ __('backend.manager_dashboard.projects_quick_note') }}</span>
                 </div>
             </a>
 
             <a href="{{ route('admin.students.index') }}" class="quick-card-v3">
                 <div class="quick-icon-v3 green"><i class="fa fa-user-graduate"></i></div>
                 <div>
-                    <strong>Students</strong>
-                    <span>Manage student activity</span>
+                    <strong>{{ __('backend.manager_dashboard.students') }}</strong>
+                    <span>{{ __('backend.manager_dashboard.students_quick_note') }}</span>
                 </div>
             </a>
 
             <a href="{{ route('admin.investors.index') }}" class="quick-card-v3">
                 <div class="quick-icon-v3 amber"><i class="fa fa-chart-line"></i></div>
                 <div>
-                    <strong>Investors</strong>
-                    <span>Monitor investor network</span>
+                    <strong>{{ __('backend.manager_dashboard.investors') }}</strong>
+                    <span>{{ __('backend.manager_dashboard.investors_quick_note') }}</span>
                 </div>
             </a>
 
             <a href="{{ route('admin.reports.platform') }}" class="quick-card-v3">
                 <div class="quick-icon-v3 violet"><i class="fa fa-chart-pie"></i></div>
                 <div>
-                    <strong>Reports</strong>
-                    <span>Open executive analytics</span>
+                    <strong>{{ __('backend.manager_dashboard.reports') }}</strong>
+                    <span>{{ __('backend.manager_dashboard.reports_quick_note') }}</span>
                 </div>
             </a>
         </div>
@@ -897,9 +897,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const flowChart = new ApexCharts(document.querySelector("#flow-area-chart"), {
         series: [
-            { name: 'Submitted', data: chartSets[currentRange].submitted },
-            { name: 'Approved', data: chartSets[currentRange].approved },
-            { name: 'Rejected', data: chartSets[currentRange].rejected }
+            { name: @json(__('backend.manager_dashboard.submitted')), data: chartSets[currentRange].submitted },
+            { name: @json(__('backend.manager_dashboard.approved')), data: chartSets[currentRange].approved },
+            { name: @json(__('backend.manager_dashboard.rejected')), data: chartSets[currentRange].rejected }
         ],
         chart: {
             type: 'area',
@@ -976,9 +976,9 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
             flowChart.updateSeries([
-                { name: 'Submitted', data: chartSets[currentRange].submitted },
-                { name: 'Approved', data: chartSets[currentRange].approved },
-                { name: 'Rejected', data: chartSets[currentRange].rejected }
+                { name: @json(__('backend.manager_dashboard.submitted')), data: chartSets[currentRange].submitted },
+                { name: @json(__('backend.manager_dashboard.approved')), data: chartSets[currentRange].approved },
+                { name: @json(__('backend.manager_dashboard.rejected')), data: chartSets[currentRange].rejected }
             ]);
         });
     });
@@ -994,7 +994,12 @@ document.addEventListener('DOMContentLoaded', function () {
             type: 'donut',
             height: 240
         },
-        labels: ['Pending', 'Active', 'Completed', 'Rejected'],
+        labels: [
+            @json(__('backend.manager_dashboard.pending')),
+            @json(__('backend.manager_dashboard.active')),
+            @json(__('backend.manager_dashboard.completed')),
+            @json(__('backend.manager_dashboard.rejected'))
+        ],
         colors: ['#f59e0b', '#16a34a', '#2563eb', '#dc2626'],
         legend: {
             position: 'bottom',
@@ -1026,7 +1031,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         },
                         total: {
                             show: true,
-                            label: 'Projects',
+                            label: @json(__('backend.manager_dashboard.projects')),
                             fontSize: '13px',
                             fontWeight: 700,
                             color: '#64748b',
@@ -1046,7 +1051,7 @@ document.addEventListener('DOMContentLoaded', function () {
     new ApexCharts(document.querySelector("#approval-momentum-chart"), {
         series: [
             {
-                name: 'Projects',
+                name: @json(__('backend.manager_dashboard.projects')),
                 data: [
                     {{ (int) ($stats['active_projects'] ?? 0) }},
                     {{ (int) ($stats['rejected_projects'] ?? 0) }}
@@ -1076,7 +1081,10 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         },
         xaxis: {
-            categories: ['Approved', 'Rejected'],
+            categories: [
+                @json(__('backend.manager_dashboard.approved')),
+                @json(__('backend.manager_dashboard.rejected'))
+            ],
             labels: {
                 style: {
                     colors: ['#475467', '#475467'],

@@ -1,6 +1,6 @@
 @extends('supervisor.layout.app_super')
 
-@section('title', 'Approved Projects')
+@section('title', __('backend.supervisor_approved_projects.title'))
 
 @section('content')
 @php
@@ -340,16 +340,16 @@
         <div class="page-header-card mb-4">
             <div class="d-flex justify-content-between align-items-center flex-wrap" style="gap: 15px;">
                 <div>
-                    <h3>Approved Projects</h3>
-                    <p>Projects successfully reviewed and approved by the supervisor.</p>
+                    <h3>{{ __('backend.supervisor_approved_projects.page_title') }}</h3>
+                    <p>{{ __('backend.supervisor_approved_projects.page_subtitle') }}</p>
                 </div>
 
                 <div class="header-actions">
                     <a href="{{ route('supervisor.projects.index') }}" class="btn-outline-header">
-                        <i class="fa fa-folder-open mr-1"></i> My Projects
+                        <i class="fa fa-folder-open mr-1"></i> {{ __('backend.supervisor_approved_projects.my_projects') }}
                     </a>
                     <a href="{{ route('supervisor.dashboard') }}" class="btn-outline-header">
-                        <i class="fa fa-home mr-1"></i> Dashboard
+                        <i class="fa fa-home mr-1"></i> {{ __('backend.supervisor_approved_projects.dashboard') }}
                     </a>
                 </div>
             </div>
@@ -362,7 +362,7 @@
                         <i class="fa fa-folder-open"></i>
                     </div>
                     <div class="stats-number">{{ $totalProjects }}</div>
-                    <p class="stats-label">Approved Projects</p>
+                    <p class="stats-label">{{ __('backend.supervisor_approved_projects.approved_projects') }}</p>
                 </div>
             </div>
 
@@ -372,7 +372,7 @@
                         <i class="fa fa-check-circle"></i>
                     </div>
                     <div class="stats-number">{{ $approvedCount }}</div>
-                    <p class="stats-label">Supervisor Approved</p>
+                    <p class="stats-label">{{ __('backend.supervisor_approved_projects.supervisor_approved') }}</p>
                 </div>
             </div>
 
@@ -382,7 +382,7 @@
                         <i class="fa fa-flag-checkered"></i>
                     </div>
                     <div class="stats-number">{{ $completedCount }}</div>
-                    <p class="stats-label">Completed Projects</p>
+                    <p class="stats-label">{{ __('backend.supervisor_approved_projects.completed_projects') }}</p>
                 </div>
             </div>
 
@@ -392,7 +392,7 @@
                         <i class="fa fa-chart-line"></i>
                     </div>
                     <div class="stats-number">{{ $avgScore ? number_format($avgScore, 1) : '0.0' }}</div>
-                    <p class="stats-label">Average Scan Score</p>
+                    <p class="stats-label">{{ __('backend.supervisor_approved_projects.average_scan_score') }}</p>
                 </div>
             </div>
         </div>
@@ -400,8 +400,8 @@
         <div class="table-card">
             <div class="table-card-header">
                 <div>
-                    <h5>Supervisor Approved List</h5>
-                    <small class="text-muted">A clean overview of all projects that passed supervisor evaluation.</small>
+                    <h5>{{ __('backend.supervisor_approved_projects.supervisor_approved_list') }}</h5>
+                    <small class="text-muted">{{ __('backend.supervisor_approved_projects.supervisor_approved_list_subtitle') }}</small>
                 </div>
             </div>
 
@@ -410,14 +410,14 @@
                     <thead>
                         <tr>
                             <th class="col-id">#</th>
-                            <th class="col-project">Project</th>
-                            <th class="col-student">Student</th>
-                            <th class="col-status">Project Status</th>
-                            <th class="col-scan">Scan</th>
-                            <th class="col-score">Score</th>
-                            <th class="col-review">Review</th>
-                            <th class="col-date">Updated</th>
-                            <th class="col-actions">Action</th>
+                            <th class="col-project">{{ __('backend.supervisor_approved_projects.project') }}</th>
+                            <th class="col-student">{{ __('backend.supervisor_approved_projects.student') }}</th>
+                            <th class="col-status">{{ __('backend.supervisor_approved_projects.project_status') }}</th>
+                            <th class="col-scan">{{ __('backend.supervisor_approved_projects.scan') }}</th>
+                            <th class="col-score">{{ __('backend.supervisor_approved_projects.score') }}</th>
+                            <th class="col-review">{{ __('backend.supervisor_approved_projects.review') }}</th>
+                            <th class="col-date">{{ __('backend.supervisor_approved_projects.updated') }}</th>
+                            <th class="col-actions">{{ __('backend.supervisor_approved_projects.action') }}</th>
                         </tr>
                     </thead>
 
@@ -455,19 +455,19 @@
 
                                 <td>
                                     <a href="{{ route('supervisor.projects.show', $project->project_id) }}" class="project-name">
-                                        {{ $project->name ?? 'Untitled Project' }}
+                                        {{ $project->name ?? __('backend.supervisor_approved_projects.untitled_project') }}
                                     </a>
                                     <div class="mini-text td-ellipsis">
-                                        ID: {{ $project->project_id }}
+                                        {{ __('backend.supervisor_approved_projects.id') }}: {{ $project->project_id }}
                                     </div>
                                     <div class="mini-text td-ellipsis">
-                                        {{ $project->category ?? 'No category' }}
+                                        {{ $project->category ?? __('backend.supervisor_approved_projects.no_category') }}
                                     </div>
                                 </td>
 
                                 <td>
                                     <div class="td-ellipsis">{{ $project->student->name ?? '—' }}</div>
-                                    <div class="mini-text td-ellipsis">{{ $project->student->email ?? 'No email' }}</div>
+                                    <div class="mini-text td-ellipsis">{{ $project->student->email ?? __('backend.supervisor_approved_projects.no_email') }}</div>
                                 </td>
 
                                 <td>
@@ -475,16 +475,16 @@
                                         {{ ucfirst(str_replace('_', ' ', $project->status ?? 'unknown')) }}
                                     </span>
                                     <div class="mini-text td-ellipsis">
-                                        Budget: {{ $project->budget !== null ? number_format($project->budget, 2) : '—' }}
+                                        {{ __('backend.supervisor_approved_projects.budget') }}: {{ $project->budget !== null ? number_format($project->budget, 2) : '—' }}
                                     </div>
                                 </td>
 
                                 <td>
                                     <span class="badge-soft {{ $scanClass }}">
-                                        {{ ucfirst(str_replace('_', ' ', $project->scanner_status ?? 'not scanned')) }}
+                                        {{ ucfirst(str_replace('_', ' ', $project->scanner_status ?? __('backend.supervisor_approved_projects.not_scanned'))) }}
                                     </span>
                                     <div class="mini-text td-ellipsis">
-                                        Scanner ID: {{ $project->scanner_project_id ?? '—' }}
+                                        {{ __('backend.supervisor_approved_projects.scanner_id') }}: {{ $project->scanner_project_id ?? '—' }}
                                     </div>
                                 </td>
 
@@ -493,7 +493,7 @@
                                         {{ $project->scan_score !== null ? number_format($project->scan_score, 2) : '—' }}
                                     </div>
                                     <div class="mini-text td-ellipsis">
-                                        Risk: {{ $project->risk_level ?? '—' }}
+                                        {{ __('backend.supervisor_approved_projects.risk') }}: {{ $project->risk_level ?? '—' }}
                                     </div>
                                 </td>
 
@@ -502,7 +502,7 @@
                                         {{ ucfirst(str_replace('_', ' ', $project->supervisor_status ?? 'approved')) }}
                                     </span>
                                     <div class="mini-text td-ellipsis">
-                                        Decision: {{ ucfirst(str_replace('_', ' ', $project->supervisor_decision ?? 'approved')) }}
+                                        {{ __('backend.supervisor_approved_projects.decision') }}: {{ ucfirst(str_replace('_', ' ', $project->supervisor_decision ?? 'approved')) }}
                                     </div>
                                 </td>
 
@@ -513,7 +513,7 @@
 
                                 <td>
                                     <a href="{{ route('supervisor.projects.show', $project->project_id) }}" class="btn-review">
-                                        <i class="fa fa-eye mr-1"></i> Open
+                                        <i class="fa fa-eye mr-1"></i> {{ __('backend.supervisor_approved_projects.open') }}
                                     </a>
                                 </td>
                             </tr>
@@ -522,7 +522,7 @@
                                 <td colspan="9">
                                     <div class="empty-state">
                                         <i class="fa fa-check-circle"></i>
-                                        <div>No approved projects found.</div>
+                                        <div>{{ __('backend.supervisor_approved_projects.no_approved_projects_found') }}</div>
                                     </div>
                                 </td>
                             </tr>

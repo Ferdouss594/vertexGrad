@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Contact Message Details')
+@section('title', __('backend.contact_messages_show.page_title'))
 
 @section('content')
 <style>
@@ -238,13 +238,13 @@
         <div class="page-header-card mb-4">
             <div class="d-flex justify-content-between align-items-center flex-wrap" style="gap: 15px;">
                 <div>
-                    <h3>Contact Message #{{ $contactMessage->id }}</h3>
-                    <p>Review, reply, and update the inquiry from the management panel professionally.</p>
+                    <h3>{{ __('backend.contact_messages_show.heading') }} #{{ $contactMessage->id }}</h3>
+                    <p>{{ __('backend.contact_messages_show.subtitle') }}</p>
                 </div>
 
                 <div class="d-flex flex-wrap" style="gap: 10px;">
                     <a href="{{ route('admin.contact-messages.index') }}" class="btn btn-light btn-soft">
-                        <i class="fa fa-arrow-left mr-1"></i> Back to Messages
+                        <i class="fa fa-arrow-left mr-1"></i> {{ __('backend.contact_messages_show.back_to_messages') }}
                     </a>
                 </div>
             </div>
@@ -254,28 +254,28 @@
             <div class="col-xl-8 mb-4">
                 <div class="content-card mb-4">
                     <div class="content-card-header">
-                        <h5>Message Details</h5>
+                        <h5>{{ __('backend.contact_messages_show.message_details') }}</h5>
                     </div>
 
                     <div class="content-card-body">
                         <div class="row">
                             <div class="col-md-6 mb-4">
-                                <div class="info-label">Sender Name</div>
+                                <div class="info-label">{{ __('backend.contact_messages_show.sender_name') }}</div>
                                 <div class="info-value">{{ $contactMessage->name }}</div>
                             </div>
 
                             <div class="col-md-6 mb-4">
-                                <div class="info-label">Email Address</div>
+                                <div class="info-label">{{ __('backend.contact_messages_show.email_address') }}</div>
                                 <div class="info-value">{{ $contactMessage->email }}</div>
                             </div>
 
                             <div class="col-md-6 mb-4">
-                                <div class="info-label">Subject</div>
+                                <div class="info-label">{{ __('backend.contact_messages_show.subject') }}</div>
                                 <div class="info-value">{{ $contactMessage->subject_label }}</div>
                             </div>
 
                             <div class="col-md-6 mb-4">
-                                <div class="info-label">Sender Type</div>
+                                <div class="info-label">{{ __('backend.contact_messages_show.sender_type') }}</div>
                                 <div class="info-value">
                                     <span class="badge-soft {{ $senderTypeClass }}">
                                         {{ $contactMessage->sender_type_label }}
@@ -284,7 +284,7 @@
                             </div>
 
                             <div class="col-md-6 mb-4">
-                                <div class="info-label">Current Status</div>
+                                <div class="info-label">{{ __('backend.contact_messages_show.current_status') }}</div>
                                 <div class="info-value">
                                     <span class="badge-soft {{ $statusClass }}">
                                         {{ $contactMessage->status_label }}
@@ -293,22 +293,22 @@
                             </div>
 
                             <div class="col-md-6 mb-4">
-                                <div class="info-label">Submitted At</div>
+                                <div class="info-label">{{ __('backend.contact_messages_show.submitted_at') }}</div>
                                 <div class="info-value">{{ $contactMessage->created_at?->format('Y-m-d h:i A') }}</div>
                             </div>
 
                             <div class="col-md-6 mb-4">
-                                <div class="info-label">Frontend User ID</div>
-                                <div class="info-value">{{ $contactMessage->sender_user_id ?? 'Guest / None' }}</div>
+                                <div class="info-label">{{ __('backend.contact_messages_show.frontend_user_id') }}</div>
+                                <div class="info-value">{{ $contactMessage->sender_user_id ?? __('backend.contact_messages_show.guest_none') }}</div>
                             </div>
 
                             <div class="col-md-6 mb-4">
-                                <div class="info-label">IP Address</div>
-                                <div class="info-value">{{ $contactMessage->ip_address ?? 'N/A' }}</div>
+                                <div class="info-label">{{ __('backend.contact_messages_show.ip_address') }}</div>
+                                <div class="info-value">{{ $contactMessage->ip_address ?? __('backend.contact_messages_show.na') }}</div>
                             </div>
 
                             <div class="col-12">
-                                <div class="info-label">Message Content</div>
+                                <div class="info-label">{{ __('backend.contact_messages_show.message_content') }}</div>
                                 <div class="message-box">{{ $contactMessage->message }}</div>
                             </div>
                         </div>
@@ -317,29 +317,29 @@
 
                 <div class="content-card mb-4">
                     <div class="content-card-header">
-                        <h5>Reply History</h5>
+                        <h5>{{ __('backend.contact_messages_show.reply_history') }}</h5>
                     </div>
 
                     <div class="content-card-body">
                         @forelse($contactMessage->replies as $reply)
                             <div class="reply-box">
                                 <div class="reply-meta">
-                                    Replied by {{ $reply->admin?->name ?? 'System User' }}
+                                    {{ __('backend.contact_messages_show.replied_by') }} {{ $reply->admin?->name ?? __('backend.contact_messages_show.system_user') }}
                                     • {{ $reply->sent_at?->format('Y-m-d h:i A') ?? $reply->created_at?->format('Y-m-d h:i A') }}
-                                    • Channel: {{ ucfirst($reply->channel) }}
-                                    • {{ $reply->is_sent ? 'Sent' : 'Draft / Not Sent' }}
+                                    • {{ __('backend.contact_messages_show.channel') }}: {{ ucfirst($reply->channel) }}
+                                    • {{ $reply->is_sent ? __('backend.contact_messages_show.sent') : __('backend.contact_messages_show.draft_not_sent') }}
                                 </div>
                                 <div class="reply-text">{{ $reply->reply_message }}</div>
                             </div>
                         @empty
-                            <div class="text-muted">No replies have been sent yet.</div>
+                            <div class="text-muted">{{ __('backend.contact_messages_show.no_replies_yet') }}</div>
                         @endforelse
                     </div>
                 </div>
 
                 <div class="content-card">
                     <div class="content-card-header">
-                        <h5>Internal Notes</h5>
+                        <h5>{{ __('backend.contact_messages_show.internal_notes') }}</h5>
                     </div>
 
                     <div class="content-card-body">
@@ -347,32 +347,32 @@
                             @csrf
 
                             <div class="mb-3">
-                                <label for="note" class="info-label" style="display:block;">Add Internal Note</label>
+                                <label for="note" class="info-label" style="display:block;">{{ __('backend.contact_messages_show.add_internal_note') }}</label>
                                 <textarea
                                     id="note"
                                     name="note"
                                     class="form-control"
-                                    placeholder="Write an internal note..."
+                                    placeholder="{{ __('backend.contact_messages_show.write_internal_note') }}"
                                     required
                                     style="min-height: 120px;"
                                 >{{ old('note') }}</textarea>
                             </div>
 
                             <button type="submit" class="btn btn-dark w-100" style="border-radius: 12px; font-weight: 700;">
-                                <i class="fa fa-sticky-note mr-1"></i> Save Internal Note
+                                <i class="fa fa-sticky-note mr-1"></i> {{ __('backend.contact_messages_show.save_internal_note') }}
                             </button>
                         </form>
 
                         @forelse($contactMessage->notes as $note)
                             <div class="reply-box">
                                 <div class="reply-meta">
-                                    Note by {{ $note->admin?->name ?? 'System User' }}
+                                    {{ __('backend.contact_messages_show.note_by') }} {{ $note->admin?->name ?? __('backend.contact_messages_show.system_user') }}
                                     • {{ $note->created_at?->format('Y-m-d h:i A') }}
                                 </div>
                                 <div class="reply-text">{{ $note->note }}</div>
                             </div>
                         @empty
-                            <div class="text-muted">No internal notes yet.</div>
+                            <div class="text-muted">{{ __('backend.contact_messages_show.no_internal_notes_yet') }}</div>
                         @endforelse
                     </div>
                 </div>
@@ -382,7 +382,7 @@
                 <div class="right-stack">
                     <div class="content-card">
                         <div class="content-card-header">
-                            <h5>Update Status</h5>
+                            <h5>{{ __('backend.contact_messages_show.update_status') }}</h5>
                         </div>
 
                         <div class="content-card-body">
@@ -391,17 +391,17 @@
                                 @method('PATCH')
 
                                 <div class="mb-3">
-                                    <label for="status" class="info-label" style="display:block;">Select Status</label>
+                                    <label for="status" class="info-label" style="display:block;">{{ __('backend.contact_messages_show.select_status') }}</label>
                                     <select id="status" name="status" class="form-select" required>
-                                        <option value="new" {{ $contactMessage->status === 'new' ? 'selected' : '' }}>New</option>
-                                        <option value="in_progress" {{ $contactMessage->status === 'in_progress' ? 'selected' : '' }}>In Progress</option>
-                                        <option value="replied" {{ $contactMessage->status === 'replied' ? 'selected' : '' }}>Replied</option>
-                                        <option value="closed" {{ $contactMessage->status === 'closed' ? 'selected' : '' }}>Closed</option>
+                                        <option value="new" {{ $contactMessage->status === 'new' ? 'selected' : '' }}>{{ __('backend.contact_messages_show.status_new') }}</option>
+                                        <option value="in_progress" {{ $contactMessage->status === 'in_progress' ? 'selected' : '' }}>{{ __('backend.contact_messages_show.status_in_progress') }}</option>
+                                        <option value="replied" {{ $contactMessage->status === 'replied' ? 'selected' : '' }}>{{ __('backend.contact_messages_show.status_replied') }}</option>
+                                        <option value="closed" {{ $contactMessage->status === 'closed' ? 'selected' : '' }}>{{ __('backend.contact_messages_show.status_closed') }}</option>
                                     </select>
                                 </div>
 
                                 <button type="submit" class="btn btn-primary w-100" style="border-radius: 12px; font-weight: 700;">
-                                    <i class="fa fa-save mr-1"></i> Save Status
+                                    <i class="fa fa-save mr-1"></i> {{ __('backend.contact_messages_show.save_status') }}
                                 </button>
                             </form>
                         </div>
@@ -409,7 +409,7 @@
 
                     <div class="content-card">
                         <div class="content-card-header">
-                            <h5>Send Reply</h5>
+                            <h5>{{ __('backend.contact_messages_show.send_reply') }}</h5>
                         </div>
 
                         <div class="content-card-body">
@@ -417,51 +417,51 @@
                                 @csrf
 
                                 <div class="mb-3">
-                                    <label for="reply_template" class="info-label" style="display:block;">Quick Reply Template</label>
+                                    <label for="reply_template" class="info-label" style="display:block;">{{ __('backend.contact_messages_show.quick_reply_template') }}</label>
                                     <select id="reply_template" class="form-select">
-                                        <option value="">Select a template</option>
-                                        <option value="academic_ack" {{ $defaultTemplateKey === 'academic_ack' ? 'selected' : '' }}>Academic Inquiry Acknowledgement</option>
-                                        <option value="investor_ack" {{ $defaultTemplateKey === 'investor_ack' ? 'selected' : '' }}>Investor Inquiry Acknowledgement</option>
-                                        <option value="support_ack" {{ $defaultTemplateKey === 'support_ack' ? 'selected' : '' }}>Support Response</option>
-                                        <option value="general_ack" {{ $defaultTemplateKey === 'general_ack' ? 'selected' : '' }}>General Response</option>
+                                        <option value="">{{ __('backend.contact_messages_show.select_template') }}</option>
+                                        <option value="academic_ack" {{ $defaultTemplateKey === 'academic_ack' ? 'selected' : '' }}>{{ __('backend.contact_messages_show.templates.academic_ack') }}</option>
+                                        <option value="investor_ack" {{ $defaultTemplateKey === 'investor_ack' ? 'selected' : '' }}>{{ __('backend.contact_messages_show.templates.investor_ack') }}</option>
+                                        <option value="support_ack" {{ $defaultTemplateKey === 'support_ack' ? 'selected' : '' }}>{{ __('backend.contact_messages_show.templates.support_ack') }}</option>
+                                        <option value="general_ack" {{ $defaultTemplateKey === 'general_ack' ? 'selected' : '' }}>{{ __('backend.contact_messages_show.templates.general_ack') }}</option>
                                     </select>
                                     <div class="template-helper">
-                                        Choose a professional reply template, then review and edit the message before sending.
+                                        {{ __('backend.contact_messages_show.template_helper') }}
                                     </div>
                                 </div>
 
                                 <div class="mb-3">
                                     <div class="template-actions">
                                         <button type="button" id="apply_template_btn" class="btn btn-outline-primary btn-sm" style="border-radius: 10px; font-weight: 700;">
-                                            Apply Template
+                                            {{ __('backend.contact_messages_show.apply_template') }}
                                         </button>
 
                                         <button type="button" id="clear_template_btn" class="btn btn-outline-secondary btn-sm" style="border-radius: 10px; font-weight: 700;">
-                                            Clear
+                                            {{ __('backend.contact_messages_show.clear') }}
                                         </button>
                                     </div>
                                 </div>
 
                                 <div class="mb-3">
-                                    <label for="reply_message" class="info-label" style="display:block;">Reply Message</label>
+                                    <label for="reply_message" class="info-label" style="display:block;">{{ __('backend.contact_messages_show.reply_message') }}</label>
                                     <textarea
                                         id="reply_message"
                                         name="reply_message"
                                         class="form-control"
-                                        placeholder="Write your reply here..."
+                                        placeholder="{{ __('backend.contact_messages_show.write_reply_here') }}"
                                         required
                                     >{{ old('reply_message') }}</textarea>
                                 </div>
 
                                 <button type="submit" class="btn btn-success w-100" style="border-radius: 12px; font-weight: 700;">
-                                    <i class="fa fa-paper-plane mr-1"></i> Send Reply by Email
+                                    <i class="fa fa-paper-plane mr-1"></i> {{ __('backend.contact_messages_show.send_reply_by_email') }}
                                 </button>
                             </form>
 
                             <hr>
 
                             <div class="text-muted" style="font-size: 13px; line-height: 1.7;">
-                                Sending a reply will save it in the reply history and automatically update the message status to <strong>Replied</strong>.
+                                {!! __('backend.contact_messages_show.reply_notice') !!}
                             </div>
                         </div>
                     </div>
@@ -484,41 +484,37 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!templateSelect || !applyBtn || !clearBtn || !replyTextarea) return;
 
     const templates = {
-        academic_ack: `Hello {{ $contactMessage->name }},
+        academic_ack: `{{ __('backend.contact_messages_show.template_bodies.academic_ack.greeting', ['name' => $contactMessage->name]) }}
 
-Thank you for contacting VertexGrad regarding your academic submission.
+{{ __('backend.contact_messages_show.template_bodies.academic_ack.body_1') }}
 
-We have received your inquiry and our team will review it shortly. If additional information is needed, we will contact you.
+{{ __('backend.contact_messages_show.template_bodies.academic_ack.body_2') }}
 
-Best regards,
-VertexGrad Team`,
+{{ __('backend.contact_messages_show.template_bodies.signature') }}`,
 
-        investor_ack: `Hello {{ $contactMessage->name }},
+        investor_ack: `{{ __('backend.contact_messages_show.template_bodies.investor_ack.greeting', ['name' => $contactMessage->name]) }}
 
-Thank you for your interest in VertexGrad and for reaching out regarding investment opportunities.
+{{ __('backend.contact_messages_show.template_bodies.investor_ack.body_1') }}
 
-We have received your inquiry and the management team will review it shortly. We will contact you if any additional details are needed.
+{{ __('backend.contact_messages_show.template_bodies.investor_ack.body_2') }}
 
-Best regards,
-VertexGrad Team`,
+{{ __('backend.contact_messages_show.template_bodies.signature') }}`,
 
-        support_ack: `Hello {{ $contactMessage->name }},
+        support_ack: `{{ __('backend.contact_messages_show.template_bodies.support_ack.greeting', ['name' => $contactMessage->name]) }}
 
-Thank you for contacting VertexGrad support.
+{{ __('backend.contact_messages_show.template_bodies.support_ack.body_1') }}
 
-We have received your message and will review the issue as soon as possible. If needed, our team will follow up with you for further clarification.
+{{ __('backend.contact_messages_show.template_bodies.support_ack.body_2') }}
 
-Best regards,
-VertexGrad Team`,
+{{ __('backend.contact_messages_show.template_bodies.signature') }}`,
 
-        general_ack: `Hello {{ $contactMessage->name }},
+        general_ack: `{{ __('backend.contact_messages_show.template_bodies.general_ack.greeting', ['name' => $contactMessage->name]) }}
 
-Thank you for reaching out to VertexGrad.
+{{ __('backend.contact_messages_show.template_bodies.general_ack.body_1') }}
 
-We have received your message and will get back to you shortly.
+{{ __('backend.contact_messages_show.template_bodies.general_ack.body_2') }}
 
-Best regards,
-VertexGrad Team`
+{{ __('backend.contact_messages_show.template_bodies.signature') }}`
     };
 
     function applySelectedTemplate() {

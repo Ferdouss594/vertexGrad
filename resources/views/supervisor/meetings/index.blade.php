@@ -1,6 +1,6 @@
 @extends('supervisor.layout.app_super')
 
-@section('title', 'All Meetings')
+@section('title', __('backend.supervisor_all_meetings.page_title'))
 
 @section('content')
 @php
@@ -312,16 +312,16 @@
         <div class="page-header-card mb-4">
             <div class="d-flex justify-content-between align-items-center flex-wrap" style="gap: 15px;">
                 <div>
-                    <h3>All Meetings</h3>
-                    <p>Track scheduled, completed, and cancelled meetings across your assigned projects.</p>
+                    <h3>{{ __('backend.supervisor_all_meetings.heading') }}</h3>
+                    <p>{{ __('backend.supervisor_all_meetings.subtitle') }}</p>
                 </div>
 
                 <div class="header-actions">
                     <a href="{{ route('supervisor.meetings.create') }}" class="btn-outline-header">
-                        <i class="fa fa-plus mr-1"></i> Create Meeting
+                        <i class="fa fa-plus mr-1"></i> {{ __('backend.supervisor_all_meetings.create_meeting') }}
                     </a>
                     <a href="{{ route('supervisor.dashboard') }}" class="btn-outline-header">
-                        <i class="fa fa-home mr-1"></i> Dashboard
+                        <i class="fa fa-home mr-1"></i> {{ __('backend.supervisor_all_meetings.dashboard') }}
                     </a>
                 </div>
             </div>
@@ -334,7 +334,7 @@
                         <i class="fa fa-calendar"></i>
                     </div>
                     <div class="stats-number">{{ $totalMeetings }}</div>
-                    <p class="stats-label">Total Meetings</p>
+                    <p class="stats-label">{{ __('backend.supervisor_all_meetings.total_meetings') }}</p>
                 </div>
             </div>
 
@@ -344,7 +344,7 @@
                         <i class="fa fa-clock-o"></i>
                     </div>
                     <div class="stats-number">{{ $scheduledCount }}</div>
-                    <p class="stats-label">Scheduled</p>
+                    <p class="stats-label">{{ __('backend.supervisor_all_meetings.scheduled') }}</p>
                 </div>
             </div>
 
@@ -354,7 +354,7 @@
                         <i class="fa fa-check-circle"></i>
                     </div>
                     <div class="stats-number">{{ $completedCount }}</div>
-                    <p class="stats-label">Completed</p>
+                    <p class="stats-label">{{ __('backend.supervisor_all_meetings.completed') }}</p>
                 </div>
             </div>
 
@@ -364,7 +364,7 @@
                         <i class="fa fa-times-circle"></i>
                     </div>
                     <div class="stats-number">{{ $cancelledCount }}</div>
-                    <p class="stats-label">Cancelled</p>
+                    <p class="stats-label">{{ __('backend.supervisor_all_meetings.cancelled') }}</p>
                 </div>
             </div>
         </div>
@@ -372,8 +372,8 @@
         <div class="table-card">
             <div class="table-card-header">
                 <div>
-                    <h5>Meeting Sessions</h5>
-                    <small class="text-muted">A complete overview of all supervisor meetings and demo sessions.</small>
+                    <h5>{{ __('backend.supervisor_all_meetings.meeting_sessions') }}</h5>
+                    <small class="text-muted">{{ __('backend.supervisor_all_meetings.meeting_sessions_subtitle') }}</small>
                 </div>
             </div>
 
@@ -382,13 +382,13 @@
                     <thead>
                         <tr>
                             <th class="col-id">#</th>
-                            <th class="col-project">Project</th>
-                            <th class="col-title">Meeting Title</th>
-                            <th class="col-type">Type</th>
-                            <th class="col-date">Date</th>
-                            <th class="col-time">Time</th>
-                            <th class="col-status">Status</th>
-                            <th class="col-actions">Action</th>
+                            <th class="col-project">{{ __('backend.supervisor_all_meetings.project') }}</th>
+                            <th class="col-title">{{ __('backend.supervisor_all_meetings.meeting_title') }}</th>
+                            <th class="col-type">{{ __('backend.supervisor_all_meetings.type') }}</th>
+                            <th class="col-date">{{ __('backend.supervisor_all_meetings.date') }}</th>
+                            <th class="col-time">{{ __('backend.supervisor_all_meetings.time') }}</th>
+                            <th class="col-status">{{ __('backend.supervisor_all_meetings.status') }}</th>
+                            <th class="col-actions">{{ __('backend.supervisor_all_meetings.action') }}</th>
                         </tr>
                     </thead>
 
@@ -416,17 +416,17 @@
 
                                 <td>
                                     <a href="{{ route('supervisor.projects.show', $meeting->project_id) }}" class="project-name">
-                                        {{ $meeting->project->name ?? 'Untitled Project' }}
+                                        {{ $meeting->project->name ?? __('backend.supervisor_all_meetings.untitled_project') }}
                                     </a>
                                     <div class="mini-text">
-                                        Project ID: {{ $meeting->project_id }}
+                                        {{ __('backend.supervisor_all_meetings.project_id') }} {{ $meeting->project_id }}
                                     </div>
                                 </td>
 
                                 <td>
-                                    <span class="meeting-title">{{ $meeting->title ?? 'Untitled Meeting' }}</span>
+                                    <span class="meeting-title">{{ $meeting->title ?? __('backend.supervisor_all_meetings.untitled_meeting') }}</span>
                                     <div class="mini-text">
-                                        {{ $meeting->notes ? \Illuminate\Support\Str::limit($meeting->notes, 45) : 'No notes added' }}
+                                        {{ $meeting->notes ? \Illuminate\Support\Str::limit($meeting->notes, 45) : __('backend.supervisor_all_meetings.no_notes_added') }}
                                     </div>
                                 </td>
 
@@ -452,7 +452,7 @@
 
                                 <td>
                                     <a href="{{ route('supervisor.projects.show', $meeting->project_id) }}" class="btn-open">
-                                        <i class="fa fa-folder-open mr-1"></i> Open Project
+                                        <i class="fa fa-folder-open mr-1"></i> {{ __('backend.supervisor_all_meetings.open_project') }}
                                     </a>
                                 </td>
                             </tr>
@@ -461,7 +461,7 @@
                                 <td colspan="8">
                                     <div class="empty-state">
                                         <i class="fa fa-calendar-times-o"></i>
-                                        <div>No meetings found.</div>
+                                        <div>{{ __('backend.supervisor_all_meetings.no_meetings_found') }}</div>
                                     </div>
                                 </td>
                             </tr>

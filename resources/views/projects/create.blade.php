@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Create Project')
+@section('title', __('backend.projects_create.page_title'))
 
 @section('content')
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
@@ -219,7 +219,7 @@
 
     @if ($errors->any())
         <div class="alert alert-danger custom-alert mb-4">
-            <strong>Please fix the following errors:</strong>
+            <strong>{{ __('backend.projects_create.please_fix_errors') }}</strong>
             <ul class="mb-0 mt-2 pl-3">
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
@@ -231,15 +231,15 @@
     <div class="page-header-card">
         <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3">
             <div>
-                <h1 class="page-title">Create New Project</h1>
+                <h1 class="page-title">{{ __('backend.projects_create.heading') }}</h1>
                 <p class="page-subtitle">
-                    Create a complete project record, assign responsible users, set workflow status, and upload project media professionally.
+                    {{ __('backend.projects_create.subtitle') }}
                 </p>
             </div>
 
             <div>
                 <a href="{{ route('admin.projects.index') }}" class="reset-btn px-4">
-                    <i class="fa fa-arrow-left mr-1"></i> Back to Projects
+                    <i class="fa fa-arrow-left mr-1"></i> {{ __('backend.projects_create.back_to_projects') }}
                 </a>
             </div>
         </div>
@@ -250,35 +250,35 @@
 
         <div class="main-panel form-animate">
             <div class="panel-head">
-                <h2 class="panel-title">Project Information</h2>
-                <div class="panel-subtitle">Basic identity, classification, and description for the project.</div>
+                <h2 class="panel-title">{{ __('backend.projects_create.project_information') }}</h2>
+                <div class="panel-subtitle">{{ __('backend.projects_create.project_information_subtitle') }}</div>
             </div>
             <div class="table-wrap">
                 <div class="row">
                     <div class="col-md-6 mb-4">
-                        <label class="form-label-custom">Project Name *</label>
+                        <label class="form-label-custom">{{ __('backend.projects_create.project_name_required') }}</label>
                         <input type="text" name="name" class="form-control custom-input" value="{{ old('name') }}" required>
                     </div>
 
                     <div class="col-md-6 mb-4">
-                        <label class="form-label-custom">Category</label>
+                        <label class="form-label-custom">{{ __('backend.projects_create.category') }}</label>
                         <select name="category" class="form-select custom-input">
-                            <option value="">Select category</option>
-                            <option value="ai_ml" {{ old('category')=='ai_ml' ? 'selected' : '' }}>Artificial Intelligence & Machine Learning</option>
-                            <option value="biotech" {{ old('category')=='biotech' ? 'selected' : '' }}>Biotechnology & Life Sciences</option>
-                            <option value="materials" {{ old('category')=='materials' ? 'selected' : '' }}>Advanced Materials & Nanotech</option>
-                            <option value="energy" {{ old('category')=='energy' ? 'selected' : '' }}>Renewable Energy & Sustainability</option>
-                            <option value="quantum" {{ old('category')=='quantum' ? 'selected' : '' }}>Quantum Computing & Physics</option>
-                            <option value="aero" {{ old('category')=='aero' ? 'selected' : '' }}>Aerospace & Robotics</option>
-                            <option value="other" {{ old('category')=='other' ? 'selected' : '' }}>Other</option>
+                            <option value="">{{ __('backend.projects_create.select_category') }}</option>
+                            <option value="ai_ml" {{ old('category')=='ai_ml' ? 'selected' : '' }}>{{ __('backend.projects_create.categories.ai_ml') }}</option>
+                            <option value="biotech" {{ old('category')=='biotech' ? 'selected' : '' }}>{{ __('backend.projects_create.categories.biotech') }}</option>
+                            <option value="materials" {{ old('category')=='materials' ? 'selected' : '' }}>{{ __('backend.projects_create.categories.materials') }}</option>
+                            <option value="energy" {{ old('category')=='energy' ? 'selected' : '' }}>{{ __('backend.projects_create.categories.energy') }}</option>
+                            <option value="quantum" {{ old('category')=='quantum' ? 'selected' : '' }}>{{ __('backend.projects_create.categories.quantum') }}</option>
+                            <option value="aero" {{ old('category')=='aero' ? 'selected' : '' }}>{{ __('backend.projects_create.categories.aero') }}</option>
+                            <option value="other" {{ old('category')=='other' ? 'selected' : '' }}>{{ __('backend.projects_create.categories.other') }}</option>
                         </select>
                     </div>
 
                     <div class="col-md-12 mb-0">
-                        <label class="form-label-custom">Description</label>
+                        <label class="form-label-custom">{{ __('backend.projects_create.description') }}</label>
                         <textarea name="description" class="form-control custom-input" rows="5">{{ old('description') }}</textarea>
                         <div class="helper-text">
-                            Add a short professional description explaining the project idea, purpose, and expected value.
+                            {{ __('backend.projects_create.description_helper') }}
                         </div>
                     </div>
                 </div>
@@ -287,19 +287,19 @@
 
         <div class="main-panel form-animate">
             <div class="panel-head">
-                <h2 class="panel-title">Assign Users</h2>
-                <div class="panel-subtitle">Select the people associated with this project.</div>
+                <h2 class="panel-title">{{ __('backend.projects_create.assign_users') }}</h2>
+                <div class="panel-subtitle">{{ __('backend.projects_create.assign_users_subtitle') }}</div>
             </div>
             <div class="table-wrap">
                 <div class="section-note">
-                    Select the users related to this project. Student assignment is required, while other roles are optional and can be updated later.
+                    {{ __('backend.projects_create.assign_users_note') }}
                 </div>
 
                 <div class="row">
                     <div class="col-md-6 mb-4">
-                        <label class="form-label-custom">Student *</label>
+                        <label class="form-label-custom">{{ __('backend.projects_create.student_required') }}</label>
                         <select name="student_id" class="form-select custom-input" required>
-                            <option value="">Select Student</option>
+                            <option value="">{{ __('backend.projects_create.select_student') }}</option>
                             @foreach($students as $student)
                                 <option value="{{ $student->id }}" {{ old('student_id') == $student->id ? 'selected' : '' }}>
                                     {{ $student->name }} ({{ $student->email }})
@@ -309,9 +309,9 @@
                     </div>
 
                     <div class="col-md-6 mb-4">
-                        <label class="form-label-custom">Supervisor</label>
+                        <label class="form-label-custom">{{ __('backend.projects_create.supervisor') }}</label>
                         <select name="supervisor_id" class="form-select custom-input">
-                            <option value="">Select Supervisor</option>
+                            <option value="">{{ __('backend.projects_create.select_supervisor') }}</option>
                             @foreach($supervisors as $supervisor)
                                 <option value="{{ $supervisor->id }}" {{ old('supervisor_id') == $supervisor->id ? 'selected' : '' }}>
                                     {{ $supervisor->name }} ({{ $supervisor->email }})
@@ -321,9 +321,9 @@
                     </div>
 
                     <div class="col-md-6 mb-4">
-                        <label class="form-label-custom">Manager</label>
+                        <label class="form-label-custom">{{ __('backend.projects_create.manager') }}</label>
                         <select name="manager_id" class="form-select custom-input">
-                            <option value="">Select Manager</option>
+                            <option value="">{{ __('backend.projects_create.select_manager') }}</option>
                             @foreach($managers as $manager)
                                 <option value="{{ $manager->id }}" {{ old('manager_id') == $manager->id ? 'selected' : '' }}>
                                     {{ $manager->name }} ({{ $manager->email }})
@@ -333,9 +333,9 @@
                     </div>
 
                     <div class="col-md-6 mb-0">
-                        <label class="form-label-custom">Investor</label>
+                        <label class="form-label-custom">{{ __('backend.projects_create.investor') }}</label>
                         <select name="investor_id" class="form-select custom-input">
-                            <option value="">Select Investor</option>
+                            <option value="">{{ __('backend.projects_create.select_investor') }}</option>
                             @foreach($investors as $investor)
                                 <option value="{{ $investor->id }}" {{ old('investor_id') == $investor->id ? 'selected' : '' }}>
                                     {{ $investor->name }} ({{ $investor->email }})
@@ -349,52 +349,52 @@
 
         <div class="main-panel form-animate">
             <div class="panel-head">
-                <h2 class="panel-title">Status & Meta Information</h2>
-                <div class="panel-subtitle">Workflow state, progress, dates, budget, and project settings.</div>
+                <h2 class="panel-title">{{ __('backend.projects_create.status_meta_information') }}</h2>
+                <div class="panel-subtitle">{{ __('backend.projects_create.status_meta_information_subtitle') }}</div>
             </div>
             <div class="table-wrap">
                 <div class="row">
                     <div class="col-md-4 mb-4">
-                        <label class="form-label-custom">Status *</label>
+                        <label class="form-label-custom">{{ __('backend.projects_create.status_required') }}</label>
                         <select name="status" class="form-select custom-input" required>
-                            <option value="pending" {{ old('status')=='pending' ? 'selected' : '' }}>Pending</option>
-                            <option value="scan_requested" {{ old('status')=='scan_requested' ? 'selected' : '' }}>Scan Requested</option>
-                            <option value="awaiting_manual_review" {{ old('status')=='awaiting_manual_review' ? 'selected' : '' }}>Awaiting Manual Review</option>
-                            <option value="approved" {{ old('status')=='approved' ? 'selected' : '' }}>Approved</option>
-                            <option value="published" {{ old('status')=='published' ? 'selected' : '' }}>Published</option>
-                            <option value="active" {{ old('status')=='active' ? 'selected' : '' }}>Active</option>
-                            <option value="completed" {{ old('status')=='completed' ? 'selected' : '' }}>Completed</option>
-                            <option value="rejected" {{ old('status')=='rejected' ? 'selected' : '' }}>Rejected</option>
-                            <option value="scan_failed" {{ old('status')=='scan_failed' ? 'selected' : '' }}>Scan Failed</option>
+                            <option value="pending" {{ old('status')=='pending' ? 'selected' : '' }}>{{ __('backend.projects_create.status_pending') }}</option>
+                            <option value="scan_requested" {{ old('status')=='scan_requested' ? 'selected' : '' }}>{{ __('backend.projects_create.status_scan_requested') }}</option>
+                            <option value="awaiting_manual_review" {{ old('status')=='awaiting_manual_review' ? 'selected' : '' }}>{{ __('backend.projects_create.status_awaiting_manual_review') }}</option>
+                            <option value="approved" {{ old('status')=='approved' ? 'selected' : '' }}>{{ __('backend.projects_create.status_approved') }}</option>
+                            <option value="published" {{ old('status')=='published' ? 'selected' : '' }}>{{ __('backend.projects_create.status_published') }}</option>
+                            <option value="active" {{ old('status')=='active' ? 'selected' : '' }}>{{ __('backend.projects_create.status_active') }}</option>
+                            <option value="completed" {{ old('status')=='completed' ? 'selected' : '' }}>{{ __('backend.projects_create.status_completed') }}</option>
+                            <option value="rejected" {{ old('status')=='rejected' ? 'selected' : '' }}>{{ __('backend.projects_create.status_rejected') }}</option>
+                            <option value="scan_failed" {{ old('status')=='scan_failed' ? 'selected' : '' }}>{{ __('backend.projects_create.status_scan_failed') }}</option>
                         </select>
                     </div>
 
                     <div class="col-md-4 mb-4">
-                        <label class="form-label-custom">Budget</label>
+                        <label class="form-label-custom">{{ __('backend.projects_create.budget') }}</label>
                         <input type="number" step="0.01" min="0" name="budget" class="form-control custom-input" value="{{ old('budget') }}">
                     </div>
 
                     <div class="col-md-4 mb-4">
-                        <label class="form-label-custom">Priority</label>
+                        <label class="form-label-custom">{{ __('backend.projects_create.priority') }}</label>
                         <select name="priority" class="form-select custom-input">
-                            <option value="Low" {{ old('priority')=='Low' ? 'selected' : '' }}>Low</option>
-                            <option value="Medium" {{ old('priority', 'Medium')=='Medium' ? 'selected' : '' }}>Medium</option>
-                            <option value="High" {{ old('priority')=='High' ? 'selected' : '' }}>High</option>
+                            <option value="Low" {{ old('priority')=='Low' ? 'selected' : '' }}>{{ __('backend.projects_create.priority_low') }}</option>
+                            <option value="Medium" {{ old('priority', 'Medium')=='Medium' ? 'selected' : '' }}>{{ __('backend.projects_create.priority_medium') }}</option>
+                            <option value="High" {{ old('priority')=='High' ? 'selected' : '' }}>{{ __('backend.projects_create.priority_high') }}</option>
                         </select>
                     </div>
 
                     <div class="col-md-4 mb-4">
-                        <label class="form-label-custom">Start Date</label>
+                        <label class="form-label-custom">{{ __('backend.projects_create.start_date') }}</label>
                         <input type="date" name="start_date" class="form-control custom-input" value="{{ old('start_date') }}">
                     </div>
 
                     <div class="col-md-4 mb-4">
-                        <label class="form-label-custom">End Date</label>
+                        <label class="form-label-custom">{{ __('backend.projects_create.end_date') }}</label>
                         <input type="date" name="end_date" class="form-control custom-input" value="{{ old('end_date') }}">
                     </div>
 
                     <div class="col-md-4 mb-4">
-                        <label class="form-label-custom">Progress (%)</label>
+                        <label class="form-label-custom">{{ __('backend.projects_create.progress_percent') }}</label>
                         <input type="number" name="progress" class="form-control custom-input" value="{{ old('progress', 0) }}" min="0" max="100">
                     </div>
 
@@ -402,7 +402,7 @@
                         <div class="form-check mt-2">
                             <input type="checkbox" name="is_featured" class="form-check-input" id="is_featured" value="1" {{ old('is_featured') ? 'checked' : '' }}>
                             <label class="form-check-label font-weight-bold" for="is_featured">
-                                Featured Project
+                                {{ __('backend.projects_create.featured_project') }}
                             </label>
                         </div>
                     </div>
@@ -412,16 +412,16 @@
 
         <div class="main-panel form-animate">
             <div class="panel-head">
-                <h2 class="panel-title">Media Upload</h2>
-                <div class="panel-subtitle">Upload project images and video previews.</div>
+                <h2 class="panel-title">{{ __('backend.projects_create.media_upload') }}</h2>
+                <div class="panel-subtitle">{{ __('backend.projects_create.media_upload_subtitle') }}</div>
             </div>
             <div class="table-wrap">
                 <div class="section-note">
-                    Upload project photos and a project video if available. These files will be attached to the project using the same media structure used by students.
+                    {{ __('backend.projects_create.media_upload_note') }}
                 </div>
 
                 <div class="mb-4">
-                    <label class="form-label-custom">Project Photos (multiple)</label>
+                    <label class="form-label-custom">{{ __('backend.projects_create.project_photos_multiple') }}</label>
                     <input type="file"
                            name="project_photos[]"
                            multiple
@@ -432,7 +432,7 @@
                 </div>
 
                 <div class="mb-0">
-                    <label class="form-label-custom">Project Video (single)</label>
+                    <label class="form-label-custom">{{ __('backend.projects_create.project_video_single') }}</label>
                     <input type="file"
                            name="project_video"
                            accept="video/*"
@@ -445,11 +445,11 @@
 
         <div class="action-bar">
             <button type="submit" class="btn btn-primary search-btn">
-                <i class="fa fa-check-circle mr-1"></i> Create Project
+                <i class="fa fa-check-circle mr-1"></i> {{ __('backend.projects_create.create_project') }}
             </button>
 
             <a href="{{ route('admin.projects.index') }}" class="reset-btn">
-                Cancel
+                {{ __('backend.projects_create.cancel') }}
             </a>
         </div>
     </form>
@@ -478,7 +478,7 @@ function previewSpecific(input, previewId) {
         } else {
             const link = document.createElement('a');
             link.href = URL.createObjectURL(file);
-            link.textContent = 'File: ' + file.name;
+            link.textContent = '{{ __('backend.projects_create.file_label') }}: ' + file.name;
             link.target = '_blank';
             wrapper.appendChild(link);
         }

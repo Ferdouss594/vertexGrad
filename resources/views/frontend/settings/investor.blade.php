@@ -333,16 +333,9 @@
     </p>
 </div>
 
-<a href="{{ route('security.index') }}" class="{{ $btnSecondaryClass }}">
-    <i class="fas fa-arrow-up-right-from-square mr-2"></i>
-    {{ __('frontend.security.open_security_center') }}
-</a>
-                    </div>
-
-                    <div class="flex items-center">
                         <a href="{{ route('security.index') }}" class="{{ $btnSecondaryClass }}">
                             <i class="fas fa-arrow-up-right-from-square mr-2"></i>
-                            Open Security Center
+                            {{ __('frontend.security.open_security_center') }}
                         </a>
                     </div>
                 </div>

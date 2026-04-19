@@ -1,82 +1,150 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <!-- Basic Page Info -->
-    <meta charset="utf-8" />
-    <title>VertexGrad Rigester</title>
+@extends('layouts.auth')
 
-    <!-- Site favicon -->
-    <link rel="apple-touch-icon" sizes="180x180" href="vendors/images/apple-touch-icon.png" />
-    <link rel="icon" type="image/png" sizes="32x32" href="vendors/images/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="vendors/images/favicon-16x16.png" />
+@section('title', __('backend.auth_register.page_title'))
+@section('body_class', 'register-page')
 
-    <!-- Mobile Specific Metas -->
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+@section('auth_actions')
+    <a href="{{ route('admin.login.show') }}" class="auth-link-btn">
+        {{ __('backend.auth_register.login') }}
+    </a>
+@endsection
 
-    <!-- Google Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
-    <!-- CSS -->
-    <link rel="stylesheet" type="text/css" href="{{ asset('vendors/styles/core.css') }}" />
-    <link rel="stylesheet" type="text/css" href="{{ asset('vendors/styles/icon-font.min.css') }}" />
-    <link rel="stylesheet" type="text/css" href="{{ asset('src/plugins/jquery-steps/jquery.steps.css') }}" />
-    <link rel="stylesheet" type="text/css" href="{{ asset('vendors/styles/style.css') }}" />
+@push('auth_styles')
+<link rel="stylesheet" type="text/css" href="{{ asset('src/plugins/jquery-steps/jquery.steps.css') }}" />
+<style>
+    .register-page-wrap {
+        padding: 40px 0;
+    }
 
-    <!-- CSRF Token -->
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-</head>
+    .register-box {
+        overflow: hidden;
+    }
 
-<body class="register-page">
-<div class="login-header box-shadow">
-    <div class="container-fluid d-flex justify-content-between align-items-center">
-        <div class="brand-logo">
-            <a href="login.html">
-               <img src="{{ asset('vendors/images/VertexGrad_logoud.png') }}" alt=""class="light-logo"style="margin-top:13px;">
-            </a>
-        </div>
-        <div class="login-menu">
-            <ul>
-               <li><a href="{{ route('login.show') }}">Login</a></li>
+    .register-intro {
+        padding: 26px 28px 10px;
+        border-bottom: 1px solid #eef2f7;
+        text-align: center;
+    }
 
-            </ul>
-        </div>
-    </div>
-</div>
+    .register-title {
+        margin: 0;
+        font-size: 1.9rem;
+        font-weight: 800;
+        color: #1b00ff;
+    }
 
+    .register-subtitle {
+        margin: 10px 0 0;
+        color: #7b8497;
+        font-size: 0.95rem;
+        line-height: 1.7;
+    }
+
+    .wizard-content {
+        padding: 10px 0 0;
+    }
+
+    .tab-wizard2 .steps {
+        padding: 0 24px;
+    }
+
+    .tab-wizard2 .content {
+        padding: 20px 24px 10px;
+    }
+
+    .tab-wizard2 .actions {
+        padding: 0 24px 24px;
+    }
+
+    .register-info {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        border: 1px solid #eef2f7;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .register-info li {
+        padding: 14px 16px;
+        border-bottom: 1px solid #eef2f7;
+    }
+
+    .register-info li:last-child {
+        border-bottom: 0;
+    }
+
+    #testSubmit {
+        min-width: 220px;
+    }
+
+    @media (max-width: 767px) {
+        .register-intro {
+            padding: 22px 18px 10px;
+        }
+
+        .tab-wizard2 .steps,
+        .tab-wizard2 .content,
+        .tab-wizard2 .actions {
+            padding-left: 16px;
+            padding-right: 16px;
+        }
+
+        .register-title {
+            font-size: 1.55rem;
+        }
+    }
+</style>
+@endpush
+
+@section('content')
 <div class="register-page-wrap d-flex align-items-center flex-wrap justify-content-center">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-md-6 col-lg-7">
-                <img src="vendors/images/register-page-img.png" alt="" />
+                <img src="{{ asset('vendors/images/register-page-img.png') }}" alt="{{ __('backend.auth_register.register_image_alt') }}" />
             </div>
+
             <div class="col-md-6 col-lg-5">
                 <div class="register-box bg-white box-shadow border-radius-10">
+                    <div class="register-intro">
+                        <h2 class="register-title">{{ __('backend.auth_register.heading') }}</h2>
+                        <p class="register-subtitle">{{ __('backend.auth_register.subtitle') }}</p>
+                    </div>
+
                     <div class="wizard-content">
-                        <form id="registerForm" class="tab-wizard2 wizard-circle wizard" action="{{ route('admin.register.post') }}" method="POST">
+                        <form id="registerForm"
+                              class="tab-wizard2 wizard-circle wizard"
+                              action="{{ route('admin.register.post') }}"
+                              method="POST">
                             @csrf
-                            <!-- Step 1: Basic Account Credentials -->
-                            <h5>Basic Account Credentials</h5>
+
+                            <h5>{{ __('backend.auth_register.steps.basic_account_credentials') }}</h5>
                             <section>
                                 <div class="form-wrap max-width-600 mx-auto">
                                     <div class="form-group row">
-                                        <label class="col-sm-4 col-form-label">Email Address*</label>
+                                        <label class="col-sm-4 col-form-label">{{ __('backend.auth_register.email_address_required') }}</label>
                                         <div class="col-sm-8">
                                             <input type="email" name="email" class="form-control" required />
                                         </div>
                                     </div>
+
                                     <div class="form-group row">
-                                        <label class="col-sm-4 col-form-label">Username*</label>
+                                        <label class="col-sm-4 col-form-label">{{ __('backend.auth_register.username_required') }}</label>
                                         <div class="col-sm-8">
                                             <input type="text" name="username" class="form-control" required />
                                         </div>
                                     </div>
+
                                     <div class="form-group row">
-                                        <label class="col-sm-4 col-form-label">Password*</label>
+                                        <label class="col-sm-4 col-form-label">{{ __('backend.auth_register.password_required') }}</label>
                                         <div class="col-sm-8">
                                             <input type="password" name="password" class="form-control" required />
                                         </div>
                                     </div>
+
                                     <div class="form-group row">
-                                        <label class="col-sm-4 col-form-label">Confirm Password*</label>
+                                        <label class="col-sm-4 col-form-label">{{ __('backend.auth_register.confirm_password_required') }}</label>
                                         <div class="col-sm-8">
                                             <input type="password" name="password_confirmation" class="form-control" required />
                                         </div>
@@ -84,37 +152,40 @@
                                 </div>
                             </section>
 
-                            <!-- Step 2: Personal Information -->
-                            <h5>Personal Information</h5>
+                            <h5>{{ __('backend.auth_register.steps.personal_information') }}</h5>
                             <section>
                                 <div class="form-wrap max-width-600 mx-auto">
                                     <div class="form-group row">
-                                        <label class="col-sm-4 col-form-label">Full Name</label>
+                                        <label class="col-sm-4 col-form-label">{{ __('backend.auth_register.full_name') }}</label>
                                         <div class="col-sm-8">
                                             <input type="text" name="full_name" class="form-control" required />
                                         </div>
                                     </div>
+
                                     <div class="form-group row align-items-center">
-                                        <label class="col-sm-4 col-form-label">Gender</label>
+                                        <label class="col-sm-4 col-form-label">{{ __('backend.auth_register.gender') }}</label>
                                         <div class="col-sm-8">
                                             <div class="custom-control custom-radio custom-control-inline pb-0">
                                                 <input type="radio" id="male" name="gender" value="male" class="custom-control-input" required />
-                                                <label class="custom-control-label" for="male">Male</label>
+                                                <label class="custom-control-label" for="male">{{ __('backend.auth_register.gender_male') }}</label>
                                             </div>
+
                                             <div class="custom-control custom-radio custom-control-inline pb-0">
                                                 <input type="radio" id="female" name="gender" value="female" class="custom-control-input" required />
-                                                <label class="custom-control-label" for="female">Female</label>
+                                                <label class="custom-control-label" for="female">{{ __('backend.auth_register.gender_female') }}</label>
                                             </div>
                                         </div>
                                     </div>
+
                                     <div class="form-group row">
-                                        <label class="col-sm-4 col-form-label">City</label>
+                                        <label class="col-sm-4 col-form-label">{{ __('backend.auth_register.city') }}</label>
                                         <div class="col-sm-8">
                                             <input type="text" name="city" class="form-control" />
                                         </div>
                                     </div>
+
                                     <div class="form-group row">
-                                        <label class="col-sm-4 col-form-label">State</label>
+                                        <label class="col-sm-4 col-form-label">{{ __('backend.auth_register.state') }}</label>
                                         <div class="col-sm-8">
                                             <input type="text" name="state" class="form-control" />
                                         </div>
@@ -122,96 +193,97 @@
                                 </div>
                             </section>
 
-                           
-                            <h5>Overview Information</h5>
+                            <h5>{{ __('backend.auth_register.steps.overview_information') }}</h5>
                             <section>
                                 <div class="form-wrap max-width-600 mx-auto">
                                     <ul class="register-info">
                                         <li>
                                             <div class="row">
-                                                <div class="col-sm-4 weight-600">Email Address</div>
+                                                <div class="col-sm-4 weight-600">{{ __('backend.auth_register.overview.email_address') }}</div>
                                                 <div class="col-sm-8" id="overview-email"></div>
                                             </div>
                                         </li>
+
                                         <li>
                                             <div class="row">
-                                                <div class="col-sm-4 weight-600">Username</div>
+                                                <div class="col-sm-4 weight-600">{{ __('backend.auth_register.overview.username') }}</div>
                                                 <div class="col-sm-8" id="overview-username"></div>
                                             </div>
                                         </li>
+
                                         <li>
                                             <div class="row">
-                                                <div class="col-sm-4 weight-600">Full Name</div>
+                                                <div class="col-sm-4 weight-600">{{ __('backend.auth_register.overview.full_name') }}</div>
                                                 <div class="col-sm-8" id="overview-fullname"></div>
                                             </div>
                                         </li>
+
                                         <li>
                                             <div class="row">
-                                                <div class="col-sm-4 weight-600">Location</div>
+                                                <div class="col-sm-4 weight-600">{{ __('backend.auth_register.overview.location') }}</div>
                                                 <div class="col-sm-8" id="overview-location"></div>
                                             </div>
                                         </li>
                                     </ul>
-
-                                    <!-- زر تجريبي لإرسال البيانات مباشرة -->
-                                    
+                                </div>
                             </section>
                         </form>
                     </div>
+                </div>
+
+                <div class="text-center mt-3">
+                    <button type="button" id="testSubmit" class="btn btn-primary btn-lg">
+                        {{ __('backend.auth_register.register') }}
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<div class="text-center mt-3">
-    <button type="button" id="testSubmit" class="btn btn-primary">  Register</button>
-</div>
+@endsection
 
-
-<!-- jQuery -->
+@push('auth_scripts')
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="{{ asset('src/plugins/jquery-steps/jquery.steps.js') }}"></script>
+<script src="{{ asset('vendors/scripts/steps-setting.js') }}"></script>
+
 <script>
 $(document).ready(function () {
-    // إزالة زر Finish الأصلي إذا موجود
     $(".actions li a[href='#finish']").remove();
 
     let testBtnExists = false;
 
-    // عند محاولة تغيير الخطوة
     $("#registerForm").on("stepChanging", function (event, currentIndex, newIndex) {
-        // مثال: تحقق من تعبئة الحقول في الخطوة الحالية
         let valid = true;
 
-        if (currentIndex === 0) { // إذا كانت الخطوة الأولى
+        if (currentIndex === 0) {
             $("#registerForm section").eq(currentIndex).find("input[required]").each(function () {
                 if (!$(this).val()) {
                     valid = false;
-                    $(this).addClass("is-invalid"); // يمكن إضافة إطار أحمر
+                    $(this).addClass("is-invalid");
                 } else {
                     $(this).removeClass("is-invalid");
                 }
             });
 
             if (!valid) {
-                alert("❌ الرجاء إكمال جميع الحقول المطلوبة في الخطوة الأولى قبل الانتقال.");
-                return false; // منع الانتقال
+                alert(@json(__('backend.auth_register.complete_required_fields_alert')));
+                return false;
             }
         }
 
-        // إزالة زر Register عند الانتقال
         $("#testSubmitBtn").remove();
         testBtnExists = false;
 
-        return true; // السماح بالانتقال إذا كل شيء صحيح
+        return true;
     });
 
-    // بعد اكتمال الانتقال إلى خطوة جديدة
     $("#registerForm").on("stepChanged", function (event, currentIndex) {
         var totalSteps = $("#registerForm").find("h5").length;
 
         if (currentIndex === totalSteps - 1 && !testBtnExists) {
             var prevBtn = $(".actions li a[href='#previous']");
-            var registerBtn = $('<a href="javascript:void(0);" id="testSubmitBtn" class="btn btn-primary">Register</a>');
+            var registerBtn = $('<a href="javascript:void(0);" id="testSubmitBtn" class="btn btn-primary">{{ __('backend.auth_register.register') }}</a>');
 
             prevBtn.parent().css("display", "flex");
             prevBtn.after(registerBtn);
@@ -221,7 +293,7 @@ $(document).ready(function () {
                 "font-size": prevBtn.css("font-size"),
                 "height": prevBtn.css("height"),
                 "line-height": prevBtn.css("line-height"),
-                "margin-left": "10px"
+                "margin-inline-start": "10px"
             });
 
             registerBtn.on("click", function () {
@@ -238,6 +310,7 @@ $(document).ready(function () {
         $("#overview-email").text($("input[name='email']").val());
         $("#overview-username").text($("input[name='username']").val());
         $("#overview-fullname").text($("input[name='full_name']").val());
+
         var city = $("input[name='city']").val();
         var state = $("input[name='state']").val();
         var location = city;
@@ -262,59 +335,42 @@ $(document).ready(function () {
             method: "POST",
             data: formData,
             dataType: "json",
-    success: function (response) {
-        if (response.success || response.message) {
-            alert("✅ نجاح: " + (response.message || "تم التسجيل بنجاح"));
-            
-            // This is the "Magic Line" that takes the user to the dashboard
-            if (response.redirect_url) {
-                window.location.href = response.redirect_url;
-            } else {
-                // Fallback if your controller doesn't send a URL
-                window.location.href = "/manager/dashboard";
-            }
-        } else {
-            alert("❌ فشل: " + response.message);
-        }
-    }
-            ,error: function (xhr) {
-    if (xhr.status === 422) {
-        // أخطاء التحقق من الصحة
-        let errors = xhr.responseJSON.errors;
-        let msg = "";
-        $.each(errors, function (key, value) {
-            msg += "❌ " + value + "\n";
-        });
-        alert(msg);
-    } else {
-        // أي خطأ آخر: عرض كل التفاصيل من السيرفر
-        let msg = "❌ حدث خطأ غير متوقع.\n";
-        if (xhr.responseJSON && xhr.responseJSON.message) {
-            msg += "Message: " + xhr.responseJSON.message + "\n";
-        }
-        if (xhr.responseJSON && xhr.responseJSON.trace) {
-            msg += "Trace:\n" + xhr.responseJSON.trace;
-        } else {
-            msg += "Response Text:\n" + xhr.responseText;
-        }
-        alert(msg);
-    
+            success: function (response) {
+                if (response.success || response.message) {
+                    alert("✅ " + (response.message || @json(__('backend.auth_register.register_success'))));
 
+                    if (response.redirect_url) {
+                        window.location.href = response.redirect_url;
+                    } else {
+                        window.location.href = "{{ route('manager.dashboard') }}";
+                    }
+                } else {
+                    alert("❌ " + response.message);
+                }
+            },
+            error: function (xhr) {
+                if (xhr.status === 422) {
+                    let errors = xhr.responseJSON.errors;
+                    let msg = "";
+                    $.each(errors, function (key, value) {
+                        msg += "❌ " + value + "\n";
+                    });
+                    alert(msg);
+                } else {
+                    let msg = @json(__('backend.auth_register.unexpected_error')) + "\n";
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        msg += "Message: " + xhr.responseJSON.message + "\n";
+                    }
+                    if (xhr.responseJSON && xhr.responseJSON.trace) {
+                        msg += "Trace:\n" + xhr.responseJSON.trace;
+                    } else {
+                        msg += "Response Text:\n" + xhr.responseText;
+                    }
+                    alert(msg);
                 }
             },
         });
     });
 });
-
-
 </script>
-
-<!-- js -->
-<script src="{{ asset('vendors/scripts/core.js') }}"></script>
-<script src="{{ asset('vendors/scripts/script.min.js') }}"></script>
-<script src="{{ asset('vendors/scripts/process.js') }}"></script>
-<script src="{{ asset('vendors/scripts/layout-settings.js') }}"></script>
-<script src="{{ asset('src/plugins/jquery-steps/jquery.steps.js') }}"></script>
-<script src="{{ asset('vendors/scripts/steps-setting.js') }}"></script>
-</body>
-</html>
+@endpush

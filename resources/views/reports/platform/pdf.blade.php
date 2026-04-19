@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="{{ app()->getLocale() }}">
 <head>
     <meta charset="utf-8">
-    <title>Platform Report</title>
+    <title>{{ __('backend.platform_report_pdf.page_title') }}</title>
     <style>
-        body { font-family: DejaVu Sans; font-size: 12px; }
+        body { font-family: DejaVu Sans, sans-serif; font-size: 12px; }
         h2, h3 { text-align: center; margin-bottom: 10px; }
         table { width: 100%; border-collapse: collapse; margin-bottom: 25px; }
         th, td { border: 1px solid #000; padding: 6px; text-align: left; }
@@ -14,17 +14,17 @@
 </head>
 <body>
 
-<h2>Platform Report</h2>
+<h2>{{ __('backend.platform_report_pdf.heading') }}</h2>
 
 {{-- Investors --}}
-<h3>Investors ({{ count($investors) }})</h3>
+<h3>{{ __('backend.platform_report_pdf.investors_heading', ['count' => count($investors)]) }}</h3>
 <table>
     <thead>
         <tr>
-            <th>#</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Status</th>
+            <th>{{ __('backend.platform_report_pdf.table_number') }}</th>
+            <th>{{ __('backend.platform_report_pdf.name') }}</th>
+            <th>{{ __('backend.platform_report_pdf.email') }}</th>
+            <th>{{ __('backend.platform_report_pdf.status') }}</th>
         </tr>
     </thead>
     <tbody>
@@ -42,15 +42,15 @@
 <div class="page-break"></div>
 
 {{-- Students --}}
-<h3>Students ({{ count($students) }})</h3>
+<h3>{{ __('backend.platform_report_pdf.students_heading', ['count' => count($students)]) }}</h3>
 <table>
     <thead>
         <tr>
-            <th>#</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Major</th>
-            <th>Status</th>
+            <th>{{ __('backend.platform_report_pdf.table_number') }}</th>
+            <th>{{ __('backend.platform_report_pdf.name') }}</th>
+            <th>{{ __('backend.platform_report_pdf.email') }}</th>
+            <th>{{ __('backend.platform_report_pdf.major') }}</th>
+            <th>{{ __('backend.platform_report_pdf.status') }}</th>
         </tr>
     </thead>
     <tbody>
@@ -59,7 +59,7 @@
             <td>{{ $i + 1 }}</td>
             <td>{{ $stu->name }}</td>
             <td>{{ $stu->email }}</td>
-            <td>{{ $stu->student->major ?? '-' }}</td>
+            <td>{{ $stu->student->major ?? __('backend.platform_report_pdf.empty_dash') }}</td>
             <td>{{ ucfirst($stu->status) }}</td>
         </tr>
         @endforeach
@@ -69,15 +69,15 @@
 <div class="page-break"></div>
 
 {{-- Projects --}}
-<h3>Projects ({{ count($projects) }})</h3>
+<h3>{{ __('backend.platform_report_pdf.projects_heading', ['count' => count($projects)]) }}</h3>
 <table>
     <thead>
         <tr>
-            <th>#</th>
-            <th>Project Name</th>
-            <th>Student</th>
-            <th>Status</th>
-            <th>Budget</th>
+            <th>{{ __('backend.platform_report_pdf.table_number') }}</th>
+            <th>{{ __('backend.platform_report_pdf.project_name') }}</th>
+            <th>{{ __('backend.platform_report_pdf.student') }}</th>
+            <th>{{ __('backend.platform_report_pdf.status') }}</th>
+            <th>{{ __('backend.platform_report_pdf.budget') }}</th>
         </tr>
     </thead>
     <tbody>
@@ -85,7 +85,7 @@
         <tr>
             <td>{{ $i + 1 }}</td>
             <td>{{ $pro->name }}</td>
-            <td>{{ $pro->student->name ?? '-' }}</td>
+            <td>{{ $pro->student->name ?? __('backend.platform_report_pdf.empty_dash') }}</td>
             <td>{{ $pro->status }}</td>
             <td>{{ $pro->budget ?? '0' }}</td>
         </tr>

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Investor Details')
+@section('title', __('backend.investors_show.page_title'))
 
 @section('content')
 <style>
@@ -309,21 +309,21 @@
         <div class="page-header-card">
             <div class="d-flex justify-content-between align-items-center flex-wrap" style="gap: 15px;">
                 <div>
-                    <h3>{{ $investor->user?->name ?? 'Investor Details' }}</h3>
-                    <p>Complete investor profile, funding behavior, notes, files, and timeline activity.</p>
+                    <h3>{{ $investor->user?->name ?? __('backend.investors_show.page_title') }}</h3>
+                    <p>{{ __('backend.investors_show.header_subtitle') }}</p>
                 </div>
 
                 <div class="d-flex flex-wrap" style="gap: 10px;">
-                    <a href="{{ route('admin.investors.index') }}" class="btn-back"><i class="fa fa-arrow-left mr-1"></i> Back</a>
-                    <a href="{{ route('admin.investment-requests.index', ['search' => $investor->user?->email]) }}" class="btn-back"><i class="fa fa-hand-holding-usd mr-1"></i> Requests</a>
-                    <a href="{{ route('admin.investors.report', $investor->user_id) }}" class="btn-back"><i class="fa fa-chart-bar mr-1"></i> Report</a>
-                    <a href="{{ route('admin.investors.meetings.index', $investor->user_id) }}" class="btn-back"><i class="fa fa-calendar-alt mr-1"></i> Meetings</a>
-                    <a href="{{ route('admin.investors.contracts.index', $investor->user_id) }}" class="btn-back"><i class="fa fa-file-contract mr-1"></i> Contracts</a>
-                    <a href="{{ route('admin.investors.email.create', $investor->user_id) }}" class="btn-back"><i class="fa fa-envelope mr-1"></i> Email</a>
-                    <a href="{{ route('admin.investors.preferences.edit', $investor->user_id) }}" class="btn-back"><i class="fa fa-sliders-h mr-1"></i> Preferences</a>
-                    <a href="{{ route('admin.investors.reminders.index', $investor->user_id) }}" class="btn-back"><i class="fa fa-bell mr-1"></i> Reminders</a>
-                    <a href="{{ route('admin.investors.notify.create',$investor->user_id) }}" class="btn-back"><i class="fa fa-bell mr-1"></i> Notify</a>
-                    <a href="{{ route('admin.investors.edit', $investor->user_id) }}" class="btn-edit"><i class="fa fa-pencil-alt mr-1"></i> Edit Investor</a>
+                    <a href="{{ route('admin.investors.index') }}" class="btn-back"><i class="fa fa-arrow-left mr-1"></i> {{ __('backend.investors_show.back') }}</a>
+                    <a href="{{ route('admin.investment-requests.index', ['search' => $investor->user?->email]) }}" class="btn-back"><i class="fa fa-hand-holding-usd mr-1"></i> {{ __('backend.investors_show.requests') }}</a>
+                    <a href="{{ route('admin.investors.report', $investor->user_id) }}" class="btn-back"><i class="fa fa-chart-bar mr-1"></i> {{ __('backend.investors_show.report') }}</a>
+                    <a href="{{ route('admin.investors.meetings.index', $investor->user_id) }}" class="btn-back"><i class="fa fa-calendar-alt mr-1"></i> {{ __('backend.investors_show.meetings') }}</a>
+                    <a href="{{ route('admin.investors.contracts.index', $investor->user_id) }}" class="btn-back"><i class="fa fa-file-contract mr-1"></i> {{ __('backend.investors_show.contracts') }}</a>
+                    <a href="{{ route('admin.investors.email.create', $investor->user_id) }}" class="btn-back"><i class="fa fa-envelope mr-1"></i> {{ __('backend.investors_show.email') }}</a>
+                    <a href="{{ route('admin.investors.preferences.edit', $investor->user_id) }}" class="btn-back"><i class="fa fa-sliders-h mr-1"></i> {{ __('backend.investors_show.preferences') }}</a>
+                    <a href="{{ route('admin.investors.reminders.index', $investor->user_id) }}" class="btn-back"><i class="fa fa-bell mr-1"></i> {{ __('backend.investors_show.reminders') }}</a>
+                    <a href="{{ route('admin.investors.notify.create',$investor->user_id) }}" class="btn-back"><i class="fa fa-bell mr-1"></i> {{ __('backend.investors_show.notify') }}</a>
+                    <a href="{{ route('admin.investors.edit', $investor->user_id) }}" class="btn-edit"><i class="fa fa-pencil-alt mr-1"></i> {{ __('backend.investors_show.edit_investor') }}</a>
                 </div>
             </div>
         </div>
@@ -334,22 +334,22 @@
                     <div class="section-header">
                         <div class="title-wrap">
                             <i class="fa fa-id-card"></i>
-                            <span>Investor Overview</span>
+                            <span>{{ __('backend.investors_show.investor_overview') }}</span>
                         </div>
                     </div>
 
                     <div class="section-body">
                         <div class="info-grid">
-                            <div class="info-item"><div class="info-label">Full Name</div><div class="info-value">{{ $investor->user?->name ?? '—' }}</div></div>
-                            <div class="info-item"><div class="info-label">Email</div><div class="info-value">{{ $investor->user?->email ?? '—' }}</div></div>
-                            <div class="info-item"><div class="info-label">Status</div><div class="info-value"><span class="badge-soft {{ $statusClass }}">{{ ucfirst($investor->user?->status ?? '—') }}</span></div></div>
-                            <div class="info-item"><div class="info-label">Phone</div><div class="info-value">{{ $investor->phone ?? '—' }}</div></div>
-                            <div class="info-item"><div class="info-label">Company</div><div class="info-value">{{ $investor->company ?? '—' }}</div></div>
-                            <div class="info-item"><div class="info-label">Position</div><div class="info-value">{{ $investor->position ?? '—' }}</div></div>
-                            <div class="info-item"><div class="info-label">Investment Type</div><div class="info-value">{{ $investor->investment_type ?? '—' }}</div></div>
-                            <div class="info-item"><div class="info-label">Budget</div><div class="info-value">{{ $investor->budget !== null ? '$' . number_format($investor->budget, 2) : '—' }}</div></div>
-                            <div class="info-item"><div class="info-label">Source</div><div class="info-value">{{ $investor->source ?? '—' }}</div></div>
-                            <div class="info-item"><div class="info-label">Registered On</div><div class="info-value">{{ optional($investor->created_at)->format('Y-m-d h:i A') ?? '—' }}</div></div>
+                            <div class="info-item"><div class="info-label">{{ __('backend.investors_show.full_name') }}</div><div class="info-value">{{ $investor->user?->name ?? __('backend.investors_show.empty') }}</div></div>
+                            <div class="info-item"><div class="info-label">{{ __('backend.investors_show.email_address') }}</div><div class="info-value">{{ $investor->user?->email ?? __('backend.investors_show.empty') }}</div></div>
+                            <div class="info-item"><div class="info-label">{{ __('backend.investors_show.status') }}</div><div class="info-value"><span class="badge-soft {{ $statusClass }}">{{ ucfirst($investor->user?->status ?? __('backend.investors_show.empty')) }}</span></div></div>
+                            <div class="info-item"><div class="info-label">{{ __('backend.investors_show.phone') }}</div><div class="info-value">{{ $investor->phone ?? __('backend.investors_show.empty') }}</div></div>
+                            <div class="info-item"><div class="info-label">{{ __('backend.investors_show.company') }}</div><div class="info-value">{{ $investor->company ?? __('backend.investors_show.empty') }}</div></div>
+                            <div class="info-item"><div class="info-label">{{ __('backend.investors_show.position') }}</div><div class="info-value">{{ $investor->position ?? __('backend.investors_show.empty') }}</div></div>
+                            <div class="info-item"><div class="info-label">{{ __('backend.investors_show.investment_type') }}</div><div class="info-value">{{ $investor->investment_type ?? __('backend.investors_show.empty') }}</div></div>
+                            <div class="info-item"><div class="info-label">{{ __('backend.investors_show.budget') }}</div><div class="info-value">{{ $investor->budget !== null ? '$' . number_format($investor->budget, 2) : __('backend.investors_show.empty') }}</div></div>
+                            <div class="info-item"><div class="info-label">{{ __('backend.investors_show.source') }}</div><div class="info-value">{{ $investor->source ?? __('backend.investors_show.empty') }}</div></div>
+                            <div class="info-item"><div class="info-label">{{ __('backend.investors_show.registered_on') }}</div><div class="info-value">{{ optional($investor->created_at)->format('Y-m-d h:i A') ?? __('backend.investors_show.empty') }}</div></div>
                         </div>
                     </div>
                 </div>
@@ -360,25 +360,25 @@
                     <div class="section-header">
                         <div class="title-wrap">
                             <i class="fa fa-chart-line"></i>
-                            <span>Quick Summary</span>
+                            <span>{{ __('backend.investors_show.quick_summary') }}</span>
                         </div>
                     </div>
 
                     <div class="section-body">
-                        <div class="mini-summary-card mb-3"><div class="info-label">Notes Count</div><div class="info-value">{{ $investor->investorNotes->count() }}</div></div>
-                        <div class="mini-summary-card mb-3"><div class="info-label">Files Count</div><div class="info-value">{{ $investor->files->count() }}</div></div>
-                        <div class="mini-summary-card mb-3"><div class="info-label">Activities Count</div><div class="info-value">{{ $investor->activities->count() }}</div></div>
-                        <div class="mini-summary-card"><div class="info-label">Funding Records</div><div class="info-value">{{ $projectInvestments->count() }}</div></div>
+                        <div class="mini-summary-card mb-3"><div class="info-label">{{ __('backend.investors_show.notes_count') }}</div><div class="info-value">{{ $investor->investorNotes->count() }}</div></div>
+                        <div class="mini-summary-card mb-3"><div class="info-label">{{ __('backend.investors_show.files_count') }}</div><div class="info-value">{{ $investor->files->count() }}</div></div>
+                        <div class="mini-summary-card mb-3"><div class="info-label">{{ __('backend.investors_show.activities_count') }}</div><div class="info-value">{{ $investor->activities->count() }}</div></div>
+                        <div class="mini-summary-card"><div class="info-label">{{ __('backend.investors_show.funding_records') }}</div><div class="info-value">{{ $projectInvestments->count() }}</div></div>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="row mb-4">
-            <div class="col-xl-3 col-md-6 mb-3"><div class="info-item"><div class="info-label">Interested</div><div class="info-value">{{ $fundingStats['interested'] }}</div></div></div>
-            <div class="col-xl-3 col-md-6 mb-3"><div class="info-item"><div class="info-label">Requested</div><div class="info-value">{{ $fundingStats['requested'] }}</div></div></div>
-            <div class="col-xl-3 col-md-6 mb-3"><div class="info-item"><div class="info-label">Approved</div><div class="info-value">{{ $fundingStats['approved'] }}</div></div></div>
-            <div class="col-xl-3 col-md-6 mb-3"><div class="info-item"><div class="info-label">Rejected</div><div class="info-value">{{ $fundingStats['rejected'] }}</div></div></div>
+            <div class="col-xl-3 col-md-6 mb-3"><div class="info-item"><div class="info-label">{{ __('backend.investors_show.interested') }}</div><div class="info-value">{{ $fundingStats['interested'] }}</div></div></div>
+            <div class="col-xl-3 col-md-6 mb-3"><div class="info-item"><div class="info-label">{{ __('backend.investors_show.requested') }}</div><div class="info-value">{{ $fundingStats['requested'] }}</div></div></div>
+            <div class="col-xl-3 col-md-6 mb-3"><div class="info-item"><div class="info-label">{{ __('backend.investors_show.approved') }}</div><div class="info-value">{{ $fundingStats['approved'] }}</div></div></div>
+            <div class="col-xl-3 col-md-6 mb-3"><div class="info-item"><div class="info-label">{{ __('backend.investors_show.rejected') }}</div><div class="info-value">{{ $fundingStats['rejected'] }}</div></div></div>
         </div>
 
       @include('investors._investments-section')
@@ -389,7 +389,7 @@
                     <div class="section-header">
                         <div class="title-wrap">
                             <i class="fa fa-sticky-note"></i>
-                            <span>Notes</span>
+                            <span>{{ __('backend.investors_show.notes') }}</span>
                         </div>
                     </div>
 
@@ -397,15 +397,15 @@
                         <form action="{{ route('admin.investors.notes.store', $investor->user_id) }}"
                               method="POST"
                               class="mb-4 ajax-ui-form"
-                              data-loading-text="Saving...">
+                              data-loading-text="{{ __('backend.investors_show.saving') }}">
                             @csrf
                             <div class="mb-3">
-                                <label class="form-label" style="font-weight:700;">Add Note</label>
-                                <textarea name="note" rows="4" class="form-control auto-resize" placeholder="Write a note about this investor..."></textarea>
+                                <label class="form-label" style="font-weight:700;">{{ __('backend.investors_show.add_note') }}</label>
+                                <textarea name="note" rows="4" class="form-control auto-resize" placeholder="{{ __('backend.investors_show.write_note_placeholder') }}"></textarea>
                             </div>
 
                             <button type="submit" class="btn-primary-custom">
-                                <i class="fa fa-plus mr-1"></i> Add Note
+                                <i class="fa fa-plus mr-1"></i> {{ __('backend.investors_show.add_note') }}
                             </button>
                         </form>
 
@@ -413,7 +413,7 @@
                             <ul class="list-clean">
                                 @foreach($investor->investorNotes as $note)
                                     <li>
-                                        <div class="record-title">{{ $note->user?->name ?? 'Unknown User' }}</div>
+                                        <div class="record-title">{{ $note->user?->name ?? __('backend.investors_show.unknown_user') }}</div>
                                         <div class="record-meta">{{ $note->created_at?->format('Y-m-d h:i A') }}</div>
                                         <div class="record-text">{{ $note->note }}</div>
 
@@ -424,8 +424,8 @@
                                             @method('DELETE')
                                             <button type="submit"
                                                     class="btn btn-sm btn-outline-danger btn-outline-danger-custom"
-                                                    onclick="return confirm('Delete this note?')">
-                                                Delete
+                                                    onclick="return confirm('{{ __('backend.investors_show.confirm_delete_note') }}')">
+                                                {{ __('backend.investors_show.delete') }}
                                             </button>
                                         </form>
                                     </li>
@@ -434,7 +434,7 @@
                         @else
                             <div class="empty-state">
                                 <i class="fa fa-sticky-note"></i>
-                                <div>No notes available.</div>
+                                <div>{{ __('backend.investors_show.no_notes_available') }}</div>
                             </div>
                         @endif
                     </div>
@@ -446,7 +446,7 @@
                     <div class="section-header">
                         <div class="title-wrap">
                             <i class="fa fa-folder-open"></i>
-                            <span>Files</span>
+                            <span>{{ __('backend.investors_show.files') }}</span>
                         </div>
                     </div>
 
@@ -455,15 +455,15 @@
                               method="POST"
                               enctype="multipart/form-data"
                               class="mb-4 ajax-ui-form"
-                              data-loading-text="Uploading...">
+                              data-loading-text="{{ __('backend.investors_show.uploading') }}">
                             @csrf
                             <div class="mb-3">
-                                <label class="form-label" style="font-weight:700;">Upload File</label>
+                                <label class="form-label" style="font-weight:700;">{{ __('backend.investors_show.upload_file') }}</label>
                                 <input type="file" name="file" class="form-control">
                             </div>
 
                             <button type="submit" class="btn-primary-custom">
-                                <i class="fa fa-upload mr-1"></i> Upload File
+                                <i class="fa fa-upload mr-1"></i> {{ __('backend.investors_show.upload_file') }}
                             </button>
                         </form>
 
@@ -477,8 +477,8 @@
                                             </a>
                                         </div>
 
-                                        <div class="record-meta">Uploaded: {{ $file->created_at?->format('Y-m-d h:i A') }}</div>
-                                        <div class="record-meta">Size: {{ isset($file->size) ? number_format($file->size / 1024, 2) . ' KB' : '—' }}</div>
+                                        <div class="record-meta">{{ __('backend.investors_show.uploaded') }}: {{ $file->created_at?->format('Y-m-d h:i A') }}</div>
+                                        <div class="record-meta">{{ __('backend.investors_show.size') }}: {{ isset($file->size) ? number_format($file->size / 1024, 2) . ' KB' : __('backend.investors_show.empty') }}</div>
 
                                         <form action="{{ route('admin.investors.files.delete', ['investor' => $investor->user_id, 'file' => $file->id]) }}"
                                               method="POST"
@@ -487,8 +487,8 @@
                                             @method('DELETE')
                                             <button type="submit"
                                                     class="btn btn-sm btn-outline-danger btn-outline-danger-custom"
-                                                    onclick="return confirm('Delete this file?')">
-                                                Delete
+                                                    onclick="return confirm('{{ __('backend.investors_show.confirm_delete_file') }}')">
+                                                {{ __('backend.investors_show.delete') }}
                                             </button>
                                         </form>
                                     </li>
@@ -497,7 +497,7 @@
                         @else
                             <div class="empty-state">
                                 <i class="fa fa-folder-open"></i>
-                                <div>No files uploaded.</div>
+                                <div>{{ __('backend.investors_show.no_files_uploaded') }}</div>
                             </div>
                         @endif
                     </div>
@@ -509,7 +509,7 @@
                     <div class="section-header">
                         <div class="title-wrap">
                             <i class="fa fa-history"></i>
-                            <span>Activities</span>
+                            <span>{{ __('backend.investors_show.activities') }}</span>
                         </div>
                     </div>
 
@@ -518,7 +518,7 @@
                             <ul class="list-clean">
                                 @foreach($investor->activities as $activity)
                                     <li>
-                                        <div class="record-title">{{ $activity->user?->name ?? 'System' }}</div>
+                                        <div class="record-title">{{ $activity->user?->name ?? __('backend.investors_show.system') }}</div>
                                         <div class="record-meta">{{ $activity->created_at?->format('Y-m-d h:i A') }}</div>
                                         <div class="record-text">
                                             {{ ucfirst(str_replace('_', ' ', $activity->action)) }}
@@ -535,7 +535,7 @@
                         @else
                             <div class="empty-state">
                                 <i class="fa fa-history"></i>
-                                <div>No activities recorded.</div>
+                                <div>{{ __('backend.investors_show.no_activities_recorded') }}</div>
                             </div>
                         @endif
                     </div>
@@ -562,7 +562,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const btn = form.querySelector('button[type="submit"]');
             if (!btn) return;
             btn.disabled = true;
-            btn.innerHTML = '<i class="fa fa-spinner fa-spin mr-1"></i> ' + (form.dataset.loadingText || 'Processing...');
+            btn.innerHTML = '<i class="fa fa-spinner fa-spin mr-1"></i> ' + (form.dataset.loadingText || '{{ __('backend.investors_show.processing') }}');
         });
     });
 

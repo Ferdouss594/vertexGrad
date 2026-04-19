@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ app()->getLocale() }}">
 <head>
     <meta charset="UTF-8">
-    <title>VertexGrad Audit Logs Report</title>
+    <title>{{ __('backend.audit_report.title') }}</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -113,47 +113,47 @@
 <body>
 
     <div class="report-header">
-        <h1>VertexGrad Audit Logs Report</h1>
-        <p>Professional export of system activity, user actions, and platform audit events.</p>
+        <h1>{{ __('backend.audit_report.header_title') }}</h1>
+        <p>{{ __('backend.audit_report.header_subtitle') }}</p>
     </div>
 
     <div class="meta-grid">
         <div class="meta-box">
-            <div class="meta-title">Generated Date</div>
+            <div class="meta-title">{{ __('backend.audit_report.generated_date') }}</div>
             <div class="meta-value">{{ $generatedAt->format('Y-m-d') }}</div>
         </div>
         <div class="meta-box">
-            <div class="meta-title">Generated Time</div>
+            <div class="meta-title">{{ __('backend.audit_report.generated_time') }}</div>
             <div class="meta-value">{{ $generatedAt->format('h:i:s A') }}</div>
         </div>
         <div class="meta-box">
-            <div class="meta-title">Total Records</div>
+            <div class="meta-title">{{ __('backend.audit_report.total_records') }}</div>
             <div class="meta-value">{{ $logs->count() }}</div>
         </div>
     </div>
 
     <div class="filters-box">
-        <strong>Applied Filters</strong>
-        Search: {{ $filters['search'] ?? '—' }} |
-        User: {{ $filters['user'] ?? '—' }} |
-        Event: {{ $filters['event'] ?? '—' }} |
-        Category: {{ $filters['category'] ?? '—' }} |
-        From: {{ $filters['from'] ?? '—' }} |
-        To: {{ $filters['to'] ?? '—' }}
+        <strong>{{ __('backend.audit_report.applied_filters') }}</strong>
+        {{ __('backend.audit_report.search') }}: {{ $filters['search'] ?? '—' }} |
+        {{ __('backend.audit_report.user') }}: {{ $filters['user'] ?? '—' }} |
+        {{ __('backend.audit_report.event') }}: {{ $filters['event'] ?? '—' }} |
+        {{ __('backend.audit_report.category') }}: {{ $filters['category'] ?? '—' }} |
+        {{ __('backend.audit_report.from') }}: {{ $filters['from'] ?? '—' }} |
+        {{ __('backend.audit_report.to') }}: {{ $filters['to'] ?? '—' }}
     </div>
 
     <table>
         <thead>
             <tr>
                 <th style="width:4%;">#</th>
-                <th style="width:11%;">User</th>
-                <th style="width:8%;">Event</th>
-                <th style="width:10%;">Category</th>
-                <th style="width:12%;">Subject</th>
-                <th style="width:27%;">Description</th>
-                <th style="width:8%;">IP</th>
-                <th style="width:10%;">Date</th>
-                <th style="width:10%;">Type</th>
+                <th style="width:11%;">{{ __('backend.audit_report.user') }}</th>
+                <th style="width:8%;">{{ __('backend.audit_report.event') }}</th>
+                <th style="width:10%;">{{ __('backend.audit_report.category') }}</th>
+                <th style="width:12%;">{{ __('backend.audit_report.subject') }}</th>
+                <th style="width:27%;">{{ __('backend.audit_report.description') }}</th>
+                <th style="width:8%;">{{ __('backend.audit_report.ip') }}</th>
+                <th style="width:10%;">{{ __('backend.audit_report.date') }}</th>
+                <th style="width:10%;">{{ __('backend.audit_report.type') }}</th>
             </tr>
         </thead>
         <tbody>
@@ -161,7 +161,7 @@
                 <tr>
                     <td>{{ $log->id }}</td>
                     <td>
-                        <strong>{{ $log->user_name ?? 'System' }}</strong><br>
+                        <strong>{{ $log->user_name ?? __('backend.audit_report.system') }}</strong><br>
                         <span class="muted">{{ $log->user_type ?? '—' }}</span>
                     </td>
                     <td>{{ $log->event_label ?? ucfirst($log->event) }}</td>
@@ -174,14 +174,14 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="9" style="text-align:center;">No audit records found.</td>
+                    <td colspan="9" style="text-align:center;">{{ __('backend.audit_report.no_audit_records_found') }}</td>
                 </tr>
             @endforelse
         </tbody>
     </table>
 
     <div class="footer">
-        VertexGrad Audit Center • Generated on {{ $generatedAt->format('Y-m-d h:i:s A') }}
+        {{ __('backend.audit_report.footer_prefix') }} {{ $generatedAt->format('Y-m-d h:i:s A') }}
     </div>
 
 </body>

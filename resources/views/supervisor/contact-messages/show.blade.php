@@ -1,6 +1,6 @@
 @extends('supervisor.layout.app_super')
 
-@section('title', 'Contact Message Details')
+@section('title', __('backend.supervisor_contact_messages_show.page_title'))
 
 @section('content')
 <style>
@@ -226,44 +226,44 @@
         <div class="hero-card">
             <div class="hero-content d-flex justify-content-between align-items-start flex-wrap" style="gap: 16px;">
                 <div>
-                    <div class="hero-title">Contact Message #{{ $contactMessage->id }}</div>
+                    <div class="hero-title">{{ __('backend.supervisor_contact_messages_show.heading') }} #{{ $contactMessage->id }}</div>
                     <p class="hero-text">
-                        Review the inquiry details and handle the message according to the permissions assigned to your supervisor account.
+                        {{ __('backend.supervisor_contact_messages_show.subtitle') }}
                     </p>
                 </div>
 
                 <a href="{{ route('supervisor.contact-messages.index') }}"
                    class="btn btn-light btn-sm"
                    style="border-radius: 10px; font-weight: 700;">
-                    Back
+                    {{ __('backend.supervisor_contact_messages_show.back') }}
                 </a>
             </div>
         </div>
 
         <div class="section-card mb-4">
             <div class="section-header">
-                <h5>Message Details</h5>
+                <h5>{{ __('backend.supervisor_contact_messages_show.message_details') }}</h5>
             </div>
 
             <div class="section-body">
                 <div class="row">
                     <div class="col-md-6 mb-4">
-                        <div class="info-label">Sender Name</div>
+                        <div class="info-label">{{ __('backend.supervisor_contact_messages_show.sender_name') }}</div>
                         <div class="info-value">{{ $contactMessage->name }}</div>
                     </div>
 
                     <div class="col-md-6 mb-4">
-                        <div class="info-label">Email Address</div>
+                        <div class="info-label">{{ __('backend.supervisor_contact_messages_show.email_address') }}</div>
                         <div class="info-value">{{ $contactMessage->email }}</div>
                     </div>
 
                     <div class="col-md-6 mb-4">
-                        <div class="info-label">Subject</div>
+                        <div class="info-label">{{ __('backend.supervisor_contact_messages_show.subject') }}</div>
                         <div class="info-value">{{ $contactMessage->subject_label }}</div>
                     </div>
 
                     <div class="col-md-6 mb-4">
-                        <div class="info-label">Sender Type</div>
+                        <div class="info-label">{{ __('backend.supervisor_contact_messages_show.sender_type') }}</div>
                         <div class="info-value">
                             <span class="badge-soft {{ $senderTypeClass }}">
                                 {{ $contactMessage->sender_type_label }}
@@ -272,7 +272,7 @@
                     </div>
 
                     <div class="col-md-6 mb-4">
-                        <div class="info-label">Current Status</div>
+                        <div class="info-label">{{ __('backend.supervisor_contact_messages_show.current_status') }}</div>
                         <div class="info-value">
                             <span class="badge-soft {{ $statusClass }}">
                                 {{ $contactMessage->status_label }}
@@ -281,12 +281,12 @@
                     </div>
 
                     <div class="col-md-6 mb-4">
-                        <div class="info-label">Submitted At</div>
+                        <div class="info-label">{{ __('backend.supervisor_contact_messages_show.submitted_at') }}</div>
                         <div class="info-value">{{ $contactMessage->created_at?->format('Y-m-d h:i A') }}</div>
                     </div>
 
                     <div class="col-12">
-                        <div class="info-label">Message Content</div>
+                        <div class="info-label">{{ __('backend.supervisor_contact_messages_show.message_content') }}</div>
                         <div class="message-box">{{ $contactMessage->message }}</div>
                     </div>
                 </div>
@@ -297,22 +297,22 @@
             <div class="col-xl-8 mb-4">
                 <div class="section-card">
                     <div class="section-header">
-                        <h5>Reply History</h5>
+                        <h5>{{ __('backend.supervisor_contact_messages_show.reply_history') }}</h5>
                     </div>
 
                     <div class="section-body">
                         @forelse($contactMessage->replies as $reply)
                             <div class="reply-box">
                                 <div class="reply-meta">
-                                    Replied by {{ $reply->admin?->name ?? 'System User' }}
+                                    {{ __('backend.supervisor_contact_messages_show.replied_by') }} {{ $reply->admin?->name ?? __('backend.supervisor_contact_messages_show.system_user') }}
                                     • {{ $reply->sent_at?->format('Y-m-d h:i A') ?? $reply->created_at?->format('Y-m-d h:i A') }}
-                                    • Channel: {{ ucfirst($reply->channel) }}
-                                    • {{ $reply->is_sent ? 'Sent' : 'Draft / Not Sent' }}
+                                    • {{ __('backend.supervisor_contact_messages_show.channel') }}: {{ ucfirst($reply->channel) }}
+                                    • {{ $reply->is_sent ? __('backend.supervisor_contact_messages_show.sent') : __('backend.supervisor_contact_messages_show.draft_not_sent') }}
                                 </div>
                                 <div class="reply-text">{{ $reply->reply_message }}</div>
                             </div>
                         @empty
-                            <div class="text-muted">No replies have been sent yet.</div>
+                            <div class="text-muted">{{ __('backend.supervisor_contact_messages_show.no_replies_yet') }}</div>
                         @endforelse
                     </div>
                 </div>
@@ -323,7 +323,7 @@
                     @if($canUpdateStatus)
                         <div class="section-card">
                             <div class="section-header">
-                                <h5>Update Status</h5>
+                                <h5>{{ __('backend.supervisor_contact_messages_show.update_status') }}</h5>
                             </div>
 
                             <div class="section-body">
@@ -332,17 +332,17 @@
                                     @method('PATCH')
 
                                     <div class="mb-3">
-                                        <label for="status" class="info-label">Select Status</label>
+                                        <label for="status" class="info-label">{{ __('backend.supervisor_contact_messages_show.select_status') }}</label>
                                         <select id="status" name="status" class="form-select" required>
-                                            <option value="new" {{ $contactMessage->status === 'new' ? 'selected' : '' }}>New</option>
-                                            <option value="in_progress" {{ $contactMessage->status === 'in_progress' ? 'selected' : '' }}>In Progress</option>
-                                            <option value="replied" {{ $contactMessage->status === 'replied' ? 'selected' : '' }}>Replied</option>
-                                            <option value="closed" {{ $contactMessage->status === 'closed' ? 'selected' : '' }}>Closed</option>
+                                            <option value="new" {{ $contactMessage->status === 'new' ? 'selected' : '' }}>{{ __('backend.supervisor_contact_messages_show.status_new') }}</option>
+                                            <option value="in_progress" {{ $contactMessage->status === 'in_progress' ? 'selected' : '' }}>{{ __('backend.supervisor_contact_messages_show.status_in_progress') }}</option>
+                                            <option value="replied" {{ $contactMessage->status === 'replied' ? 'selected' : '' }}>{{ __('backend.supervisor_contact_messages_show.status_replied') }}</option>
+                                            <option value="closed" {{ $contactMessage->status === 'closed' ? 'selected' : '' }}>{{ __('backend.supervisor_contact_messages_show.status_closed') }}</option>
                                         </select>
                                     </div>
 
                                     <button type="submit" class="btn btn-primary w-100" style="border-radius: 12px; font-weight: 700;">
-                                        Save Status
+                                        {{ __('backend.supervisor_contact_messages_show.save_status') }}
                                     </button>
                                 </form>
                             </div>
@@ -352,7 +352,7 @@
                     @if($canReply)
                         <div class="section-card">
                             <div class="section-header">
-                                <h5>Send Reply</h5>
+                                <h5>{{ __('backend.supervisor_contact_messages_show.send_reply') }}</h5>
                             </div>
 
                             <div class="section-body">
@@ -360,44 +360,44 @@
                                     @csrf
 
                                     <div class="mb-3">
-                                        <label for="reply_template" class="info-label">Quick Reply Template</label>
+                                        <label for="reply_template" class="info-label">{{ __('backend.supervisor_contact_messages_show.quick_reply_template') }}</label>
                                         <select id="reply_template" class="form-select">
-                                            <option value="">Select a template</option>
-                                            <option value="academic_ack" {{ $defaultTemplateKey === 'academic_ack' ? 'selected' : '' }}>Academic Inquiry Acknowledgement</option>
-                                            <option value="investor_ack" {{ $defaultTemplateKey === 'investor_ack' ? 'selected' : '' }}>Investor Inquiry Acknowledgement</option>
-                                            <option value="support_ack" {{ $defaultTemplateKey === 'support_ack' ? 'selected' : '' }}>Support Response</option>
-                                            <option value="general_ack" {{ $defaultTemplateKey === 'general_ack' ? 'selected' : '' }}>General Response</option>
+                                            <option value="">{{ __('backend.supervisor_contact_messages_show.select_template') }}</option>
+                                            <option value="academic_ack" {{ $defaultTemplateKey === 'academic_ack' ? 'selected' : '' }}>{{ __('backend.supervisor_contact_messages_show.templates.academic_ack') }}</option>
+                                            <option value="investor_ack" {{ $defaultTemplateKey === 'investor_ack' ? 'selected' : '' }}>{{ __('backend.supervisor_contact_messages_show.templates.investor_ack') }}</option>
+                                            <option value="support_ack" {{ $defaultTemplateKey === 'support_ack' ? 'selected' : '' }}>{{ __('backend.supervisor_contact_messages_show.templates.support_ack') }}</option>
+                                            <option value="general_ack" {{ $defaultTemplateKey === 'general_ack' ? 'selected' : '' }}>{{ __('backend.supervisor_contact_messages_show.templates.general_ack') }}</option>
                                         </select>
                                         <div class="template-helper">
-                                            Choose a professional reply template, then review and edit the message before sending.
+                                            {{ __('backend.supervisor_contact_messages_show.template_helper') }}
                                         </div>
                                     </div>
 
                                     <div class="mb-3">
                                         <div class="template-actions">
                                             <button type="button" id="apply_template_btn" class="btn btn-outline-primary btn-sm" style="border-radius: 10px; font-weight: 700;">
-                                                Apply Template
+                                                {{ __('backend.supervisor_contact_messages_show.apply_template') }}
                                             </button>
 
                                             <button type="button" id="clear_template_btn" class="btn btn-outline-secondary btn-sm" style="border-radius: 10px; font-weight: 700;">
-                                                Clear
+                                                {{ __('backend.supervisor_contact_messages_show.clear') }}
                                             </button>
                                         </div>
                                     </div>
 
                                     <div class="mb-3">
-                                        <label for="reply_message" class="info-label">Reply Message</label>
+                                        <label for="reply_message" class="info-label">{{ __('backend.supervisor_contact_messages_show.reply_message') }}</label>
                                         <textarea
                                             id="reply_message"
                                             name="reply_message"
                                             class="form-control"
                                             required
-                                            placeholder="Write your reply here..."
+                                            placeholder="{{ __('backend.supervisor_contact_messages_show.reply_placeholder') }}"
                                         >{{ old('reply_message') }}</textarea>
                                     </div>
 
                                     <button type="submit" class="btn btn-success w-100" style="border-radius: 12px; font-weight: 700;">
-                                        Send Reply by Email
+                                        {{ __('backend.supervisor_contact_messages_show.send_reply_by_email') }}
                                     </button>
                                 </form>
                             </div>
@@ -422,41 +422,37 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!templateSelect || !applyBtn || !clearBtn || !replyTextarea) return;
 
     const templates = {
-        academic_ack: `Hello {{ $contactMessage->name }},
+        academic_ack: `{{ __('backend.supervisor_contact_messages_show.template_bodies.academic_ack.greeting', ['name' => $contactMessage->name]) }}
 
-Thank you for contacting VertexGrad regarding your academic submission.
+{{ __('backend.supervisor_contact_messages_show.template_bodies.academic_ack.body_1') }}
 
-We have received your inquiry and our team will review it shortly. If additional information is needed, we will contact you.
+{{ __('backend.supervisor_contact_messages_show.template_bodies.academic_ack.body_2') }}
 
-Best regards,
-VertexGrad Team`,
+{{ __('backend.supervisor_contact_messages_show.template_bodies.signature') }}`,
 
-        investor_ack: `Hello {{ $contactMessage->name }},
+        investor_ack: `{{ __('backend.supervisor_contact_messages_show.template_bodies.investor_ack.greeting', ['name' => $contactMessage->name]) }}
 
-Thank you for your interest in VertexGrad and for reaching out regarding investment opportunities.
+{{ __('backend.supervisor_contact_messages_show.template_bodies.investor_ack.body_1') }}
 
-We have received your inquiry and the management team will review it shortly. We will contact you if any additional details are needed.
+{{ __('backend.supervisor_contact_messages_show.template_bodies.investor_ack.body_2') }}
 
-Best regards,
-VertexGrad Team`,
+{{ __('backend.supervisor_contact_messages_show.template_bodies.signature') }}`,
 
-        support_ack: `Hello {{ $contactMessage->name }},
+        support_ack: `{{ __('backend.supervisor_contact_messages_show.template_bodies.support_ack.greeting', ['name' => $contactMessage->name]) }}
 
-Thank you for contacting VertexGrad support.
+{{ __('backend.supervisor_contact_messages_show.template_bodies.support_ack.body_1') }}
 
-We have received your message and will review the issue as soon as possible. If needed, our team will follow up with you for further clarification.
+{{ __('backend.supervisor_contact_messages_show.template_bodies.support_ack.body_2') }}
 
-Best regards,
-VertexGrad Team`,
+{{ __('backend.supervisor_contact_messages_show.template_bodies.signature') }}`,
 
-        general_ack: `Hello {{ $contactMessage->name }},
+        general_ack: `{{ __('backend.supervisor_contact_messages_show.template_bodies.general_ack.greeting', ['name' => $contactMessage->name]) }}
 
-Thank you for reaching out to VertexGrad.
+{{ __('backend.supervisor_contact_messages_show.template_bodies.general_ack.body_1') }}
 
-We have received your message and will get back to you shortly.
+{{ __('backend.supervisor_contact_messages_show.template_bodies.general_ack.body_2') }}
 
-Best regards,
-VertexGrad Team`
+{{ __('backend.supervisor_contact_messages_show.template_bodies.signature') }}`
     };
 
     function applySelectedTemplate() {

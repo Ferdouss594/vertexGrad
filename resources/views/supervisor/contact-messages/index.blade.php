@@ -1,6 +1,6 @@
 @extends('supervisor.layout.app_super')
 
-@section('title', 'Contact Messages')
+@section('title', __('backend.supervisor_contact_messages_index.page_title'))
 
 @section('content')
 <style>
@@ -170,9 +170,9 @@
         <div class="hero-card">
             <div class="hero-content d-flex justify-content-between align-items-start flex-wrap" style="gap: 16px;">
                 <div>
-                    <div class="hero-title">Contact Messages</div>
+                    <div class="hero-title">{{ __('backend.supervisor_contact_messages_index.heading') }}</div>
                     <p class="hero-text">
-                        Review and handle frontend inquiries according to the permissions assigned to your supervisor account.
+                        {{ __('backend.supervisor_contact_messages_index.subtitle') }}
                     </p>
                 </div>
             </div>
@@ -182,30 +182,30 @@
             <div class="col-xl-4 col-md-4 col-12 mb-3">
                 <div class="stats-card">
                     <div class="stats-number">{{ $totalMessages }}</div>
-                    <p class="stats-label">Total Messages</p>
+                    <p class="stats-label">{{ __('backend.supervisor_contact_messages_index.total_messages') }}</p>
                 </div>
             </div>
 
             <div class="col-xl-4 col-md-4 col-12 mb-3">
                 <div class="stats-card">
                     <div class="stats-number">{{ $newCount }}</div>
-                    <p class="stats-label">New</p>
+                    <p class="stats-label">{{ __('backend.supervisor_contact_messages_index.new') }}</p>
                 </div>
             </div>
 
             <div class="col-xl-4 col-md-4 col-12 mb-3">
                 <div class="stats-card">
                     <div class="stats-number">{{ $inProgressCount }}</div>
-                    <p class="stats-label">In Progress</p>
+                    <p class="stats-label">{{ __('backend.supervisor_contact_messages_index.in_progress') }}</p>
                 </div>
             </div>
         </div>
 
         <div class="section-card">
             <div class="section-header">
-                <h5>Filters</h5>
+                <h5>{{ __('backend.supervisor_contact_messages_index.filters') }}</h5>
                 <div class="section-subtext">
-                    Search by sender, email, message content, subject, sender type, or status.
+                    {{ __('backend.supervisor_contact_messages_index.filters_subtitle') }}
                 </div>
             </div>
 
@@ -213,51 +213,51 @@
                 <form method="GET" action="{{ route('supervisor.contact-messages.index') }}">
                     <div class="row">
                         <div class="col-lg-3 col-md-6 mb-3">
-                            <label class="filter-label">Search</label>
-                            <input type="text" name="search" class="form-control" value="{{ request('search') }}" placeholder="Name, email, or message">
+                            <label class="filter-label">{{ __('backend.supervisor_contact_messages_index.search') }}</label>
+                            <input type="text" name="search" class="form-control" value="{{ request('search') }}" placeholder="{{ __('backend.supervisor_contact_messages_index.search_placeholder') }}">
                         </div>
 
                         <div class="col-lg-3 col-md-6 mb-3">
-                            <label class="filter-label">Status</label>
+                            <label class="filter-label">{{ __('backend.supervisor_contact_messages_index.status') }}</label>
                             <select name="status" class="form-select">
-                                <option value="">All Statuses</option>
-                                <option value="new" {{ request('status') === 'new' ? 'selected' : '' }}>New</option>
-                                <option value="in_progress" {{ request('status') === 'in_progress' ? 'selected' : '' }}>In Progress</option>
-                                <option value="replied" {{ request('status') === 'replied' ? 'selected' : '' }}>Replied</option>
-                                <option value="closed" {{ request('status') === 'closed' ? 'selected' : '' }}>Closed</option>
+                                <option value="">{{ __('backend.supervisor_contact_messages_index.all_statuses') }}</option>
+                                <option value="new" {{ request('status') === 'new' ? 'selected' : '' }}>{{ __('backend.supervisor_contact_messages_index.new') }}</option>
+                                <option value="in_progress" {{ request('status') === 'in_progress' ? 'selected' : '' }}>{{ __('backend.supervisor_contact_messages_index.in_progress') }}</option>
+                                <option value="replied" {{ request('status') === 'replied' ? 'selected' : '' }}>{{ __('backend.supervisor_contact_messages_index.replied') }}</option>
+                                <option value="closed" {{ request('status') === 'closed' ? 'selected' : '' }}>{{ __('backend.supervisor_contact_messages_index.closed') }}</option>
                             </select>
                         </div>
 
                         <div class="col-lg-3 col-md-6 mb-3">
-                            <label class="filter-label">Subject</label>
+                            <label class="filter-label">{{ __('backend.supervisor_contact_messages_index.subject') }}</label>
                             <select name="subject" class="form-select">
-                                <option value="">All Subjects</option>
-                                <option value="academic" {{ request('subject') === 'academic' ? 'selected' : '' }}>Academic</option>
-                                <option value="investor" {{ request('subject') === 'investor' ? 'selected' : '' }}>Investor</option>
-                                <option value="support" {{ request('subject') === 'support' ? 'selected' : '' }}>Support</option>
-                                <option value="other" {{ request('subject') === 'other' ? 'selected' : '' }}>Other</option>
+                                <option value="">{{ __('backend.supervisor_contact_messages_index.all_subjects') }}</option>
+                                <option value="academic" {{ request('subject') === 'academic' ? 'selected' : '' }}>{{ __('backend.supervisor_contact_messages_index.subjects.academic') }}</option>
+                                <option value="investor" {{ request('subject') === 'investor' ? 'selected' : '' }}>{{ __('backend.supervisor_contact_messages_index.subjects.investor') }}</option>
+                                <option value="support" {{ request('subject') === 'support' ? 'selected' : '' }}>{{ __('backend.supervisor_contact_messages_index.subjects.support') }}</option>
+                                <option value="other" {{ request('subject') === 'other' ? 'selected' : '' }}>{{ __('backend.supervisor_contact_messages_index.subjects.other') }}</option>
                             </select>
                         </div>
 
                         <div class="col-lg-3 col-md-6 mb-3">
-                            <label class="filter-label">Sender Type</label>
+                            <label class="filter-label">{{ __('backend.supervisor_contact_messages_index.sender_type') }}</label>
                             <select name="sender_type" class="form-select">
-                                <option value="">All Sender Types</option>
-                                <option value="guest" {{ request('sender_type') === 'guest' ? 'selected' : '' }}>Guest</option>
-                                <option value="student" {{ request('sender_type') === 'student' ? 'selected' : '' }}>Student</option>
-                                <option value="investor" {{ request('sender_type') === 'investor' ? 'selected' : '' }}>Investor</option>
+                                <option value="">{{ __('backend.supervisor_contact_messages_index.all_sender_types') }}</option>
+                                <option value="guest" {{ request('sender_type') === 'guest' ? 'selected' : '' }}>{{ __('backend.supervisor_contact_messages_index.sender_types.guest') }}</option>
+                                <option value="student" {{ request('sender_type') === 'student' ? 'selected' : '' }}>{{ __('backend.supervisor_contact_messages_index.sender_types.student') }}</option>
+                                <option value="investor" {{ request('sender_type') === 'investor' ? 'selected' : '' }}>{{ __('backend.supervisor_contact_messages_index.sender_types.investor') }}</option>
                             </select>
                         </div>
 
                         <div class="col-12 d-flex flex-wrap" style="gap: 10px;">
                             <button type="submit" class="btn btn-primary" style="border-radius: 12px; font-weight: 700;">
-                                Filter
+                                {{ __('backend.supervisor_contact_messages_index.filter') }}
                             </button>
 
                             <a href="{{ route('supervisor.contact-messages.index') }}"
                                class="btn btn-light"
                                style="border-radius: 12px; font-weight: 700; border: 1px solid #dbe4f0;">
-                                Reset
+                                {{ __('backend.supervisor_contact_messages_index.reset') }}
                             </a>
                         </div>
                     </div>
@@ -267,9 +267,9 @@
 
         <div class="section-card">
             <div class="section-header">
-                <h5>Submitted Messages</h5>
+                <h5>{{ __('backend.supervisor_contact_messages_index.submitted_messages') }}</h5>
                 <div class="section-subtext">
-                    Review all frontend contact inquiries available to your supervisor account.
+                    {{ __('backend.supervisor_contact_messages_index.submitted_messages_subtitle') }}
                 </div>
             </div>
 
@@ -279,12 +279,12 @@
                         <thead style="background: #f8fafc;">
                             <tr>
                                 <th>#</th>
-                                <th>Sender</th>
-                                <th>Subject</th>
-                                <th>Sender Type</th>
-                                <th>Status</th>
-                                <th>Submitted</th>
-                                <th width="120">Action</th>
+                                <th>{{ __('backend.supervisor_contact_messages_index.sender') }}</th>
+                                <th>{{ __('backend.supervisor_contact_messages_index.subject') }}</th>
+                                <th>{{ __('backend.supervisor_contact_messages_index.sender_type') }}</th>
+                                <th>{{ __('backend.supervisor_contact_messages_index.status') }}</th>
+                                <th>{{ __('backend.supervisor_contact_messages_index.submitted') }}</th>
+                                <th width="120">{{ __('backend.supervisor_contact_messages_index.action') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -333,13 +333,13 @@
                                         <a href="{{ route('supervisor.contact-messages.show', $message) }}"
                                            class="btn btn-primary btn-sm"
                                            style="border-radius: 10px; font-weight: 600;">
-                                            View
+                                            {{ __('backend.supervisor_contact_messages_index.view') }}
                                         </a>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="7" class="text-center py-4">No contact messages found.</td>
+                                    <td colspan="7" class="text-center py-4">{{ __('backend.supervisor_contact_messages_index.no_contact_messages_found') }}</td>
                                 </tr>
                             @endforelse
                         </tbody>

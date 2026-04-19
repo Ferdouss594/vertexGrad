@@ -3,10 +3,10 @@
         <li>
             {{ $perm->permission_name }}
             @if($perm->status == 'inactive')
-                <span class="badge bg-secondary">Inactive</span>
+                <span class="badge bg-secondary">{{ __('backend.permissions_common.inactive') }}</span>
             @endif
         </li>
     @empty
-        <li>—</li>
+        <li>{{ __('backend.permissions_common.empty_value') }}</li>
     @endforelse
 </ul>

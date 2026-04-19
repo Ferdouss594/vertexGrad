@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Audit Center')
+@section('title', __('backend.audit_center.title'))
 
 @section('content')
 @php
@@ -13,21 +13,21 @@
     <div class="audit-hero-card mb-4">
         <div class="audit-hero-content">
             <div>
-                <div class="audit-eyebrow">System Monitoring</div>
-                <h2 class="audit-page-title mb-2">Audit Center</h2>
+                <div class="audit-eyebrow">{{ __('backend.audit_center.system_monitoring') }}</div>
+                <h2 class="audit-page-title mb-2">{{ __('backend.audit_center.page_title') }}</h2>
                 <p class="audit-page-subtitle mb-0">
-                    Track all system activities, user actions, and critical platform events from one centralized dashboard.
+                    {{ __('backend.audit_center.page_subtitle') }}
                 </p>
             </div>
 
             <div class="audit-hero-right">
                 <div class="audit-hero-meta">
                     <div class="audit-meta-box">
-                        <span class="audit-meta-label">Records</span>
+                        <span class="audit-meta-label">{{ __('backend.audit_center.records') }}</span>
                         <strong>{{ number_format($analytics['total'] ?? 0) }}</strong>
                     </div>
                     <div class="audit-meta-box">
-                        <span class="audit-meta-label">Today</span>
+                        <span class="audit-meta-label">{{ __('backend.audit_center.today') }}</span>
                         <strong>{{ number_format($analytics['today'] ?? 0) }}</strong>
                     </div>
                 </div>
@@ -35,12 +35,12 @@
                 <div class="audit-export-actions">
                     <a href="{{ route('admin.audit.export.excel', request()->query()) }}" class="btn audit-export-btn audit-export-excel">
                         <i class="bi bi-file-earmark-excel me-1"></i>
-                        Export Excel
+                        {{ __('backend.audit_center.export_excel') }}
                     </a>
 
                     <a href="{{ route('admin.audit.export.pdf', request()->query()) }}" class="btn audit-export-btn audit-export-pdf">
                         <i class="bi bi-file-earmark-pdf me-1"></i>
-                        Export PDF
+                        {{ __('backend.audit_center.export_pdf') }}
                     </a>
                 </div>
             </div>
@@ -57,7 +57,7 @@
                     <i class="bi bi-collection"></i>
                 </div>
                 <div>
-                    <div class="audit-stat-label">Total Records</div>
+                    <div class="audit-stat-label">{{ __('backend.audit_center.total_records') }}</div>
                     <div class="audit-stat-value">{{ number_format($analytics['total'] ?? 0) }}</div>
                 </div>
             </div>
@@ -69,7 +69,7 @@
                     <i class="bi bi-calendar-day"></i>
                 </div>
                 <div>
-                    <div class="audit-stat-label">Today</div>
+                    <div class="audit-stat-label">{{ __('backend.audit_center.today') }}</div>
                     <div class="audit-stat-value">{{ number_format($analytics['today'] ?? 0) }}</div>
                 </div>
             </div>
@@ -81,7 +81,7 @@
                     <i class="bi bi-plus-circle"></i>
                 </div>
                 <div>
-                    <div class="audit-stat-label">Created</div>
+                    <div class="audit-stat-label">{{ __('backend.audit_center.created') }}</div>
                     <div class="audit-stat-value">{{ number_format($analytics['created'] ?? 0) }}</div>
                 </div>
             </div>
@@ -93,7 +93,7 @@
                     <i class="bi bi-pencil-square"></i>
                 </div>
                 <div>
-                    <div class="audit-stat-label">Updated</div>
+                    <div class="audit-stat-label">{{ __('backend.audit_center.updated') }}</div>
                     <div class="audit-stat-value">{{ number_format($analytics['updated'] ?? 0) }}</div>
                 </div>
             </div>
@@ -105,7 +105,7 @@
                     <i class="bi bi-trash3"></i>
                 </div>
                 <div>
-                    <div class="audit-stat-label">Deleted</div>
+                    <div class="audit-stat-label">{{ __('backend.audit_center.deleted') }}</div>
                     <div class="audit-stat-value">{{ number_format($analytics['deleted'] ?? 0) }}</div>
                 </div>
             </div>
@@ -116,8 +116,8 @@
     <div class="audit-filter-card mb-4">
         <div class="audit-section-head mb-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
             <div>
-                <h5 class="mb-1">Filters</h5>
-                <p class="mb-0">Use quick search or open advanced filters for deeper refinement.</p>
+                <h5 class="mb-1">{{ __('backend.audit_center.filters') }}</h5>
+                <p class="mb-0">{{ __('backend.audit_center.filters_subtitle') }}</p>
             </div>
 
             <button
@@ -128,7 +128,7 @@
                 aria-expanded="{{ request()->hasAny(['user','category','event','from','to']) ? 'true' : 'false' }}"
                 aria-controls="advancedAuditFilters"
             >
-                <i class="bi bi-sliders me-1"></i> Advanced Filters
+                <i class="bi bi-sliders me-1"></i> {{ __('backend.audit_center.advanced_filters') }}
             </button>
         </div>
 
@@ -136,14 +136,14 @@
             {{-- Quick Row --}}
             <div class="row g-3 align-items-end">
                 <div class="col-lg-8">
-                    <label class="audit-label">Quick Search</label>
+                    <label class="audit-label">{{ __('backend.audit_center.quick_search') }}</label>
                     <div class="audit-input-icon">
                         <i class="bi bi-search"></i>
                         <input
                             type="text"
                             name="search"
                             class="form-control audit-control"
-                            placeholder="Search by description, subject, category, actor..."
+                            placeholder="{{ __('backend.audit_center.quick_search_placeholder') }}"
                             value="{{ request('search') }}"
                         >
                     </div>
@@ -152,11 +152,11 @@
                 <div class="col-lg-4">
                     <div class="d-flex flex-wrap gap-2 justify-content-lg-end">
                         <button type="submit" class="btn audit-btn-primary">
-                            <i class="bi bi-funnel me-1"></i> Apply Filters
+                            <i class="bi bi-funnel me-1"></i> {{ __('backend.audit_center.apply_filters') }}
                         </button>
 
                         <a href="{{ url()->current() }}" class="btn audit-btn-light">
-                            <i class="bi bi-arrow-clockwise me-1"></i> Reset
+                            <i class="bi bi-arrow-clockwise me-1"></i> {{ __('backend.audit_center.reset') }}
                         </a>
                     </div>
                 </div>
@@ -167,44 +167,44 @@
                 <div class="audit-advanced-wrap mt-4">
                     <div class="row g-3">
                         <div class="col-md-6 col-xl-3">
-                            <label class="audit-label">User</label>
+                            <label class="audit-label">{{ __('backend.audit_center.user') }}</label>
                             <input
                                 type="text"
                                 name="user"
                                 class="form-control audit-control"
-                                placeholder="User name..."
+                                placeholder="{{ __('backend.audit_center.user_placeholder') }}"
                                 value="{{ request('user') }}"
                             >
                         </div>
 
                         <div class="col-md-6 col-xl-3">
-                            <label class="audit-label">Category</label>
+                            <label class="audit-label">{{ __('backend.audit_center.category') }}</label>
                             <input
                                 type="text"
                                 name="category"
                                 class="form-control audit-control"
-                                placeholder="Ex: project, auth"
+                                placeholder="{{ __('backend.audit_center.category_placeholder') }}"
                                 value="{{ request('category') }}"
                             >
                         </div>
 
                         <div class="col-md-6 col-xl-2">
-                            <label class="audit-label">Event</label>
+                            <label class="audit-label">{{ __('backend.audit_center.event') }}</label>
                             <select name="event" class="form-select audit-control">
-                                <option value="">All Events</option>
-                                <option value="created" {{ request('event') === 'created' ? 'selected' : '' }}>Created</option>
-                                <option value="updated" {{ request('event') === 'updated' ? 'selected' : '' }}>Updated</option>
-                                <option value="deleted" {{ request('event') === 'deleted' ? 'selected' : '' }}>Deleted</option>
-                                <option value="approved" {{ request('event') === 'approved' ? 'selected' : '' }}>Approved</option>
-                                <option value="rejected" {{ request('event') === 'rejected' ? 'selected' : '' }}>Rejected</option>
-                                <option value="login" {{ request('event') === 'login' ? 'selected' : '' }}>Login</option>
-                                <option value="logout" {{ request('event') === 'logout' ? 'selected' : '' }}>Logout</option>
-                                <option value="exported" {{ request('event') === 'exported' ? 'selected' : '' }}>Exported</option>
+                                <option value="">{{ __('backend.audit_center.all_events') }}</option>
+                                <option value="created" {{ request('event') === 'created' ? 'selected' : '' }}>{{ __('backend.audit_center.created') }}</option>
+                                <option value="updated" {{ request('event') === 'updated' ? 'selected' : '' }}>{{ __('backend.audit_center.updated') }}</option>
+                                <option value="deleted" {{ request('event') === 'deleted' ? 'selected' : '' }}>{{ __('backend.audit_center.deleted') }}</option>
+                                <option value="approved" {{ request('event') === 'approved' ? 'selected' : '' }}>{{ __('backend.audit_center.approved') }}</option>
+                                <option value="rejected" {{ request('event') === 'rejected' ? 'selected' : '' }}>{{ __('backend.audit_center.rejected') }}</option>
+                                <option value="login" {{ request('event') === 'login' ? 'selected' : '' }}>{{ __('backend.audit_center.login') }}</option>
+                                <option value="logout" {{ request('event') === 'logout' ? 'selected' : '' }}>{{ __('backend.audit_center.logout') }}</option>
+                                <option value="exported" {{ request('event') === 'exported' ? 'selected' : '' }}>{{ __('backend.audit_center.exported') }}</option>
                             </select>
                         </div>
 
                         <div class="col-md-6 col-xl-2">
-                            <label class="audit-label">From Date</label>
+                            <label class="audit-label">{{ __('backend.audit_center.from_date') }}</label>
                             <input
                                 type="date"
                                 name="from"
@@ -214,7 +214,7 @@
                         </div>
 
                         <div class="col-md-6 col-xl-2">
-                            <label class="audit-label">To Date</label>
+                            <label class="audit-label">{{ __('backend.audit_center.to_date') }}</label>
                             <input
                                 type="date"
                                 name="to"
@@ -232,12 +232,12 @@
     <div class="audit-table-card">
         <div class="audit-section-head audit-table-head">
             <div>
-                <h5 class="mb-1">Activity Records</h5>
-                <p class="mb-0">Review platform logs in a clean structured layout with expandable details.</p>
+                <h5 class="mb-1">{{ __('backend.audit_center.activity_records') }}</h5>
+                <p class="mb-0">{{ __('backend.audit_center.activity_records_subtitle') }}</p>
             </div>
 
             <div class="audit-table-count">
-                {{ $logs->total() ?? 0 }} records
+                {{ $logs->total() ?? 0 }} {{ __('backend.audit_center.records_count') }}
             </div>
         </div>
 
@@ -245,13 +245,13 @@
             <table class="table audit-table mb-0">
                 <thead>
                     <tr>
-                        <th style="width: 18%;">Actor</th>
-                        <th style="width: 10%;">Event</th>
-                        <th style="width: 12%;">Category</th>
-                        <th style="width: 15%;">Subject</th>
-                        <th style="width: 27%;">Description</th>
-                        <th style="width: 10%;">Date</th>
-                        <th style="width: 8%;" class="text-center">Details</th>
+                        <th style="width: 18%;">{{ __('backend.audit_center.actor') }}</th>
+                        <th style="width: 10%;">{{ __('backend.audit_center.event') }}</th>
+                        <th style="width: 12%;">{{ __('backend.audit_center.category') }}</th>
+                        <th style="width: 15%;">{{ __('backend.audit_center.subject') }}</th>
+                        <th style="width: 27%;">{{ __('backend.audit_center.description') }}</th>
+                        <th style="width: 10%;">{{ __('backend.audit_center.date') }}</th>
+                        <th style="width: 8%;" class="text-center">{{ __('backend.audit_center.details') }}</th>
                     </tr>
                 </thead>
 
@@ -272,7 +272,7 @@
                                 default => 'badge-default',
                             };
 
-                            $categoryText = $log->category ? ucwords(str_replace(['_', '-'], ' ', $log->category)) : 'General';
+                            $categoryText = $log->category ? ucwords(str_replace(['_', '-'], ' ', $log->category)) : __('backend.audit_center.general');
                         @endphp
 
                         <tr>
@@ -283,10 +283,10 @@
                                     </div>
                                     <div>
                                         <div class="audit-user-name">
-                                            {{ $log->user_name ?? 'System' }}
+                                            {{ $log->user_name ?? __('backend.audit_center.system') }}
                                         </div>
                                         <div class="audit-user-role">
-                                            {{ $log->user_type ?? 'System' }}
+                                            {{ $log->user_type ?? __('backend.audit_center.system') }}
                                         </div>
                                     </div>
                                 </div>
@@ -357,31 +357,31 @@
                                         <div class="row g-3">
                                             <div class="col-lg-3">
                                                 <div class="audit-detail-card">
-                                                    <div class="audit-detail-title">Actor Information</div>
+                                                    <div class="audit-detail-title">{{ __('backend.audit_center.actor_information') }}</div>
                                                     <ul class="audit-detail-list">
-                                                        <li><strong>User ID:</strong> {{ $log->user_id ?? '—' }}</li>
-                                                        <li><strong>User Name:</strong> {{ $log->user_name ?? 'System' }}</li>
-                                                        <li><strong>User Type:</strong> {{ $log->user_type ?? 'System' }}</li>
-                                                        <li><strong>IP Address:</strong> {{ $log->ip_address ?? '—' }}</li>
+                                                        <li><strong>{{ __('backend.audit_center.user_id') }}</strong> {{ $log->user_id ?? '—' }}</li>
+                                                        <li><strong>{{ __('backend.audit_center.user_name') }}</strong> {{ $log->user_name ?? __('backend.audit_center.system') }}</li>
+                                                        <li><strong>{{ __('backend.audit_center.user_type') }}</strong> {{ $log->user_type ?? __('backend.audit_center.system') }}</li>
+                                                        <li><strong>{{ __('backend.audit_center.ip_address') }}</strong> {{ $log->ip_address ?? '—' }}</li>
                                                     </ul>
                                                 </div>
                                             </div>
 
                                             <div class="col-lg-3">
                                                 <div class="audit-detail-card">
-                                                    <div class="audit-detail-title">Subject Details</div>
+                                                    <div class="audit-detail-title">{{ __('backend.audit_center.subject_details') }}</div>
                                                     <ul class="audit-detail-list">
-                                                        <li><strong>Subject Title:</strong> {{ $log->subject_title ?? '—' }}</li>
-                                                        <li><strong>Subject Type:</strong> {{ $log->subject_type ?? '—' }}</li>
-                                                        <li><strong>Subject ID:</strong> {{ $log->subject_id ?? '—' }}</li>
-                                                        <li><strong>Created At:</strong> {{ $log->created_at?->format('Y-m-d h:i:s A') }}</li>
+                                                        <li><strong>{{ __('backend.audit_center.subject_title') }}</strong> {{ $log->subject_title ?? '—' }}</li>
+                                                        <li><strong>{{ __('backend.audit_center.subject_type') }}</strong> {{ $log->subject_type ?? '—' }}</li>
+                                                        <li><strong>{{ __('backend.audit_center.subject_id') }}</strong> {{ $log->subject_id ?? '—' }}</li>
+                                                        <li><strong>{{ __('backend.audit_center.created_at') }}</strong> {{ $log->created_at?->format('Y-m-d h:i:s A') }}</li>
                                                     </ul>
                                                 </div>
                                             </div>
 
                                             <div class="col-lg-6">
                                                 <div class="audit-detail-card">
-                                                    <div class="audit-detail-title">User Agent</div>
+                                                    <div class="audit-detail-title">{{ __('backend.audit_center.user_agent') }}</div>
                                                     <div class="audit-detail-pre simple-pre">
                                                         {{ $log->user_agent ?? '—' }}
                                                     </div>
@@ -390,22 +390,22 @@
 
                                             <div class="col-lg-4">
                                                 <div class="audit-detail-card">
-                                                    <div class="audit-detail-title">Old Values</div>
-                                                    <pre class="audit-detail-pre">{{ !empty($log->old_values) ? json_encode($log->old_values, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) : 'No old values' }}</pre>
+                                                    <div class="audit-detail-title">{{ __('backend.audit_center.old_values') }}</div>
+                                                    <pre class="audit-detail-pre">{{ !empty($log->old_values) ? json_encode($log->old_values, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) : __('backend.audit_center.no_old_values') }}</pre>
                                                 </div>
                                             </div>
 
                                             <div class="col-lg-4">
                                                 <div class="audit-detail-card">
-                                                    <div class="audit-detail-title">New Values</div>
-                                                    <pre class="audit-detail-pre">{{ !empty($log->new_values) ? json_encode($log->new_values, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) : 'No new values' }}</pre>
+                                                    <div class="audit-detail-title">{{ __('backend.audit_center.new_values') }}</div>
+                                                    <pre class="audit-detail-pre">{{ !empty($log->new_values) ? json_encode($log->new_values, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) : __('backend.audit_center.no_new_values') }}</pre>
                                                 </div>
                                             </div>
 
                                             <div class="col-lg-4">
                                                 <div class="audit-detail-card">
-                                                    <div class="audit-detail-title">Properties</div>
-                                                    <pre class="audit-detail-pre">{{ !empty($log->properties) ? json_encode($log->properties, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) : 'No properties' }}</pre>
+                                                    <div class="audit-detail-title">{{ __('backend.audit_center.properties') }}</div>
+                                                    <pre class="audit-detail-pre">{{ !empty($log->properties) ? json_encode($log->properties, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) : __('backend.audit_center.no_properties') }}</pre>
                                                 </div>
                                             </div>
                                         </div>
@@ -420,13 +420,13 @@
                                     <div class="audit-empty-icon">
                                         <i class="bi bi-inboxes"></i>
                                     </div>
-                                    <h5>No audit records found</h5>
+                                    <h5>{{ __('backend.audit_center.no_audit_records_found') }}</h5>
                                     <p>
-                                        No logs matched your current filters. Try adjusting the search or filter criteria.
+                                        {{ __('backend.audit_center.no_audit_records_subtitle') }}
                                     </p>
                                     <div class="mt-3">
                                         <a href="{{ url()->current() }}" class="btn audit-btn-light">
-                                            <i class="bi bi-arrow-clockwise me-1"></i> Reset Filters
+                                            <i class="bi bi-arrow-clockwise me-1"></i> {{ __('backend.audit_center.reset_filters') }}
                                         </a>
                                     </div>
                                 </div>
@@ -839,7 +839,7 @@
     padding: 7px 12px;
     font-size: 12px;
     font-weight: 700;
-   white-space: normal;   /* 👈 يسمح بالنزول */
+   white-space: normal;
     text-align: center;
     line-height: 1.3;
     max-width: 500px;

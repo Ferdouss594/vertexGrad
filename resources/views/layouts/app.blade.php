@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ app()->getLocale() }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
 <head>
     <meta charset="utf-8" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
-    <title>{{ setting('platform_name', 'VertexGrad') }} - @yield('title', 'Dashboard')</title>
+    <title>{{ setting('platform_name', 'VertexGrad') }} - @yield('title', __('backend.manager_layout.default_title'))</title>
 
     <link rel="apple-touch-icon"
           href="{{ setting('platform_logo') ? asset('storage/' . setting('platform_logo')) : asset('vendors/images/apple-touch-icon.png') }}" />
@@ -21,6 +21,11 @@
     <link rel="stylesheet" href="{{ asset('src/plugins/datatables/css/responsive.bootstrap4.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('vendors/styles/style.css') }}" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    @php
+        $currentLocale = app()->getLocale();
+        $isRtl = $currentLocale === 'ar';
+    @endphp
 
     @stack('styles')
 
@@ -211,7 +216,8 @@
         .header-left .menu-icon,
         .header-left .search-toggle-icon,
         .header-right .header-circle-btn,
-        .theme-switch-btn {
+        .theme-switch-btn,
+        .language-switch-btn {
             width: 42px;
             height: 42px;
             display: inline-flex;
@@ -225,13 +231,28 @@
             transition: all 0.18s ease;
             flex-shrink: 0;
             text-decoration: none;
+            font-weight: 700;
+            font-size: 12px;
         }
 
         .header-left .menu-icon:hover,
         .header-left .search-toggle-icon:hover,
         .header-right .header-circle-btn:hover,
-        .theme-switch-btn:hover {
+        .theme-switch-btn:hover,
+        .language-switch-btn:hover {
             transform: translateY(-1px);
+        }
+
+        .language-switch-group {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .language-switch-btn.active {
+            background: var(--vg-primary);
+            border-color: var(--vg-primary);
+            color: #fff;
         }
 
         .user-info-dropdown .dropdown-toggle {
@@ -548,6 +569,56 @@
             color: var(--vg-text);
         }
 
+        html[dir="rtl"] body {
+            text-align: right;
+        }
+
+        html[dir="rtl"] #flash-messages {
+            right: auto;
+            left: 20px;
+        }
+
+        html[dir="rtl"] .header {
+            left: 0;
+            right: var(--sidebar-width);
+        }
+
+        html[dir="rtl"] body.sidebar-closed .header {
+            right: 0 !important;
+            left: 0 !important;
+        }
+
+        html[dir="rtl"] .left-side-bar {
+            left: auto;
+            right: 0;
+            border-right: 0;
+            border-left: 1px solid var(--vg-sidebar-border);
+        }
+
+        html[dir="rtl"] body.sidebar-closed .left-side-bar {
+            transform: translateX(100%) !important;
+        }
+
+        html[dir="rtl"] .main-container {
+            margin-left: 0 !important;
+            margin-right: var(--sidebar-width) !important;
+        }
+
+        html[dir="rtl"] body.sidebar-closed .main-container {
+            margin-right: 0 !important;
+            width: 100% !important;
+        }
+
+        html[dir="rtl"] .user-info-dropdown .dropdown-toggle::after {
+            margin-left: 0;
+            margin-right: 10px;
+        }
+
+        html[dir="rtl"] .dropdown-menu.dropdown-menu-end {
+            right: auto !important;
+            left: 0 !important;
+        }
+
         @media (max-width: 991.98px) {
             .header {
                 left: 0 !important;
@@ -574,6 +645,20 @@
                 flex-direction: column;
                 align-items: flex-start;
             }
+
+            html[dir="rtl"] .left-side-bar {
+                transform: translateX(100%);
+            }
+
+            html[dir="rtl"] .main-container {
+                margin-right: 0 !important;
+                width: 100% !important;
+            }
+
+            html[dir="rtl"] .header {
+                right: 0 !important;
+                left: 0 !important;
+            }
         }
     </style>
 
@@ -586,7 +671,7 @@
             toast.className = `alert alert-${type} alert-dismissible fade show shadow-sm`;
             toast.style.marginBottom = '10px';
             toast.style.borderRadius = '14px';
-            toast.innerHTML = message + `<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
+            toast.innerHTML = message + `<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ __('backend.common.close') }}"></button>`;
             flashDiv.appendChild(toast);
 
             setTimeout(() => {
@@ -618,21 +703,34 @@
 
 <div class="header">
     <div class="header-left">
-        <div class="menu-icon bi bi-list" data-toggle="left-sidebar-toggle" title="Toggle sidebar"></div>
-        <div class="search-toggle-icon bi bi-search" title="Search"></div>
+        <div class="menu-icon bi bi-list" data-toggle="left-sidebar-toggle" title="{{ __('backend.manager_layout.toggle_sidebar') }}"></div>
+        <div class="search-toggle-icon bi bi-search" title="{{ __('backend.manager_layout.search') }}"></div>
     </div>
 
     <div class="header-right">
-        <button type="button" class="theme-switch-btn" id="themeSwitchBtn" title="Change theme">
+        <div class="language-switch-group">
+            <a href="{{ route('admin.language.switch', 'en') }}"
+               class="language-switch-btn {{ $currentLocale === 'en' ? 'active' : '' }}"
+               title="{{ __('backend.manager_layout.switch_to_english') }}">
+                EN
+            </a>
+            <a href="{{ route('admin.language.switch', 'ar') }}"
+               class="language-switch-btn {{ $currentLocale === 'ar' ? 'active' : '' }}"
+               title="{{ __('backend.manager_layout.switch_to_arabic') }}">
+                AR
+            </a>
+        </div>
+
+        <button type="button" class="theme-switch-btn" id="themeSwitchBtn" title="{{ __('backend.manager_layout.change_theme') }}">
             <i class="bi bi-moon-stars-fill" id="themeSwitchIcon"></i>
         </button>
 
         <div
-    class="dropdown"
-    id="admin-notification-bell"
-    data-count-url="{{ route('admin.notifications.count') }}"
-    data-latest-url="{{ route('admin.notifications.latest') }}"
->
+            class="dropdown"
+            id="admin-notification-bell"
+            data-count-url="{{ route('admin.notifications.count') }}"
+            data-latest-url="{{ route('admin.notifications.latest') }}"
+        >
             <a class="dropdown-toggle position-relative d-inline-flex align-items-center justify-content-center text-decoration-none header-circle-btn"
                href="#"
                role="button"
@@ -651,9 +749,9 @@
                 <div class="d-flex justify-content-between align-items-center px-3 py-3"
                      style="border-bottom: 1px solid var(--vg-border); background: var(--vg-dropdown-bg);">
                     <div>
-                        <h6 class="mb-0 fw-bold" style="color: var(--vg-text);">Notifications</h6>
+                        <h6 class="mb-0 fw-bold" style="color: var(--vg-text);">{{ __('backend.manager_layout.notifications') }}</h6>
                         <small style="color: var(--vg-text-muted);">
-                            <span id="adminUnreadText">{{ $unreadCount }}</span> unread
+                            <span id="adminUnreadText">{{ $unreadCount }}</span> {{ __('backend.manager_layout.unread') }}
                         </small>
                     </div>
                 </div>
@@ -661,7 +759,7 @@
                 <div id="adminNotificationList" style="max-height: 340px; overflow-y: auto; background: var(--vg-dropdown-bg);">
                     @forelse($latestNotifications as $notification)
                         @php
-                            $title = $notification->data['title'] ?? 'Notification';
+                            $title = $notification->data['title'] ?? __('backend.manager_layout.notification');
                             $message = $notification->data['message'] ?? '';
                             $url = $notification->data['url'] ?? route('admin.notifications.index');
                             $icon = $notification->data['icon'] ?? 'fas fa-bell';
@@ -691,7 +789,7 @@
                         </form>
                     @empty
                         <div class="px-3 py-4 text-center small" style="color: var(--vg-text-muted); background: var(--vg-dropdown-bg);">
-                            No notifications yet
+                            {{ __('backend.manager_layout.no_notifications_yet') }}
                         </div>
                     @endforelse
                 </div>
@@ -700,14 +798,14 @@
                     <a href="{{ route('admin.notifications.index') }}"
                        class="btn btn-light rounded-0 border-0 py-2"
                        style="border-top: 1px solid var(--vg-border); border-right: 1px solid var(--vg-border);">
-                        History
+                        {{ __('backend.manager_layout.history') }}
                     </a>
                     <form method="POST" action="{{ route('admin.notifications.markAllRead') }}" class="m-0">
                         @csrf
                         <button type="submit"
                                 class="btn btn-light rounded-0 border-0 py-2"
                                 style="border-top: 1px solid var(--vg-border);">
-                            Mark All Read
+                            {{ __('backend.manager_layout.mark_all_read') }}
                         </button>
                     </form>
                 </div>
@@ -722,29 +820,29 @@
                aria-expanded="false">
                 <img
                     src="{{ !empty($adminUser?->profile_image) ? asset('storage/' . $adminUser->profile_image) : asset('vendors/images/photo1.jpg') }}"
-                    alt="User Avatar"
+                    alt="{{ __('backend.manager_layout.user_avatar') }}"
                     class="sidebar-account-avatar"
                 >
                 <div class="d-none d-md-block text-start">
                     <div style="font-size: 13px; font-weight: 700; color: var(--vg-header-color); line-height: 1.2;">
-                        {{ $adminUser ? $adminUser->name : 'Guest' }}
+                        {{ $adminUser ? $adminUser->name : __('backend.manager_layout.guest') }}
                     </div>
                     <div style="font-size: 11px; color: var(--vg-text-muted); line-height: 1.2;">
-                        Administrator
+                        {{ __('backend.manager_layout.administrator') }}
                     </div>
                 </div>
             </a>
 
             <ul class="dropdown-menu dropdown-menu-end border-0" style="min-width: 230px;">
-                <li><a class="dropdown-item d-flex align-items-center gap-2" href="{{ route('admin.profile') }}"><i class="bi bi-person"></i><span>Profile</span></a></li>
-                <li><a class="dropdown-item d-flex align-items-center gap-2" href="{{ route('admin.settings.index') }}"><i class="bi bi-gear"></i><span>Settings</span></a></li>
+                <li><a class="dropdown-item d-flex align-items-center gap-2" href="{{ route('admin.profile') }}"><i class="bi bi-person"></i><span>{{ __('backend.manager_layout.profile') }}</span></a></li>
+                <li><a class="dropdown-item d-flex align-items-center gap-2" href="{{ route('admin.settings.index') }}"><i class="bi bi-gear"></i><span>{{ __('backend.manager_layout.settings') }}</span></a></li>
                 <li><hr class="dropdown-divider my-2"></li>
                 <li>
                     <a class="dropdown-item d-flex align-items-center gap-2 text-danger"
                        href="{{ route('admin.logout') }}"
                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                         <i class="bi bi-box-arrow-right"></i>
-                        <span>Log Out</span>
+                        <span>{{ __('backend.manager_layout.log_out') }}</span>
                     </a>
                 </li>
             </ul>
@@ -764,21 +862,21 @@
                  class="sidebar-logo-img" />
         </a>
 
-        <div class="close-sidebar" data-toggle="left-sidebar-close" title="Close sidebar">
+        <div class="close-sidebar" data-toggle="left-sidebar-close" title="{{ __('backend.manager_layout.close_sidebar') }}">
             <i class="ion-close-round"></i>
         </div>
     </div>
 
     <div class="menu-block customscroll">
         <div class="sidebar-menu">
-            <div class="sidebar-section-label">Main Navigation</div>
+            <div class="sidebar-section-label">{{ __('backend.manager_layout.main_navigation') }}</div>
 
             <ul id="accordion-menu">
                 <li>
                     <a href="{{ route('manager.dashboard') }}"
                        class="dropdown-toggle no-arrow {{ request()->routeIs('manager.dashboard') ? 'active' : '' }}">
                         <span class="micon bi bi-house-door-fill"></span>
-                        <span class="mtext">Dashboard</span>
+                        <span class="mtext">{{ __('backend.manager_layout.dashboard') }}</span>
                     </a>
                 </li>
 
@@ -786,7 +884,7 @@
                     <a href="{{ route('manager.pending.users') }}"
                        class="dropdown-toggle no-arrow {{ request()->routeIs('manager.pending.users') ? 'active' : '' }}">
                         <span class="micon bi bi-people-fill"></span>
-                        <span class="mtext">User Management</span>
+                        <span class="mtext">{{ __('backend.manager_layout.user_management') }}</span>
                     </a>
                 </li>
 
@@ -794,7 +892,7 @@
                     <a href="{{ route('manager.index') }}"
                        class="dropdown-toggle no-arrow {{ request()->routeIs('manager.index') ? 'active' : '' }}">
                         <span class="micon bi bi-person-workspace"></span>
-                        <span class="mtext">Managers</span>
+                        <span class="mtext">{{ __('backend.manager_layout.managers') }}</span>
                     </a>
                 </li>
 
@@ -802,7 +900,7 @@
                     <a href="{{ route('admin.students.index') }}"
                        class="dropdown-toggle no-arrow {{ request()->routeIs('admin.students.*') ? 'active' : '' }}">
                         <span class="micon bi bi-mortarboard-fill"></span>
-                        <span class="mtext">Students</span>
+                        <span class="mtext">{{ __('backend.manager_layout.students') }}</span>
                     </a>
                 </li>
 
@@ -810,7 +908,7 @@
                     <a href="{{ route('admin.investors.index') }}"
                        class="dropdown-toggle no-arrow {{ request()->routeIs('admin.investors.*') ? 'active' : '' }}">
                         <span class="micon bi bi-wallet2"></span>
-                        <span class="mtext">Investors</span>
+                        <span class="mtext">{{ __('backend.manager_layout.investors') }}</span>
                     </a>
                 </li>
 
@@ -818,7 +916,7 @@
                     <a href="{{ route('admin.investment-requests.index') }}"
                        class="dropdown-toggle no-arrow {{ request()->routeIs('admin.investment-requests.*') ? 'active' : '' }}">
                         <span class="micon bi bi-cash-coin"></span>
-                        <span class="mtext">Investment Requests</span>
+                        <span class="mtext">{{ __('backend.manager_layout.investment_requests') }}</span>
                     </a>
                 </li>
 
@@ -826,7 +924,7 @@
                     <a href="{{ route('admin.projects.index') }}"
                        class="dropdown-toggle no-arrow {{ request()->routeIs('admin.projects.*') ? 'active' : '' }}">
                         <span class="micon bi bi-briefcase-fill"></span>
-                        <span class="mtext">Projects</span>
+                        <span class="mtext">{{ __('backend.manager_layout.projects') }}</span>
                     </a>
                 </li>
 
@@ -834,7 +932,7 @@
                     <a href="{{ route('admin.contact-messages.index') }}"
                        class="dropdown-toggle no-arrow {{ request()->routeIs('admin.contact-messages.*') ? 'active' : '' }}">
                         <span class="micon bi bi-envelope-paper-fill"></span>
-                        <span class="mtext">Contact Messages</span>
+                        <span class="mtext">{{ __('backend.manager_layout.contact_messages') }}</span>
                     </a>
                 </li>
 
@@ -842,7 +940,7 @@
                     <a href="{{ route('manager.calendar.index') }}"
                        class="dropdown-toggle no-arrow {{ request()->routeIs('manager.calendar.*') ? 'active' : '' }}">
                         <span class="micon bi bi-calendar-check-fill"></span>
-                        <span class="mtext">Calendar</span>
+                        <span class="mtext">{{ __('backend.manager_layout.calendar') }}</span>
                     </a>
                 </li>
 
@@ -851,7 +949,7 @@
                         <a href="{{ route('admin.projects.final-decisions.index') }}"
                            class="dropdown-toggle no-arrow {{ request()->routeIs('admin.projects.final-decisions.*') ? 'active' : '' }}">
                             <span class="micon bi bi-check2-square"></span>
-                            <span class="mtext">Final Decisions</span>
+                            <span class="mtext">{{ __('backend.manager_layout.final_decisions') }}</span>
                         </a>
                     </li>
                 @endif
@@ -861,7 +959,7 @@
                         <a href="{{ route('admin.reports.index') }}"
                            class="dropdown-toggle no-arrow {{ request()->routeIs('admin.reports.*') ? 'active' : '' }}">
                             <span class="micon bi bi-bar-chart-line-fill"></span>
-                            <span class="mtext">Reports</span>
+                            <span class="mtext">{{ __('backend.manager_layout.reports') }}</span>
                         </a>
                     </li>
                 @endif
@@ -871,35 +969,37 @@
                         <a href="{{ route('admin.permissions.index') }}"
                            class="dropdown-toggle no-arrow {{ request()->routeIs('admin.permissions.*') ? 'active' : '' }}">
                             <span class="micon bi bi-shield-lock-fill"></span>
-                            <span class="mtext">Permissions</span>
+                            <span class="mtext">{{ __('backend.manager_layout.permissions') }}</span>
                         </a>
                     </li>
                 @endif
-@if(Route::has('admin.auth-role-policies.index'))
-    <li>
-        <a href="{{ route('admin.auth-role-policies.index') }}"
-           class="dropdown-toggle no-arrow {{ request()->routeIs('admin.auth-role-policies.*') ? 'active' : '' }}">
-            <span class="micon fas fa-user-shield"></span>
-            <span class="mtext">Role Auth Policies</span>
-        </a>
-    </li>
-@endif
 
-@if(Route::has('admin.auth-policies.index'))
-    <li>
-        <a href="{{ route('admin.auth-policies.index') }}"
-           class="dropdown-toggle no-arrow {{ request()->routeIs('admin.auth-policies.*') ? 'active' : '' }}">
-            <span class="micon fas fa-user-lock"></span>
-            <span class="mtext">User Auth Policies</span>
-        </a>
-    </li>
-@endif
+                @if(Route::has('admin.auth-role-policies.index'))
+                    <li>
+                        <a href="{{ route('admin.auth-role-policies.index') }}"
+                           class="dropdown-toggle no-arrow {{ request()->routeIs('admin.auth-role-policies.*') ? 'active' : '' }}">
+                            <span class="micon fas fa-user-shield"></span>
+                            <span class="mtext">{{ __('backend.manager_layout.role_auth_policies') }}</span>
+                        </a>
+                    </li>
+                @endif
+
+                @if(Route::has('admin.auth-policies.index'))
+                    <li>
+                        <a href="{{ route('admin.auth-policies.index') }}"
+                           class="dropdown-toggle no-arrow {{ request()->routeIs('admin.auth-policies.*') ? 'active' : '' }}">
+                            <span class="micon fas fa-user-lock"></span>
+                            <span class="mtext">{{ __('backend.manager_layout.user_auth_policies') }}</span>
+                        </a>
+                    </li>
+                @endif
+
                 @if(Route::has('admin.announcements.index'))
                     <li>
                         <a href="{{ route('admin.announcements.index') }}"
                            class="dropdown-toggle no-arrow {{ request()->routeIs('admin.announcements.*') ? 'active' : '' }}">
                             <span class="micon bi bi-megaphone-fill"></span>
-                            <span class="mtext">Announcements</span>
+                            <span class="mtext">{{ __('backend.manager_layout.announcements') }}</span>
                         </a>
                     </li>
                 @endif
@@ -909,7 +1009,7 @@
                         <a href="{{ route('admin.audit-logs.index') }}"
                            class="dropdown-toggle no-arrow {{ request()->routeIs('admin.audit-logs.*') ? 'active' : '' }}">
                             <span class="micon bi bi-clipboard-data-fill"></span>
-                            <span class="mtext">Audit Center</span>
+                            <span class="mtext">{{ __('backend.manager_layout.audit_center') }}</span>
                         </a>
                     </li>
                 @endif
@@ -919,36 +1019,36 @@
                         <a href="{{ route('admin.settings.index') }}"
                            class="dropdown-toggle no-arrow {{ request()->routeIs('settings.*') ? 'active' : '' }}">
                             <span class="micon bi bi-gear-fill"></span>
-                            <span class="mtext">Settings</span>
+                            <span class="mtext">{{ __('backend.manager_layout.settings') }}</span>
                         </a>
                     </li>
                 @endif
             </ul>
 
             <div class="sidebar-bottom">
-                <div class="sidebar-bottom-title">Account</div>
+                <div class="sidebar-bottom-title">{{ __('backend.manager_layout.account') }}</div>
 
                 <div class="sidebar-account-card">
                     <div class="sidebar-account-top">
                         <img
                             src="{{ !empty($adminUser?->profile_image) ? asset('storage/' . $adminUser->profile_image) : asset('vendors/images/photo1.jpg') }}"
-                            alt="User Avatar"
+                            alt="{{ __('backend.manager_layout.user_avatar') }}"
                             class="sidebar-account-avatar"
                         >
                         <div>
-                            <div class="sidebar-account-name">{{ $adminUser ? $adminUser->name : 'Guest' }}</div>
-                            <div class="sidebar-account-role">Administrator</div>
+                            <div class="sidebar-account-name">{{ $adminUser ? $adminUser->name : __('backend.manager_layout.guest') }}</div>
+                            <div class="sidebar-account-role">{{ __('backend.manager_layout.administrator') }}</div>
                         </div>
                     </div>
 
                     <div class="sidebar-account-links">
                         <a href="{{ route('admin.profile') }}">
                             <span class="micon bi bi-person-circle"></span>
-                            <span class="mtext">Profile</span>
+                            <span class="mtext">{{ __('backend.manager_layout.profile') }}</span>
                         </a>
                         <a href="{{ route('admin.settings.index') }}">
                             <span class="micon bi bi-gear"></span>
-                            <span class="mtext">Settings</span>
+                            <span class="mtext">{{ __('backend.manager_layout.settings') }}</span>
                         </a>
                     </div>
                 </div>
@@ -963,8 +1063,8 @@
     </div>
 
     <div class="app-footer">
-        <div><strong>{{ setting('platform_name', 'VertexGrad') }}</strong> Manager Panel</div>
-        <div>{{ setting('platform_tagline', 'Professional management for students, projects, investors, and requests.') }}</div>
+        <div><strong>{{ setting('platform_name', 'VertexGrad') }}</strong> {{ __('backend.manager_layout.manager_panel') }}</div>
+        <div>{{ setting('platform_tagline', __('backend.manager_layout.footer_tagline')) }}</div>
     </div>
 </div>
 

@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title','Project Details')
+@section('title', __('backend.project_details.page_title'))
 
 @section('content')
 @php
@@ -239,9 +239,9 @@
             </div>
 
             <div class="hero-badges text-md-right">
-                <span class="badge badge-{{ $statusClass }}">Project: {{ ucfirst(str_replace('_', ' ', $project->status ?? 'unknown')) }}</span>
-                <span class="badge badge-{{ $scannerStatusClass }}">Scan: {{ ucfirst(str_replace('_', ' ', $project->scanner_status ?? 'not scanned')) }}</span>
-                <span class="badge badge-{{ $riskClass }}">Risk: {{ $riskLevel ?? '-' }}</span>
+                <span class="badge badge-{{ $statusClass }}">{{ __('backend.project_details.project_status') }}: {{ ucfirst(str_replace('_', ' ', $project->status ?? 'unknown')) }}</span>
+                <span class="badge badge-{{ $scannerStatusClass }}">{{ __('backend.project_details.scan_status') }}: {{ ucfirst(str_replace('_', ' ', $project->scanner_status ?? __('backend.project_details.not_scanned'))) }}</span>
+                <span class="badge badge-{{ $riskClass }}">{{ __('backend.project_details.risk') }}: {{ $riskLevel ?? '-' }}</span>
             </div>
         </div>
     </div>
@@ -250,7 +250,7 @@
         <div class="col-md-3 mb-3">
             <div class="card info-card">
                 <div class="card-body">
-                    <div class="mini-stat-label">Scan Score</div>
+                    <div class="mini-stat-label">{{ __('backend.project_details.scan_score') }}</div>
                     <div class="mini-stat-value">{{ $project->scan_score !== null ? number_format($project->scan_score, 2) : '-' }}</div>
                 </div>
             </div>
@@ -259,7 +259,7 @@
         <div class="col-md-3 mb-3">
             <div class="card info-card">
                 <div class="card-body">
-                    <div class="mini-stat-label">Scanner Project ID</div>
+                    <div class="mini-stat-label">{{ __('backend.project_details.scanner_project_id') }}</div>
                     <div class="mini-stat-value">{{ $project->scanner_project_id ?? '-' }}</div>
                 </div>
             </div>
@@ -268,7 +268,7 @@
         <div class="col-md-3 mb-3">
             <div class="card info-card">
                 <div class="card-body">
-                    <div class="mini-stat-label">Scanned At</div>
+                    <div class="mini-stat-label">{{ __('backend.project_details.scanned_at') }}</div>
                     <div class="mini-stat-value">{{ $project->scanned_at ? \Carbon\Carbon::parse($project->scanned_at)->format('d/m/Y H:i') : '-' }}</div>
                 </div>
             </div>
@@ -277,7 +277,7 @@
         <div class="col-md-3 mb-3">
             <div class="card info-card">
                 <div class="card-body">
-                    <div class="mini-stat-label">Investors Count</div>
+                    <div class="mini-stat-label">{{ __('backend.project_details.investors_count') }}</div>
                     <div class="mini-stat-value">{{ $project->investors->count() }}</div>
                 </div>
             </div>
@@ -286,58 +286,58 @@
 
     <div class="card section-card">
         <div class="card-header">
-            <h3>Project Overview</h3>
+            <h3>{{ __('backend.project_details.project_overview') }}</h3>
         </div>
         <div class="card-body">
             <div class="row detail-grid">
                 <div class="col-md-3 item">
-                    <div class="detail-label">Status</div>
+                    <div class="detail-label">{{ __('backend.project_details.status') }}</div>
                     <div class="detail-value">{{ $project->status ?? '-' }}</div>
                 </div>
                 <div class="col-md-3 item">
-                    <div class="detail-label">Progress</div>
+                    <div class="detail-label">{{ __('backend.project_details.progress') }}</div>
                     <div class="detail-value">{{ $project->progress ?? 0 }}%</div>
                 </div>
                 <div class="col-md-3 item">
-                    <div class="detail-label">Category</div>
+                    <div class="detail-label">{{ __('backend.project_details.category') }}</div>
                     <div class="detail-value">{{ $project->category ?? '-' }}</div>
                 </div>
                 <div class="col-md-3 item">
-                    <div class="detail-label">Budget</div>
+                    <div class="detail-label">{{ __('backend.project_details.budget') }}</div>
                     <div class="detail-value">{{ $project->budget ?? '-' }}</div>
                 </div>
 
                 <div class="col-md-3 item">
-                    <div class="detail-label">Priority</div>
+                    <div class="detail-label">{{ __('backend.project_details.priority') }}</div>
                     <div class="detail-value">{{ $project->priority ?? '-' }}</div>
                 </div>
                 <div class="col-md-3 item">
-                    <div class="detail-label">Start Date</div>
+                    <div class="detail-label">{{ __('backend.project_details.start_date') }}</div>
                     <div class="detail-value">{{ optional($project->start_date)->format('d/m/Y') ?? '-' }}</div>
                 </div>
                 <div class="col-md-3 item">
-                    <div class="detail-label">End Date</div>
+                    <div class="detail-label">{{ __('backend.project_details.end_date') }}</div>
                     <div class="detail-value">{{ optional($project->end_date)->format('d/m/Y') ?? '-' }}</div>
                 </div>
                 <div class="col-md-3 item">
-                    <div class="detail-label">Created At</div>
+                    <div class="detail-label">{{ __('backend.project_details.created_at') }}</div>
                     <div class="detail-value">{{ optional($project->created_at)->format('d/m/Y H:i') ?? '-' }}</div>
                 </div>
 
                 <div class="col-md-3 item">
-                    <div class="detail-label">Scanner Status</div>
+                    <div class="detail-label">{{ __('backend.project_details.scanner_status') }}</div>
                     <div class="detail-value">{{ $project->scanner_status ?? '-' }}</div>
                 </div>
                 <div class="col-md-3 item">
-                    <div class="detail-label">Scanner Project ID</div>
+                    <div class="detail-label">{{ __('backend.project_details.scanner_project_id') }}</div>
                     <div class="detail-value">{{ $project->scanner_project_id ?? '-' }}</div>
                 </div>
                 <div class="col-md-3 item">
-                    <div class="detail-label">Scan Score</div>
+                    <div class="detail-label">{{ __('backend.project_details.scan_score') }}</div>
                     <div class="detail-value">{{ $project->scan_score !== null ? number_format($project->scan_score, 2) : '-' }}</div>
                 </div>
                 <div class="col-md-3 item">
-                    <div class="detail-label">Risk Level</div>
+                    <div class="detail-label">{{ __('backend.project_details.risk_level') }}</div>
                     <div class="detail-value">{{ $riskLevel ?? '-' }}</div>
                 </div>
             </div>
@@ -347,12 +347,12 @@
                 <div class="d-flex gap-2 action-btns flex-wrap">
                     <form method="POST" action="{{ route('admin.projects.approve', $project) }}">
                         @csrf
-                        <button type="submit" class="btn btn-success btn-sm">Approve Project</button>
+                        <button type="submit" class="btn btn-success btn-sm">{{ __('backend.project_details.approve_project') }}</button>
                     </form>
 
                     <form method="POST" action="{{ route('admin.projects.reject', $project) }}">
                         @csrf
-                        <button type="submit" class="btn btn-danger btn-sm">Reject Project</button>
+                        <button type="submit" class="btn btn-danger btn-sm">{{ __('backend.project_details.reject_project') }}</button>
                     </form>
                 </div>
             @endif
@@ -361,25 +361,25 @@
 
     <div class="card section-card">
         <div class="card-header">
-            <h3>People & Assignment</h3>
+            <h3>{{ __('backend.project_details.people_assignment') }}</h3>
         </div>
         <div class="card-body">
             <div class="row detail-grid">
                 <div class="col-md-3 item">
-                    <div class="detail-label">Student</div>
+                    <div class="detail-label">{{ __('backend.project_details.student') }}</div>
                     <div class="detail-value">{{ $project->student?->name ?? '-' }}</div>
                     <div class="text-muted small">{{ $project->student?->email ?? '' }}</div>
                 </div>
                 <div class="col-md-3 item">
-                    <div class="detail-label">Supervisor</div>
+                    <div class="detail-label">{{ __('backend.project_details.supervisor') }}</div>
                     <div class="detail-value">{{ $project->supervisor?->name ?? '-' }}</div>
                 </div>
                 <div class="col-md-3 item">
-                    <div class="detail-label">Manager</div>
+                    <div class="detail-label">{{ __('backend.project_details.manager') }}</div>
                     <div class="detail-value">{{ $project->manager?->name ?? '-' }}</div>
                 </div>
                 <div class="col-md-3 item">
-                    <div class="detail-label">Total Investors</div>
+                    <div class="detail-label">{{ __('backend.project_details.total_investors') }}</div>
                     <div class="detail-value">{{ $project->investors->count() }}</div>
                 </div>
             </div>
@@ -388,49 +388,49 @@
 
     <div class="card section-card">
         <div class="card-header">
-            <h3>Scan Intelligence Summary</h3>
+            <h3>{{ __('backend.project_details.scan_intelligence_summary') }}</h3>
         </div>
         <div class="card-body">
             <div class="row">
                 <div class="col-lg-3 mb-3">
                     <div class="scan-score-box">
                         <div class="scan-score-number">{{ $project->scan_score !== null ? number_format($project->scan_score, 0) : '-' }}</div>
-                        <div class="scan-score-label">Overall Score</div>
+                        <div class="scan-score-label">{{ __('backend.project_details.overall_score') }}</div>
                     </div>
                 </div>
 
                 <div class="col-lg-3 mb-3">
                     <div class="summary-box">
-                        <h6>Scan Metadata</h6>
+                        <h6>{{ __('backend.project_details.scan_metadata') }}</h6>
                         <ul class="summary-list">
-                            <li><strong>Event:</strong> {{ data_get($scanReport, 'event', '-') }}</li>
-                            <li><strong>Version:</strong> {{ data_get($scanReport, 'version', '-') }}</li>
-                            <li><strong>Grade:</strong> {{ data_get($scanInfo, 'grade', $project->grade ?? '-') }}</li>
-                            <li><strong>Status:</strong> {{ data_get($scanInfo, 'status', $project->scanner_status ?? '-') }}</li>
+                            <li><strong>{{ __('backend.project_details.event') }}:</strong> {{ data_get($scanReport, 'event', '-') }}</li>
+                            <li><strong>{{ __('backend.project_details.version') }}:</strong> {{ data_get($scanReport, 'version', '-') }}</li>
+                            <li><strong>{{ __('backend.project_details.grade') }}:</strong> {{ data_get($scanInfo, 'grade', $project->grade ?? '-') }}</li>
+                            <li><strong>{{ __('backend.project_details.status') }}:</strong> {{ data_get($scanInfo, 'status', $project->scanner_status ?? '-') }}</li>
                         </ul>
                     </div>
                 </div>
 
                 <div class="col-lg-3 mb-3">
                     <div class="summary-box">
-                        <h6>Issue Summary</h6>
+                        <h6>{{ __('backend.project_details.issue_summary') }}</h6>
                         <ul class="summary-list">
-                            <li><strong>Total Files:</strong> {{ data_get($scanSummary, 'total_files', '-') }}</li>
-                            <li><strong>Total Issues:</strong> {{ data_get($scanSummary, 'issues_total', '-') }}</li>
-                            <li><strong>Critical:</strong> {{ data_get($scanSummary, 'critical', '-') }}</li>
-                            <li><strong>High:</strong> {{ data_get($scanSummary, 'high', '-') }}</li>
+                            <li><strong>{{ __('backend.project_details.total_files') }}:</strong> {{ data_get($scanSummary, 'total_files', '-') }}</li>
+                            <li><strong>{{ __('backend.project_details.total_issues') }}:</strong> {{ data_get($scanSummary, 'issues_total', '-') }}</li>
+                            <li><strong>{{ __('backend.project_details.critical') }}:</strong> {{ data_get($scanSummary, 'critical', '-') }}</li>
+                            <li><strong>{{ __('backend.project_details.high') }}:</strong> {{ data_get($scanSummary, 'high', '-') }}</li>
                         </ul>
                     </div>
                 </div>
 
                 <div class="col-lg-3 mb-3">
                     <div class="summary-box">
-                        <h6>More Details</h6>
+                        <h6>{{ __('backend.project_details.more_details') }}</h6>
                         <ul class="summary-list">
-                            <li><strong>Medium:</strong> {{ data_get($scanSummary, 'medium', '-') }}</li>
-                            <li><strong>Low:</strong> {{ data_get($scanSummary, 'low', '-') }}</li>
-                            <li><strong>Language:</strong> {{ data_get($scanProject, 'language', '-') }}</li>
-                            <li><strong>Scanned At:</strong> {{ $project->scanned_at ? \Carbon\Carbon::parse($project->scanned_at)->format('d/m/Y H:i') : '-' }}</li>
+                            <li><strong>{{ __('backend.project_details.medium') }}:</strong> {{ data_get($scanSummary, 'medium', '-') }}</li>
+                            <li><strong>{{ __('backend.project_details.low') }}:</strong> {{ data_get($scanSummary, 'low', '-') }}</li>
+                            <li><strong>{{ __('backend.project_details.language') }}:</strong> {{ data_get($scanProject, 'language', '-') }}</li>
+                            <li><strong>{{ __('backend.project_details.scanned_at') }}:</strong> {{ $project->scanned_at ? \Carbon\Carbon::parse($project->scanned_at)->format('d/m/Y H:i') : '-' }}</li>
                         </ul>
                     </div>
                 </div>
@@ -440,7 +440,7 @@
 
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <h5 class="mb-3">Highlights</h5>
+                    <h5 class="mb-3">{{ __('backend.project_details.highlights') }}</h5>
                     @if(!empty($highlights))
                         <ul class="highlight-list mb-0">
                             @foreach($highlights as $highlight)
@@ -448,12 +448,12 @@
                             @endforeach
                         </ul>
                     @else
-                        <p class="text-muted mb-0">No highlights available.</p>
+                        <p class="text-muted mb-0">{{ __('backend.project_details.no_highlights_available') }}</p>
                     @endif
                 </div>
 
                 <div class="col-md-6 mb-3">
-                    <h5 class="mb-3">Recommendations</h5>
+                    <h5 class="mb-3">{{ __('backend.project_details.recommendations') }}</h5>
                     @if(!empty($recommendations))
                         <ul class="recommend-list mb-0">
                             @foreach($recommendations as $recommendation)
@@ -461,7 +461,7 @@
                             @endforeach
                         </ul>
                     @else
-                        <p class="text-muted mb-0">No recommendations available.</p>
+                        <p class="text-muted mb-0">{{ __('backend.project_details.no_recommendations_available') }}</p>
                     @endif
                 </div>
             </div>
@@ -470,7 +470,7 @@
 
     <div class="card section-card">
         <div class="card-header">
-            <h3 class="mb-0">Interested Investors</h3>
+            <h3 class="mb-0">{{ __('backend.project_details.interested_investors') }}</h3>
         </div>
         <div class="card-body">
             @php
@@ -482,11 +482,11 @@
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Investor</th>
-                            <th>Email</th>
-                            <th>Status</th>
-                            <th>Amount</th>
-                            <th>Expressed</th>
+                            <th>{{ __('backend.project_details.investor') }}</th>
+                            <th>{{ __('backend.project_details.email') }}</th>
+                            <th>{{ __('backend.project_details.status') }}</th>
+                            <th>{{ __('backend.project_details.amount') }}</th>
+                            <th>{{ __('backend.project_details.expressed') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -495,7 +495,7 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $investor->name }}</td>
                                 <td>{{ $investor->email }}</td>
-                                <td><span class="badge bg-warning text-dark">Interested</span></td>
+                                <td><span class="badge bg-warning text-dark">{{ __('backend.project_details.interested') }}</span></td>
                                 <td>{{ $investor->pivot->amount ?? '-' }}</td>
                                 <td>{{ optional($investor->pivot->created_at)->format('d M Y H:i') ?? '-' }}</td>
                             </tr>
@@ -503,14 +503,14 @@
                     </tbody>
                 </table>
             @else
-                <p class="text-muted mb-0">No interest yet.</p>
+                <p class="text-muted mb-0">{{ __('backend.project_details.no_interest_yet') }}</p>
             @endif
         </div>
     </div>
 
     <div class="card section-card">
         <div class="card-header">
-            <h3 class="mb-0">Funding Requests</h3>
+            <h3 class="mb-0">{{ __('backend.project_details.funding_requests') }}</h3>
         </div>
         <div class="card-body">
             @php
@@ -522,12 +522,12 @@
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Investor</th>
-                            <th>Email</th>
-                            <th>Amount</th>
-                            <th>Message</th>
-                            <th>Requested</th>
-                            <th width="220">Action</th>
+                            <th>{{ __('backend.project_details.investor') }}</th>
+                            <th>{{ __('backend.project_details.email') }}</th>
+                            <th>{{ __('backend.project_details.amount') }}</th>
+                            <th>{{ __('backend.project_details.message') }}</th>
+                            <th>{{ __('backend.project_details.requested') }}</th>
+                            <th width="220">{{ __('backend.project_details.action') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -544,14 +544,14 @@
                                         <form method="POST" action="{{ route('admin.projects.investors.approve', ['project' => $project->project_id, 'user' => $investor->id]) }}">
                                             @csrf
                                             <button type="submit" class="btn btn-success btn-sm">
-                                                Approve
+                                                {{ __('backend.project_details.approve') }}
                                             </button>
                                         </form>
 
                                         <form method="POST" action="{{ route('admin.projects.investors.reject', ['project' => $project->project_id, 'user' => $investor->id]) }}">
                                             @csrf
                                             <button type="submit" class="btn btn-danger btn-sm">
-                                                Reject
+                                                {{ __('backend.project_details.reject') }}
                                             </button>
                                         </form>
                                     </div>
@@ -561,14 +561,14 @@
                     </tbody>
                 </table>
             @else
-                <p class="text-muted mb-0">No funding requests yet.</p>
+                <p class="text-muted mb-0">{{ __('backend.project_details.no_funding_requests_yet') }}</p>
             @endif
         </div>
     </div>
 
     <div class="card section-card">
         <div class="card-header">
-            <h3 class="mb-0">Project Media</h3>
+            <h3 class="mb-0">{{ __('backend.project_details.project_media') }}</h3>
         </div>
         <div class="card-body">
             @php
@@ -576,33 +576,33 @@
                 $videoUrl = $project->getFirstMediaUrl('videos');
             @endphp
 
-            <h5 class="mb-3">Images ({{ $images->count() }})</h5>
+            <h5 class="mb-3">{{ __('backend.project_details.images') }} ({{ $images->count() }})</h5>
 
             @if($images->count())
                 <div class="row">
                     @foreach($images as $img)
                         <div class="col-md-3 mb-3">
                             <a href="{{ $img->getUrl() }}" target="_blank" class="d-block">
-                                <img src="{{ $img->getUrl() }}" class="img-fluid rounded border" alt="Project image">
+                                <img src="{{ $img->getUrl() }}" class="img-fluid rounded border" alt="{{ __('backend.project_details.project_image') }}">
                             </a>
                         </div>
                     @endforeach
                 </div>
             @else
-                <p class="text-muted">No images uploaded.</p>
+                <p class="text-muted">{{ __('backend.project_details.no_images_uploaded') }}</p>
             @endif
 
             <hr>
 
-            <h5 class="mb-3">Video</h5>
+            <h5 class="mb-3">{{ __('backend.project_details.video') }}</h5>
 
             @if($videoUrl)
                 <video class="w-100 rounded border" controls style="max-height:420px;">
                     <source src="{{ $videoUrl }}" type="video/mp4">
-                    Your browser does not support the video tag.
+                    {{ __('backend.project_details.video_not_supported') }}
                 </video>
             @else
-                <p class="text-muted">No video uploaded.</p>
+                <p class="text-muted">{{ __('backend.project_details.no_video_uploaded') }}</p>
             @endif
         </div>
     </div>

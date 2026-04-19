@@ -1,6 +1,6 @@
 @extends('supervisor.layout.app_super')
 
-@section('title','Upcoming Meetings')
+@section('title', __('backend.supervisor_upcoming_meetings.page_title'))
 
 @section('content')
 @php
@@ -88,13 +88,13 @@
     <div class="page-header-card mb-4">
         <div class="d-flex justify-content-between align-items-center flex-wrap">
             <div>
-                <h3>Upcoming Meetings</h3>
-                <p>Track your scheduled meetings, demos, and sessions.</p>
+                <h3>{{ __('backend.supervisor_upcoming_meetings.heading') }}</h3>
+                <p>{{ __('backend.supervisor_upcoming_meetings.subtitle') }}</p>
             </div>
 
             <div>
                 <a href="{{ route('supervisor.meetings.create') }}" class="btn-outline-header">
-                    + Create Meeting
+                    {{ __('backend.supervisor_upcoming_meetings.create_meeting') }}
                 </a>
             </div>
         </div>
@@ -105,21 +105,21 @@
         <div class="col-md-4">
             <div class="stats-card">
                 <div class="stats-number">{{ $totalMeetings }}</div>
-                <small>Total Upcoming</small>
+                <small>{{ __('backend.supervisor_upcoming_meetings.total_upcoming') }}</small>
             </div>
         </div>
 
         <div class="col-md-4">
             <div class="stats-card">
                 <div class="stats-number">{{ $todayMeetings }}</div>
-                <small>Today</small>
+                <small>{{ __('backend.supervisor_upcoming_meetings.today') }}</small>
             </div>
         </div>
 
         <div class="col-md-4">
             <div class="stats-card">
                 <div class="stats-number">{{ $demoCount }}</div>
-                <small>Demo Meetings</small>
+                <small>{{ __('backend.supervisor_upcoming_meetings.demo_meetings') }}</small>
             </div>
         </div>
     </div>
@@ -144,7 +144,7 @@
 
                     <!-- Project -->
                     <div class="text-muted mb-2">
-                        {{ $meeting->project->name ?? 'Project' }}
+                        {{ $meeting->project->name ?? __('backend.supervisor_upcoming_meetings.project') }}
                     </div>
 
                     <!-- Type -->
@@ -165,12 +165,12 @@
 
                         @if($meeting->meeting_link)
                             <a href="{{ $meeting->meeting_link }}" target="_blank" class="btn-join">
-                                Join Meeting
+                                {{ __('backend.supervisor_upcoming_meetings.join_meeting') }}
                             </a>
                         @endif
 
                         <a href="{{ route('supervisor.projects.show', $meeting->project_id) }}" class="btn-open">
-                            Open Project
+                            {{ __('backend.supervisor_upcoming_meetings.open_project') }}
                         </a>
 
                     </div>
@@ -181,7 +181,7 @@
         @empty
             <div class="col-12">
                 <div class="text-center text-muted py-5">
-                    No upcoming meetings.
+                    {{ __('backend.supervisor_upcoming_meetings.no_upcoming_meetings') }}
                 </div>
             </div>
         @endforelse

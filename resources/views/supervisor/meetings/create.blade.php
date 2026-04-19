@@ -1,6 +1,6 @@
 @extends('supervisor.layout.app_super')
 
-@section('title', 'Create Meeting')
+@section('title', __('backend.supervisor_create_meeting.page_title'))
 
 @section('content')
 @php
@@ -246,7 +246,7 @@
 
         @if($errors->any())
             <div class="alert alert-danger border-0 shadow-sm mb-4">
-                <strong class="d-block mb-2">Please review the form inputs.</strong>
+                <strong class="d-block mb-2">{{ __('backend.supervisor_create_meeting.review_form_inputs') }}</strong>
                 <ul class="mb-0 pl-3">
                     @foreach($errors->all() as $error)
                         <li>{{ $error }}</li>
@@ -258,16 +258,16 @@
         <div class="page-header-card mb-4">
             <div class="d-flex justify-content-between align-items-center flex-wrap" style="gap: 15px;">
                 <div>
-                    <h3>Create Meeting</h3>
-                    <p>Schedule a demo, viva, or review meeting with the student for a selected project.</p>
+                    <h3>{{ __('backend.supervisor_create_meeting.heading') }}</h3>
+                    <p>{{ __('backend.supervisor_create_meeting.subtitle') }}</p>
                 </div>
 
                 <div class="header-actions">
                     <a href="{{ route('supervisor.meetings.index') }}" class="btn-outline-header">
-                        <i class="fa fa-calendar mr-1"></i> All Meetings
+                        <i class="fa fa-calendar mr-1"></i> {{ __('backend.supervisor_create_meeting.all_meetings') }}
                     </a>
                     <a href="{{ route('supervisor.projects.index') }}" class="btn-outline-header">
-                        <i class="fa fa-folder-open mr-1"></i> My Projects
+                        <i class="fa fa-folder-open mr-1"></i> {{ __('backend.supervisor_create_meeting.my_projects') }}
                     </a>
                 </div>
             </div>
@@ -276,8 +276,8 @@
         
         <div class="form-card">
             <div class="form-card-header">
-                <h5>Meeting Details</h5>
-                <p>Fill in the required information below to create a new meeting session.</p>
+                <h5>{{ __('backend.supervisor_create_meeting.meeting_details') }}</h5>
+                <p>{{ __('backend.supervisor_create_meeting.meeting_details_subtitle') }}</p>
             </div>
 
             <div class="form-card-body">
@@ -285,13 +285,13 @@
                     @csrf
 
                     <div class="section-box">
-                        <div class="section-title">Project & Session Information</div>
+                        <div class="section-title">{{ __('backend.supervisor_create_meeting.project_session_information') }}</div>
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Project</label>
+                                <label class="form-label">{{ __('backend.supervisor_create_meeting.project') }}</label>
                                 <select name="project_id" class="form-control @error('project_id') is-invalid @enderror" required>
-                                    <option value="">Select project</option>
+                                    <option value="">{{ __('backend.supervisor_create_meeting.select_project') }}</option>
                                     @foreach($projects as $project)
                                         <option value="{{ $project->project_id }}"
                                             {{ old('project_id') == $project->project_id ? 'selected' : '' }}>
@@ -299,38 +299,38 @@
                                         </option>
                                     @endforeach
                                 </select>
-                                <div class="input-helper">Choose the project this meeting belongs to.</div>
+                                <div class="input-helper">{{ __('backend.supervisor_create_meeting.project_helper') }}</div>
                                 @error('project_id')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
 
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Meeting Type</label>
+                                <label class="form-label">{{ __('backend.supervisor_create_meeting.meeting_type') }}</label>
                                 <select name="meeting_type" class="form-control @error('meeting_type') is-invalid @enderror" required>
-                                    <option value="">Select type</option>
-                                    <option value="demo" {{ old('meeting_type') == 'demo' ? 'selected' : '' }}>Demo</option>
-                                    <option value="review" {{ old('meeting_type') == 'review' ? 'selected' : '' }}>Review</option>
-                                    <option value="viva" {{ old('meeting_type') == 'viva' ? 'selected' : '' }}>Viva</option>
-                                    <option value="discussion" {{ old('meeting_type') == 'discussion' ? 'selected' : '' }}>Discussion</option>
+                                    <option value="">{{ __('backend.supervisor_create_meeting.select_type') }}</option>
+                                    <option value="demo" {{ old('meeting_type') == 'demo' ? 'selected' : '' }}>{{ __('backend.supervisor_create_meeting.types.demo') }}</option>
+                                    <option value="review" {{ old('meeting_type') == 'review' ? 'selected' : '' }}>{{ __('backend.supervisor_create_meeting.types.review') }}</option>
+                                    <option value="viva" {{ old('meeting_type') == 'viva' ? 'selected' : '' }}>{{ __('backend.supervisor_create_meeting.types.viva') }}</option>
+                                    <option value="discussion" {{ old('meeting_type') == 'discussion' ? 'selected' : '' }}>{{ __('backend.supervisor_create_meeting.types.discussion') }}</option>
                                 </select>
-                                <div class="input-helper">Define the purpose of this meeting session.</div>
+                                <div class="input-helper">{{ __('backend.supervisor_create_meeting.meeting_type_helper') }}</div>
                                 @error('meeting_type')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
 
                             <div class="col-md-12 mb-3">
-                                <label class="form-label">Meeting Title</label>
+                                <label class="form-label">{{ __('backend.supervisor_create_meeting.meeting_title') }}</label>
                                 <input
                                     type="text"
                                     name="title"
                                     class="form-control @error('title') is-invalid @enderror"
                                     value="{{ old('title') }}"
-                                    placeholder="Example: Final Demo Review Session"
+                                    placeholder="{{ __('backend.supervisor_create_meeting.meeting_title_placeholder') }}"
                                     required
                                 >
-                                <div class="input-helper">Use a clear and professional title for the session.</div>
+                                <div class="input-helper">{{ __('backend.supervisor_create_meeting.meeting_title_helper') }}</div>
                                 @error('title')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -339,11 +339,11 @@
                     </div>
 
                     <div class="section-box">
-                        <div class="section-title">Date, Time & Link</div>
+                        <div class="section-title">{{ __('backend.supervisor_create_meeting.date_time_link') }}</div>
 
                         <div class="row">
                             <div class="col-md-4 mb-3">
-                                <label class="form-label">Meeting Date</label>
+                                <label class="form-label">{{ __('backend.supervisor_create_meeting.meeting_date') }}</label>
                                 <input
                                     type="date"
                                     name="meeting_date"
@@ -357,7 +357,7 @@
                             </div>
 
                             <div class="col-md-4 mb-3">
-                                <label class="form-label">Meeting Time</label>
+                                <label class="form-label">{{ __('backend.supervisor_create_meeting.meeting_time') }}</label>
                                 <input
                                     type="time"
                                     name="meeting_time"
@@ -371,15 +371,15 @@
                             </div>
 
                             <div class="col-md-4 mb-3">
-                                <label class="form-label">Meeting Link</label>
+                                <label class="form-label">{{ __('backend.supervisor_create_meeting.meeting_link') }}</label>
                                 <input
                                     type="url"
                                     name="meeting_link"
                                     class="form-control @error('meeting_link') is-invalid @enderror"
                                     value="{{ old('meeting_link') }}"
-                                    placeholder="https://meet.google.com/..."
+                                    placeholder="{{ __('backend.supervisor_create_meeting.meeting_link_placeholder') }}"
                                 >
-                                <div class="input-helper">Optional, but recommended for online meetings.</div>
+                                <div class="input-helper">{{ __('backend.supervisor_create_meeting.meeting_link_helper') }}</div>
                                 @error('meeting_link')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -388,18 +388,18 @@
                     </div>
 
                     <div class="section-box mb-0">
-                        <div class="section-title">Additional Notes</div>
+                        <div class="section-title">{{ __('backend.supervisor_create_meeting.additional_notes') }}</div>
 
                         <div class="row">
                             <div class="col-md-12 mb-0">
-                                <label class="form-label">Notes</label>
+                                <label class="form-label">{{ __('backend.supervisor_create_meeting.notes') }}</label>
                                 <textarea
                                     name="notes"
                                     rows="5"
                                     class="form-control @error('notes') is-invalid @enderror"
-                                    placeholder="Add agenda, review points, required materials, or any instructions for the student..."
+                                    placeholder="{{ __('backend.supervisor_create_meeting.notes_placeholder') }}"
                                 >{{ old('notes') }}</textarea>
-                                <div class="input-helper">This note can help the student understand what is expected during the session.</div>
+                                <div class="input-helper">{{ __('backend.supervisor_create_meeting.notes_helper') }}</div>
                                 @error('notes')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -409,10 +409,10 @@
 
                     <div class="d-flex justify-content-end flex-wrap mt-4" style="gap: 12px;">
                         <a href="{{ route('supervisor.meetings.index') }}" class="btn-light-alt">
-                            <i class="fa fa-arrow-left mr-1"></i> Cancel
+                            <i class="fa fa-arrow-left mr-1"></i> {{ __('backend.supervisor_create_meeting.cancel') }}
                         </a>
                         <button type="submit" class="btn-submit">
-                            <i class="fa fa-calendar-plus-o mr-1"></i> Create Meeting
+                            <i class="fa fa-calendar-plus-o mr-1"></i> {{ __('backend.supervisor_create_meeting.create_meeting') }}
                         </button>
                     </div>
                 </form>

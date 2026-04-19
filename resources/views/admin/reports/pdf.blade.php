@@ -86,7 +86,7 @@
     <div class="header">
         <div class="title">{{ $report['title'] }}</div>
         <div class="subtitle">
-            الفترة: {{ $report['from']->format('Y-m-d') }} إلى {{ $report['to']->format('Y-m-d') }}
+            {{ __('backend.report_pdf.period') }}: {{ $report['from']->format('Y-m-d') }} {{ __('backend.report_pdf.to') }} {{ $report['to']->format('Y-m-d') }}
         </div>
     </div>
 
@@ -118,7 +118,7 @@
             @empty
                 <tr>
                     <td colspan="{{ max(count($report['headings']), 1) }}" class="muted">
-                        لا توجد بيانات متاحة
+                        {{ __('backend.report_pdf.no_data_available') }}
                     </td>
                 </tr>
             @endforelse

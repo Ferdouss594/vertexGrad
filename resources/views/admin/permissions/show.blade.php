@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Manage User Permissions')
+@section('title', __('backend.permissions_show.title'))
 
 @section('content')
 <style>
@@ -294,26 +294,25 @@
         <div class="hero-card">
             <div class="hero-content d-flex justify-content-between align-items-start flex-wrap" style="gap: 16px;">
                 <div>
-                    <div class="hero-title">Manage User Permissions</div>
+                    <div class="hero-title">{{ __('backend.permissions_show.page_title') }}</div>
                     <p class="hero-text">
-                        Control access professionally for each user. Role permissions are inherited automatically,
-                        while direct permissions allow you to customize this user separately.
+                        {{ __('backend.permissions_show.page_subtitle') }}
                     </p>
                 </div>
 
                 <a href="{{ route('admin.permissions.index') }}"
                    class="btn btn-light btn-sm"
                    style="border-radius: 10px; font-weight: 700;">
-                    Back
+                    {{ __('backend.permissions_show.back') }}
                 </a>
             </div>
         </div>
 
         <div class="section-card">
             <div class="section-header">
-                <h4>User Access Profile</h4>
+                <h4>{{ __('backend.permissions_show.user_access_profile') }}</h4>
                 <div class="section-subtext">
-                    Overview of the selected account and its current access structure.
+                    {{ __('backend.permissions_show.user_access_profile_subtitle') }}
                 </div>
             </div>
 
@@ -321,21 +320,21 @@
                 <div class="row">
                     <div class="col-md-4 mb-3">
                         <div class="info-box">
-                            <div class="info-label">Name</div>
+                            <div class="info-label">{{ __('backend.permissions_show.name') }}</div>
                             <div class="info-value">{{ $user->name }}</div>
                         </div>
                     </div>
 
                     <div class="col-md-4 mb-3">
                         <div class="info-box">
-                            <div class="info-label">Email</div>
+                            <div class="info-label">{{ __('backend.permissions_show.email') }}</div>
                             <div class="info-value">{{ $user->email }}</div>
                         </div>
                     </div>
 
                     <div class="col-md-4 mb-3">
                         <div class="info-box">
-                            <div class="info-label">Current Role</div>
+                            <div class="info-label">{{ __('backend.permissions_show.current_role') }}</div>
                             <div class="info-value">
                                 <span class="role-badge">{{ $user->role }}</span>
                             </div>
@@ -345,16 +344,15 @@
 
                 @if($isSupervisor)
                     <div class="alert alert-info border-0 mt-2 mb-0" style="border-radius: 14px; background:#eff6ff; color:#1e3a8a;">
-                        This user is a <strong>Supervisor</strong>. Only supervisor-related permission groups are shown here to keep management clean and focused.
+                        {!! __('backend.permissions_show.supervisor_note') !!}
                     </div>
                 @endif
 
                 @if($isManager)
                     <div class="full-access-card mt-3">
-                        <h5>Manager Full Access</h5>
+                        <h5>{{ __('backend.permissions_show.manager_full_access') }}</h5>
                         <p>
-                            This account is a manager and currently inherits full platform access by design.
-                            Direct permission customization is available, but usually not required for manager accounts.
+                            {{ __('backend.permissions_show.manager_full_access_text') }}
                         </p>
                     </div>
                 @endif
@@ -363,9 +361,9 @@
 
         <div class="section-card">
             <div class="section-header">
-                <h5>Inherited Permissions From Role</h5>
+                <h5>{{ __('backend.permissions_show.inherited_permissions_from_role') }}</h5>
                 <div class="section-subtext">
-                    These permissions are granted automatically through the assigned role.
+                    {{ __('backend.permissions_show.inherited_permissions_subtitle') }}
                 </div>
             </div>
 
@@ -382,8 +380,8 @@
                             <div class="col-lg-4 col-md-6 mb-4">
                                 <div class="group-card">
                                     <div class="group-header">
-                                        <h6 class="group-title">{{ ucfirst($group ?: 'general') }}</h6>
-                                        <span class="soft-badge">{{ $inherited->count() }} items</span>
+                                        <h6 class="group-title">{{ ucfirst($group ?: __('backend.permissions_show.general')) }}</h6>
+                                        <span class="soft-badge">{{ $inherited->count() }} {{ __('backend.permissions_show.items') }}</span>
                                     </div>
                                     <div class="group-body">
                                         @foreach($inherited as $permission)
@@ -391,7 +389,7 @@
                                                 <div class="permission-name">{{ $permission->name }}</div>
                                                 <div class="permission-slug">{{ $permission->slug }}</div>
                                                 <div class="mt-2">
-                                                    <span class="tag-badge">Inherited</span>
+                                                    <span class="tag-badge">{{ __('backend.permissions_show.inherited') }}</span>
                                                 </div>
                                             </div>
                                         @endforeach
@@ -402,7 +400,7 @@
                     @empty
                         <div class="col-12">
                             <div class="alert alert-info mb-0" style="border-radius: 14px;">
-                                No inherited permissions found.
+                                {{ __('backend.permissions_show.no_inherited_permissions_found') }}
                             </div>
                         </div>
                     @endforelse
@@ -412,15 +410,15 @@
 
         <div class="section-card">
             <div class="section-header">
-                <h5>Direct User Permissions</h5>
+                <h5>{{ __('backend.permissions_show.direct_user_permissions') }}</h5>
                 <div class="section-subtext">
-                    Use these to make this account different from other users with the same role.
+                    {{ __('backend.permissions_show.direct_user_permissions_subtitle') }}
                 </div>
             </div>
 
             <div class="section-body">
                 <div class="mb-4">
-                    <input type="text" id="permissionSearch" class="form-control search-box" placeholder="Search permissions by name or slug...">
+                    <input type="text" id="permissionSearch" class="form-control search-box" placeholder="{{ __('backend.permissions_show.search_permissions_placeholder') }}">
                 </div>
 
                 <form action="{{ route('admin.permissions.sync', $user->id) }}" method="POST">
@@ -431,8 +429,8 @@
                             <div class="col-lg-6 mb-4 permission-group-card" data-group="{{ strtolower($group ?: 'general') }}">
                                 <div class="group-card">
                                     <div class="group-header">
-                                        <h6 class="group-title">{{ ucfirst($group ?: 'general') }}</h6>
-                                        <span class="soft-badge">{{ $groupPermissions->count() }} permissions</span>
+                                        <h6 class="group-title">{{ ucfirst($group ?: __('backend.permissions_show.general')) }}</h6>
+                                        <span class="soft-badge">{{ $groupPermissions->count() }} {{ __('backend.permissions_show.permissions_count') }}</span>
                                     </div>
 
                                     <div class="group-body">
@@ -458,11 +456,11 @@
 
                                                         <div class="mt-2">
                                                             @if($isInherited)
-                                                                <span class="soft-badge">Already inherited from role</span>
+                                                                <span class="soft-badge">{{ __('backend.permissions_show.already_inherited_from_role') }}</span>
                                                             @endif
 
                                                             @if($isDirect)
-                                                                <span class="tag-badge">Directly assigned</span>
+                                                                <span class="tag-badge">{{ __('backend.permissions_show.directly_assigned') }}</span>
                                                             @endif
                                                         </div>
                                                     </label>
@@ -477,7 +475,7 @@
 
                     <div class="mt-4 d-flex justify-content-end">
                         <button type="submit" class="btn btn-primary save-btn">
-                            Save Permissions
+                            {{ __('backend.permissions_show.save_permissions') }}
                         </button>
                     </div>
                 </form>

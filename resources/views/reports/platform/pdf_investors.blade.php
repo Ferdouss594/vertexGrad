@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="{{ app()->getLocale() }}">
 <head>
     <meta charset="utf-8">
-    <title>Investors Report</title>
+    <title>{{ __('backend.investors_report_pdf.title') }}</title>
     <style>
         body { font-family: DejaVu Sans, sans-serif; }
         table { width: 100%; border-collapse: collapse; margin-top: 15px; }
@@ -11,16 +11,16 @@
     </style>
 </head>
 <body>
-    <h2>👥 Investors Report</h2>
-    <p>Total Investors: {{ $investors->count() }}</p>
+    <h2>{{ __('backend.investors_report_pdf.heading') }}</h2>
+    <p>{{ __('backend.investors_report_pdf.total_investors') }}: {{ $investors->count() }}</p>
 
     <table>
         <thead>
             <tr>
                 <th>#</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Status</th>
+                <th>{{ __('backend.investors_report_pdf.name') }}</th>
+                <th>{{ __('backend.investors_report_pdf.email') }}</th>
+                <th>{{ __('backend.investors_report_pdf.status') }}</th>
             </tr>
         </thead>
         <tbody>

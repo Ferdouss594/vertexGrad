@@ -3,10 +3,10 @@
         <div class="d-flex justify-content-between align-items-start gap-3">
             <div>
                 <h3 class="mb-1 fw-bold" style="font-size: 16px; color: var(--vg-primary);">
-                    Layout Settings
+                    {{ __('backend.layout_right_sidebar.layout_settings') }}
                 </h3>
                 <div class="small" style="color: var(--vg-text-muted);">
-                    User interface preferences
+                    {{ __('backend.layout_right_sidebar.user_interface_preferences') }}
                 </div>
             </div>
 
@@ -18,19 +18,19 @@
 
     <div class="right-sidebar-body customscroll">
         <div class="right-sidebar-body-content p-4">
-            <h4 class="fw-bold mb-3" style="font-size: 15px; color: var(--vg-text);">Header Background</h4>
+            <h4 class="fw-bold mb-3" style="font-size: 15px; color: var(--vg-text);">{{ __('backend.layout_right_sidebar.header_background') }}</h4>
             <div class="sidebar-btn-group d-flex gap-2 pb-4 mb-2">
-                <a href="javascript:void(0);" class="btn btn-outline-primary header-white active">White</a>
-                <a href="javascript:void(0);" class="btn btn-outline-primary header-dark">Dark</a>
+                <a href="javascript:void(0);" class="btn btn-outline-primary header-white active">{{ __('backend.layout_right_sidebar.white') }}</a>
+                <a href="javascript:void(0);" class="btn btn-outline-primary header-dark">{{ __('backend.layout_right_sidebar.dark') }}</a>
             </div>
 
-            <h4 class="fw-bold mb-3" style="font-size: 15px; color: var(--vg-text);">Sidebar Background</h4>
+            <h4 class="fw-bold mb-3" style="font-size: 15px; color: var(--vg-text);">{{ __('backend.layout_right_sidebar.sidebar_background') }}</h4>
             <div class="sidebar-btn-group d-flex gap-2 pb-4 mb-2">
-                <a href="javascript:void(0);" class="btn btn-outline-primary sidebar-light">White</a>
-                <a href="javascript:void(0);" class="btn btn-outline-primary sidebar-dark active">Dark</a>
+                <a href="javascript:void(0);" class="btn btn-outline-primary sidebar-light">{{ __('backend.layout_right_sidebar.white') }}</a>
+                <a href="javascript:void(0);" class="btn btn-outline-primary sidebar-dark active">{{ __('backend.layout_right_sidebar.dark') }}</a>
             </div>
 
-            <h4 class="fw-bold mb-3" style="font-size: 15px; color: var(--vg-text);">Menu Dropdown Icon</h4>
+            <h4 class="fw-bold mb-3" style="font-size: 15px; color: var(--vg-text);">{{ __('backend.layout_right_sidebar.menu_dropdown_icon') }}</h4>
             <div class="sidebar-radio-group pb-3 mb-2">
                 <div class="form-check form-check-inline">
                     <input type="radio" id="sidebaricon-1" name="menu-dropdown-icon" class="form-check-input" value="icon-style-1" checked />
@@ -46,7 +46,7 @@
                 </div>
             </div>
 
-            <h4 class="fw-bold mb-3" style="font-size: 15px; color: var(--vg-text);">Menu List Icon</h4>
+            <h4 class="fw-bold mb-3" style="font-size: 15px; color: var(--vg-text);">{{ __('backend.layout_right_sidebar.menu_list_icon') }}</h4>
             <div class="sidebar-radio-group pb-4 mb-2">
                 <div class="form-check form-check-inline">
                     <input type="radio" id="sidebariconlist-1" name="menu-list-icon" class="form-check-input" value="icon-list-style-1" checked />
@@ -75,7 +75,7 @@
             </div>
 
             <div class="pt-3 text-center">
-                <button class="btn btn-danger px-4" id="reset-settings">Reset Settings</button>
+                <button class="btn btn-danger px-4" id="reset-settings">{{ __('backend.layout_right_sidebar.reset_settings') }}</button>
             </div>
         </div>
     </div>

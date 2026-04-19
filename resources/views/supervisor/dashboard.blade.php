@@ -1,6 +1,6 @@
 @extends('supervisor.layout.app_super')
 
-@section('title', 'Supervisor Dashboard')
+@section('title', __('backend.supervisor_dashboard.page_title'))
 
 @section('content')
 @php
@@ -889,19 +889,18 @@ html[data-theme="dark"] .supervisor-dashboard-page .score-pill {
             <div class="row align-items-center">
                 <div class="col-xl-8 col-lg-7">
                     <div class="hero-content">
-                        <div class="hero-eyebrow">Supervisor Control Center</div>
-                        <h2 class="hero-title">Welcome back, {{ $user->name }}</h2>
+                        <div class="hero-eyebrow">{{ __('backend.supervisor_dashboard.hero_badge') }}</div>
+                        <h2 class="hero-title">{{ __('backend.supervisor_dashboard.hero_title', ['name' => $user->name]) }}</h2>
                         <p class="hero-text">
-                            Monitor assigned projects, review scan outcomes, track your approvals,
-                            and manage revision workflows from one professional dashboard.
+                            {{ __('backend.supervisor_dashboard.hero_subtitle') }}
                         </p>
 
                         <div class="hero-actions">
                             <a href="{{ route('supervisor.projects.index') }}" class="hero-btn hero-btn-primary">
-                                <i class="fa fa-folder-open mr-2"></i> My Projects
+                                <i class="fa fa-folder-open mr-2"></i> {{ __('backend.supervisor_dashboard.my_projects') }}
                             </a>
                             <a href="{{ route('supervisor.projects.pending') }}" class="hero-btn hero-btn-outline">
-                                <i class="fa fa-clock-o mr-2"></i> Pending Reviews
+                                <i class="fa fa-clock-o mr-2"></i> {{ __('backend.supervisor_dashboard.pending_reviews') }}
                             </a>
                         </div>
                     </div>
@@ -910,26 +909,28 @@ html[data-theme="dark"] .supervisor-dashboard-page .score-pill {
                 <div class="col-xl-4 col-lg-5 mt-4 mt-lg-0">
                     <div class="hero-summary-card">
                         <div class="hero-summary-head">
-                            <span>Review Performance</span>
-                            <span class="hero-summary-badge">{{ $totalProjects }} Projects</span>
+                            <span>{{ __('backend.supervisor_dashboard.review_performance') }}</span>
+                            <span class="hero-summary-badge">
+                                {{ $totalProjects }} {{ __('backend.supervisor_dashboard.projects') }}
+                            </span>
                         </div>
 
                         <div class="hero-summary-score">
                             <div class="score-number">{{ $avgScanScore }}</div>
-                            <div class="score-label">Avg. Scan Score</div>
+                            <div class="score-label">{{ __('backend.supervisor_dashboard.avg_scan_score') }}</div>
                         </div>
 
                         <div class="hero-summary-metrics">
                             <div class="metric-item">
-                                <span>Pending</span>
+                                <span>{{ __('backend.supervisor_dashboard.pending') }}</span>
                                 <strong>{{ $pendingReviews }}</strong>
                             </div>
                             <div class="metric-item">
-                                <span>Approved</span>
+                                <span>{{ __('backend.supervisor_dashboard.approved') }}</span>
                                 <strong>{{ $approvedProjects }}</strong>
                             </div>
                             <div class="metric-item">
-                                <span>Revisions</span>
+                                <span>{{ __('backend.supervisor_dashboard.revisions') }}</span>
                                 <strong>{{ $revisionRequests }}</strong>
                             </div>
                         </div>
@@ -938,27 +939,26 @@ html[data-theme="dark"] .supervisor-dashboard-page .score-pill {
             </div>
         </div>
 
-        {{-- Announcements --}}
         @if($featuredAnnouncement)
             <div class="announcement-main-card mb-4">
                 <div class="announcement-main-content">
                     <div class="announcement-badges">
                         <span class="announcement-badge">
                             <i class="fa fa-bullhorn"></i>
-                            Announcement
+                            {{ __('backend.supervisor_dashboard.announcement') }}
                         </span>
 
                         @if($featuredAnnouncement->is_pinned)
                             <span class="announcement-badge pinned">
                                 <i class="fa fa-thumb-tack"></i>
-                                Pinned
+                                {{ __('backend.supervisor_dashboard.pinned') }}
                             </span>
                         @endif
 
                         @if($featuredAnnouncement->expires_at)
                             <span class="announcement-badge expire">
                                 <i class="fa fa-clock-o"></i>
-                                Until {{ $featuredAnnouncement->expires_at->format('M d, Y • h:i A') }}
+                                {{ __('backend.supervisor_dashboard.until', ['date' => $featuredAnnouncement->expires_at->format('M d, Y • h:i A')]) }}
                             </span>
                         @endif
                     </div>
@@ -986,7 +986,7 @@ html[data-theme="dark"] .supervisor-dashboard-page .score-pill {
                                     @if($announcement->is_pinned)
                                         <span class="announcement-badge pinned" style="padding: 6px 10px; font-size: 10px;">
                                             <i class="fa fa-thumb-tack"></i>
-                                            Pinned
+                                            {{ __('backend.supervisor_dashboard.pinned') }}
                                         </span>
                                     @endif
                                 </div>
@@ -997,7 +997,7 @@ html[data-theme="dark"] .supervisor-dashboard-page .score-pill {
 
                                 @if($announcement->expires_at)
                                     <div class="announcement-mini-meta">
-                                        Visible until {{ $announcement->expires_at->format('M d, Y • h:i A') }}
+                                        {{ __('backend.supervisor_dashboard.visible_until', ['date' => $announcement->expires_at->format('M d, Y • h:i A')]) }}
                                     </div>
                                 @endif
                             </div>
@@ -1014,9 +1014,9 @@ html[data-theme="dark"] .supervisor-dashboard-page .score-pill {
                         <i class="fa fa-folder-open"></i>
                     </div>
                     <div class="kpi-info">
-                        <div class="kpi-label">Total Projects</div>
+                        <div class="kpi-label">{{ __('backend.supervisor_dashboard.total_projects') }}</div>
                         <div class="kpi-value">{{ $totalProjects }}</div>
-                        <div class="kpi-sub">Projects visible to you</div>
+                        <div class="kpi-sub">{{ __('backend.supervisor_dashboard.total_projects_note') }}</div>
                     </div>
                 </div>
             </div>
@@ -1027,9 +1027,9 @@ html[data-theme="dark"] .supervisor-dashboard-page .score-pill {
                         <i class="fa fa-hourglass-half"></i>
                     </div>
                     <div class="kpi-info">
-                        <div class="kpi-label">Pending Reviews</div>
+                        <div class="kpi-label">{{ __('backend.supervisor_dashboard.pending_reviews') }}</div>
                         <div class="kpi-value">{{ $pendingReviews }}</div>
-                        <div class="kpi-sub">{{ $pendingPercent }}% of total projects</div>
+                        <div class="kpi-sub">{{ $pendingPercent }}%</div>
                     </div>
                 </div>
             </div>
@@ -1040,9 +1040,9 @@ html[data-theme="dark"] .supervisor-dashboard-page .score-pill {
                         <i class="fa fa-check-circle"></i>
                     </div>
                     <div class="kpi-info">
-                        <div class="kpi-label">Approved Projects</div>
+                        <div class="kpi-label">{{ __('backend.supervisor_dashboard.approved_projects') }}</div>
                         <div class="kpi-value">{{ $approvedProjects }}</div>
-                        <div class="kpi-sub">{{ $approvedPercent }}% approved</div>
+                        <div class="kpi-sub">{{ $approvedPercent }}%</div>
                     </div>
                 </div>
             </div>
@@ -1053,9 +1053,9 @@ html[data-theme="dark"] .supervisor-dashboard-page .score-pill {
                         <i class="fa fa-refresh"></i>
                     </div>
                     <div class="kpi-info">
-                        <div class="kpi-label">Revision Requests</div>
+                        <div class="kpi-label">{{ __('backend.supervisor_dashboard.revision_requests') }}</div>
                         <div class="kpi-value">{{ $revisionRequests }}</div>
-                        <div class="kpi-sub">{{ $revisionPercent }}% need updates</div>
+                        <div class="kpi-sub">{{ $revisionPercent }}%</div>
                     </div>
                 </div>
             </div>
@@ -1066,8 +1066,8 @@ html[data-theme="dark"] .supervisor-dashboard-page .score-pill {
                 <div class="dashboard-panel h-100">
                     <div class="panel-header">
                         <div>
-                            <h5>Review Distribution</h5>
-                            <p class="mb-0">Overall supervisor decision overview</p>
+                            <h5>{{ __('backend.supervisor_dashboard.review_distribution') }}</h5>
+                            <p class="mb-0">{{ __('backend.supervisor_dashboard.review_distribution_subtitle') }}</p>
                         </div>
                     </div>
 
@@ -1081,7 +1081,7 @@ html[data-theme="dark"] .supervisor-dashboard-page .score-pill {
                                 );">
                             <div class="donut-inner">
                                 <div class="donut-total">{{ $totalProjects }}</div>
-                                <div class="donut-label">Projects</div>
+                                <div class="donut-label">{{ __('backend.supervisor_dashboard.projects') }}</div>
                             </div>
                         </div>
                     </div>
@@ -1091,7 +1091,7 @@ html[data-theme="dark"] .supervisor-dashboard-page .score-pill {
                             <span class="legend-dot legend-warning"></span>
                             <div>
                                 <strong>{{ $pendingReviews }}</strong>
-                                <small>Pending</small>
+                                <small>{{ __('backend.supervisor_dashboard.pending') }}</small>
                             </div>
                         </div>
 
@@ -1099,7 +1099,7 @@ html[data-theme="dark"] .supervisor-dashboard-page .score-pill {
                             <span class="legend-dot legend-success"></span>
                             <div>
                                 <strong>{{ $approvedProjects }}</strong>
-                                <small>Approved</small>
+                                <small>{{ __('backend.supervisor_dashboard.approved') }}</small>
                             </div>
                         </div>
 
@@ -1107,7 +1107,7 @@ html[data-theme="dark"] .supervisor-dashboard-page .score-pill {
                             <span class="legend-dot legend-danger"></span>
                             <div>
                                 <strong>{{ $revisionRequests }}</strong>
-                                <small>Revisions</small>
+                                <small>{{ __('backend.supervisor_dashboard.revisions') }}</small>
                             </div>
                         </div>
                     </div>
@@ -1118,8 +1118,8 @@ html[data-theme="dark"] .supervisor-dashboard-page .score-pill {
                 <div class="dashboard-panel h-100">
                     <div class="panel-header">
                         <div>
-                            <h5>Review Status Analytics</h5>
-                            <p class="mb-0">Comparison between pending, approved, and revision states</p>
+                            <h5>{{ __('backend.supervisor_dashboard.review_status_analytics') }}</h5>
+                            <p class="mb-0">{{ __('backend.supervisor_dashboard.review_status_analytics_subtitle') }}</p>
                         </div>
                     </div>
 
@@ -1129,7 +1129,7 @@ html[data-theme="dark"] .supervisor-dashboard-page .score-pill {
                             <div class="bar-track">
                                 <div class="bar-fill bar-fill-warning" style="height: {{ ($chartPending / $barMax) * 100 }}%;"></div>
                             </div>
-                            <div class="bar-label">Pending</div>
+                            <div class="bar-label">{{ __('backend.supervisor_dashboard.pending') }}</div>
                         </div>
 
                         <div class="bar-group">
@@ -1137,7 +1137,7 @@ html[data-theme="dark"] .supervisor-dashboard-page .score-pill {
                             <div class="bar-track">
                                 <div class="bar-fill bar-fill-success" style="height: {{ ($chartApproved / $barMax) * 100 }}%;"></div>
                             </div>
-                            <div class="bar-label">Approved</div>
+                            <div class="bar-label">{{ __('backend.supervisor_dashboard.approved') }}</div>
                         </div>
 
                         <div class="bar-group">
@@ -1145,7 +1145,7 @@ html[data-theme="dark"] .supervisor-dashboard-page .score-pill {
                             <div class="bar-track">
                                 <div class="bar-fill bar-fill-danger" style="height: {{ ($chartRevision / $barMax) * 100 }}%;"></div>
                             </div>
-                            <div class="bar-label">Revisions</div>
+                            <div class="bar-label">{{ __('backend.supervisor_dashboard.revisions') }}</div>
                         </div>
                     </div>
                 </div>
@@ -1157,15 +1157,15 @@ html[data-theme="dark"] .supervisor-dashboard-page .score-pill {
                 <div class="dashboard-panel h-100">
                     <div class="panel-header">
                         <div>
-                            <h5>Review Progress Breakdown</h5>
-                            <p class="mb-0">Current percentages of your review pipeline</p>
+                            <h5>{{ __('backend.supervisor_dashboard.review_progress_breakdown') }}</h5>
+                            <p class="mb-0">{{ __('backend.supervisor_dashboard.review_progress_breakdown_subtitle') }}</p>
                         </div>
                     </div>
 
                     <div class="progress-block">
                         <div class="progress-row">
                             <div class="progress-meta">
-                                <span>Pending Reviews</span>
+                                <span>{{ __('backend.supervisor_dashboard.pending_reviews_label') }}</span>
                                 <strong>{{ $pendingPercent }}%</strong>
                             </div>
                             <div class="custom-progress">
@@ -1175,7 +1175,7 @@ html[data-theme="dark"] .supervisor-dashboard-page .score-pill {
 
                         <div class="progress-row">
                             <div class="progress-meta">
-                                <span>Approved Projects</span>
+                                <span>{{ __('backend.supervisor_dashboard.approved_projects_label') }}</span>
                                 <strong>{{ $approvedPercent }}%</strong>
                             </div>
                             <div class="custom-progress">
@@ -1185,7 +1185,7 @@ html[data-theme="dark"] .supervisor-dashboard-page .score-pill {
 
                         <div class="progress-row">
                             <div class="progress-meta">
-                                <span>Revision Requests</span>
+                                <span>{{ __('backend.supervisor_dashboard.revision_requests_label') }}</span>
                                 <strong>{{ $revisionPercent }}%</strong>
                             </div>
                             <div class="custom-progress">
@@ -1200,8 +1200,8 @@ html[data-theme="dark"] .supervisor-dashboard-page .score-pill {
                 <div class="dashboard-panel h-100">
                     <div class="panel-header">
                         <div>
-                            <h5>Scan Pipeline Snapshot</h5>
-                            <p class="mb-0">Scanner status across the recent project list</p>
+                            <h5>{{ __('backend.supervisor_dashboard.scan_pipeline_snapshot') }}</h5>
+                            <p class="mb-0">{{ __('backend.supervisor_dashboard.scan_pipeline_snapshot_subtitle') }}</p>
                         </div>
                     </div>
 
@@ -1211,7 +1211,7 @@ html[data-theme="dark"] .supervisor-dashboard-page .score-pill {
                                 <i class="fa fa-chart-line"></i>
                             </div>
                             <div class="scan-metric-text">
-                                <span>Average Score</span>
+                                <span>{{ __('backend.supervisor_dashboard.average_score') }}</span>
                                 <strong>{{ $avgScanScore }}</strong>
                             </div>
                         </div>
@@ -1221,7 +1221,7 @@ html[data-theme="dark"] .supervisor-dashboard-page .score-pill {
                                 <i class="fa fa-check"></i>
                             </div>
                             <div class="scan-metric-text">
-                                <span>Completed Scans</span>
+                                <span>{{ __('backend.supervisor_dashboard.completed_scans') }}</span>
                                 <strong>{{ $completedScan }}</strong>
                             </div>
                         </div>
@@ -1231,7 +1231,7 @@ html[data-theme="dark"] .supervisor-dashboard-page .score-pill {
                                 <i class="fa fa-clock-o"></i>
                             </div>
                             <div class="scan-metric-text">
-                                <span>Pending Scans</span>
+                                <span>{{ __('backend.supervisor_dashboard.pending_scans') }}</span>
                                 <strong>{{ $pendingScan }}</strong>
                             </div>
                         </div>
@@ -1241,7 +1241,7 @@ html[data-theme="dark"] .supervisor-dashboard-page .score-pill {
                                 <i class="fa fa-times"></i>
                             </div>
                             <div class="scan-metric-text">
-                                <span>Failed Scans</span>
+                                <span>{{ __('backend.supervisor_dashboard.failed_scans') }}</span>
                                 <strong>{{ $failedScan }}</strong>
                             </div>
                         </div>
@@ -1253,11 +1253,11 @@ html[data-theme="dark"] .supervisor-dashboard-page .score-pill {
         <div class="dashboard-panel">
             <div class="panel-header">
                 <div>
-                    <h5>Recent Projects</h5>
-                    <p class="mb-0">Latest projects available in your dashboard</p>
+                    <h5>{{ __('backend.supervisor_dashboard.recent_projects') }}</h5>
+                    <p class="mb-0">{{ __('backend.supervisor_dashboard.recent_projects_subtitle') }}</p>
                 </div>
                 <a href="{{ route('supervisor.projects.index') }}" class="panel-action-btn">
-                    View All
+                    {{ __('backend.supervisor_dashboard.view_all') }}
                 </a>
             </div>
 
@@ -1267,14 +1267,14 @@ html[data-theme="dark"] .supervisor-dashboard-page .score-pill {
                         <table class="table dashboard-table mb-0">
                             <thead>
                                 <tr>
-                                    <th style="width: 60px;">#</th>
-                                    <th style="width: 220px;">Project</th>
-                                    <th style="width: 180px;">Student</th>
-                                    <th style="width: 140px;">Status</th>
-                                    <th style="width: 130px;">Scanner</th>
-                                    <th style="width: 100px;">Score</th>
-                                    <th style="width: 130px;">Updated</th>
-                                    <th class="text-end" style="width: 110px;">Action</th>
+                                    <th style="width: 60px;">{{ __('backend.supervisor_dashboard.table_number') }}</th>
+                                    <th style="width: 220px;">{{ __('backend.supervisor_dashboard.project') }}</th>
+                                    <th style="width: 180px;">{{ __('backend.supervisor_dashboard.student') }}</th>
+                                    <th style="width: 140px;">{{ __('backend.supervisor_dashboard.status') }}</th>
+                                    <th style="width: 130px;">{{ __('backend.supervisor_dashboard.scanner') }}</th>
+                                    <th style="width: 100px;">{{ __('backend.supervisor_dashboard.score') }}</th>
+                                    <th style="width: 130px;">{{ __('backend.supervisor_dashboard.updated') }}</th>
+                                    <th class="text-end" style="width: 110px;">{{ __('backend.supervisor_dashboard.action') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -1299,33 +1299,45 @@ html[data-theme="dark"] .supervisor-dashboard-page .score-pill {
                                     <tr>
                                         <td>{{ $project->project_id }}</td>
                                         <td>
-                                            <div class="project-cell-title">{{ $project->name ?? 'Untitled Project' }}</div>
-                                            <div class="project-cell-sub">{{ $project->category ?? '—' }}</div>
+                                            <div class="project-cell-title">
+                                                {{ $project->name ?? __('backend.supervisor_dashboard.untitled_project') }}
+                                            </div>
+                                            <div class="project-cell-sub">
+                                                {{ $project->category ?? __('backend.supervisor_dashboard.no_category') }}
+                                            </div>
                                         </td>
                                         <td>
-                                            <div class="project-cell-title">{{ $project->student->name ?? 'N/A' }}</div>
-                                            <div class="project-cell-sub">{{ $project->student->email ?? 'No email' }}</div>
+                                            <div class="project-cell-title">
+                                                {{ $project->student->name ?? __('backend.supervisor_dashboard.not_available') }}
+                                            </div>
+                                            <div class="project-cell-sub">
+                                                {{ $project->student->email ?? __('backend.supervisor_dashboard.no_email') }}
+                                            </div>
                                         </td>
                                         <td>
                                             <span class="badge-soft {{ $statusClass }}">
-                                                {{ ucfirst(str_replace('_', ' ', $project->status ?? 'N/A')) }}
+                                                {{ ucfirst(str_replace('_', ' ', $project->status ?? __('backend.supervisor_dashboard.not_available'))) }}
                                             </span>
                                         </td>
                                         <td>
                                             <span class="badge-soft {{ $scanClass }}">
-                                                {{ ucfirst(str_replace('_', ' ', $project->scanner_status ?? 'N/A')) }}
+                                                {{ ucfirst(str_replace('_', ' ', $project->scanner_status ?? __('backend.supervisor_dashboard.not_available'))) }}
                                             </span>
                                         </td>
                                         <td>
-                                            <div class="score-pill">{{ $project->scan_score ?? '—' }}</div>
+                                            <div class="score-pill">{{ $project->scan_score ?? __('backend.supervisor_dashboard.empty_score') }}</div>
                                         </td>
                                         <td>
-                                            <div class="project-cell-title">{{ optional($project->updated_at)->format('Y-m-d') ?? '—' }}</div>
-                                            <div class="project-cell-sub">{{ optional($project->updated_at)->format('h:i A') ?? '' }}</div>
+                                            <div class="project-cell-title">
+                                                {{ optional($project->updated_at)->format('Y-m-d') ?? __('backend.supervisor_dashboard.empty_date') }}
+                                            </div>
+                                            <div class="project-cell-sub">
+                                                {{ optional($project->updated_at)->format('h:i A') ?? '' }}
+                                            </div>
                                         </td>
                                         <td class="text-end">
                                             <a href="{{ route('supervisor.projects.show', $project->project_id) }}" class="table-action-btn">
-                                                Open
+                                                {{ __('backend.supervisor_dashboard.open') }}
                                             </a>
                                         </td>
                                     </tr>
@@ -1349,8 +1361,8 @@ html[data-theme="dark"] .supervisor-dashboard-page .score-pill {
                 @else
                     <div class="empty-dashboard-state">
                         <i class="fa fa-folder-open-o"></i>
-                        <h6>No projects available</h6>
-                        <p class="mb-0">Projects will appear here once they are available for review.</p>
+                        <h6>{{ __('backend.supervisor_dashboard.no_projects_available') }}</h6>
+                        <p class="mb-0">{{ __('backend.supervisor_dashboard.no_projects_available_text') }}</p>
                     </div>
                 @endif
             </div>

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Create Announcement')
+@section('title', __('backend.announcements_create.page_title'))
 
 @section('content')
 <style>
@@ -35,15 +35,15 @@
     {{-- Header --}}
     <div class="d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center mb-4 gap-3">
         <div>
-            <h3 class="fw-bold mb-1 text-dark">Create Announcement</h3>
+            <h3 class="fw-bold mb-1 text-dark">{{ __('backend.announcements_create.heading') }}</h3>
             <p class="text-muted mb-0 small">
-                Publish a professional announcement to your platform users.
+                {{ __('backend.announcements_create.subtitle') }}
             </p>
         </div>
 
         <div class="d-flex align-items-center gap-2">
             <a href="{{ route('admin.announcements.index') }}" class="btn btn-light border rounded-3 px-3 py-2 fw-semibold">
-                <i class="bi bi-arrow-left me-1"></i> Back
+                <i class="bi bi-arrow-left me-1"></i> {{ __('backend.announcements_create.back') }}
             </a>
         </div>
     </div>
@@ -54,7 +54,7 @@
             <div class="d-flex align-items-start gap-3">
                 <i class="bi bi-exclamation-triangle-fill fs-4"></i>
                 <div>
-                    <strong class="d-block mb-1">There are some errors:</strong>
+                    <strong class="d-block mb-1">{{ __('backend.announcements_create.there_are_some_errors') }}</strong>
                     <ul class="mb-0 small">
                         @foreach ($errors->all() as $error)
                             <li>{{ $error }}</li>

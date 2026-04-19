@@ -1,6 +1,6 @@
 @extends('supervisor.layout.app_super')
 
-@section('title', 'Completed Requests')
+@section('title', __('backend.supervisor_completed_requests.page_title'))
 
 @section('content')
 @php
@@ -288,16 +288,16 @@
         <div class="page-header-card mb-4">
             <div class="d-flex justify-content-between align-items-center flex-wrap" style="gap: 15px;">
                 <div>
-                    <h3>Completed Requests</h3>
-                    <p>Requests that have already been completed and submitted by students.</p>
+                    <h3>{{ __('backend.supervisor_completed_requests.heading') }}</h3>
+                    <p>{{ __('backend.supervisor_completed_requests.subtitle') }}</p>
                 </div>
 
                 <div class="header-actions">
                     <a href="{{ route('supervisor.requests.index') }}" class="btn-outline-header">
-                        <i class="fa fa-list mr-1"></i> All Requests
+                        <i class="fa fa-list mr-1"></i> {{ __('backend.supervisor_completed_requests.all_requests') }}
                     </a>
                     <a href="{{ route('supervisor.dashboard') }}" class="btn-outline-header">
-                        <i class="fa fa-home mr-1"></i> Dashboard
+                        <i class="fa fa-home mr-1"></i> {{ __('backend.supervisor_completed_requests.dashboard') }}
                     </a>
                 </div>
             </div>
@@ -310,7 +310,7 @@
                         <i class="fa fa-check-square"></i>
                     </div>
                     <div class="stats-number">{{ $totalRequests }}</div>
-                    <p class="stats-label">Completed Requests</p>
+                    <p class="stats-label">{{ __('backend.supervisor_completed_requests.completed_requests') }}</p>
                 </div>
             </div>
 
@@ -320,7 +320,7 @@
                         <i class="fa fa-check-circle"></i>
                     </div>
                     <div class="stats-number">{{ $completedRequests }}</div>
-                    <p class="stats-label">Marked Completed</p>
+                    <p class="stats-label">{{ __('backend.supervisor_completed_requests.marked_completed') }}</p>
                 </div>
             </div>
 
@@ -330,7 +330,7 @@
                         <i class="fa fa-cogs"></i>
                     </div>
                     <div class="stats-number">{{ $systemRequests }}</div>
-                    <p class="stats-label">System Verification</p>
+                    <p class="stats-label">{{ __('backend.supervisor_completed_requests.system_verification') }}</p>
                 </div>
             </div>
 
@@ -340,7 +340,7 @@
                         <i class="fa fa-calendar"></i>
                     </div>
                     <div class="stats-number">{{ $withDueDate }}</div>
-                    <p class="stats-label">With Due Date</p>
+                    <p class="stats-label">{{ __('backend.supervisor_completed_requests.with_due_date') }}</p>
                 </div>
             </div>
         </div>
@@ -348,8 +348,8 @@
         <div class="table-card">
             <div class="table-card-header">
                 <div>
-                    <h5>Completed Requests List</h5>
-                    <small class="text-muted">Finished request history for supervisor tracking.</small>
+                    <h5>{{ __('backend.supervisor_completed_requests.completed_requests_list') }}</h5>
+                    <small class="text-muted">{{ __('backend.supervisor_completed_requests.completed_requests_list_subtitle') }}</small>
                 </div>
             </div>
 
@@ -358,12 +358,12 @@
                     <thead>
                         <tr>
                             <th class="col-id">#</th>
-                            <th class="col-project">Project</th>
-                            <th class="col-student">Student</th>
-                            <th class="col-title">Title</th>
-                            <th class="col-type">Type</th>
-                            <th class="col-date">Due Date</th>
-                            <th class="col-status">Status</th>
+                            <th class="col-project">{{ __('backend.supervisor_completed_requests.project') }}</th>
+                            <th class="col-student">{{ __('backend.supervisor_completed_requests.student') }}</th>
+                            <th class="col-title">{{ __('backend.supervisor_completed_requests.title') }}</th>
+                            <th class="col-type">{{ __('backend.supervisor_completed_requests.type') }}</th>
+                            <th class="col-date">{{ __('backend.supervisor_completed_requests.due_date') }}</th>
+                            <th class="col-status">{{ __('backend.supervisor_completed_requests.status') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -374,14 +374,14 @@
                                 <td>
                                     <div class="td-ellipsis">{{ $requestItem->project->name ?? '—' }}</div>
                                     <div class="mini-text td-ellipsis">
-                                        Project ID: {{ $requestItem->project->project_id ?? '—' }}
+                                        {{ __('backend.supervisor_completed_requests.project_id') }} {{ $requestItem->project->project_id ?? '—' }}
                                     </div>
                                 </td>
 
                                 <td>
                                     <div class="td-ellipsis">{{ $requestItem->student->name ?? '—' }}</div>
                                     <div class="mini-text td-ellipsis">
-                                        {{ $requestItem->student->email ?? 'No email' }}
+                                        {{ $requestItem->student->email ?? __('backend.supervisor_completed_requests.no_email') }}
                                     </div>
                                 </td>
 
@@ -410,7 +410,7 @@
                                 <td colspan="7">
                                     <div class="empty-state">
                                         <i class="fa fa-check-square"></i>
-                                        <div>No completed requests found.</div>
+                                        <div>{{ __('backend.supervisor_completed_requests.no_completed_requests_found') }}</div>
                                     </div>
                                 </td>
                             </tr>

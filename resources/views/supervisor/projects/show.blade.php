@@ -1,5 +1,5 @@
 @extends('supervisor.layout.app_super')
-@section('title','Project Details')
+@section('title', __('backend.supervisor_project_details.page_title'))
 
 @section('content')
 @php
@@ -507,9 +507,9 @@
             </div>
 
             <div class="text-md-right">
-                <span class="badge badge-{{ $statusClass }}">Project: {{ ucfirst(str_replace('_', ' ', $project->status ?? 'unknown')) }}</span>
-                <span class="badge badge-{{ $scannerStatusClass }}">Scan: {{ ucfirst(str_replace('_', ' ', $project->scanner_status ?? 'not scanned')) }}</span>
-                <span class="badge badge-{{ $riskClass }}">Risk: {{ $riskLevel ?? '-' }}</span>
+                <span class="badge badge-{{ $statusClass }}">{{ __('backend.supervisor_project_details.project_badge') }}: {{ ucfirst(str_replace('_', ' ', $project->status ?? 'unknown')) }}</span>
+                <span class="badge badge-{{ $scannerStatusClass }}">{{ __('backend.supervisor_project_details.scan_badge') }}: {{ ucfirst(str_replace('_', ' ', $project->scanner_status ?? 'not scanned')) }}</span>
+                <span class="badge badge-{{ $riskClass }}">{{ __('backend.supervisor_project_details.risk_badge') }}: {{ $riskLevel ?? '-' }}</span>
             </div>
         </div>
     </div>
@@ -518,19 +518,19 @@
     <div class="row mb-4">
         <div class="col-md-3 mb-3">
             <div class="mini-card">
-                <div class="mini-label">Scan Score</div>
+                <div class="mini-label">{{ __('backend.supervisor_project_details.scan_score') }}</div>
                 <div class="mini-value">{{ $project->scan_score !== null ? number_format($project->scan_score, 2) : '-' }}</div>
             </div>
         </div>
         <div class="col-md-3 mb-3">
             <div class="mini-card">
-                <div class="mini-label">Scanner Project ID</div>
+                <div class="mini-label">{{ __('backend.supervisor_project_details.scanner_project_id') }}</div>
                 <div class="mini-value">{{ $project->scanner_project_id ?? '-' }}</div>
             </div>
         </div>
         <div class="col-md-3 mb-3">
             <div class="mini-card">
-                <div class="mini-label">Scanned At</div>
+                <div class="mini-label">{{ __('backend.supervisor_project_details.scanned_at') }}</div>
                 <div class="mini-value" style="font-size:16px;">
                     {{ $project->scanned_at ? \Carbon\Carbon::parse($project->scanned_at)->format('d/m/Y H:i') : '-' }}
                 </div>
@@ -538,7 +538,7 @@
         </div>
         <div class="col-md-3 mb-3">
             <div class="mini-card">
-                <div class="mini-label">Investors Count</div>
+                <div class="mini-label">{{ __('backend.supervisor_project_details.investors_count') }}</div>
                 <div class="mini-value">{{ $project->investors->count() }}</div>
             </div>
         </div>
@@ -548,14 +548,14 @@
     {{-- SYSTEM VERIFICATION --}}
     <div class="card section-card">
         <div class="card-header">
-            <h4>System Verification</h4>
+            <h4>{{ __('backend.supervisor_project_details.system_verification') }}</h4>
         </div>
         <div class="card-body">
 
             @if($latestSystemRequest && $latestSystemRequest->latestResponse)
                 <div class="system-sync-alert">
-                    <strong>Latest system verification response detected.</strong>
-                    The fields below are automatically pre-filled from the student's latest <strong>System Verification</strong> response when the saved project values are empty.
+                    <strong>{{ __('backend.supervisor_project_details.latest_system_response_detected') }}</strong>
+                    {{ __('backend.supervisor_project_details.system_response_prefill_notice') }}
                 </div>
             @endif
 
@@ -565,102 +565,102 @@
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <div class="verification-box">
-                            <label>Frontend URL</label>
+                            <label>{{ __('backend.supervisor_project_details.frontend_url') }}</label>
                             <input type="url" class="form-control" name="frontend_url" value="{{ $finalFrontendUrl }}" placeholder="https://your-app.com">
                         </div>
                     </div>
 
                     <div class="col-md-6 mb-3">
                         <div class="verification-box">
-                            <label>Backend URL</label>
+                            <label>{{ __('backend.supervisor_project_details.backend_url') }}</label>
                             <input type="url" class="form-control" name="backend_url" value="{{ $finalBackendUrl }}" placeholder="https://api.your-app.com">
                         </div>
                     </div>
 
                     <div class="col-md-6 mb-3">
                         <div class="verification-box">
-                            <label>API Health URL</label>
+                            <label>{{ __('backend.supervisor_project_details.api_health_url') }}</label>
                             <input type="url" class="form-control" name="api_health_url" value="{{ $finalApiHealthUrl }}" placeholder="https://api.your-app.com/health">
                         </div>
                     </div>
 
                     <div class="col-md-6 mb-3">
                         <div class="verification-box">
-                            <label>Admin Panel URL</label>
+                            <label>{{ __('backend.supervisor_project_details.admin_panel_url') }}</label>
                             <input type="url" class="form-control" name="admin_panel_url" value="{{ $finalAdminPanelUrl }}" placeholder="https://your-app.com/admin">
                         </div>
                     </div>
 
                     <div class="col-md-6 mb-3">
                         <div class="verification-box">
-                            <label>Demo Account</label>
+                            <label>{{ __('backend.supervisor_project_details.demo_account') }}</label>
                             <input type="text" class="form-control" name="demo_account" value="{{ $finalDemoAccount }}" placeholder="test@example.com">
                         </div>
                     </div>
 
                     <div class="col-md-6 mb-3">
                         <div class="verification-box">
-                            <label>Demo Password</label>
+                            <label>{{ __('backend.supervisor_project_details.demo_password') }}</label>
                             <input type="text" class="form-control" name="demo_password" value="{{ $finalDemoPassword }}" placeholder="Password">
                         </div>
                     </div>
 
                     <div class="col-md-12 mb-3">
                         <div class="verification-box">
-                            <label>Deployment Notes</label>
-                            <textarea name="deployment_notes" rows="4" class="form-control" placeholder="Write any technical notes, setup instructions, environments, ports, hosting notes, or testing details.">{{ $finalDeploymentNotes }}</textarea>
+                            <label>{{ __('backend.supervisor_project_details.deployment_notes') }}</label>
+                            <textarea name="deployment_notes" rows="4" class="form-control" placeholder="{{ __('backend.supervisor_project_details.deployment_notes_placeholder') }}">{{ $finalDeploymentNotes }}</textarea>
                         </div>
                     </div>
 
                     <div class="col-12">
-                        <button class="btn btn-primary">Save Verification</button>
+                        <button class="btn btn-primary">{{ __('backend.supervisor_project_details.save_verification') }}</button>
                     </div>
                 </div>
             </form>
 
             <div class="verification-actions">
                 @if($finalFrontendUrl)
-                    <a href="{{ $finalFrontendUrl }}" target="_blank" class="verification-btn">Open Frontend</a>
+                    <a href="{{ $finalFrontendUrl }}" target="_blank" class="verification-btn">{{ __('backend.supervisor_project_details.open_frontend') }}</a>
                 @endif
                 @if($finalBackendUrl)
-                    <a href="{{ $finalBackendUrl }}" target="_blank" class="verification-btn">Open Backend</a>
+                    <a href="{{ $finalBackendUrl }}" target="_blank" class="verification-btn">{{ __('backend.supervisor_project_details.open_backend') }}</a>
                 @endif
                 @if($finalApiHealthUrl)
-                    <a href="{{ $finalApiHealthUrl }}" target="_blank" class="verification-btn">Check API</a>
+                    <a href="{{ $finalApiHealthUrl }}" target="_blank" class="verification-btn">{{ __('backend.supervisor_project_details.check_api') }}</a>
                 @endif
                 @if($finalAdminPanelUrl)
-                    <a href="{{ $finalAdminPanelUrl }}" target="_blank" class="verification-btn">Open Admin Panel</a>
+                    <a href="{{ $finalAdminPanelUrl }}" target="_blank" class="verification-btn">{{ __('backend.supervisor_project_details.open_admin_panel') }}</a>
                 @endif
             </div>
 
             @if($latestSystemRequest && $latestSystemRequest->latestResponse)
                 <div class="system-grid">
                     <div class="system-info-card">
-                        <div class="system-info-label">Frontend URL</div>
+                        <div class="system-info-label">{{ __('backend.supervisor_project_details.frontend_url') }}</div>
                         <div class="system-info-value">{{ $parsedSystemResponse['frontend_url'] ?: '—' }}</div>
                     </div>
                     <div class="system-info-card">
-                        <div class="system-info-label">Backend URL</div>
+                        <div class="system-info-label">{{ __('backend.supervisor_project_details.backend_url') }}</div>
                         <div class="system-info-value">{{ $parsedSystemResponse['backend_url'] ?: '—' }}</div>
                     </div>
                     <div class="system-info-card">
-                        <div class="system-info-label">API Health URL</div>
+                        <div class="system-info-label">{{ __('backend.supervisor_project_details.api_health_url') }}</div>
                         <div class="system-info-value">{{ $parsedSystemResponse['api_health_url'] ?: '—' }}</div>
                     </div>
                     <div class="system-info-card">
-                        <div class="system-info-label">Admin Panel URL</div>
+                        <div class="system-info-label">{{ __('backend.supervisor_project_details.admin_panel_url') }}</div>
                         <div class="system-info-value">{{ $parsedSystemResponse['admin_panel_url'] ?: '—' }}</div>
                     </div>
                     <div class="system-info-card">
-                        <div class="system-info-label">Demo Account</div>
+                        <div class="system-info-label">{{ __('backend.supervisor_project_details.demo_account') }}</div>
                         <div class="system-info-value">{{ $parsedSystemResponse['demo_account'] ?: '—' }}</div>
                     </div>
                     <div class="system-info-card">
-                        <div class="system-info-label">Demo Password</div>
+                        <div class="system-info-label">{{ __('backend.supervisor_project_details.demo_password') }}</div>
                         <div class="system-info-value">{{ $parsedSystemResponse['demo_password'] ?: '—' }}</div>
                     </div>
                     <div class="system-info-card" style="grid-column: 1 / -1;">
-                        <div class="system-info-label">Deployment Notes</div>
+                        <div class="system-info-label">{{ __('backend.supervisor_project_details.deployment_notes') }}</div>
                         <div class="system-info-value">{{ $parsedSystemResponse['deployment_notes'] ?: '—' }}</div>
                     </div>
                 </div>
@@ -673,7 +673,7 @@
     {{-- SUPERVISOR EVALUATION --}}
     <div class="card section-card">
         <div class="card-header">
-            <h4>Supervisor Evaluation</h4>
+            <h4>{{ __('backend.supervisor_project_details.supervisor_evaluation') }}</h4>
         </div>
         <div class="card-body">
 
@@ -683,7 +683,7 @@
                 <div class="row">
                     <div class="col-md-4 mb-3">
                         <div class="request-box">
-                            <label>Score</label>
+                            <label>{{ __('backend.supervisor_project_details.score') }}</label>
                             <input
                                 type="number"
                                 name="score"
@@ -691,23 +691,23 @@
                                 min="0"
                                 max="100"
                                 value="{{ old('score', $currentSupervisorReview->score ?? '') }}"
-                                placeholder="0 - 100">
+                                placeholder="{{ __('backend.supervisor_project_details.score_placeholder') }}">
                         </div>
                     </div>
 
                     <div class="col-md-4 mb-3">
                         <div class="request-box">
-                            <label>Decision</label>
+                            <label>{{ __('backend.supervisor_project_details.decision') }}</label>
                             <select name="decision" class="form-control" required>
-                                <option value="">Select decision</option>
+                                <option value="">{{ __('backend.supervisor_project_details.select_decision') }}</option>
                                 <option value="approved" {{ old('decision', $currentSupervisorReview->decision ?? '') === 'approved' ? 'selected' : '' }}>
-                                    Approved
+                                    {{ __('backend.supervisor_project_details.approved') }}
                                 </option>
                                 <option value="revision_requested" {{ old('decision', $currentSupervisorReview->decision ?? '') === 'revision_requested' ? 'selected' : '' }}>
-                                    Revision Requested
+                                    {{ __('backend.supervisor_project_details.revision_requested') }}
                                 </option>
                                 <option value="rejected" {{ old('decision', $currentSupervisorReview->decision ?? '') === 'rejected' ? 'selected' : '' }}>
-                                    Rejected
+                                    {{ __('backend.supervisor_project_details.rejected') }}
                                 </option>
                             </select>
                         </div>
@@ -715,30 +715,30 @@
 
                     <div class="col-md-4 mb-3">
                         <div class="request-box">
-                            <label>Reviewed At</label>
+                            <label>{{ __('backend.supervisor_project_details.reviewed_at') }}</label>
                             <input
                                 type="text"
                                 class="form-control"
-                                value="{{ $currentSupervisorReview && $currentSupervisorReview->reviewed_at ? \Carbon\Carbon::parse($currentSupervisorReview->reviewed_at)->format('d/m/Y h:i A') : 'Not reviewed yet' }}"
+                                value="{{ $currentSupervisorReview && $currentSupervisorReview->reviewed_at ? \Carbon\Carbon::parse($currentSupervisorReview->reviewed_at)->format('d/m/Y h:i A') : __('backend.supervisor_project_details.not_reviewed_yet') }}"
                                 readonly>
                         </div>
                     </div>
 
                     <div class="col-md-12 mb-3">
                         <div class="request-box">
-                            <label>Supervisor Notes</label>
+                            <label>{{ __('backend.supervisor_project_details.supervisor_notes') }}</label>
                             <textarea
                                 name="notes"
                                 rows="5"
                                 class="form-control"
-                                placeholder="Write your professional evaluation, strengths, issues, academic comments, and final recommendation..."
+                                placeholder="{{ __('backend.supervisor_project_details.supervisor_notes_placeholder') }}"
                                 required>{{ old('notes', $currentSupervisorReview->notes ?? '') }}</textarea>
                         </div>
                     </div>
 
                     <div class="col-12">
                         <button class="btn btn-primary">
-                            {{ $currentSupervisorReview ? 'Update Evaluation' : 'Submit Evaluation' }}
+                            {{ $currentSupervisorReview ? __('backend.supervisor_project_details.update_evaluation') : __('backend.supervisor_project_details.submit_evaluation') }}
                         </button>
                     </div>
                 </div>
@@ -746,7 +746,7 @@
 
             <hr>
 
-            <h5 class="mb-3">All Supervisor Evaluations</h5>
+            <h5 class="mb-3">{{ __('backend.supervisor_project_details.all_supervisor_evaluations') }}</h5>
 
             @forelse($project->reviews as $review)
                 @php
@@ -760,21 +760,21 @@
 
                 <div class="request-item">
                     <div class="request-title">
-                        {{ $review->supervisor?->name ?? 'Supervisor' }}
+                        {{ $review->supervisor?->name ?? __('backend.supervisor_project_details.supervisor') }}
                     </div>
 
                     <div class="request-meta">
-                        Decision:
+                        {{ __('backend.supervisor_project_details.decision_label') }}:
                         <span class="badge-soft {{ $decisionClass }}">
                             {{ ucfirst(str_replace('_', ' ', $review->decision)) }}
                         </span>
 
                         @if($review->reviewed_at)
-                            • Reviewed: {{ \Carbon\Carbon::parse($review->reviewed_at)->format('d/m/Y h:i A') }}
+                            • {{ __('backend.supervisor_project_details.reviewed_label') }}: {{ \Carbon\Carbon::parse($review->reviewed_at)->format('d/m/Y h:i A') }}
                         @endif
 
                         @if(!is_null($review->score))
-                            • Score: {{ $review->score }}/100
+                            • {{ __('backend.supervisor_project_details.score_label') }}: {{ $review->score }}/100
                         @endif
                     </div>
 
@@ -783,7 +783,7 @@
                     </div>
                 </div>
             @empty
-                <p class="text-muted mb-0">No supervisor evaluations submitted yet.</p>
+                <p class="text-muted mb-0">{{ __('backend.supervisor_project_details.no_supervisor_evaluations') }}</p>
             @endforelse
 
         </div>
@@ -794,26 +794,26 @@
     {{-- REQUESTS TO STUDENT --}}
     <div class="card section-card">
         <div class="card-header">
-            <h4>Requests to Student</h4>
+            <h4>{{ __('backend.supervisor_project_details.requests_to_student') }}</h4>
         </div>
         <div class="card-body">
 
             @if($canManageRequests)
             <div class="template-helper">
-                Use a quick template to auto-fill the request form. The <strong>System Request</strong> template asks the student for the core technical system details needed for verification.
+                {!! __('backend.supervisor_project_details.request_template_helper') !!}
             </div>
 
             <div class="request-template-bar">
                 <button type="button" class="template-btn system" onclick="fillSystemRequestTemplate()">
-                    <i class="fa fa-cogs me-1"></i> Use System Request Template
+                    <i class="fa fa-cogs me-1"></i> {{ __('backend.supervisor_project_details.use_system_request_template') }}
                 </button>
 
                 <button type="button" class="template-btn" onclick="fillMinimalSystemRequestTemplate()">
-                    <i class="fa fa-shield me-1"></i> Use Minimal System Request
+                    <i class="fa fa-shield me-1"></i> {{ __('backend.supervisor_project_details.use_minimal_system_request') }}
                 </button>
 
                 <button type="button" class="template-btn" onclick="clearRequestTemplate()">
-                    <i class="fa fa-eraser me-1"></i> Clear Form
+                    <i class="fa fa-eraser me-1"></i> {{ __('backend.supervisor_project_details.clear_form') }}
                 </button>
             </div>
 
@@ -823,47 +823,47 @@
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <div class="request-box">
-                            <label>Request Title</label>
-                            <input type="text" id="request_title" name="title" class="form-control" value="{{ old('title') }}" placeholder="Example: Submit GitHub Repository Link" required>
+                            <label>{{ __('backend.supervisor_project_details.request_title') }}</label>
+                            <input type="text" id="request_title" name="title" class="form-control" value="{{ old('title') }}" placeholder="{{ __('backend.supervisor_project_details.request_title_placeholder') }}" required>
                         </div>
                     </div>
 
                     <div class="col-md-6 mb-3">
                         <div class="request-box">
-                            <label>Request Type</label>
+                            <label>{{ __('backend.supervisor_project_details.request_type') }}</label>
                             <select id="request_type" name="request_type" class="form-control" required>
-                                <option value="">Select type</option>
-                                <option value="system_verification">System Verification</option>
-                                <option value="github_link">GitHub Link</option>
-                                <option value="deployment_link">Deployment Link</option>
-                                <option value="images">Images</option>
-                                <option value="video_demo">Video Demo</option>
-                                <option value="documentation">Documentation</option>
-                                <option value="pdf_file">PDF File</option>
-                                <option value="source_code">Source Code</option>
-                                <option value="presentation">Presentation</option>
-                                <option value="clarification">Clarification</option>
-                                <option value="other">Other</option>
+                                <option value="">{{ __('backend.supervisor_project_details.select_type') }}</option>
+                                <option value="system_verification">{{ __('backend.supervisor_project_details.types.system_verification') }}</option>
+                                <option value="github_link">{{ __('backend.supervisor_project_details.types.github_link') }}</option>
+                                <option value="deployment_link">{{ __('backend.supervisor_project_details.types.deployment_link') }}</option>
+                                <option value="images">{{ __('backend.supervisor_project_details.types.images') }}</option>
+                                <option value="video_demo">{{ __('backend.supervisor_project_details.types.video_demo') }}</option>
+                                <option value="documentation">{{ __('backend.supervisor_project_details.types.documentation') }}</option>
+                                <option value="pdf_file">{{ __('backend.supervisor_project_details.types.pdf_file') }}</option>
+                                <option value="source_code">{{ __('backend.supervisor_project_details.types.source_code') }}</option>
+                                <option value="presentation">{{ __('backend.supervisor_project_details.types.presentation') }}</option>
+                                <option value="clarification">{{ __('backend.supervisor_project_details.types.clarification') }}</option>
+                                <option value="other">{{ __('backend.supervisor_project_details.types.other') }}</option>
                             </select>
                         </div>
                     </div>
 
                     <div class="col-md-12 mb-3">
                         <div class="request-box">
-                            <label>Description</label>
-                            <textarea id="request_description" name="description" rows="8" class="form-control" placeholder="Write exactly what you want from the student...">{{ old('description') }}</textarea>
+                            <label>{{ __('backend.supervisor_project_details.description') }}</label>
+                            <textarea id="request_description" name="description" rows="8" class="form-control" placeholder="{{ __('backend.supervisor_project_details.request_description_placeholder') }}">{{ old('description') }}</textarea>
                         </div>
                     </div>
 
                     <div class="col-md-4 mb-3">
                         <div class="request-box">
-                            <label>Due Date</label>
+                            <label>{{ __('backend.supervisor_project_details.due_date') }}</label>
                             <input type="date" name="due_date" class="form-control" value="{{ old('due_date') }}">
                         </div>
                     </div>
 
                     <div class="col-12">
-                        <button class="btn btn-dark">Send Request</button>
+                        <button class="btn btn-dark">{{ __('backend.supervisor_project_details.send_request') }}</button>
                     </div>
                 </div>
             </form>
@@ -871,7 +871,7 @@
             <hr>
             @endif
 
-            <h5 class="mb-3">Student Requests</h5>
+            <h5 class="mb-3">{{ __('backend.supervisor_project_details.student_requests') }}</h5>
 
             @forelse($projectRequests as $requestItem)
                 @php
@@ -886,12 +886,12 @@
                     <div class="request-meta">
                         {{ ucfirst(str_replace('_', ' ', $requestItem->request_type)) }}
                         @if($requestItem->due_date)
-                            • Due: {{ \Carbon\Carbon::parse($requestItem->due_date)->format('d/m/Y') }}
+                            • {{ __('backend.supervisor_project_details.due_label') }}: {{ \Carbon\Carbon::parse($requestItem->due_date)->format('d/m/Y') }}
                         @endif
                     </div>
 
                     <div class="mb-2 text-muted">
-                        {!! nl2br(e($requestItem->description ?: 'No description provided.')) !!}
+                        {!! nl2br(e($requestItem->description ?: __('backend.supervisor_project_details.no_description_provided'))) !!}
                     </div>
 
                     @if($canManageRequests)
@@ -899,19 +899,19 @@
                         <form method="POST" action="{{ route('supervisor.requests.status', $requestItem->id) }}">
                             @csrf
                             <input type="hidden" name="status" value="completed">
-                            <button class="btn btn-success btn-sm">Mark Completed</button>
+                            <button class="btn btn-success btn-sm">{{ __('backend.supervisor_project_details.mark_completed') }}</button>
                         </form>
 
                         <form method="POST" action="{{ route('supervisor.requests.status', $requestItem->id) }}">
                             @csrf
                             <input type="hidden" name="status" value="cancelled">
-                            <button class="btn btn-danger btn-sm">Cancel</button>
+                            <button class="btn btn-danger btn-sm">{{ __('backend.supervisor_project_details.cancel') }}</button>
                         </form>
 
                         <form method="POST" action="{{ route('supervisor.requests.status', $requestItem->id) }}">
                             @csrf
                             <input type="hidden" name="status" value="pending">
-                            <button class="btn btn-secondary btn-sm">Reset</button>
+                            <button class="btn btn-secondary btn-sm">{{ __('backend.supervisor_project_details.reset') }}</button>
                         </form>
 
                         <span class="badge bg-light text-dark border align-self-center">
@@ -932,7 +932,7 @@
                                 class="response-toggle-btn"
                                 onclick="toggleResponse('{{ $collapseId }}', '{{ $buttonId }}')">
                             <span>
-                                {{ $isSystemRequest ? 'View Student System Response' : 'View Student Response' }}
+                                {{ $isSystemRequest ? __('backend.supervisor_project_details.view_student_system_response') : __('backend.supervisor_project_details.view_student_response') }}
                             </span>
                             <i class="fa fa-chevron-down response-toggle-icon"></i>
                         </button>
@@ -980,48 +980,48 @@
                                 @endphp
 
                                 <div class="student-response-box">
-                                    <div class="student-response-title">Latest Student System Verification Response</div>
+                                    <div class="student-response-title">{{ __('backend.supervisor_project_details.latest_student_system_verification_response') }}</div>
 
                                     <div class="student-response-meta">
-                                        Student: {{ $requestItem->student?->name ?? 'Student' }}
+                                        {{ __('backend.supervisor_project_details.student') }}: {{ $requestItem->student?->name ?? __('backend.supervisor_project_details.student_fallback') }}
                                         @if($requestItem->latestResponse->submitted_at)
-                                            • Submitted: {{ \Carbon\Carbon::parse($requestItem->latestResponse->submitted_at)->format('d/m/Y h:i A') }}
+                                            • {{ __('backend.supervisor_project_details.submitted_label') }}: {{ \Carbon\Carbon::parse($requestItem->latestResponse->submitted_at)->format('d/m/Y h:i A') }}
                                         @endif
                                     </div>
 
                                     <div class="system-grid">
                                         <div class="system-info-card">
-                                            <div class="system-info-label">Frontend URL</div>
+                                            <div class="system-info-label">{{ __('backend.supervisor_project_details.frontend_url') }}</div>
                                             <div class="system-info-value">{{ $reqParsed['frontend_url'] ?: '—' }}</div>
                                         </div>
 
                                         <div class="system-info-card">
-                                            <div class="system-info-label">Backend URL</div>
+                                            <div class="system-info-label">{{ __('backend.supervisor_project_details.backend_url') }}</div>
                                             <div class="system-info-value">{{ $reqParsed['backend_url'] ?: '—' }}</div>
                                         </div>
 
                                         <div class="system-info-card">
-                                            <div class="system-info-label">API Health URL</div>
+                                            <div class="system-info-label">{{ __('backend.supervisor_project_details.api_health_url') }}</div>
                                             <div class="system-info-value">{{ $reqParsed['api_health_url'] ?: '—' }}</div>
                                         </div>
 
                                         <div class="system-info-card">
-                                            <div class="system-info-label">Admin Panel URL</div>
+                                            <div class="system-info-label">{{ __('backend.supervisor_project_details.admin_panel_url') }}</div>
                                             <div class="system-info-value">{{ $reqParsed['admin_panel_url'] ?: '—' }}</div>
                                         </div>
 
                                         <div class="system-info-card">
-                                            <div class="system-info-label">Demo Account</div>
+                                            <div class="system-info-label">{{ __('backend.supervisor_project_details.demo_account') }}</div>
                                             <div class="system-info-value">{{ $reqParsed['demo_account'] ?: '—' }}</div>
                                         </div>
 
                                         <div class="system-info-card">
-                                            <div class="system-info-label">Demo Password</div>
+                                            <div class="system-info-label">{{ __('backend.supervisor_project_details.demo_password') }}</div>
                                             <div class="system-info-value">{{ $reqParsed['demo_password'] ?: '—' }}</div>
                                         </div>
 
                                         <div class="system-info-card" style="grid-column: 1 / -1;">
-                                            <div class="system-info-label">Deployment Notes</div>
+                                            <div class="system-info-label">{{ __('backend.supervisor_project_details.deployment_notes') }}</div>
                                             <div class="system-info-value">{{ $reqParsed['deployment_notes'] ?: '—' }}</div>
                                         </div>
                                     </div>
@@ -1029,19 +1029,19 @@
                                     @if($requestItem->latestResponse->attachment_path)
                                         <div class="student-response-links mt-3">
                                             <a href="{{ route('supervisor.file.view', $requestItem->latestResponse->id) }}" target="_blank" class="response-link-btn">
-                                                Download Attachment
+                                                {{ __('backend.supervisor_project_details.download_attachment') }}
                                             </a>
                                         </div>
                                     @endif
                                 </div>
                             @else
                                 <div class="student-response-box">
-                                    <div class="student-response-title">Latest Student Response</div>
+                                    <div class="student-response-title">{{ __('backend.supervisor_project_details.latest_student_response') }}</div>
 
                                     <div class="student-response-meta">
-                                        Student: {{ $requestItem->student?->name ?? 'Student' }}
+                                        {{ __('backend.supervisor_project_details.student') }}: {{ $requestItem->student?->name ?? __('backend.supervisor_project_details.student_fallback') }}
                                         @if($requestItem->latestResponse->submitted_at)
-                                            • Submitted: {{ \Carbon\Carbon::parse($requestItem->latestResponse->submitted_at)->format('d/m/Y h:i A') }}
+                                            • {{ __('backend.supervisor_project_details.submitted_label') }}: {{ \Carbon\Carbon::parse($requestItem->latestResponse->submitted_at)->format('d/m/Y h:i A') }}
                                         @endif
                                     </div>
 
@@ -1055,13 +1055,13 @@
                                         <div class="student-response-links">
                                             @if($requestItem->latestResponse->response_link)
                                                 <a href="{{ $requestItem->latestResponse->response_link }}" target="_blank" class="response-link-btn">
-                                                    Open Submitted Link
+                                                    {{ __('backend.supervisor_project_details.open_submitted_link') }}
                                                 </a>
                                             @endif
 
                                             @if($requestItem->latestResponse->attachment_path)
                                                 <a href="{{ route('supervisor.file.view', $requestItem->latestResponse->id) }}" target="_blank" class="response-link-btn">
-                                                    Download Attachment
+                                                    {{ __('backend.supervisor_project_details.download_attachment') }}
                                                 </a>
                                             @endif
                                         </div>
@@ -1071,13 +1071,13 @@
                         </div>
                     @else
                         <div class="student-response-box">
-                            <div class="student-response-title">Student Response</div>
-                            <div class="text-muted mb-0">No response submitted by the student yet.</div>
+                            <div class="student-response-title">{{ __('backend.supervisor_project_details.student_response') }}</div>
+                            <div class="text-muted mb-0">{{ __('backend.supervisor_project_details.no_student_response_yet') }}</div>
                         </div>
                     @endif
                 </div>
             @empty
-                <p class="text-muted mb-0">No requests sent yet.</p>
+                <p class="text-muted mb-0">{{ __('backend.supervisor_project_details.no_requests_sent_yet') }}</p>
             @endforelse
         </div>
     </div>
@@ -1087,7 +1087,7 @@
     {{-- MEETINGS --}}
     <div class="card section-card">
         <div class="card-header">
-            <h4>Meetings & Demo</h4>
+            <h4>{{ __('backend.supervisor_project_details.meetings_demo') }}</h4>
         </div>
         <div class="card-body">
 
@@ -1098,42 +1098,42 @@
 
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <label class="form-label">Meeting Title</label>
-                        <input type="text" name="title" class="form-control" value="{{ old('title') }}" placeholder="Demo Session / Viva / Final Review" required>
+                        <label class="form-label">{{ __('backend.supervisor_project_details.meeting_title') }}</label>
+                        <input type="text" name="title" class="form-control" value="{{ old('title') }}" placeholder="{{ __('backend.supervisor_project_details.meeting_title_placeholder') }}" required>
                     </div>
 
                     <div class="col-md-6 mb-3">
-                        <label class="form-label">Meeting Type</label>
+                        <label class="form-label">{{ __('backend.supervisor_project_details.meeting_type') }}</label>
                         <select name="meeting_type" class="form-control" required>
-                            <option value="online">Online</option>
-                            <option value="offline">Offline</option>
-                            <option value="demo">Demo</option>
-                            <option value="viva">Viva</option>
+                            <option value="online">{{ __('backend.supervisor_project_details.meeting_types.online') }}</option>
+                            <option value="offline">{{ __('backend.supervisor_project_details.meeting_types.offline') }}</option>
+                            <option value="demo">{{ __('backend.supervisor_project_details.meeting_types.demo') }}</option>
+                            <option value="viva">{{ __('backend.supervisor_project_details.meeting_types.viva') }}</option>
                         </select>
                     </div>
 
                     <div class="col-md-6 mb-3">
-                        <label class="form-label">Meeting Date</label>
+                        <label class="form-label">{{ __('backend.supervisor_project_details.meeting_date') }}</label>
                         <input type="date" name="meeting_date" class="form-control" value="{{ old('meeting_date') }}" required>
                     </div>
 
                     <div class="col-md-6 mb-3">
-                        <label class="form-label">Meeting Time</label>
+                        <label class="form-label">{{ __('backend.supervisor_project_details.meeting_time') }}</label>
                         <input type="time" name="meeting_time" class="form-control" value="{{ old('meeting_time') }}" required>
                     </div>
 
                     <div class="col-md-12 mb-3">
-                        <label class="form-label">Meeting Link</label>
+                        <label class="form-label">{{ __('backend.supervisor_project_details.meeting_link') }}</label>
                         <input type="url" name="meeting_link" class="form-control" value="{{ old('meeting_link') }}" placeholder="https://meet.google.com/...">
                     </div>
 
                     <div class="col-md-12 mb-3">
-                        <label class="form-label">Notes</label>
-                        <textarea name="notes" rows="4" class="form-control" placeholder="Agenda, demo instructions, required features to show, or session notes.">{{ old('notes') }}</textarea>
+                        <label class="form-label">{{ __('backend.supervisor_project_details.notes') }}</label>
+                        <textarea name="notes" rows="4" class="form-control" placeholder="{{ __('backend.supervisor_project_details.meeting_notes_placeholder') }}">{{ old('notes') }}</textarea>
                     </div>
 
                     <div class="col-12">
-                        <button class="btn btn-success">Schedule Meeting</button>
+                        <button class="btn btn-success">{{ __('backend.supervisor_project_details.schedule_meeting') }}</button>
                     </div>
                 </div>
             </form>
@@ -1141,7 +1141,7 @@
             <hr>
             @endif
 
-            <h5 class="mb-3">Scheduled Meetings</h5>
+            <h5 class="mb-3">{{ __('backend.supervisor_project_details.scheduled_meetings') }}</h5>
 
             @forelse($meetings->sortByDesc('meeting_date') as $meeting)
                 <div class="meeting-item">
@@ -1152,7 +1152,7 @@
 
                     @if($meeting->meeting_link)
                         <div class="mb-2">
-                            <a href="{{ $meeting->meeting_link }}" target="_blank" class="verification-btn">Open Meeting Link</a>
+                            <a href="{{ $meeting->meeting_link }}" target="_blank" class="verification-btn">{{ __('backend.supervisor_project_details.open_meeting_link') }}</a>
                         </div>
                     @endif
 
@@ -1165,19 +1165,19 @@
                         <form method="POST" action="{{ route('supervisor.projects.meetings.status', ['project' => $project->project_id, 'meeting' => $meeting->id]) }}">
                             @csrf
                             <input type="hidden" name="status" value="completed">
-                            <button class="btn btn-success btn-sm">Complete</button>
+                            <button class="btn btn-success btn-sm">{{ __('backend.supervisor_project_details.complete') }}</button>
                         </form>
 
                         <form method="POST" action="{{ route('supervisor.projects.meetings.status', ['project' => $project->project_id, 'meeting' => $meeting->id]) }}">
                             @csrf
                             <input type="hidden" name="status" value="cancelled">
-                            <button class="btn btn-danger btn-sm">Cancel</button>
+                            <button class="btn btn-danger btn-sm">{{ __('backend.supervisor_project_details.cancel') }}</button>
                         </form>
 
                         <form method="POST" action="{{ route('supervisor.projects.meetings.status', ['project' => $project->project_id, 'meeting' => $meeting->id]) }}">
                             @csrf
                             <input type="hidden" name="status" value="scheduled">
-                            <button class="btn btn-secondary btn-sm">Reset</button>
+                            <button class="btn btn-secondary btn-sm">{{ __('backend.supervisor_project_details.reset') }}</button>
                         </form>
 
                         <span class="badge bg-light text-dark border align-self-center">
@@ -1193,7 +1193,7 @@
                     @endif
                 </div>
             @empty
-                <p class="text-muted mb-0">No meetings scheduled yet.</p>
+                <p class="text-muted mb-0">{{ __('backend.supervisor_project_details.no_meetings_scheduled') }}</p>
             @endforelse
         </div>
     </div>
@@ -1202,58 +1202,58 @@
     {{-- PROJECT OVERVIEW --}}
     <div class="card section-card">
         <div class="card-header">
-            <h4>Project Overview</h4>
+            <h4>{{ __('backend.supervisor_project_details.project_overview') }}</h4>
         </div>
         <div class="card-body">
             <div class="row detail-grid">
                 <div class="col-md-3 item">
-                    <div class="detail-label">Status</div>
+                    <div class="detail-label">{{ __('backend.supervisor_project_details.status') }}</div>
                     <div class="detail-value">{{ $project->status ?? '-' }}</div>
                 </div>
                 <div class="col-md-3 item">
-                    <div class="detail-label">Progress</div>
+                    <div class="detail-label">{{ __('backend.supervisor_project_details.progress') }}</div>
                     <div class="detail-value">{{ $project->progress ?? 0 }}%</div>
                 </div>
                 <div class="col-md-3 item">
-                    <div class="detail-label">Category</div>
+                    <div class="detail-label">{{ __('backend.supervisor_project_details.category') }}</div>
                     <div class="detail-value">{{ $project->category ?? '-' }}</div>
                 </div>
                 <div class="col-md-3 item">
-                    <div class="detail-label">Budget</div>
+                    <div class="detail-label">{{ __('backend.supervisor_project_details.budget') }}</div>
                     <div class="detail-value">{{ $project->budget ?? '-' }}</div>
                 </div>
 
                 <div class="col-md-3 item">
-                    <div class="detail-label">Priority</div>
+                    <div class="detail-label">{{ __('backend.supervisor_project_details.priority') }}</div>
                     <div class="detail-value">{{ $project->priority ?? '-' }}</div>
                 </div>
                 <div class="col-md-3 item">
-                    <div class="detail-label">Start Date</div>
+                    <div class="detail-label">{{ __('backend.supervisor_project_details.start_date') }}</div>
                     <div class="detail-value">{{ optional($project->start_date)->format('d/m/Y') ?? '-' }}</div>
                 </div>
                 <div class="col-md-3 item">
-                    <div class="detail-label">End Date</div>
+                    <div class="detail-label">{{ __('backend.supervisor_project_details.end_date') }}</div>
                     <div class="detail-value">{{ optional($project->end_date)->format('d/m/Y') ?? '-' }}</div>
                 </div>
                 <div class="col-md-3 item">
-                    <div class="detail-label">Created At</div>
+                    <div class="detail-label">{{ __('backend.supervisor_project_details.created_at') }}</div>
                     <div class="detail-value">{{ optional($project->created_at)->format('d/m/Y H:i') ?? '-' }}</div>
                 </div>
 
                 <div class="col-md-3 item">
-                    <div class="detail-label">Scanner Status</div>
+                    <div class="detail-label">{{ __('backend.supervisor_project_details.scanner_status') }}</div>
                     <div class="detail-value">{{ $project->scanner_status ?? '-' }}</div>
                 </div>
                 <div class="col-md-3 item">
-                    <div class="detail-label">Scanner Project ID</div>
+                    <div class="detail-label">{{ __('backend.supervisor_project_details.scanner_project_id') }}</div>
                     <div class="detail-value">{{ $project->scanner_project_id ?? '-' }}</div>
                 </div>
                 <div class="col-md-3 item">
-                    <div class="detail-label">Scan Score</div>
+                    <div class="detail-label">{{ __('backend.supervisor_project_details.scan_score') }}</div>
                     <div class="detail-value">{{ $project->scan_score !== null ? number_format($project->scan_score, 2) : '-' }}</div>
                 </div>
                 <div class="col-md-3 item">
-                    <div class="detail-label">Risk Level</div>
+                    <div class="detail-label">{{ __('backend.supervisor_project_details.risk_level') }}</div>
                     <div class="detail-value">{{ $riskLevel ?? '-' }}</div>
                 </div>
             </div>
@@ -1263,25 +1263,25 @@
     {{-- PEOPLE --}}
     <div class="card section-card">
         <div class="card-header">
-            <h4>People & Assignment</h4>
+            <h4>{{ __('backend.supervisor_project_details.people_assignment') }}</h4>
         </div>
         <div class="card-body">
             <div class="row detail-grid">
                 <div class="col-md-3 item">
-                    <div class="detail-label">Student</div>
+                    <div class="detail-label">{{ __('backend.supervisor_project_details.student') }}</div>
                     <div class="detail-value">{{ $project->student?->name ?? '-' }}</div>
                     <div class="text-muted small">{{ $project->student?->email ?? '' }}</div>
                 </div>
                 <div class="col-md-3 item">
-                    <div class="detail-label">Supervisor</div>
+                    <div class="detail-label">{{ __('backend.supervisor_project_details.supervisor') }}</div>
                     <div class="detail-value">{{ $project->supervisor?->name ?? '-' }}</div>
                 </div>
                 <div class="col-md-3 item">
-                    <div class="detail-label">Manager</div>
+                    <div class="detail-label">{{ __('backend.supervisor_project_details.manager') }}</div>
                     <div class="detail-value">{{ $project->manager?->name ?? '-' }}</div>
                 </div>
                 <div class="col-md-3 item">
-                    <div class="detail-label">Total Investors</div>
+                    <div class="detail-label">{{ __('backend.supervisor_project_details.total_investors') }}</div>
                     <div class="detail-value">{{ $project->investors->count() }}</div>
                 </div>
             </div>
@@ -1291,49 +1291,49 @@
     {{-- SCAN SUMMARY --}}
     <div class="card section-card">
         <div class="card-header">
-            <h4>Scan Intelligence Summary</h4>
+            <h4>{{ __('backend.supervisor_project_details.scan_intelligence_summary') }}</h4>
         </div>
         <div class="card-body">
             <div class="row">
                 <div class="col-lg-3 mb-3">
                     <div class="scan-score-box">
                         <div class="scan-score-number">{{ $project->scan_score !== null ? number_format($project->scan_score, 0) : '-' }}</div>
-                        <div class="scan-score-label">Overall Score</div>
+                        <div class="scan-score-label">{{ __('backend.supervisor_project_details.overall_score') }}</div>
                     </div>
                 </div>
 
                 <div class="col-lg-3 mb-3">
                     <div class="summary-box">
-                        <h6>Scan Metadata</h6>
+                        <h6>{{ __('backend.supervisor_project_details.scan_metadata') }}</h6>
                         <ul class="summary-list">
-                            <li><strong>Event:</strong> {{ data_get($scanReport, 'event', '-') }}</li>
-                            <li><strong>Version:</strong> {{ data_get($scanReport, 'version', '-') }}</li>
-                            <li><strong>Grade:</strong> {{ data_get($scanInfo, 'grade', $project->grade ?? '-') }}</li>
-                            <li><strong>Status:</strong> {{ data_get($scanInfo, 'status', $project->scanner_status ?? '-') }}</li>
+                            <li><strong>{{ __('backend.supervisor_project_details.event') }}:</strong> {{ data_get($scanReport, 'event', '-') }}</li>
+                            <li><strong>{{ __('backend.supervisor_project_details.version') }}:</strong> {{ data_get($scanReport, 'version', '-') }}</li>
+                            <li><strong>{{ __('backend.supervisor_project_details.grade') }}:</strong> {{ data_get($scanInfo, 'grade', $project->grade ?? '-') }}</li>
+                            <li><strong>{{ __('backend.supervisor_project_details.status') }}:</strong> {{ data_get($scanInfo, 'status', $project->scanner_status ?? '-') }}</li>
                         </ul>
                     </div>
                 </div>
 
                 <div class="col-lg-3 mb-3">
                     <div class="summary-box">
-                        <h6>Issue Summary</h6>
+                        <h6>{{ __('backend.supervisor_project_details.issue_summary') }}</h6>
                         <ul class="summary-list">
-                            <li><strong>Total Files:</strong> {{ data_get($scanSummary, 'total_files', '-') }}</li>
-                            <li><strong>Total Issues:</strong> {{ data_get($scanSummary, 'issues_total', '-') }}</li>
-                            <li><strong>Critical:</strong> {{ data_get($scanSummary, 'critical', '-') }}</li>
-                            <li><strong>High:</strong> {{ data_get($scanSummary, 'high', '-') }}</li>
+                            <li><strong>{{ __('backend.supervisor_project_details.total_files') }}:</strong> {{ data_get($scanSummary, 'total_files', '-') }}</li>
+                            <li><strong>{{ __('backend.supervisor_project_details.total_issues') }}:</strong> {{ data_get($scanSummary, 'issues_total', '-') }}</li>
+                            <li><strong>{{ __('backend.supervisor_project_details.critical') }}:</strong> {{ data_get($scanSummary, 'critical', '-') }}</li>
+                            <li><strong>{{ __('backend.supervisor_project_details.high') }}:</strong> {{ data_get($scanSummary, 'high', '-') }}</li>
                         </ul>
                     </div>
                 </div>
 
                 <div class="col-lg-3 mb-3">
                     <div class="summary-box">
-                        <h6>More Details</h6>
+                        <h6>{{ __('backend.supervisor_project_details.more_details') }}</h6>
                         <ul class="summary-list">
-                            <li><strong>Medium:</strong> {{ data_get($scanSummary, 'medium', '-') }}</li>
-                            <li><strong>Low:</strong> {{ data_get($scanSummary, 'low', '-') }}</li>
-                            <li><strong>Language:</strong> {{ data_get($scanProject, 'language', '-') }}</li>
-                            <li><strong>Scanned At:</strong> {{ $project->scanned_at ? \Carbon\Carbon::parse($project->scanned_at)->format('d/m/Y H:i') : '-' }}</li>
+                            <li><strong>{{ __('backend.supervisor_project_details.medium') }}:</strong> {{ data_get($scanSummary, 'medium', '-') }}</li>
+                            <li><strong>{{ __('backend.supervisor_project_details.low') }}:</strong> {{ data_get($scanSummary, 'low', '-') }}</li>
+                            <li><strong>{{ __('backend.supervisor_project_details.language') }}:</strong> {{ data_get($scanProject, 'language', '-') }}</li>
+                            <li><strong>{{ __('backend.supervisor_project_details.scanned_at') }}:</strong> {{ $project->scanned_at ? \Carbon\Carbon::parse($project->scanned_at)->format('d/m/Y H:i') : '-' }}</li>
                         </ul>
                     </div>
                 </div>
@@ -1343,7 +1343,7 @@
 
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <h5 class="mb-3">Highlights</h5>
+                    <h5 class="mb-3">{{ __('backend.supervisor_project_details.highlights') }}</h5>
                     @if(!empty($highlights))
                         <ul class="highlight-list mb-0">
                             @foreach($highlights as $highlight)
@@ -1351,12 +1351,12 @@
                             @endforeach
                         </ul>
                     @else
-                        <p class="text-muted mb-0">No highlights available.</p>
+                        <p class="text-muted mb-0">{{ __('backend.supervisor_project_details.no_highlights') }}</p>
                     @endif
                 </div>
 
                 <div class="col-md-6 mb-3">
-                    <h5 class="mb-3">Recommendations</h5>
+                    <h5 class="mb-3">{{ __('backend.supervisor_project_details.recommendations') }}</h5>
                     @if(!empty($recommendations))
                         <ul class="recommend-list mb-0">
                             @foreach($recommendations as $recommendation)
@@ -1364,7 +1364,7 @@
                             @endforeach
                         </ul>
                     @else
-                        <p class="text-muted mb-0">No recommendations available.</p>
+                        <p class="text-muted mb-0">{{ __('backend.supervisor_project_details.no_recommendations') }}</p>
                     @endif
                 </div>
             </div>
@@ -1374,7 +1374,7 @@
     {{-- MEDIA --}}
     <div class="card section-card">
         <div class="card-header">
-            <h4>Project Media</h4>
+            <h4>{{ __('backend.supervisor_project_details.project_media') }}</h4>
         </div>
         <div class="card-body">
             @php
@@ -1382,33 +1382,33 @@
                 $videoUrl = method_exists($project, 'getFirstMediaUrl') ? $project->getFirstMediaUrl('videos') : null;
             @endphp
 
-            <h5 class="mb-3">Images ({{ $images->count() }})</h5>
+            <h5 class="mb-3">{{ __('backend.supervisor_project_details.images') }} ({{ $images->count() }})</h5>
 
             @if($images->count())
                 <div class="row">
                     @foreach($images as $img)
                         <div class="col-md-3 mb-3">
                             <a href="{{ $img->getUrl() }}" target="_blank" class="d-block">
-                                <img src="{{ $img->getUrl() }}" class="img-fluid rounded border" alt="Project image">
+                                <img src="{{ $img->getUrl() }}" class="img-fluid rounded border" alt="{{ __('backend.supervisor_project_details.project_image_alt') }}">
                             </a>
                         </div>
                     @endforeach
                 </div>
             @else
-                <p class="text-muted">No images uploaded.</p>
+                <p class="text-muted">{{ __('backend.supervisor_project_details.no_images_uploaded') }}</p>
             @endif
 
             <hr>
 
-            <h5 class="mb-3">Video</h5>
+            <h5 class="mb-3">{{ __('backend.supervisor_project_details.video') }}</h5>
 
             @if($videoUrl)
                 <video class="w-100 rounded border" controls style="max-height:420px;">
                     <source src="{{ $videoUrl }}" type="video/mp4">
-                    Your browser does not support the video tag.
+                    {{ __('backend.supervisor_project_details.video_not_supported') }}
                 </video>
             @else
-                <p class="text-muted">No video uploaded.</p>
+                <p class="text-muted">{{ __('backend.supervisor_project_details.no_video_uploaded') }}</p>
             @endif
         </div>
     </div>
@@ -1417,42 +1417,15 @@
 
 <script>
     function fillSystemRequestTemplate() {
-        document.getElementById('request_title').value = 'Complete System Verification Requirements';
+        document.getElementById('request_title').value = @json(__('backend.supervisor_project_details.templates.system_request_title'));
         document.getElementById('request_type').value = 'system_verification';
-        document.getElementById('request_description').value =
-`Please submit the core system verification details for this project.
-
-Required items:
-1. Frontend URL
-2. Backend URL
-3. API Health URL or API Base URL
-4. Demo Account
-5. Demo Password
-
-Optional items:
-6. Admin Panel URL
-7. Deployment Notes / Hosting Notes
-
-Please send all available details clearly in one response. If any item is not available yet, mention that explicitly.`;
+        document.getElementById('request_description').value = @json(__('backend.supervisor_project_details.templates.system_request_description'));
     }
 
     function fillMinimalSystemRequestTemplate() {
-        document.getElementById('request_title').value = 'Submit Essential System Access Details';
+        document.getElementById('request_title').value = @json(__('backend.supervisor_project_details.templates.minimal_system_request_title'));
         document.getElementById('request_type').value = 'system_verification';
-        document.getElementById('request_description').value =
-`Please provide the minimum required system details for technical verification.
-
-At minimum, send these 4 items:
-1. Frontend URL
-2. Backend URL or API URL
-3. Demo Account
-4. Demo Password
-
-You may also include:
-- Admin Panel URL
-- Deployment Notes
-
-Please reply in a clean and organized format.`;
+        document.getElementById('request_description').value = @json(__('backend.supervisor_project_details.templates.minimal_system_request_description'));
     }
 
     function clearRequestTemplate() {

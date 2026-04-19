@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Role Authentication Policies')
+@section('title', __('backend.auth_role_policies_index.title'))
 
 @section('content')
 <div class="pd-ltr-20 xs-pd-20-10">
@@ -10,9 +10,9 @@
             <div class="pd-20 d-flex justify-content-between align-items-center flex-wrap"
                  style="background: linear-gradient(135deg, #0f172a 0%, #1d4ed8 100%); color: white;">
                 <div>
-                    <h4 class="mb-1 text-white">Role Authentication Policies</h4>
+                    <h4 class="mb-1 text-white">{{ __('backend.auth_role_policies_index.page_title') }}</h4>
                     <p class="mb-0" style="opacity: .9;">
-                        Manage the default authentication behavior for each system role.
+                        {{ __('backend.auth_role_policies_index.page_subtitle') }}
                     </p>
                 </div>
             </div>
@@ -23,13 +23,13 @@
                         <thead style="background: #f8fafc;">
                             <tr>
                                 <th>#</th>
-                                <th>Role</th>
-                                <th>Email Verification</th>
-                                <th>OTP</th>
-                                <th>Trusted Devices</th>
-                                <th>Recovery Codes</th>
-                                <th>Remember Me</th>
-                                <th width="170">Action</th>
+                                <th>{{ __('backend.auth_role_policies_index.role') }}</th>
+                                <th>{{ __('backend.auth_role_policies_index.email_verification') }}</th>
+                                <th>{{ __('backend.auth_role_policies_index.otp') }}</th>
+                                <th>{{ __('backend.auth_role_policies_index.trusted_devices') }}</th>
+                                <th>{{ __('backend.auth_role_policies_index.recovery_codes') }}</th>
+                                <th>{{ __('backend.auth_role_policies_index.remember_me') }}</th>
+                                <th width="170">{{ __('backend.auth_role_policies_index.action') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -45,21 +45,21 @@
 
                                     <td>{{ ucfirst($rolePolicy->email_verification_mode) }}</td>
                                     <td>{{ ucfirst($rolePolicy->otp_mode) }}</td>
-                                    <td>{{ $rolePolicy->trusted_devices_enabled ? 'Enabled' : 'Disabled' }}</td>
-                                    <td>{{ $rolePolicy->recovery_codes_enabled ? 'Enabled' : 'Disabled' }}</td>
-                                    <td>{{ $rolePolicy->remember_me_enabled ? 'Enabled' : 'Disabled' }}</td>
+                                    <td>{{ $rolePolicy->trusted_devices_enabled ? __('backend.auth_role_policies_index.enabled') : __('backend.auth_role_policies_index.disabled') }}</td>
+                                    <td>{{ $rolePolicy->recovery_codes_enabled ? __('backend.auth_role_policies_index.enabled') : __('backend.auth_role_policies_index.disabled') }}</td>
+                                    <td>{{ $rolePolicy->remember_me_enabled ? __('backend.auth_role_policies_index.enabled') : __('backend.auth_role_policies_index.disabled') }}</td>
 
                                     <td>
                                         <a href="{{ route('admin.auth-role-policies.show', $rolePolicy->id) }}"
                                            class="btn btn-primary btn-sm"
                                            style="border-radius: 10px; font-weight: 600;">
-                                            Manage Role Policy
+                                            {{ __('backend.auth_role_policies_index.manage_role_policy') }}
                                         </a>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="8" class="text-center py-4">No role policies found.</td>
+                                    <td colspan="8" class="text-center py-4">{{ __('backend.auth_role_policies_index.no_role_policies_found') }}</td>
                                 </tr>
                             @endforelse
                         </tbody>

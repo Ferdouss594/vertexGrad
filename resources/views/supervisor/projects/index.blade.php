@@ -1,6 +1,6 @@
 @extends('supervisor.layout.app_super')
 
-@section('title', 'All Projects')
+@section('title', __('backend.supervisor_all_projects.page_title'))
 
 @section('content')
 @php
@@ -419,16 +419,16 @@
         <div class="page-header-card mb-4">
             <div class="d-flex justify-content-between align-items-center flex-wrap" style="gap: 15px;">
                 <div>
-                    <h3>All Projects</h3>
-                    <p>Professional overview of all platform projects, including scan status, scores, and your supervisor evaluation.</p>
+                    <h3>{{ __('backend.supervisor_all_projects.heading') }}</h3>
+                    <p>{{ __('backend.supervisor_all_projects.subtitle') }}</p>
                 </div>
 
                 <div class="header-actions">
                     <a href="{{ route('supervisor.projects.pending') }}" class="btn-outline-header">
-                        <i class="fa fa-clock mr-1"></i> Pending Reviews
+                        <i class="fa fa-clock mr-1"></i> {{ __('backend.supervisor_all_projects.pending_reviews') }}
                     </a>
                     <a href="{{ route('supervisor.dashboard') }}" class="btn-outline-header">
-                        <i class="fa fa-home mr-1"></i> Dashboard
+                        <i class="fa fa-home mr-1"></i> {{ __('backend.supervisor_all_projects.dashboard') }}
                     </a>
                 </div>
             </div>
@@ -441,7 +441,7 @@
                         <i class="fa fa-folder-open"></i>
                     </div>
                     <div class="stats-number">{{ $totalProjects }}</div>
-                    <p class="stats-label">Total Projects</p>
+                    <p class="stats-label">{{ __('backend.supervisor_all_projects.total_projects') }}</p>
                 </div>
             </div>
 
@@ -451,7 +451,7 @@
                         <i class="fa fa-check-circle"></i>
                     </div>
                     <div class="stats-number">{{ $approvedProjects }}</div>
-                    <p class="stats-label">My Approved Evaluations</p>
+                    <p class="stats-label">{{ __('backend.supervisor_all_projects.my_approved_evaluations') }}</p>
                 </div>
             </div>
 
@@ -461,7 +461,7 @@
                         <i class="fa fa-clock"></i>
                     </div>
                     <div class="stats-number">{{ $pendingProjects }}</div>
-                    <p class="stats-label">Not Evaluated Yet</p>
+                    <p class="stats-label">{{ __('backend.supervisor_all_projects.not_evaluated_yet') }}</p>
                 </div>
             </div>
 
@@ -471,7 +471,7 @@
                         <i class="fa fa-chart-line"></i>
                     </div>
                     <div class="stats-number">{{ $avgScore ? number_format($avgScore, 1) : '0.0' }}</div>
-                    <p class="stats-label">My Average Score</p>
+                    <p class="stats-label">{{ __('backend.supervisor_all_projects.my_average_score') }}</p>
                 </div>
             </div>
         </div>
@@ -479,8 +479,8 @@
         <div class="table-card">
             <div class="table-card-header">
                 <div>
-                    <h5>All Projects</h5>
-                    <small class="text-muted">Compact professional review table for supervisor workflow.</small>
+                    <h5>{{ __('backend.supervisor_all_projects.table_title') }}</h5>
+                    <small class="text-muted">{{ __('backend.supervisor_all_projects.table_subtitle') }}</small>
                 </div>
             </div>
 
@@ -488,16 +488,16 @@
                 <table class="table modern-table">
                     <thead>
                         <tr>
-                            <th class="col-id">#</th>
-                            <th class="col-project">Project</th>
-                            <th class="col-student">Student</th>
-                            <th class="col-status">Project Status</th>
-                            <th class="col-scan">Scan</th>
-                            <th class="col-score">Score</th>
-                            <th class="col-review">My Evaluation</th>
-                            <th class="col-note">My Notes</th>
-                            <th class="col-date">Updated</th>
-                            <th class="col-actions">Action</th>
+                            <th class="col-id">{{ __('backend.supervisor_all_projects.table_number') }}</th>
+                            <th class="col-project">{{ __('backend.supervisor_all_projects.project') }}</th>
+                            <th class="col-student">{{ __('backend.supervisor_all_projects.student') }}</th>
+                            <th class="col-status">{{ __('backend.supervisor_all_projects.project_status') }}</th>
+                            <th class="col-scan">{{ __('backend.supervisor_all_projects.scan') }}</th>
+                            <th class="col-score">{{ __('backend.supervisor_all_projects.score') }}</th>
+                            <th class="col-review">{{ __('backend.supervisor_all_projects.my_evaluation') }}</th>
+                            <th class="col-note">{{ __('backend.supervisor_all_projects.my_notes') }}</th>
+                            <th class="col-date">{{ __('backend.supervisor_all_projects.updated') }}</th>
+                            <th class="col-actions">{{ __('backend.supervisor_all_projects.action') }}</th>
                         </tr>
                     </thead>
 
@@ -543,19 +543,19 @@
 
                                 <td>
                                     <a href="{{ route('supervisor.projects.show', $project->project_id) }}" class="project-name">
-                                        {{ $project->name ?? 'Untitled Project' }}
+                                        {{ $project->name ?? __('backend.supervisor_all_projects.untitled_project') }}
                                     </a>
                                     <div class="mini-text td-ellipsis">
-                                        ID: {{ $project->project_id }}
+                                        {{ __('backend.supervisor_all_projects.id_label') }}: {{ $project->project_id }}
                                     </div>
                                     <div class="mini-text td-ellipsis">
-                                        {{ $project->category ?? 'No category' }}
+                                        {{ $project->category ?? __('backend.supervisor_all_projects.no_category') }}
                                     </div>
                                 </td>
 
                                 <td>
-                                    <div class="td-ellipsis">{{ $project->student->name ?? '—' }}</div>
-                                    <div class="mini-text td-ellipsis">{{ $project->student->email ?? 'No email' }}</div>
+                                    <div class="td-ellipsis">{{ $project->student->name ?? __('backend.supervisor_all_projects.empty_value') }}</div>
+                                    <div class="mini-text td-ellipsis">{{ $project->student->email ?? __('backend.supervisor_all_projects.no_email') }}</div>
                                 </td>
 
                                 <td>
@@ -563,25 +563,28 @@
                                         {{ ucfirst(str_replace('_', ' ', $displayStatus)) }}
                                     </span>
                                     <div class="mini-text td-ellipsis">
-                                        Budget: {{ $project->budget !== null ? number_format($project->budget, 2) : '—' }}
+                                        {{ __('backend.supervisor_all_projects.budget') }}:
+                                        {{ $project->budget !== null ? number_format($project->budget, 2) : __('backend.supervisor_all_projects.empty_value') }}
                                     </div>
                                 </td>
 
                                 <td>
                                     <span class="badge-soft {{ $scanClass }}">
-                                        {{ ucfirst(str_replace('_', ' ', $project->scanner_status ?? 'not scanned')) }}
+                                        {{ ucfirst(str_replace('_', ' ', $project->scanner_status ?? __('backend.supervisor_all_projects.not_scanned'))) }}
                                     </span>
                                     <div class="mini-text td-ellipsis">
-                                        Scanner ID: {{ $project->scanner_project_id ?? '—' }}
+                                        {{ __('backend.supervisor_all_projects.scanner_id') }}:
+                                        {{ $project->scanner_project_id ?? __('backend.supervisor_all_projects.empty_value') }}
                                     </div>
                                 </td>
 
                                 <td>
                                     <div class="score-box">
-                                        {{ $myReview?->score !== null ? number_format($myReview->score, 2) : '—' }}
+                                        {{ $myReview?->score !== null ? number_format($myReview->score, 2) : __('backend.supervisor_all_projects.empty_value') }}
                                     </div>
                                     <div class="mini-text td-ellipsis">
-                                        Scan: {{ $project->scan_score !== null ? number_format($project->scan_score, 2) : '—' }}
+                                        {{ __('backend.supervisor_all_projects.scan_score_label') }}:
+                                        {{ $project->scan_score !== null ? number_format($project->scan_score, 2) : __('backend.supervisor_all_projects.empty_value') }}
                                     </div>
                                 </td>
 
@@ -590,25 +593,25 @@
                                         {{ ucfirst(str_replace('_', ' ', $myReview->decision ?? 'pending')) }}
                                     </span>
                                     <div class="mini-text td-ellipsis">
-                                        {{ $myReview?->reviewed_at ? $myReview->reviewed_at->format('Y-m-d') : 'Not reviewed yet' }}
+                                        {{ $myReview?->reviewed_at ? $myReview->reviewed_at->format('Y-m-d') : __('backend.supervisor_all_projects.not_reviewed_yet') }}
                                     </div>
                                 </td>
 
                                 <td>
                                     <div class="td-ellipsis">
-                                        {{ $myReview?->notes ? \Illuminate\Support\Str::limit($myReview->notes, 40) : 'No notes yet' }}
+                                        {{ $myReview?->notes ? \Illuminate\Support\Str::limit($myReview->notes, 40) : __('backend.supervisor_all_projects.no_notes_yet') }}
                                     </div>
                                 </td>
 
                                 <td>
-                                    <div>{{ optional($project->updated_at)->format('Y-m-d') ?? '—' }}</div>
+                                    <div>{{ optional($project->updated_at)->format('Y-m-d') ?? __('backend.supervisor_all_projects.empty_value') }}</div>
                                     <div class="mini-text">{{ optional($project->updated_at)->format('h:i A') ?? '' }}</div>
                                 </td>
 
                                 <td>
                                     <a href="{{ route('supervisor.projects.show', $project->project_id) }}" class="btn-review">
                                         <i class="fa fa-search mr-1"></i>
-                                        {{ $myReview ? 'Update Review' : 'Review' }}
+                                        {{ $myReview ? __('backend.supervisor_all_projects.update_review') : __('backend.supervisor_all_projects.review') }}
                                     </a>
                                 </td>
                             </tr>
@@ -617,7 +620,7 @@
                                 <td colspan="10">
                                     <div class="empty-state">
                                         <i class="fa fa-folder-open"></i>
-                                        <div>No projects found.</div>
+                                        <div>{{ __('backend.supervisor_all_projects.no_projects_found') }}</div>
                                     </div>
                                 </td>
                             </tr>

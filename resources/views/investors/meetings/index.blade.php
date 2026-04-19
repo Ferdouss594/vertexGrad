@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Investor Meetings')
+@section('title', __('backend.investor_meetings_index.page_title'))
 
 @section('content')
 <style>
@@ -87,37 +87,37 @@
         <div class="page-header-card">
             <div class="d-flex justify-content-between align-items-center flex-wrap" style="gap: 15px;">
                 <div>
-                    <h3 class="mb-1">{{ $investor->user?->name ?? 'Investor Meetings' }}</h3>
-                    <p class="mb-0">Manage meetings, calls, and discussion sessions for this investor.</p>
+                    <h3 class="mb-1">{{ $investor->user?->name ?? __('backend.investor_meetings_index.page_title') }}</h3>
+                    <p class="mb-0">{{ __('backend.investor_meetings_index.subtitle') }}</p>
                 </div>
 
                 <div class="d-flex flex-wrap" style="gap: 10px;">
                     <a href="{{ route('admin.investors.show', $investor->user_id) }}" class="btn-back">
-                        <i class="fa fa-arrow-left mr-1"></i> Back
+                        <i class="fa fa-arrow-left mr-1"></i> {{ __('backend.investor_meetings_index.back') }}
                     </a>
 
                     <a href="{{ route('admin.investors.meetings.create', $investor->user_id) }}" class="btn-add">
-                        <i class="fa fa-plus mr-1"></i> New Meeting
+                        <i class="fa fa-plus mr-1"></i> {{ __('backend.investor_meetings_index.new_meeting') }}
                     </a>
                 </div>
             </div>
         </div>
 
         <div class="section-card">
-            <div class="section-header">Meetings List</div>
+            <div class="section-header">{{ __('backend.investor_meetings_index.meetings_list') }}</div>
 
             <div class="table-responsive">
                 <table class="table modern-table">
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Title</th>
-                            <th>Type</th>
-                            <th>Status</th>
-                            <th>Date & Time</th>
-                            <th>Location / Link</th>
-                            <th>Created By</th>
-                            <th>Actions</th>
+                            <th>{{ __('backend.investor_meetings_index.title') }}</th>
+                            <th>{{ __('backend.investor_meetings_index.type') }}</th>
+                            <th>{{ __('backend.investor_meetings_index.status') }}</th>
+                            <th>{{ __('backend.investor_meetings_index.date_time') }}</th>
+                            <th>{{ __('backend.investor_meetings_index.location_link') }}</th>
+                            <th>{{ __('backend.investor_meetings_index.created_by') }}</th>
+                            <th>{{ __('backend.investor_meetings_index.actions') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -138,29 +138,29 @@
                                 <td>{{ optional($meeting->meeting_at)->format('Y-m-d h:i A') }}</td>
                                 <td>
                                     @if($meeting->meeting_link)
-                                        <a href="{{ $meeting->meeting_link }}" target="_blank">Open Link</a>
+                                        <a href="{{ $meeting->meeting_link }}" target="_blank">{{ __('backend.investor_meetings_index.open_link') }}</a>
                                     @elseif($meeting->location)
                                         {{ $meeting->location }}
                                     @else
-                                        —
+                                        {{ __('backend.investor_meetings_index.empty') }}
                                     @endif
                                 </td>
-                                <td>{{ optional($meeting->creator)->name ?? 'System' }}</td>
+                                <td>{{ optional($meeting->creator)->name ?? __('backend.investor_meetings_index.system') }}</td>
                                 <td>
                                     <div class="d-flex" style="gap:8px;">
-                                        <a href="{{ route('admin.investors.meetings.edit', [$investor->user_id, $meeting->id]) }}" class="btn btn-sm btn-outline-primary">Edit</a>
+                                        <a href="{{ route('admin.investors.meetings.edit', [$investor->user_id, $meeting->id]) }}" class="btn btn-sm btn-outline-primary">{{ __('backend.investor_meetings_index.edit') }}</a>
 
                                         <form action="{{ route('admin.investors.meetings.destroy', [$investor->user_id, $meeting->id]) }}" method="POST">
                                             @csrf
                                             @method('DELETE')
-                                            <button class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this meeting?')">Delete</button>
+                                            <button class="btn btn-sm btn-outline-danger" onclick="return confirm('{{ __('backend.investor_meetings_index.confirm_delete') }}')">{{ __('backend.investor_meetings_index.delete') }}</button>
                                         </form>
                                     </div>
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="8" class="text-center text-muted py-4">No meetings found for this investor.</td>
+                                <td colspan="8" class="text-center text-muted py-4">{{ __('backend.investor_meetings_index.no_meetings_found') }}</td>
                             </tr>
                         @endforelse
                     </tbody>

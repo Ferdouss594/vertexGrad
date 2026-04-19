@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Send Email')
+@section('title', __('backend.investors_email.page_title'))
 
 @section('content')
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
@@ -158,17 +158,17 @@
     <div class="page-header-card">
         <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3">
             <div>
-                <h1 class="page-title">Send Email</h1>
+                <h1 class="page-title">{{ __('backend.investors_email.heading') }}</h1>
                 <p class="page-subtitle">
-                    Send a direct email to
-                    <strong>{{ $investor->user?->name ?? 'Investor' }}</strong>
-                    ({{ $investor->user?->email ?? 'No Email' }})
+                    {{ __('backend.investors_email.subtitle_prefix') }}
+                    <strong>{{ $investor->user?->name ?? __('backend.investors_email.investor_fallback') }}</strong>
+                    ({{ $investor->user?->email ?? __('backend.investors_email.no_email') }})
                 </p>
             </div>
 
             <div>
                 <a href="{{ route('admin.investors.show', $investor->user_id) }}" class="reset-btn px-4">
-                    <i class="fa fa-arrow-left mr-1"></i> Back
+                    <i class="fa fa-arrow-left mr-1"></i> {{ __('backend.investors_email.back') }}
                 </a>
             </div>
         </div>
@@ -177,9 +177,9 @@
     <div class="main-panel">
         <div class="panel-head">
             <h2 class="panel-title">
-                <i class="fa fa-envelope mr-2"></i>Email Form
+                <i class="fa fa-envelope mr-2"></i>{{ __('backend.investors_email.form_title') }}
             </h2>
-            <div class="panel-subtitle">Prepare and send a professional message to this investor.</div>
+            <div class="panel-subtitle">{{ __('backend.investors_email.form_subtitle') }}</div>
         </div>
 
         <div class="table-wrap">
@@ -187,25 +187,25 @@
                 @csrf
 
                 <div class="mb-3">
-                    <label class="filter-label">Subject</label>
+                    <label class="filter-label">{{ __('backend.investors_email.subject') }}</label>
                     <input
                         type="text"
                         name="subject"
                         class="form-control filter-input"
                         value="{{ old('subject') }}"
-                        placeholder="Enter email subject">
+                        placeholder="{{ __('backend.investors_email.subject_placeholder') }}">
                 </div>
 
                 <div class="mb-4">
-                    <label class="filter-label">Message</label>
+                    <label class="filter-label">{{ __('backend.investors_email.message') }}</label>
                     <textarea
                         name="message"
                         class="form-control filter-input"
-                        placeholder="Write your message here...">{{ old('message') }}</textarea>
+                        placeholder="{{ __('backend.investors_email.message_placeholder') }}">{{ old('message') }}</textarea>
                 </div>
 
                 <button type="submit" class="btn btn-primary search-btn">
-                    <i class="fa fa-paper-plane mr-1"></i> Send Email
+                    <i class="fa fa-paper-plane mr-1"></i> {{ __('backend.investors_email.send_email') }}
                 </button>
             </form>
         </div>

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Scheduled Reports')
+@section('title', __('backend.scheduled_reports.title'))
 
 @section('content')
 <style>
@@ -293,25 +293,22 @@
 
     <div class="hero-card">
         <div class="hero-content">
-            <div class="hero-title">Scheduled Reports</div>
+            <div class="hero-title">{{ __('backend.scheduled_reports.page_title') }}</div>
             <p class="hero-text">
-                Create enterprise-grade automated reports with exact delivery time, recurrence rules,
-                selected weekdays, monthly execution settings, and direct email delivery.
+                {{ __('backend.scheduled_reports.page_subtitle') }}
             </p>
         </div>
     </div>
 
     <div class="section-card">
         <div class="section-header">
-            <h4>Create Advanced Schedule</h4>
-            <p>Define exactly when the system should generate and deliver the report.</p>
+            <h4>{{ __('backend.scheduled_reports.create_advanced_schedule') }}</h4>
+            <p>{{ __('backend.scheduled_reports.create_advanced_schedule_subtitle') }}</p>
         </div>
 
         <div class="section-body">
             <div class="helper-box">
-                Use this form to control the report like enterprise systems:
-                choose the template, recurrence type, exact send time, email destination,
-                working days, monthly day, and activation state.
+                {{ __('backend.scheduled_reports.helper_box') }}
             </div>
 
             <form method="POST" action="{{ route('admin.reports.scheduled.store') }}">
@@ -320,13 +317,13 @@
                 <div class="row">
                     <div class="col-lg-6 mb-4">
                         <div class="config-card">
-                            <div class="config-title">Core Schedule Settings</div>
+                            <div class="config-title">{{ __('backend.scheduled_reports.core_schedule_settings') }}</div>
 
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label-custom">Report Template</label>
+                                    <label class="form-label-custom">{{ __('backend.scheduled_reports.report_template') }}</label>
                                     <select name="report_template_id" class="form-control form-select-custom" required>
-                                        <option value="">Select template</option>
+                                        <option value="">{{ __('backend.scheduled_reports.select_template') }}</option>
                                         @foreach($templates as $template)
                                             <option value="{{ $template->id }}">{{ $template->name }}</option>
                                         @endforeach
@@ -334,28 +331,28 @@
                                 </div>
 
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label-custom">Recurrence Type</label>
+                                    <label class="form-label-custom">{{ __('backend.scheduled_reports.recurrence_type') }}</label>
                                     <select name="frequency" id="frequency-select" class="form-control form-select-custom" required>
-                                        <option value="">Select frequency</option>
-                                        <option value="daily">Daily</option>
-                                        <option value="weekly">Weekly</option>
-                                        <option value="monthly">Monthly</option>
-                                        <option value="yearly">Yearly</option>
+                                        <option value="">{{ __('backend.scheduled_reports.select_frequency') }}</option>
+                                        <option value="daily">{{ __('backend.scheduled_reports.daily') }}</option>
+                                        <option value="weekly">{{ __('backend.scheduled_reports.weekly') }}</option>
+                                        <option value="monthly">{{ __('backend.scheduled_reports.monthly') }}</option>
+                                        <option value="yearly">{{ __('backend.scheduled_reports.yearly') }}</option>
                                     </select>
                                 </div>
 
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label-custom">Send Time</label>
+                                    <label class="form-label-custom">{{ __('backend.scheduled_reports.send_time') }}</label>
                                     <input type="time" name="run_time" class="form-control" required>
                                 </div>
 
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label-custom">Start Date</label>
+                                    <label class="form-label-custom">{{ __('backend.scheduled_reports.start_date') }}</label>
                                     <input type="date" name="start_date" class="form-control" value="{{ now()->format('Y-m-d') }}" required>
                                 </div>
 
                                 <div class="col-md-12 mb-0">
-                                    <label class="form-label-custom">Send To Email</label>
+                                    <label class="form-label-custom">{{ __('backend.scheduled_reports.send_to_email') }}</label>
                                     <input type="email" name="email" class="form-control" placeholder="manager@example.com" required>
                                 </div>
                             </div>
@@ -364,26 +361,26 @@
 
                     <div class="col-lg-6 mb-4">
                         <div class="config-card">
-                            <div class="config-title">Advanced Recurrence Rules</div>
+                            <div class="config-title">{{ __('backend.scheduled_reports.advanced_recurrence_rules') }}</div>
 
                             <div id="weekly-options" style="display: none;">
-                                <label class="form-label-custom">Send On These Days</label>
+                                <label class="form-label-custom">{{ __('backend.scheduled_reports.send_on_these_days') }}</label>
                                 <div class="days-grid mb-3">
-                                    <label class="day-option"><input type="checkbox" name="days_of_week[]" value="monday"> Monday</label>
-                                    <label class="day-option"><input type="checkbox" name="days_of_week[]" value="tuesday"> Tuesday</label>
-                                    <label class="day-option"><input type="checkbox" name="days_of_week[]" value="wednesday"> Wednesday</label>
-                                    <label class="day-option"><input type="checkbox" name="days_of_week[]" value="thursday"> Thursday</label>
-                                    <label class="day-option"><input type="checkbox" name="days_of_week[]" value="friday"> Friday</label>
-                                    <label class="day-option"><input type="checkbox" name="days_of_week[]" value="saturday"> Saturday</label>
-                                    <label class="day-option"><input type="checkbox" name="days_of_week[]" value="sunday"> Sunday</label>
+                                    <label class="day-option"><input type="checkbox" name="days_of_week[]" value="monday"> {{ __('backend.scheduled_reports.monday') }}</label>
+                                    <label class="day-option"><input type="checkbox" name="days_of_week[]" value="tuesday"> {{ __('backend.scheduled_reports.tuesday') }}</label>
+                                    <label class="day-option"><input type="checkbox" name="days_of_week[]" value="wednesday"> {{ __('backend.scheduled_reports.wednesday') }}</label>
+                                    <label class="day-option"><input type="checkbox" name="days_of_week[]" value="thursday"> {{ __('backend.scheduled_reports.thursday') }}</label>
+                                    <label class="day-option"><input type="checkbox" name="days_of_week[]" value="friday"> {{ __('backend.scheduled_reports.friday') }}</label>
+                                    <label class="day-option"><input type="checkbox" name="days_of_week[]" value="saturday"> {{ __('backend.scheduled_reports.saturday') }}</label>
+                                    <label class="day-option"><input type="checkbox" name="days_of_week[]" value="sunday"> {{ __('backend.scheduled_reports.sunday') }}</label>
                                 </div>
                             </div>
 
                             <div id="monthly-options" style="display: none;">
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
-                                        <label class="form-label-custom">Day Of Month</label>
-                                        <input type="number" min="1" max="31" name="day_of_month" class="form-control" placeholder="e.g. 15">
+                                        <label class="form-label-custom">{{ __('backend.scheduled_reports.day_of_month') }}</label>
+                                        <input type="number" min="1" max="31" name="day_of_month" class="form-control" placeholder="{{ __('backend.scheduled_reports.day_of_month_placeholder') }}">
                                     </div>
                                 </div>
                             </div>
@@ -391,53 +388,53 @@
                             <div id="yearly-options" style="display: none;">
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
-                                        <label class="form-label-custom">Month Of Year</label>
+                                        <label class="form-label-custom">{{ __('backend.scheduled_reports.month_of_year') }}</label>
                                         <select name="month_of_year" class="form-control form-select-custom">
-                                            <option value="">Select month</option>
-                                            <option value="1">January</option>
-                                            <option value="2">February</option>
-                                            <option value="3">March</option>
-                                            <option value="4">April</option>
-                                            <option value="5">May</option>
-                                            <option value="6">June</option>
-                                            <option value="7">July</option>
-                                            <option value="8">August</option>
-                                            <option value="9">September</option>
-                                            <option value="10">October</option>
-                                            <option value="11">November</option>
-                                            <option value="12">December</option>
+                                            <option value="">{{ __('backend.scheduled_reports.select_month') }}</option>
+                                            <option value="1">{{ __('backend.scheduled_reports.january') }}</option>
+                                            <option value="2">{{ __('backend.scheduled_reports.february') }}</option>
+                                            <option value="3">{{ __('backend.scheduled_reports.march') }}</option>
+                                            <option value="4">{{ __('backend.scheduled_reports.april') }}</option>
+                                            <option value="5">{{ __('backend.scheduled_reports.may') }}</option>
+                                            <option value="6">{{ __('backend.scheduled_reports.june') }}</option>
+                                            <option value="7">{{ __('backend.scheduled_reports.july') }}</option>
+                                            <option value="8">{{ __('backend.scheduled_reports.august') }}</option>
+                                            <option value="9">{{ __('backend.scheduled_reports.september') }}</option>
+                                            <option value="10">{{ __('backend.scheduled_reports.october') }}</option>
+                                            <option value="11">{{ __('backend.scheduled_reports.november') }}</option>
+                                            <option value="12">{{ __('backend.scheduled_reports.december') }}</option>
                                         </select>
                                     </div>
 
                                     <div class="col-md-6 mb-3">
-                                        <label class="form-label-custom">Day Of Month</label>
-                                        <input type="number" min="1" max="31" name="yearly_day" class="form-control" placeholder="e.g. 1">
+                                        <label class="form-label-custom">{{ __('backend.scheduled_reports.day_of_month') }}</label>
+                                        <input type="number" min="1" max="31" name="yearly_day" class="form-control" placeholder="{{ __('backend.scheduled_reports.yearly_day_placeholder') }}">
                                     </div>
                                 </div>
                             </div>
 
                             <div class="row mt-2">
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label-custom">Schedule Status</label>
+                                    <label class="form-label-custom">{{ __('backend.scheduled_reports.schedule_status') }}</label>
                                     <select name="is_active" class="form-control form-select-custom">
-                                        <option value="1" selected>Active</option>
-                                        <option value="0">Inactive</option>
+                                        <option value="1" selected>{{ __('backend.scheduled_reports.active') }}</option>
+                                        <option value="0">{{ __('backend.scheduled_reports.inactive') }}</option>
                                     </select>
                                 </div>
 
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label-custom">Delivery Channel</label>
+                                    <label class="form-label-custom">{{ __('backend.scheduled_reports.delivery_channel') }}</label>
                                     <select name="delivery_type" class="form-control form-select-custom">
-                                        <option value="email" selected>Email PDF</option>
-                                        <option value="email_excel">Email Excel</option>
-                                        <option value="both">PDF + Excel</option>
+                                        <option value="email" selected>{{ __('backend.scheduled_reports.email_pdf') }}</option>
+                                        <option value="email_excel">{{ __('backend.scheduled_reports.email_excel') }}</option>
+                                        <option value="both">{{ __('backend.scheduled_reports.pdf_excel') }}</option>
                                     </select>
                                 </div>
                             </div>
 
                             <div class="mb-0">
-                                <label class="form-label-custom">Notes (Optional)</label>
-                                <textarea name="notes" rows="4" class="form-control" placeholder="Internal scheduling notes for management..."></textarea>
+                                <label class="form-label-custom">{{ __('backend.scheduled_reports.notes_optional') }}</label>
+                                <textarea name="notes" rows="4" class="form-control" placeholder="{{ __('backend.scheduled_reports.notes_placeholder') }}"></textarea>
                             </div>
                         </div>
                     </div>
@@ -445,11 +442,11 @@
 
                 <div class="d-flex flex-wrap" style="gap: 12px;">
                     <button type="submit" class="btn btn-primary action-btn">
-                        Create Advanced Schedule
+                        {{ __('backend.scheduled_reports.create_advanced_schedule') }}
                     </button>
 
                     <a href="{{ route('admin.reports.templates') }}" class="btn btn-light action-btn">
-                        Back to Templates
+                        {{ __('backend.scheduled_reports.back_to_templates') }}
                     </a>
                 </div>
             </form>
@@ -462,41 +459,41 @@
                 <div class="schedule-card">
                     <div class="d-flex justify-content-between align-items-start mb-3" style="gap: 10px;">
                         <div>
-                            <div class="schedule-title">{{ $scheduled->template?->name ?? 'Template' }}</div>
+                            <div class="schedule-title">{{ $scheduled->template?->name ?? __('backend.scheduled_reports.template') }}</div>
                             <span class="badge-soft badge-frequency">{{ ucfirst($scheduled->frequency) }}</span>
                         </div>
 
                         <span class="badge-soft {{ $scheduled->is_active ? 'badge-active' : 'badge-inactive' }}">
-                            {{ $scheduled->is_active ? 'Active' : 'Inactive' }}
+                            {{ $scheduled->is_active ? __('backend.scheduled_reports.active') : __('backend.scheduled_reports.inactive') }}
                         </span>
                     </div>
 
                     <div class="schedule-meta">
-                        <div><strong>Email:</strong> {{ $scheduled->email ?? '-' }}</div>
+                        <div><strong>{{ __('backend.scheduled_reports.email') }}</strong> {{ $scheduled->email ?? '-' }}</div>
 
                         <div>
-                            <strong>Send Time:</strong>
+                            <strong>{{ __('backend.scheduled_reports.send_time') }}</strong>
                             {{ $scheduled->run_time
                                 ? \Carbon\Carbon::createFromFormat('H:i:s', $scheduled->run_time)->format('h:i A')
                                 : '-' }}
                         </div>
 
                         <div>
-                            <strong>Start Date:</strong>
+                            <strong>{{ __('backend.scheduled_reports.start_date') }}</strong>
                             {{ $scheduled->start_date
                                 ? \Carbon\Carbon::parse($scheduled->start_date)->format('Y-m-d')
                                 : '-' }}
                         </div>
 
                         <div>
-                            <strong>Next Run:</strong>
+                            <strong>{{ __('backend.scheduled_reports.next_run') }}</strong>
                             {{ $scheduled->next_run_at
                                 ? $scheduled->next_run_at->timezone(config('app.timezone'))->format('Y-m-d h:i A')
                                 : '-' }}
                         </div>
 
                         <div>
-                            <strong>Last Run:</strong>
+                            <strong>{{ __('backend.scheduled_reports.last_run') }}</strong>
                             {{ $scheduled->last_run_at
                                 ? $scheduled->last_run_at->timezone(config('app.timezone'))->format('Y-m-d h:i A')
                                 : '-' }}
@@ -504,17 +501,17 @@
 
                         @if(!empty($scheduled->days_of_week))
                             <div>
-                                <strong>Days:</strong>
+                                <strong>{{ __('backend.scheduled_reports.days') }}</strong>
                                 {{ is_array($scheduled->days_of_week) ? implode(', ', $scheduled->days_of_week) : $scheduled->days_of_week }}
                             </div>
                         @endif
 
                         @if(!empty($scheduled->day_of_month))
-                            <div><strong>Monthly Day:</strong> {{ $scheduled->day_of_month }}</div>
+                            <div><strong>{{ __('backend.scheduled_reports.monthly_day') }}</strong> {{ $scheduled->day_of_month }}</div>
                         @endif
 
                         @if(!empty($scheduled->month_of_year))
-                            <div><strong>Yearly Month:</strong> {{ $scheduled->month_of_year }}</div>
+                            <div><strong>{{ __('backend.scheduled_reports.yearly_month') }}</strong> {{ $scheduled->month_of_year }}</div>
                         @endif
                     </div>
 
@@ -522,7 +519,7 @@
                         <form method="POST" action="{{ route('admin.reports.scheduled.run-now', $scheduled->id) }}">
                             @csrf
                             <button type="submit" class="btn btn-primary btn-sm">
-                                ⚡ Send Now
+                                {{ __('backend.scheduled_reports.send_now') }}
                             </button>
                         </form>
 
@@ -530,15 +527,15 @@
                             @csrf
                             @method('PATCH')
                             <button type="submit" class="btn btn-warning btn-sm">
-                                {{ $scheduled->is_active ? 'Disable' : 'Enable' }}
+                                {{ $scheduled->is_active ? __('backend.scheduled_reports.disable') : __('backend.scheduled_reports.enable') }}
                             </button>
                         </form>
 
-                        <form action="{{ route('admin.reports.scheduled.delete', $scheduled->id) }}" method="POST" onsubmit="return confirm('Delete this scheduled report?')">
+                        <form action="{{ route('admin.reports.scheduled.delete', $scheduled->id) }}" method="POST" onsubmit="return confirm('{{ __('backend.scheduled_reports.confirm_delete_scheduled_report') }}')">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-danger btn-sm">
-                                Delete
+                                {{ __('backend.scheduled_reports.delete') }}
                             </button>
                         </form>
                     </div>
@@ -547,8 +544,8 @@
         @empty
             <div class="col-12">
                 <div class="card-box p-5 text-center" style="border-radius: 20px;">
-                    <h5 class="mb-2">No Scheduled Reports Yet</h5>
-                    <p class="text-muted mb-3">Create your first enterprise-grade recurring report from the form above.</p>
+                    <h5 class="mb-2">{{ __('backend.scheduled_reports.no_scheduled_reports_yet') }}</h5>
+                    <p class="text-muted mb-3">{{ __('backend.scheduled_reports.no_scheduled_reports_text') }}</p>
                 </div>
             </div>
         @endforelse

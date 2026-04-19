@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Reports Center')
+@section('title', __('backend.reports_center.title'))
 
 @section('content')
 <style>
@@ -529,72 +529,69 @@
 
 <div class="pd-ltr-20 xs-pd-20-10 reports-page">
 
-    <!-- Hero -->
     <div class="reports-hero">
         <div class="reports-hero-content">
             <div class="reports-hero-top">
                 <div>
                     <div class="hero-badge">
                         <i class="icon-copy fa fa-line-chart"></i>
-                        Advanced Reporting Workspace
+                        {{ __('backend.reports_center.advanced_reporting_workspace') }}
                     </div>
 
-                    <div class="reports-hero-title">Reports Center</div>
+                    <div class="reports-hero-title">{{ __('backend.reports_center.page_title') }}</div>
 
                     <p class="reports-hero-text">
-                        Build powerful analytics reports with dynamic filters, smart date ranges, custom columns,
-                        reusable templates, and export-ready output for your reporting workflow.
+                        {{ __('backend.reports_center.page_subtitle') }}
                     </p>
                 </div>
 
                 <div class="quick-actions">
                     <a href="{{ route('admin.reports.templates') }}" class="quick-chip">
-                        <i class="fa fa-clone"></i> My Templates
+                        <i class="fa fa-clone"></i> {{ __('backend.reports_center.my_templates') }}
                     </a>
                     <a href="{{ route('admin.reports.scheduled') }}" class="quick-chip">
-                        <i class="fa fa-clock-o"></i> Scheduled Reports
+                        <i class="fa fa-clock-o"></i> {{ __('backend.reports_center.scheduled_reports') }}
                     </a>
                     <a href="{{ route('admin.reports.history') }}" class="quick-chip">
-                        <i class="fa fa-history"></i> Report History
+                        <i class="fa fa-history"></i> {{ __('backend.reports_center.report_history') }}
                     </a>
                 </div>
             </div>
 
             <div class="hero-stats">
                 <div class="hero-stat">
-                    <div class="hero-stat-label">Flexible Entities</div>
+                    <div class="hero-stat-label">{{ __('backend.reports_center.flexible_entities') }}</div>
                     <div class="hero-stat-value">{{ count($entities ?? []) }}</div>
-                    <div class="hero-stat-sub">Projects, students, investors and more</div>
+                    <div class="hero-stat-sub">{{ __('backend.reports_center.flexible_entities_sub') }}</div>
                 </div>
 
                 <div class="hero-stat">
-                    <div class="hero-stat-label">Time Periods</div>
+                    <div class="hero-stat-label">{{ __('backend.reports_center.time_periods') }}</div>
                     <div class="hero-stat-value">{{ count($periods ?? []) }}</div>
-                    <div class="hero-stat-sub">From daily to fully custom ranges</div>
+                    <div class="hero-stat-sub">{{ __('backend.reports_center.time_periods_sub') }}</div>
                 </div>
 
                 <div class="hero-stat">
-                    <div class="hero-stat-label">Export Ready</div>
-                    <div class="hero-stat-value">PDF + XLS</div>
-                    <div class="hero-stat-sub">Preview, save, schedule, and share</div>
+                    <div class="hero-stat-label">{{ __('backend.reports_center.export_ready') }}</div>
+                    <div class="hero-stat-value">{{ __('backend.reports_center.export_ready_value') }}</div>
+                    <div class="hero-stat-sub">{{ __('backend.reports_center.export_ready_sub') }}</div>
                 </div>
 
                 <div class="hero-stat">
-                    <div class="hero-stat-label">Automation</div>
-                    <div class="hero-stat-value">Smart</div>
-                    <div class="hero-stat-sub">Templates, history, and scheduled runs</div>
+                    <div class="hero-stat-label">{{ __('backend.reports_center.automation') }}</div>
+                    <div class="hero-stat-value">{{ __('backend.reports_center.automation_value') }}</div>
+                    <div class="hero-stat-sub">{{ __('backend.reports_center.automation_sub') }}</div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Builder -->
     <div class="section-card">
         <div class="section-header">
             <div>
-                <h4>Build Report</h4>
+                <h4>{{ __('backend.reports_center.build_report') }}</h4>
                 <div class="section-subtitle">
-                    Configure your report source, filters, visible fields, and export workflow from one place.
+                    {{ __('backend.reports_center.build_report_subtitle') }}
                 </div>
             </div>
         </div>
@@ -603,117 +600,114 @@
             <form method="POST" action="{{ route('admin.reports.preview') }}">
                 @csrf
 
-                <!-- Core setup -->
                 <div class="form-section-title">
-                    <h5>Report Configuration</h5>
-                    <span>Step 1</span>
+                    <h5>{{ __('backend.reports_center.report_configuration') }}</h5>
+                    <span>{{ __('backend.reports_center.step_1') }}</span>
                 </div>
 
                 <div class="row">
                     <div class="col-md-4 mb-3">
                         <div class="input-card">
-                            <label>Entity</label>
+                            <label>{{ __('backend.reports_center.entity') }}</label>
                             <select name="entity" id="entity-select" class="form-control" required>
                                 @foreach($entities as $key => $label)
                                     <option value="{{ $key }}">{{ $label }}</option>
                                 @endforeach
                             </select>
                             <div class="helper-text">
-                                Choose the main dataset you want this report to be generated from.
+                                {{ __('backend.reports_center.entity_helper') }}
                             </div>
                         </div>
                     </div>
 
                     <div class="col-md-4 mb-3">
                         <div class="input-card">
-                            <label>Period</label>
+                            <label>{{ __('backend.reports_center.period') }}</label>
                             <select name="period" id="period-select" class="form-control" required>
                                 @foreach($periods as $key => $label)
                                     <option value="{{ $key }}">{{ $label }}</option>
                                 @endforeach
                             </select>
                             <div class="helper-text">
-                                Use predefined periods or switch to custom date range when needed.
+                                {{ __('backend.reports_center.period_helper') }}
                             </div>
                         </div>
                     </div>
 
                     <div class="col-md-4 mb-3">
                         <div class="mini-info-card h-100">
-                            <div class="mini-label">Quick Note</div>
-                            <div class="mini-value">Custom filters and export actions will adapt to your selected entity.</div>
+                            <div class="mini-label">{{ __('backend.reports_center.quick_note') }}</div>
+                            <div class="mini-value">{{ __('backend.reports_center.quick_note_text') }}</div>
                         </div>
                     </div>
 
                     <div class="col-md-3 mb-3 custom-date-field" style="display:none;">
                         <div class="input-card">
-                            <label>From Date</label>
+                            <label>{{ __('backend.reports_center.from_date') }}</label>
                             <input type="date" name="from" class="form-control">
-                            <div class="helper-text">Select the start date for custom reporting range.</div>
+                            <div class="helper-text">{{ __('backend.reports_center.from_date_helper') }}</div>
                         </div>
                     </div>
 
                     <div class="col-md-3 mb-3 custom-date-field" style="display:none;">
                         <div class="input-card">
-                            <label>To Date</label>
+                            <label>{{ __('backend.reports_center.to_date') }}</label>
                             <input type="date" name="to" class="form-control">
-                            <div class="helper-text">Select the end date for custom reporting range.</div>
+                            <div class="helper-text">{{ __('backend.reports_center.to_date_helper') }}</div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Filters -->
                 <div class="form-section-title mt-2">
-                    <h5>Advanced Filters</h5>
-                    <span>Step 2</span>
+                    <h5>{{ __('backend.reports_center.advanced_filters') }}</h5>
+                    <span>{{ __('backend.reports_center.step_2') }}</span>
                 </div>
 
                 <div class="row">
                     <div class="col-md-3 mb-3">
                         <div class="input-card">
-                            <label>Status</label>
-                            <input type="text" name="status" class="form-control" placeholder="e.g. active, pending">
-                            <div class="helper-text">Filter records by their current status.</div>
+                            <label>{{ __('backend.reports_center.status') }}</label>
+                            <input type="text" name="status" class="form-control" placeholder="{{ __('backend.reports_center.status_placeholder') }}">
+                            <div class="helper-text">{{ __('backend.reports_center.status_helper') }}</div>
                         </div>
                     </div>
 
                     <div class="col-md-3 mb-3">
                         <div class="input-card">
-                            <label>Final Decision</label>
-                            <input type="text" name="final_decision" class="form-control" placeholder="e.g. approved">
-                            <div class="helper-text">Useful for reviewed and decision-based datasets.</div>
+                            <label>{{ __('backend.reports_center.final_decision') }}</label>
+                            <input type="text" name="final_decision" class="form-control" placeholder="{{ __('backend.reports_center.final_decision_placeholder') }}">
+                            <div class="helper-text">{{ __('backend.reports_center.final_decision_helper') }}</div>
                         </div>
                     </div>
 
                     <div class="col-md-3 mb-3">
                         <div class="input-card">
-                            <label>Category</label>
-                            <input type="text" name="category" class="form-control" placeholder="e.g. AI, Health">
-                            <div class="helper-text">Narrow results to a specific category or domain.</div>
+                            <label>{{ __('backend.reports_center.category') }}</label>
+                            <input type="text" name="category" class="form-control" placeholder="{{ __('backend.reports_center.category_placeholder') }}">
+                            <div class="helper-text">{{ __('backend.reports_center.category_helper') }}</div>
                         </div>
                     </div>
 
                     <div class="col-md-3 mb-3">
                         <div class="input-card">
-                            <label>Student Name</label>
-                            <input type="text" name="student_name" class="form-control" placeholder="Search by student">
-                            <div class="helper-text">Search for records related to a specific student.</div>
+                            <label>{{ __('backend.reports_center.student_name') }}</label>
+                            <input type="text" name="student_name" class="form-control" placeholder="{{ __('backend.reports_center.student_name_placeholder') }}">
+                            <div class="helper-text">{{ __('backend.reports_center.student_name_helper') }}</div>
                         </div>
                     </div>
 
                     <div class="col-md-3 mb-3">
                         <div class="input-card">
-                            <label>Investor Name</label>
-                            <input type="text" name="investor_name" class="form-control" placeholder="Search by investor">
-                            <div class="helper-text">Target investor-linked data where applicable.</div>
+                            <label>{{ __('backend.reports_center.investor_name') }}</label>
+                            <input type="text" name="investor_name" class="form-control" placeholder="{{ __('backend.reports_center.investor_name_placeholder') }}">
+                            <div class="helper-text">{{ __('backend.reports_center.investor_name_helper') }}</div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Columns -->
                 <div class="form-section-title mt-2">
-                    <h5>Visible Columns</h5>
-                    <span>Step 3</span>
+                    <h5>{{ __('backend.reports_center.visible_columns') }}</h5>
+                    <span>{{ __('backend.reports_center.step_3') }}</span>
                 </div>
 
                 @foreach($availableColumns as $entityKey => $columns)
@@ -721,9 +715,9 @@
                         <div class="columns-wrapper mb-4">
                             <div class="columns-head">
                                 <div>
-                                    <h6>{{ ucfirst($entityKey) }} Columns</h6>
+                                    <h6>{{ ucfirst($entityKey) }} {{ __('backend.reports_center.columns') }}</h6>
                                     <div class="columns-note">
-                                        Select the fields you want to appear in preview and exported reports.
+                                        {{ __('backend.reports_center.columns_note') }}
                                     </div>
                                 </div>
                             </div>
@@ -742,75 +736,73 @@
                     </div>
                 @endforeach
 
-                <!-- Template -->
                 <div class="form-section-title mt-2">
-                    <h5>Template Settings</h5>
-                    <span>Optional</span>
+                    <h5>{{ __('backend.reports_center.template_settings') }}</h5>
+                    <span>{{ __('backend.reports_center.optional') }}</span>
                 </div>
 
                 <div class="template-box">
                     <div class="row align-items-end">
                         <div class="col-md-5 mb-3 mb-md-0">
-                            <div class="title">Save as Reusable Template</div>
+                            <div class="title">{{ __('backend.reports_center.save_as_reusable_template') }}</div>
                             <div class="helper-text" style="margin-top:0;">
-                                Store this configuration and reuse it later for faster reporting or scheduled automation.
+                                {{ __('backend.reports_center.save_as_reusable_template_text') }}
                             </div>
                         </div>
 
                         <div class="col-md-5">
                             <label style="font-size:12px;font-weight:800;color:#0f172a;margin-bottom:8px;display:block;">
-                                Template Name
+                                {{ __('backend.reports_center.template_name') }}
                             </label>
-                            <input type="text" name="template_name" class="form-control" placeholder="e.g. Monthly Projects Summary">
+                            <input type="text" name="template_name" class="form-control" placeholder="{{ __('backend.reports_center.template_name_placeholder') }}">
                         </div>
 
                         <div class="col-md-2 mt-3 mt-md-0">
                             <button type="submit"
                                     formaction="{{ route('admin.reports.templates.save') }}"
                                     class="btn btn-report-secondary w-100 justify-content-center">
-                                <i class="fa fa-save"></i> Save
+                                <i class="fa fa-save"></i> {{ __('backend.reports_center.save') }}
                             </button>
                         </div>
                     </div>
                 </div>
 
-                <!-- Actions -->
                 <div class="report-actions">
                     <button type="submit" class="btn btn-report-primary">
-                        <i class="fa fa-eye"></i> Preview Report
+                        <i class="fa fa-eye"></i> {{ __('backend.reports_center.preview_report') }}
                     </button>
 
                     <button type="reset" class="btn btn-report-light">
-                        <i class="fa fa-refresh"></i> Reset Fields
+                        <i class="fa fa-refresh"></i> {{ __('backend.reports_center.reset_fields') }}
                     </button>
 
                     <a href="{{ route('admin.reports.templates') }}" class="btn btn-report-light">
-                        <i class="fa fa-clone"></i> My Templates
+                        <i class="fa fa-clone"></i> {{ __('backend.reports_center.my_templates') }}
                     </a>
 
                     <a href="{{ route('admin.reports.scheduled') }}" class="btn btn-report-light">
-                        <i class="fa fa-clock-o"></i> Scheduled Reports
+                        <i class="fa fa-clock-o"></i> {{ __('backend.reports_center.scheduled_reports') }}
                     </a>
 
                     <a href="{{ route('admin.reports.history') }}" class="btn btn-report-light">
-                        <i class="fa fa-history"></i> Report History
+                        <i class="fa fa-history"></i> {{ __('backend.reports_center.report_history') }}
                     </a>
                 </div>
 
                 <div class="mini-info-grid">
                     <div class="mini-info-card">
-                        <div class="mini-label">Preview Mode</div>
-                        <div class="mini-value">Check your data layout before exporting or saving.</div>
+                        <div class="mini-label">{{ __('backend.reports_center.preview_mode') }}</div>
+                        <div class="mini-value">{{ __('backend.reports_center.preview_mode_text') }}</div>
                     </div>
 
                     <div class="mini-info-card">
-                        <div class="mini-label">Template Reuse</div>
-                        <div class="mini-value">Save recurring configurations for faster reporting operations.</div>
+                        <div class="mini-label">{{ __('backend.reports_center.template_reuse') }}</div>
+                        <div class="mini-value">{{ __('backend.reports_center.template_reuse_text') }}</div>
                     </div>
 
                     <div class="mini-info-card">
-                        <div class="mini-label">Automation Ready</div>
-                        <div class="mini-value">Use saved templates with scheduled report delivery workflows.</div>
+                        <div class="mini-label">{{ __('backend.reports_center.automation_ready') }}</div>
+                        <div class="mini-value">{{ __('backend.reports_center.automation_ready_text') }}</div>
                     </div>
                 </div>
             </form>

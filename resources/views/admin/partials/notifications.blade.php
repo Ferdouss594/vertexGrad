@@ -29,9 +29,9 @@
         <div class="d-flex justify-content-between align-items-center px-3 py-3"
              style="border-bottom: 1px solid var(--vg-border); background: #fff;">
             <div>
-                <h6 class="mb-0 fw-bold" style="color: var(--vg-text);">Notifications</h6>
+                <h6 class="mb-0 fw-bold" style="color: var(--vg-text);">{{ __('backend.layout_notifications.notifications') }}</h6>
                 <small style="color: var(--vg-text-muted);">
-                    <span id="adminUnreadText">{{ $unreadCount }}</span> unread
+                    <span id="adminUnreadText">{{ $unreadCount }}</span> {{ __('backend.layout_notifications.unread') }}
                 </small>
             </div>
         </div>
@@ -39,7 +39,7 @@
         <div style="max-height: 340px; overflow-y: auto; background: #fff;">
             @forelse($latestNotifications as $notification)
                 @php
-                    $title = $notification->data['title'] ?? 'Notification';
+                    $title = $notification->data['title'] ?? __('backend.layout_notifications.notification');
                     $message = $notification->data['message'] ?? '';
                     $url = $notification->data['url'] ?? route('admin.notifications.index');
                     $icon = $notification->data['icon'] ?? 'fas fa-bell';
@@ -73,7 +73,7 @@
                 </form>
             @empty
                 <div class="px-3 py-4 text-center small" style="color: var(--vg-text-muted); background: #fff;">
-                    No notifications yet
+                    {{ __('backend.layout_notifications.no_notifications_yet') }}
                 </div>
             @endforelse
         </div>
@@ -82,7 +82,7 @@
             <a href="{{ route('admin.notifications.index') }}"
                class="btn btn-light rounded-0 border-0 py-2"
                style="border-top: 1px solid var(--vg-border); border-right: 1px solid var(--vg-border);">
-                History
+                {{ __('backend.layout_notifications.history') }}
             </a>
 
             <form method="POST" action="{{ route('admin.notifications.markAllRead') }}" class="m-0">
@@ -90,7 +90,7 @@
                 <button type="submit"
                         class="btn btn-light rounded-0 border-0 py-2"
                         style="border-top: 1px solid var(--vg-border);">
-                    Mark All Read
+                    {{ __('backend.layout_notifications.mark_all_read') }}
                 </button>
             </form>
         </div>

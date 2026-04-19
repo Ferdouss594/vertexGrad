@@ -1,9 +1,8 @@
 @extends('layouts.app')
 
-@section('title', 'Users Management')
+@section('title', __('backend.users_management.page_title'))
 
 @section('content')
-
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
@@ -514,16 +513,16 @@
     <div class="page-header-card">
         <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3">
             <div>
-                <h1 class="page-title">Users Management</h1>
+                <h1 class="page-title">{{ __('backend.users_management.heading') }}</h1>
                 <p class="page-subtitle">
-                    Manage all platform users, monitor statuses, review activity, and perform quick administrative actions from one professional dashboard.
+                    {{ __('backend.users_management.subtitle') }}
                 </p>
             </div>
 
             <div>
                 <a href="{{ route('manager.users.create') }}" class="btn btn-primary px-4 py-2 rounded-pill fw-semibold">
                     <i class="bi bi-person-plus-fill me-2"></i>
-                    Add New User
+                    {{ __('backend.users_management.add_new_user') }}
                 </a>
             </div>
         </div>
@@ -533,104 +532,104 @@
         <div class="col-lg-2 col-md-4 col-sm-6">
             <div class="stat-card stat-all" onclick="showTab('allTab')">
                 <div class="stat-top">
-                    <p class="stat-label">All Users</p>
+                    <p class="stat-label">{{ __('backend.users_management.all_users') }}</p>
                     <span class="stat-icon">
                         <i class="bi bi-people-fill"></i>
                     </span>
                 </div>
                 <h3 class="stat-value">{{ $allUsers->count() }}</h3>
-                <div class="stat-note">Complete user base overview</div>
+                <div class="stat-note">{{ __('backend.users_management.all_users_note') }}</div>
             </div>
         </div>
 
         <div class="col-lg-2 col-md-4 col-sm-6">
             <div class="stat-card stat-pending" onclick="showTab('pendingTab')">
                 <div class="stat-top">
-                    <p class="stat-label">Pending</p>
+                    <p class="stat-label">{{ __('backend.users_management.pending') }}</p>
                     <span class="stat-icon">
                         <i class="bi bi-hourglass-split"></i>
                     </span>
                 </div>
                 <h3 class="stat-value">{{ $pendingCount }}</h3>
-                <div class="stat-note">Waiting for activation</div>
+                <div class="stat-note">{{ __('backend.users_management.pending_note') }}</div>
             </div>
         </div>
 
         <div class="col-lg-2 col-md-4 col-sm-6">
             <div class="stat-card stat-active" onclick="showTab('activeTab')">
                 <div class="stat-top">
-                    <p class="stat-label">Active</p>
+                    <p class="stat-label">{{ __('backend.users_management.active') }}</p>
                     <span class="stat-icon">
                         <i class="bi bi-check-circle-fill"></i>
                     </span>
                 </div>
                 <h3 class="stat-value">{{ $activeCount }}</h3>
-                <div class="stat-note">Currently enabled users</div>
+                <div class="stat-note">{{ __('backend.users_management.active_note') }}</div>
             </div>
         </div>
 
         <div class="col-lg-2 col-md-4 col-sm-6">
             <div class="stat-card stat-inactive" onclick="showTab('inactiveTab')">
                 <div class="stat-top">
-                    <p class="stat-label">Inactive</p>
+                    <p class="stat-label">{{ __('backend.users_management.inactive') }}</p>
                     <span class="stat-icon">
                         <i class="bi bi-pause-circle-fill"></i>
                     </span>
                 </div>
                 <h3 class="stat-value">{{ $inactiveCount }}</h3>
-                <div class="stat-note">Temporarily inactive accounts</div>
+                <div class="stat-note">{{ __('backend.users_management.inactive_note') }}</div>
             </div>
         </div>
 
         <div class="col-lg-2 col-md-4 col-sm-6">
             <div class="stat-card stat-disabled" onclick="showTab('disabledTab')">
                 <div class="stat-top">
-                    <p class="stat-label">Disabled</p>
+                    <p class="stat-label">{{ __('backend.users_management.disabled') }}</p>
                     <span class="stat-icon">
                         <i class="bi bi-slash-circle-fill"></i>
                     </span>
                 </div>
                 <h3 class="stat-value">{{ $disabledCount }}</h3>
-                <div class="stat-note">Restricted access accounts</div>
+                <div class="stat-note">{{ __('backend.users_management.disabled_note') }}</div>
             </div>
         </div>
 
         <div class="col-lg-2 col-md-4 col-sm-6">
             <div class="stat-card stat-add" onclick="window.location.href='{{ route('manager.users.create') }}'">
                 <div class="stat-top">
-                    <p class="stat-label">Quick Create</p>
+                    <p class="stat-label">{{ __('backend.users_management.quick_create') }}</p>
                     <span class="stat-icon">
                         <i class="bi bi-person-plus-fill"></i>
                     </span>
                 </div>
-                <h3 class="stat-value">New</h3>
-                <div class="stat-note">Create a user instantly</div>
+                <h3 class="stat-value">{{ __('backend.users_management.new') }}</h3>
+                <div class="stat-note">{{ __('backend.users_management.quick_create_note') }}</div>
             </div>
         </div>
     </div>
 
     <div class="main-panel">
         <div class="panel-head">
-            <h2 class="panel-title">Users Directory</h2>
-            <div class="panel-subtitle">Switch between categories and manage records with quick actions.</div>
+            <h2 class="panel-title">{{ __('backend.users_management.users_directory') }}</h2>
+            <div class="panel-subtitle">{{ __('backend.users_management.users_directory_subtitle') }}</div>
         </div>
 
         <div class="users-tabs-wrap">
             <ul class="nav users-tabs" id="usersTabs" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <a class="nav-link active" data-bs-toggle="tab" href="#allTab" role="tab">All Users</a>
+                    <a class="nav-link active" data-bs-toggle="tab" href="#allTab" role="tab">{{ __('backend.users_management.all_users') }}</a>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <a class="nav-link" data-bs-toggle="tab" href="#pendingTab" role="tab">Pending</a>
+                    <a class="nav-link" data-bs-toggle="tab" href="#pendingTab" role="tab">{{ __('backend.users_management.pending') }}</a>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <a class="nav-link" data-bs-toggle="tab" href="#activeTab" role="tab">Active</a>
+                    <a class="nav-link" data-bs-toggle="tab" href="#activeTab" role="tab">{{ __('backend.users_management.active') }}</a>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <a class="nav-link" data-bs-toggle="tab" href="#inactiveTab" role="tab">Inactive</a>
+                    <a class="nav-link" data-bs-toggle="tab" href="#inactiveTab" role="tab">{{ __('backend.users_management.inactive') }}</a>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <a class="nav-link" data-bs-toggle="tab" href="#disabledTab" role="tab">Disabled</a>
+                    <a class="nav-link" data-bs-toggle="tab" href="#disabledTab" role="tab">{{ __('backend.users_management.disabled') }}</a>
                 </li>
             </ul>
         </div>
@@ -661,41 +660,41 @@
                                             </span>
                                         </th>
                                         <th>
-                                            Name
+                                            {{ __('backend.users_management.name') }}
                                             <span class="sort-arrows">
                                                 <i class="bi bi-caret-up-fill" onclick="sortTable(this,'asc')"></i>
                                                 <i class="bi bi-caret-down-fill" onclick="sortTable(this,'desc')"></i>
                                             </span>
                                         </th>
                                         <th>
-                                            Email
+                                            {{ __('backend.users_management.email') }}
                                             <span class="sort-arrows">
                                                 <i class="bi bi-caret-up-fill" onclick="sortTable(this,'asc')"></i>
                                                 <i class="bi bi-caret-down-fill" onclick="sortTable(this,'desc')"></i>
                                             </span>
                                         </th>
                                         <th>
-                                            Status
+                                            {{ __('backend.users_management.status') }}
                                             <span class="sort-arrows">
                                                 <i class="bi bi-caret-up-fill" onclick="sortTable(this,'asc')"></i>
                                                 <i class="bi bi-caret-down-fill" onclick="sortTable(this,'desc')"></i>
                                             </span>
                                         </th>
                                         <th>
-                                            Role
+                                            {{ __('backend.users_management.role') }}
                                             <span class="sort-arrows">
                                                 <i class="bi bi-caret-up-fill" onclick="sortTable(this,'asc')"></i>
                                                 <i class="bi bi-caret-down-fill" onclick="sortTable(this,'desc')"></i>
                                             </span>
                                         </th>
                                         <th>
-                                            Last Login
+                                            {{ __('backend.users_management.last_login') }}
                                             <span class="sort-arrows">
                                                 <i class="bi bi-caret-up-fill" onclick="sortTable(this,'asc')"></i>
                                                 <i class="bi bi-caret-down-fill" onclick="sortTable(this,'desc')"></i>
                                             </span>
                                         </th>
-                                        <th class="text-center">Actions</th>
+                                        <th class="text-center">{{ __('backend.users_management.actions') }}</th>
                                     </tr>
                                 </thead>
 
@@ -740,25 +739,25 @@
                                                 <div class="actions-group">
                                                     <a href="{{ route('manager.users.edit', $user->id) }}"
                                                        class="action-btn btn-edit"
-                                                       title="Edit">
+                                                       title="{{ __('backend.users_management.edit') }}">
                                                         <i class="bi bi-pencil-square"></i>
                                                     </a>
 
                                                     <form action="{{ route('manager.users.destroy', $user->id) }}"
                                                           method="POST"
-                                                          onsubmit="return confirm('هل أنت متأكد من الحذف؟');">
+                                                          onsubmit="return confirm('{{ __('backend.users_management.confirm_delete') }}');">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="action-btn btn-delete" title="Delete">
+                                                        <button type="submit" class="action-btn btn-delete" title="{{ __('backend.users_management.delete') }}">
                                                             <i class="bi bi-trash"></i>
                                                         </button>
                                                     </form>
 
                                                     <form action="{{ route('manager.users.force-logout', $user->id) }}"
                                                           method="POST"
-                                                          onsubmit="return confirm('هل أنت متأكد من تسجيل خروج هذا المستخدم؟');">
+                                                          onsubmit="return confirm('{{ __('backend.users_management.confirm_force_logout') }}');">
                                                         @csrf
-                                                        <button type="submit" class="action-btn btn-logout" title="Force Logout">
+                                                        <button type="submit" class="action-btn btn-logout" title="{{ __('backend.users_management.force_logout') }}">
                                                             <i class="bi bi-box-arrow-right"></i>
                                                         </button>
                                                     </form>
@@ -766,7 +765,7 @@
                                                     <button type="button"
                                                             class="action-btn btn-info-soft btn-show-details"
                                                             data-user-id="{{ $user->id }}"
-                                                            title="View Details">
+                                                            title="{{ __('backend.users_management.view_details') }}">
                                                         <i class="bi bi-info-circle"></i>
                                                     </button>
                                                 </div>
@@ -774,7 +773,7 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="7" class="empty-state">No Users Found</td>
+                                            <td colspan="7" class="empty-state">{{ __('backend.users_management.no_users_found') }}</td>
                                         </tr>
                                     @endforelse
                                 </tbody>
@@ -792,20 +791,20 @@
         <div class="modal-content">
             <div class="modal-header">
                 <div>
-                    <h5 class="modal-title mb-1">User Details</h5>
-                    <div class="text-muted small">Comprehensive user information and recent activity details.</div>
+                    <h5 class="modal-title mb-1">{{ __('backend.users_management.user_details') }}</h5>
+                    <div class="text-muted small">{{ __('backend.users_management.user_details_subtitle') }}</div>
                 </div>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
 
             <div class="modal-body">
                 <div id="userDetailsContent">
-                    <div class="text-center text-muted py-4">Loading user details...</div>
+                    <div class="text-center text-muted py-4">{{ __('backend.users_management.loading_user_details') }}</div>
                 </div>
             </div>
 
             <div class="modal-footer">
-                <button type="button" class="btn-close-modal" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn-close-modal" data-bs-dismiss="modal">{{ __('backend.users_management.close') }}</button>
             </div>
         </div>
     </div>
@@ -836,7 +835,7 @@
                 detailsContent.innerHTML = `
                     <div class="text-center text-muted py-4">
                         <div class="spinner-border spinner-border-sm me-2" role="status"></div>
-                        Loading user details...
+                        ${@json(__('backend.users_management.loading_user_details'))}
                     </div>
                 `;
 
@@ -848,59 +847,59 @@
                         detailsContent.innerHTML = `
                             <div class="details-grid">
                                 <div class="detail-card">
-                                    <span class="detail-label">Username</span>
+                                    <span class="detail-label">${@json(__('backend.users_management.username'))}</span>
                                     <div class="detail-value">${safeValue(data.username)}</div>
                                 </div>
                                 <div class="detail-card">
-                                    <span class="detail-label">Full Name</span>
+                                    <span class="detail-label">${@json(__('backend.users_management.full_name'))}</span>
                                     <div class="detail-value">${safeValue(data.name)}</div>
                                 </div>
                                 <div class="detail-card">
-                                    <span class="detail-label">Email</span>
+                                    <span class="detail-label">${@json(__('backend.users_management.email'))}</span>
                                     <div class="detail-value">${safeValue(data.email)}</div>
                                 </div>
                                 <div class="detail-card">
-                                    <span class="detail-label">Role</span>
+                                    <span class="detail-label">${@json(__('backend.users_management.role'))}</span>
                                     <div class="detail-value">${safeValue(data.role)}</div>
                                 </div>
                                 <div class="detail-card">
-                                    <span class="detail-label">Status</span>
+                                    <span class="detail-label">${@json(__('backend.users_management.status'))}</span>
                                     <div class="detail-value">${safeValue(data.status)}</div>
                                 </div>
                                 <div class="detail-card">
-                                    <span class="detail-label">Gender</span>
+                                    <span class="detail-label">${@json(__('backend.users_management.gender'))}</span>
                                     <div class="detail-value">${safeValue(data.gender)}</div>
                                 </div>
                                 <div class="detail-card">
-                                    <span class="detail-label">City</span>
+                                    <span class="detail-label">${@json(__('backend.users_management.city'))}</span>
                                     <div class="detail-value">${safeValue(data.city)}</div>
                                 </div>
                                 <div class="detail-card">
-                                    <span class="detail-label">State</span>
+                                    <span class="detail-label">${@json(__('backend.users_management.state'))}</span>
                                     <div class="detail-value">${safeValue(data.state)}</div>
                                 </div>
                                 <div class="detail-card">
-                                    <span class="detail-label">Last Login</span>
+                                    <span class="detail-label">${@json(__('backend.users_management.last_login'))}</span>
                                     <div class="detail-value">${safeValue(data.last_login)}</div>
                                 </div>
                                 <div class="detail-card">
-                                    <span class="detail-label">Last Activity</span>
+                                    <span class="detail-label">${@json(__('backend.users_management.last_activity'))}</span>
                                     <div class="detail-value">${safeValue(data.last_activity)}</div>
                                 </div>
                                 <div class="detail-card">
-                                    <span class="detail-label">IP Address</span>
+                                    <span class="detail-label">${@json(__('backend.users_management.ip_address'))}</span>
                                     <div class="detail-value">${safeValue(data.login_ip)}</div>
                                 </div>
                                 <div class="detail-card">
-                                    <span class="detail-label">Device</span>
+                                    <span class="detail-label">${@json(__('backend.users_management.device'))}</span>
                                     <div class="detail-value">${safeValue(data.device)}</div>
                                 </div>
                                 <div class="detail-card">
-                                    <span class="detail-label">Browser</span>
+                                    <span class="detail-label">${@json(__('backend.users_management.browser'))}</span>
                                     <div class="detail-value">${safeValue(data.browser)}</div>
                                 </div>
                                 <div class="detail-card">
-                                    <span class="detail-label">Operating System</span>
+                                    <span class="detail-label">${@json(__('backend.users_management.operating_system'))}</span>
                                     <div class="detail-value">${safeValue(data.os)}</div>
                                 </div>
                             </div>
@@ -909,7 +908,7 @@
                     .catch(() => {
                         detailsContent.innerHTML = `
                             <div class="alert alert-danger mb-0 rounded-4">
-                                فشل جلب بيانات المستخدم.
+                                ${@json(__('backend.users_management.failed_fetch_user_data'))}
                             </div>
                         `;
                     });
@@ -924,7 +923,6 @@
         const index = Array.from(th.parentNode.children).indexOf(th);
 
         const rows = Array.from(tbody.querySelectorAll('tr'));
-
         const normalRows = rows.filter(row => row.children.length > 1);
 
         normalRows.sort((a, b) => {

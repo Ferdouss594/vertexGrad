@@ -4,15 +4,15 @@
 
 <div class="header">
     <div class="header-left">
-        <div class="menu-icon bi bi-list" data-toggle="left-sidebar-toggle" title="Toggle sidebar"></div>
-        <div class="search-toggle-icon bi bi-search" data-toggle="header_search" title="Search"></div>
+        <div class="menu-icon bi bi-list" data-toggle="left-sidebar-toggle" title="{{ __('backend.layout_header.toggle_sidebar') }}"></div>
+        <div class="search-toggle-icon bi bi-search" data-toggle="header_search" title="{{ __('backend.layout_header.search') }}"></div>
     </div>
 
     <div class="header-right">
         <a href="javascript:;"
            class="dashboard-setting"
            data-toggle="right-sidebar"
-           title="Layout settings">
+           title="{{ __('backend.layout_header.layout_settings') }}">
             <i class="dw dw-settings2"></i>
         </a>
 
@@ -29,16 +29,16 @@
                      class="rounded-circle"
                      width="34"
                      height="34"
-                     alt="User Avatar"
+                     alt="{{ __('backend.layout_header.user_avatar') }}"
                      style="object-fit: cover; border: 2px solid #f1f5f9; flex-shrink: 0;">
 
                 <div class="d-none d-md-block text-start" style="min-width: 0;">
                     <div class="fw-bold"
                          style="font-size: 13px; color: var(--vg-text); line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 135px;">
-                        {{ $adminUser ? $adminUser->name : 'Guest' }}
+                        {{ $adminUser ? $adminUser->name : __('backend.layout_header.guest') }}
                     </div>
                     <div style="font-size: 11px; color: var(--vg-text-muted); line-height: 1.2;">
-                        Administrator
+                        {{ __('backend.layout_header.administrator') }}
                     </div>
                 </div>
             </a>
@@ -47,14 +47,14 @@
                 <li>
                     <a class="dropdown-item d-flex align-items-center gap-2" href="{{ route('admin.profile') }}">
                         <i class="bi bi-person"></i>
-                        <span>Profile</span>
+                        <span>{{ __('backend.layout_header.profile') }}</span>
                     </a>
                 </li>
 
                 <li>
                     <a class="dropdown-item d-flex align-items-center gap-2" href="#">
                         <i class="bi bi-gear"></i>
-                        <span>Settings</span>
+                        <span>{{ __('backend.layout_header.settings') }}</span>
                     </a>
                 </li>
 
@@ -67,7 +67,7 @@
                        href="{{ route('admin.logout') }}"
                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                         <i class="bi bi-box-arrow-right"></i>
-                        <span>Log Out</span>
+                        <span>{{ __('backend.layout_header.log_out') }}</span>
                     </a>
                 </li>
             </ul>

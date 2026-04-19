@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ app()->getLocale() }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
 <head>
     <meta charset="utf-8" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
-    <title>@yield('title', 'VertexGrad - Supervisor Panel')</title>
+    <title>@yield('title', __('backend.supervisor_layout.default_title'))</title>
 
     <link rel="apple-touch-icon"
           href="{{ setting('platform_logo') ? asset('storage/' . setting('platform_logo')) : asset('vendors/images/apple-touch-icon.png') }}" />
@@ -26,6 +26,8 @@
         use App\Models\Announcement;
 
         $adminUser = auth('admin')->user();
+        $currentLocale = app()->getLocale();
+        $isRtl = $currentLocale === 'ar';
 
         $layoutAnnouncements = Announcement::published()
             ->where(function ($query) {
@@ -238,7 +240,8 @@
         .search-toggle-icon,
         .theme-switch-btn,
         .header-circle-btn,
-        .header-setting-btn {
+        .header-setting-btn,
+        .language-switch-btn {
             width: 42px;
             height: 42px;
             display: inline-flex;
@@ -251,14 +254,29 @@
             cursor: pointer;
             transition: all 0.18s ease;
             flex-shrink: 0;
+            font-weight: 700;
+            font-size: 12px;
         }
 
         .menu-icon:hover,
         .search-toggle-icon:hover,
         .theme-switch-btn:hover,
         .header-circle-btn:hover,
-        .header-setting-btn:hover {
+        .header-setting-btn:hover,
+        .language-switch-btn:hover {
             transform: translateY(-1px);
+        }
+
+        .language-switch-group {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .language-switch-btn.active {
+            background: var(--vg-primary);
+            border-color: var(--vg-primary);
+            color: #fff;
         }
 
         .user-info-dropdown .dropdown-toggle {
@@ -913,6 +931,91 @@
             visibility: visible;
         }
 
+        html[dir="rtl"] body {
+            text-align: right;
+        }
+
+        html[dir="rtl"] #flash-messages {
+            right: auto;
+            left: 20px;
+        }
+
+        html[dir="rtl"] .header {
+            left: 0;
+            right: var(--sidebar-width);
+        }
+
+        html[dir="rtl"] body.sidebar-closed .header {
+            right: 0;
+            left: 0;
+        }
+
+        html[dir="rtl"] .left-side-bar {
+            left: auto;
+            right: 0;
+            border-right: 0;
+            border-left: 1px solid var(--vg-sidebar-border);
+        }
+
+        html[dir="rtl"] body.sidebar-closed .left-side-bar {
+            transform: translateX(100%);
+        }
+
+        html[dir="rtl"] .main-container {
+            margin-left: 0;
+            margin-right: var(--sidebar-width);
+        }
+
+        html[dir="rtl"] body.sidebar-closed .main-container {
+            margin-right: 0;
+            width: 100%;
+        }
+
+        html[dir="rtl"] .user-info-dropdown .dropdown-toggle::after {
+            margin-left: 0;
+            margin-right: 10px;
+        }
+
+        html[dir="rtl"] .menu-arrow {
+            margin-left: 0;
+            margin-right: auto;
+        }
+
+        html[dir="rtl"] .submenu {
+            margin: 8px 12px 14px 0;
+        }
+
+        html[dir="rtl"] .submenu li a {
+            padding: 13px 50px 13px 14px !important;
+        }
+
+        html[dir="rtl"] .submenu li a::before {
+            left: auto;
+            right: 20px;
+        }
+
+        html[dir="rtl"] .right-sidebar {
+            right: auto;
+            left: -340px;
+            border-left: 0;
+            border-right: 1px solid var(--vg-border);
+            box-shadow: 16px 0 45px rgba(15,23,42,.08);
+        }
+
+        html[dir="rtl"] .right-sidebar.open {
+            left: 0;
+        }
+
+        html[dir="rtl"] .notification-footer-btn + .notification-footer-btn {
+            border-left: 0;
+            border-right: 1px solid var(--vg-border);
+        }
+
+        html[dir="rtl"] .dropdown-menu.dropdown-menu-end {
+            right: auto !important;
+            left: 0 !important;
+        }
+
         @media (max-width: 991.98px) {
             .header {
                 left: 0;
@@ -945,6 +1048,24 @@
                 flex-direction: column;
                 align-items: flex-start;
             }
+
+            html[dir="rtl"] .header {
+                right: 0;
+                left: 0;
+            }
+
+            html[dir="rtl"] .left-side-bar {
+                transform: translateX(100%);
+            }
+
+            html[dir="rtl"] .left-side-bar.mobile-open {
+                transform: translateX(0) !important;
+            }
+
+            html[dir="rtl"] .main-container {
+                margin-right: 0;
+                width: 100%;
+            }
         }
     </style>
 
@@ -957,7 +1078,7 @@
             toast.className = `alert alert-${type} alert-dismissible fade show shadow-sm`;
             toast.style.marginBottom = '10px';
             toast.style.borderRadius = '14px';
-            toast.innerHTML = message + `<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
+            toast.innerHTML = message + `<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ __('backend.common.close') }}"></button>`;
             flashDiv.appendChild(toast);
 
             setTimeout(() => {
@@ -975,20 +1096,20 @@
     <div class="brand-logo">
         <a href="{{ route('supervisor.dashboard') }}" class="sidebar-logo-link">
             <img
-    src="{{ !empty($adminUser?->profile_image) ? asset('storage/' . $adminUser->profile_image) : asset('vendors/images/photo1.jpg') }}"
-    alt="User Avatar"
-    class="sidebar-account-avatar"
->
+                src="{{ !empty($adminUser?->profile_image) ? asset('storage/' . $adminUser->profile_image) : asset('vendors/images/photo1.jpg') }}"
+                alt="{{ __('backend.supervisor_layout.user_avatar') }}"
+                class="sidebar-account-avatar"
+            >
         </a>
 
-        <div class="close-sidebar" id="sidebarCloseBtn" title="Close sidebar">
+        <div class="close-sidebar" id="sidebarCloseBtn" title="{{ __('backend.supervisor_layout.close_sidebar') }}">
             <i class="ion-close-round"></i>
         </div>
     </div>
 
     <div class="menu-block">
         <div class="sidebar-menu">
-            <div class="sidebar-section-label">Supervisor Panel</div>
+            <div class="sidebar-section-label">{{ __('backend.supervisor_layout.supervisor_panel') }}</div>
 
             <div class="sidebar-menu-scroll">
                 <ul id="accordion-menu">
@@ -996,7 +1117,7 @@
                         <a href="{{ route('supervisor.dashboard') }}"
                            class="{{ request()->routeIs('supervisor.dashboard') ? 'active' : '' }}">
                             <span class="micon bi bi-house-door-fill"></span>
-                            <span class="mtext">Dashboard</span>
+                            <span class="mtext">{{ __('backend.supervisor_layout.dashboard') }}</span>
                         </a>
                     </li>
 
@@ -1005,14 +1126,14 @@
                         <li class="dropdown-parent {{ $projectsOpen ? 'open active' : '' }}">
                             <div class="menu-dropdown-trigger">
                                 <span class="micon bi bi-folder-fill"></span>
-                                <span class="mtext">Projects</span>
+                                <span class="mtext">{{ __('backend.supervisor_layout.projects') }}</span>
                                 <span class="menu-arrow"><i class="fa fa-chevron-down"></i></span>
                             </div>
                             <ul class="submenu">
-                                <li><a href="{{ route('supervisor.projects.index') }}" class="{{ request()->routeIs('supervisor.projects.index') ? 'active' : '' }}">All Projects</a></li>
-                                <li><a href="{{ route('supervisor.projects.pending') }}" class="{{ request()->routeIs('supervisor.projects.pending') ? 'active' : '' }}">Pending Reviews</a></li>
-                                <li><a href="{{ route('supervisor.projects.approved') }}" class="{{ request()->routeIs('supervisor.projects.approved') ? 'active' : '' }}">Approved Projects</a></li>
-                                <li><a href="{{ route('supervisor.projects.revisions') }}" class="{{ request()->routeIs('supervisor.projects.revisions') ? 'active' : '' }}">Revision Requests</a></li>
+                                <li><a href="{{ route('supervisor.projects.index') }}" class="{{ request()->routeIs('supervisor.projects.index') ? 'active' : '' }}">{{ __('backend.supervisor_layout.all_projects') }}</a></li>
+                                <li><a href="{{ route('supervisor.projects.pending') }}" class="{{ request()->routeIs('supervisor.projects.pending') ? 'active' : '' }}">{{ __('backend.supervisor_layout.pending_reviews') }}</a></li>
+                                <li><a href="{{ route('supervisor.projects.approved') }}" class="{{ request()->routeIs('supervisor.projects.approved') ? 'active' : '' }}">{{ __('backend.supervisor_layout.approved_projects') }}</a></li>
+                                <li><a href="{{ route('supervisor.projects.revisions') }}" class="{{ request()->routeIs('supervisor.projects.revisions') ? 'active' : '' }}">{{ __('backend.supervisor_layout.revision_requests') }}</a></li>
                             </ul>
                         </li>
                     @endif
@@ -1022,15 +1143,15 @@
                         <li class="dropdown-parent {{ $meetingsOpen ? 'open active' : '' }}">
                             <div class="menu-dropdown-trigger">
                                 <span class="micon bi bi-calendar-event"></span>
-                                <span class="mtext">Meetings</span>
+                                <span class="mtext">{{ __('backend.supervisor_layout.meetings') }}</span>
                                 <span class="menu-arrow"><i class="fa fa-chevron-down"></i></span>
                             </div>
                             <ul class="submenu">
-                                <li><a href="{{ route('supervisor.meetings.index') }}" class="{{ request()->routeIs('supervisor.meetings.index') ? 'active' : '' }}">All Meetings</a></li>
-                                <li><a href="{{ route('supervisor.meetings.upcoming') }}" class="{{ request()->routeIs('supervisor.meetings.upcoming') ? 'active' : '' }}">Upcoming Meetings</a></li>
-                                <li><a href="{{ route('supervisor.meetings.completed') }}" class="{{ request()->routeIs('supervisor.meetings.completed') ? 'active' : '' }}">Completed Meetings</a></li>
+                                <li><a href="{{ route('supervisor.meetings.index') }}" class="{{ request()->routeIs('supervisor.meetings.index') ? 'active' : '' }}">{{ __('backend.supervisor_layout.all_meetings') }}</a></li>
+                                <li><a href="{{ route('supervisor.meetings.upcoming') }}" class="{{ request()->routeIs('supervisor.meetings.upcoming') ? 'active' : '' }}">{{ __('backend.supervisor_layout.upcoming_meetings') }}</a></li>
+                                <li><a href="{{ route('supervisor.meetings.completed') }}" class="{{ request()->routeIs('supervisor.meetings.completed') ? 'active' : '' }}">{{ __('backend.supervisor_layout.completed_meetings') }}</a></li>
                                 @if($canManageMeetings)
-                                    <li><a href="{{ route('supervisor.meetings.create') }}" class="{{ request()->routeIs('supervisor.meetings.create') ? 'active' : '' }}">Create Meeting</a></li>
+                                    <li><a href="{{ route('supervisor.meetings.create') }}" class="{{ request()->routeIs('supervisor.meetings.create') ? 'active' : '' }}">{{ __('backend.supervisor_layout.create_meeting') }}</a></li>
                                 @endif
                             </ul>
                         </li>
@@ -1041,13 +1162,13 @@
                         <li class="dropdown-parent {{ $requestsOpen ? 'open active' : '' }}">
                             <div class="menu-dropdown-trigger">
                                 <span class="micon fa fa-send"></span>
-                                <span class="mtext">Requests</span>
+                                <span class="mtext">{{ __('backend.supervisor_layout.requests') }}</span>
                                 <span class="menu-arrow"><i class="fa fa-chevron-down"></i></span>
                             </div>
                             <ul class="submenu">
-                                <li><a href="{{ route('supervisor.requests.index') }}" class="{{ request()->routeIs('supervisor.requests.index') ? 'active' : '' }}">All Requests</a></li>
-                                <li><a href="{{ route('supervisor.requests.pending') }}" class="{{ request()->routeIs('supervisor.requests.pending') ? 'active' : '' }}">Pending Requests</a></li>
-                                <li><a href="{{ route('supervisor.requests.completed') }}" class="{{ request()->routeIs('supervisor.requests.completed') ? 'active' : '' }}">Completed Requests</a></li>
+                                <li><a href="{{ route('supervisor.requests.index') }}" class="{{ request()->routeIs('supervisor.requests.index') ? 'active' : '' }}">{{ __('backend.supervisor_layout.all_requests') }}</a></li>
+                                <li><a href="{{ route('supervisor.requests.pending') }}" class="{{ request()->routeIs('supervisor.requests.pending') ? 'active' : '' }}">{{ __('backend.supervisor_layout.pending_requests') }}</a></li>
+                                <li><a href="{{ route('supervisor.requests.completed') }}" class="{{ request()->routeIs('supervisor.requests.completed') ? 'active' : '' }}">{{ __('backend.supervisor_layout.completed_requests') }}</a></li>
                             </ul>
                         </li>
                     @endif
@@ -1057,7 +1178,7 @@
                             <a href="{{ route('supervisor.contact-messages.index') }}"
                                class="{{ request()->routeIs('supervisor.contact-messages.*') ? 'active' : '' }}">
                                 <span class="micon bi bi-envelope-paper-fill"></span>
-                                <span class="mtext">Contact Messages</span>
+                                <span class="mtext">{{ __('backend.supervisor_layout.contact_messages') }}</span>
                             </a>
                         </li>
                     @endif
@@ -1066,36 +1187,36 @@
                         <a href="{{ route('supervisor.profile.index') }}"
                            class="{{ request()->routeIs('supervisor.profile.*') ? 'active' : '' }}">
                             <span class="micon bi bi-person-lines-fill"></span>
-                            <span class="mtext">Profile Settings</span>
+                            <span class="mtext">{{ __('backend.supervisor_layout.profile_settings') }}</span>
                         </a>
                     </li>
                 </ul>
             </div>
 
             <div class="sidebar-bottom">
-                <div class="sidebar-bottom-title">Account</div>
+                <div class="sidebar-bottom-title">{{ __('backend.supervisor_layout.account') }}</div>
 
                 <div class="sidebar-account-card">
                     <div class="sidebar-account-top">
-            <img
-    src="{{ !empty($adminUser?->profile_image) ? asset('storage/' . $adminUser->profile_image) : asset('vendors/images/photo1.jpg') }}"
-    alt="User Avatar"
-    class="sidebar-account-avatar"
->
+                        <img
+                            src="{{ !empty($adminUser?->profile_image) ? asset('storage/' . $adminUser->profile_image) : asset('vendors/images/photo1.jpg') }}"
+                            alt="{{ __('backend.supervisor_layout.user_avatar') }}"
+                            class="sidebar-account-avatar"
+                        >
                         <div>
-                            <div class="sidebar-account-name">{{ $adminUser ? $adminUser->name : 'Guest' }}</div>
-                            <div class="sidebar-account-role">Supervisor</div>
+                            <div class="sidebar-account-name">{{ $adminUser ? $adminUser->name : __('backend.supervisor_layout.guest') }}</div>
+                            <div class="sidebar-account-role">{{ __('backend.supervisor_layout.supervisor') }}</div>
                         </div>
                     </div>
 
                     <div class="sidebar-account-links">
                         <a href="{{ route('supervisor.profile.index') }}">
                             <span class="micon bi bi-person-circle"></span>
-                            <span class="mtext">Profile</span>
+                            <span class="mtext">{{ __('backend.supervisor_layout.profile') }}</span>
                         </a>
                         <a href="javascript:void(0);" id="rightSidebarToggleBtn">
                             <span class="micon bi bi-gear"></span>
-                            <span class="mtext">Layout Settings</span>
+                            <span class="mtext">{{ __('backend.supervisor_layout.layout_settings') }}</span>
                         </a>
                     </div>
                 </div>
@@ -1108,16 +1229,29 @@
 
 <div class="header">
     <div class="header-left">
-        <div class="menu-icon bi bi-list" id="sidebarToggleBtn" title="Toggle sidebar"></div>
-        <div class="search-toggle-icon bi bi-grid" title="Supervisor Panel"></div>
+        <div class="menu-icon bi bi-list" id="sidebarToggleBtn" title="{{ __('backend.supervisor_layout.toggle_sidebar') }}"></div>
+        <div class="search-toggle-icon bi bi-grid" title="{{ __('backend.supervisor_layout.supervisor_panel') }}"></div>
     </div>
 
     <div class="header-right">
-        <button type="button" class="theme-switch-btn" id="themeSwitchBtn" title="Change theme">
+        <div class="language-switch-group">
+            <a href="{{ route('admin.language.switch', 'en') }}"
+               class="language-switch-btn {{ $currentLocale === 'en' ? 'active' : '' }}"
+               title="{{ __('backend.supervisor_layout.switch_to_english') }}">
+                EN
+            </a>
+            <a href="{{ route('admin.language.switch', 'ar') }}"
+               class="language-switch-btn {{ $currentLocale === 'ar' ? 'active' : '' }}"
+               title="{{ __('backend.supervisor_layout.switch_to_arabic') }}">
+                AR
+            </a>
+        </div>
+
+        <button type="button" class="theme-switch-btn" id="themeSwitchBtn" title="{{ __('backend.supervisor_layout.change_theme') }}">
             <i class="bi bi-moon-stars-fill" id="themeSwitchIcon"></i>
         </button>
 
-        <a href="javascript:void(0);" class="header-setting-btn" id="headerRightSidebarToggleBtn" title="Layout settings">
+        <a href="javascript:void(0);" class="header-setting-btn" id="headerRightSidebarToggleBtn" title="{{ __('backend.supervisor_layout.layout_settings') }}">
             <i class="dw dw-settings2"></i>
         </a>
 
@@ -1138,9 +1272,9 @@
             <div class="dropdown-menu dropdown-menu-end notification-panel">
                 <div class="notification-panel-header">
                     <div>
-                        <h6 class="notification-panel-title">Notifications</h6>
+                        <h6 class="notification-panel-title">{{ __('backend.supervisor_layout.notifications') }}</h6>
                         <small class="notification-panel-count">
-                            <span id="adminUnreadText">{{ $unreadCount }}</span> unread
+                            <span id="adminUnreadText">{{ $unreadCount }}</span> {{ __('backend.supervisor_layout.unread') }}
                         </small>
                     </div>
                 </div>
@@ -1148,7 +1282,7 @@
                 <div class="notification-panel-body">
                     @forelse($latestNotifications as $notification)
                         @php
-                            $title = $notification->data['title'] ?? 'Notification';
+                            $title = $notification->data['title'] ?? __('backend.supervisor_layout.notification');
                             $message = $notification->data['message'] ?? '';
                             $url = $notification->data['url'] ?? route('admin.notifications.index');
                             $icon = $notification->data['icon'] ?? 'fas fa-bell';
@@ -1174,20 +1308,20 @@
                         </form>
                     @empty
                         <div class="px-3 py-4 text-center small" style="color: var(--vg-text-muted);">
-                            No notifications yet
+                            {{ __('backend.supervisor_layout.no_notifications_yet') }}
                         </div>
                     @endforelse
                 </div>
 
                 <div class="notification-panel-footer">
                     <a href="{{ route('admin.notifications.index') }}" class="notification-footer-btn">
-                        History
+                        {{ __('backend.supervisor_layout.history') }}
                     </a>
 
                     <form method="POST" action="{{ route('admin.notifications.markAllRead') }}" class="m-0">
                         @csrf
                         <button type="submit" class="notification-footer-btn w-100">
-                            Mark All Read
+                            {{ __('backend.supervisor_layout.mark_all_read') }}
                         </button>
                     </form>
                 </div>
@@ -1202,15 +1336,15 @@
                aria-expanded="false">
                 <img
                     src="{{ !empty($adminUser?->avatar) ? asset('storage/' . $adminUser->avatar) : asset('vendors/images/photo1.jpg') }}"
-                    alt="User Avatar"
+                    alt="{{ __('backend.supervisor_layout.user_avatar') }}"
                     class="sidebar-account-avatar"
                 >
                 <div class="d-none d-md-block text-start">
                     <div style="font-size: 13px; font-weight: 700; color: var(--vg-header-color); line-height: 1.2;">
-                        {{ $adminUser ? $adminUser->name : 'Guest' }}
+                        {{ $adminUser ? $adminUser->name : __('backend.supervisor_layout.guest') }}
                     </div>
                     <div style="font-size: 11px; color: var(--vg-text-muted); line-height: 1.2;">
-                        Supervisor
+                        {{ __('backend.supervisor_layout.supervisor') }}
                     </div>
                 </div>
             </a>
@@ -1219,13 +1353,13 @@
                 <li>
                     <a class="dropdown-item d-flex align-items-center gap-2" href="{{ route('supervisor.profile.index') }}">
                         <i class="bi bi-person"></i>
-                        <span>Profile</span>
+                        <span>{{ __('backend.supervisor_layout.profile') }}</span>
                     </a>
                 </li>
                 <li>
                     <a class="dropdown-item d-flex align-items-center gap-2" href="javascript:void(0);" id="dropdownSettingsBtn">
                         <i class="bi bi-gear"></i>
-                        <span>Layout Settings</span>
+                        <span>{{ __('backend.supervisor_layout.layout_settings') }}</span>
                     </a>
                 </li>
                 <li><hr class="dropdown-divider my-2"></li>
@@ -1234,7 +1368,7 @@
                        href="{{ route('admin.logout') }}"
                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                         <i class="bi bi-box-arrow-right"></i>
-                        <span>Log Out</span>
+                        <span>{{ __('backend.supervisor_layout.log_out') }}</span>
                     </a>
                 </li>
             </ul>
@@ -1249,8 +1383,8 @@
 <div class="right-sidebar" id="rightSidebarPanel">
     <div class="sidebar-title">
         <h3 class="weight-600 font-16">
-            Layout Settings
-            <span class="btn-block font-weight-400 font-12">Supervisor interface preferences</span>
+            {{ __('backend.supervisor_layout.layout_settings') }}
+            <span class="btn-block font-weight-400 font-12">{{ __('backend.supervisor_layout.supervisor_interface_preferences') }}</span>
         </h3>
         <div class="close-sidebar" id="rightSidebarCloseBtn">
             <i class="icon-copy ion-close-round"></i>
@@ -1260,15 +1394,15 @@
     <div class="right-sidebar-body customscroll">
         <div class="right-sidebar-body-content p-3">
             <div class="theme-setting-card">
-                <div class="theme-setting-title">Theme Mode</div>
+                <div class="theme-setting-title">{{ __('backend.supervisor_layout.theme_mode') }}</div>
                 <div class="theme-btn-group">
-                    <button type="button" class="theme-choice-btn" id="themeLightBtn">Light</button>
-                    <button type="button" class="theme-choice-btn" id="themeDarkBtn">Dark</button>
+                    <button type="button" class="theme-choice-btn" id="themeLightBtn">{{ __('backend.supervisor_layout.light') }}</button>
+                    <button type="button" class="theme-choice-btn" id="themeDarkBtn">{{ __('backend.supervisor_layout.dark') }}</button>
                 </div>
             </div>
 
             <div class="theme-setting-card">
-                <div class="theme-setting-title">Announcements</div>
+                <div class="theme-setting-title">{{ __('backend.supervisor_layout.announcements') }}</div>
 
                 @if($layoutAnnouncements->count())
                     <div class="d-flex flex-column gap-3">
@@ -1282,7 +1416,7 @@
                                     @if($announcement->is_pinned)
                                         <span class="announcement-badge pinned">
                                             <i class="fas fa-thumbtack"></i>
-                                            Pinned
+                                            {{ __('backend.supervisor_layout.pinned') }}
                                         </span>
                                     @endif
                                 </div>
@@ -1293,7 +1427,7 @@
 
                                 @if($announcement->expires_at)
                                     <div class="announcement-meta">
-                                        Until {{ $announcement->expires_at->format('M d, Y • h:i A') }}
+                                        {{ __('backend.supervisor_layout.until') }} {{ $announcement->expires_at->format('M d, Y • h:i A') }}
                                     </div>
                                 @endif
                             </div>
@@ -1301,16 +1435,16 @@
                     </div>
                 @else
                     <div class="announcement-card">
-                        <div class="announcement-card-title">No announcements</div>
+                        <div class="announcement-card-title">{{ __('backend.supervisor_layout.no_announcements') }}</div>
                         <p class="announcement-card-text mb-0">
-                            There are no active announcements right now.
+                            {{ __('backend.supervisor_layout.no_active_announcements') }}
                         </p>
                     </div>
                 @endif
             </div>
 
             <div class="reset-options pt-2 text-center">
-                <button class="btn btn-danger" id="reset-settings" type="button">Reset Theme</button>
+                <button class="btn btn-danger" id="reset-settings" type="button">{{ __('backend.supervisor_layout.reset_theme') }}</button>
             </div>
         </div>
     </div>
@@ -1322,8 +1456,8 @@
     </div>
 
     <div class="app-footer">
-        <div><strong>{{ setting('platform_name', 'VertexGrad') }}</strong> Supervisor Panel</div>
-        <div>{{ setting('platform_tagline', 'Professional supervision for project reviews, meetings, and requests.') }}</div>
+        <div><strong>{{ setting('platform_name', 'VertexGrad') }}</strong> {{ __('backend.supervisor_layout.supervisor_panel') }}</div>
+        <div>{{ setting('platform_tagline', __('backend.supervisor_layout.footer_tagline')) }}</div>
     </div>
 </div>
 

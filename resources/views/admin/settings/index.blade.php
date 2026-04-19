@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Settings')
+@section('title', __('backend.settings.page_title'))
 
 @section('content')
 @php
@@ -15,25 +15,23 @@
     <div class="settings-hero-card mb-4">
         <div class="settings-hero-content">
             <div>
-                <div class="settings-eyebrow">System Control Center</div>
-                <h2 class="settings-page-title mb-2">Platform Settings</h2>
+                <div class="settings-eyebrow">{{ __('backend.settings.system_control_center') }}</div>
+                <h2 class="settings-page-title mb-2">{{ __('backend.settings.heading') }}</h2>
                 <p class="settings-page-subtitle mb-0">
-                    Manage branding, platform behavior, scanner integration, project defaults, notifications, and security from one centralized settings panel.
+                    {{ __('backend.settings.subtitle') }}
                 </p>
             </div>
 
             <div class="settings-hero-badge">
                 <i class="bi bi-sliders2-vertical"></i>
-                <span>Dynamic Settings Engine</span>
+                <span>{{ __('backend.settings.dynamic_settings_engine') }}</span>
             </div>
         </div>
     </div>
 
-    {{-- Alerts --}}
-
     @if ($errors->any())
         <div class="alert alert-danger rounded-4 border-0 shadow-sm mb-4">
-            <div class="fw-bold mb-2">Please review the following issues:</div>
+            <div class="fw-bold mb-2">{{ __('backend.settings.please_review_issues') }}</div>
             <ul class="mb-0 ps-3">
                 @foreach ($errors->all() as $error)
                     <li class="mb-1">{{ $error }}</li>
@@ -50,8 +48,8 @@
             <div class="col-xl-3">
                 <div class="settings-sidebar-card">
                     <div class="settings-sidebar-title">
-                        <h6 class="mb-1">Configuration Sections</h6>
-                        <p class="mb-0">Navigate between platform setting groups.</p>
+                        <h6 class="mb-1">{{ __('backend.settings.configuration_sections') }}</h6>
+                        <p class="mb-0">{{ __('backend.settings.configuration_sections_text') }}</p>
                     </div>
 
                     <div class="nav flex-column nav-pills settings-tabs" id="settings-tab" role="tablist">
@@ -65,7 +63,7 @@
                                 role="tab"
                             >
                                 <span>{{ $groupLabels[$group] ?? ucfirst($group) }}</span>
-                                <small>{{ count($groupSettings) }} items</small>
+                                <small>{{ count($groupSettings) }} {{ __('backend.settings.items') }}</small>
                             </button>
                         @endforeach
                     </div>
@@ -86,12 +84,12 @@
                                     <div>
                                         <h4>{{ $groupLabels[$group] ?? ucfirst($group) }}</h4>
                                         <p class="mb-0">
-                                            Manage {{ strtolower($groupLabels[$group] ?? ucfirst($group)) }} related settings.
+                                            {{ __('backend.settings.manage_group_related_settings', ['group' => strtolower($groupLabels[$group] ?? ucfirst($group))]) }}
                                         </p>
                                     </div>
 
                                     <div class="settings-group-count">
-                                        {{ count($groupSettings) }} fields
+                                        {{ count($groupSettings) }} {{ __('backend.settings.fields') }}
                                     </div>
                                 </div>
 
@@ -131,7 +129,7 @@
                                                             {{ old($setting->key, $setting->value) == '1' ? 'checked' : '' }}
                                                         >
                                                         <label class="form-check-label" for="{{ $setting->key }}">
-                                                            Enable this option
+                                                            {{ __('backend.settings.enable_this_option') }}
                                                         </label>
                                                     </div>
 
@@ -166,7 +164,7 @@
 
                                                         <div class="setting-image-preview mt-3">
                                                             <div class="setting-image-preview-label">
-                                                                Preview
+                                                                {{ __('backend.settings.preview') }}
                                                             </div>
 
                                                             <div
@@ -185,14 +183,14 @@
                                                                 id="empty-{{ $setting->key }}"
                                                             >
                                                                 <i class="bi bi-image"></i>
-                                                                <span>No image selected</span>
+                                                                <span>{{ __('backend.settings.no_image_selected') }}</span>
                                                             </div>
 
                                                             <div
                                                                 class="setting-image-file-name {{ $setting->value ? '' : 'is-empty' }}"
                                                                 id="filename-{{ $setting->key }}"
                                                             >
-                                                                {{ $setting->value ? basename($setting->value) : 'No file chosen' }}
+                                                                {{ $setting->value ? basename($setting->value) : __('backend.settings.no_file_chosen') }}
                                                             </div>
                                                         </div>
                                                     </div>
@@ -225,19 +223,19 @@
                 <div class="settings-actions-card mt-4">
                     <div class="settings-actions-left">
                         <div class="settings-actions-note">
-                            Changes will be saved to the database and applied to the platform configuration.
+                            {{ __('backend.settings.actions_note') }}
                         </div>
                     </div>
 
                     <div class="d-flex justify-content-end gap-2 flex-wrap">
                         <a href="{{ url()->current() }}" class="btn settings-btn-light">
                             <i class="bi bi-arrow-clockwise me-1"></i>
-                            Reset View
+                            {{ __('backend.settings.reset_view') }}
                         </a>
 
                         <button type="submit" class="btn settings-btn-primary">
                             <i class="bi bi-check2-circle me-1"></i>
-                            Save Settings
+                            {{ __('backend.settings.save_settings') }}
                         </button>
                     </div>
                 </div>
@@ -625,7 +623,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (!file) {
                 if (fileNameBox && !previewImage?.getAttribute('src')) {
-                    fileNameBox.textContent = 'No file chosen';
+                    fileNameBox.textContent = '{{ __('backend.settings.no_file_chosen') }}';
                     fileNameBox.classList.add('is-empty');
                 }
                 return;

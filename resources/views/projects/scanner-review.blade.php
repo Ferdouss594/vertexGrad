@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Scanner Review')
+@section('title', __('backend.scanner_review.page_title'))
 
 @section('content')
 <style>
@@ -165,15 +165,15 @@
     <div class="page-header-card">
         <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3">
             <div>
-                <h1 class="page-title">Review & Start Technical Scan</h1>
+                <h1 class="page-title">{{ __('backend.scanner_review.heading') }}</h1>
                 <p class="page-subtitle">
-                    Confirm the core project details before sending the project to the scanner platform.
+                    {{ __('backend.scanner_review.subtitle') }}
                 </p>
             </div>
 
             <div>
                 <a href="{{ route('admin.projects.edit', $project) }}" class="reset-btn">
-                    <i class="fa fa-arrow-left mr-1"></i> Back to Edit
+                    <i class="fa fa-arrow-left mr-1"></i> {{ __('backend.scanner_review.back_to_edit') }}
                 </a>
             </div>
         </div>
@@ -181,36 +181,36 @@
 
     <div class="main-panel form-animate">
         <div class="panel-head">
-            <h2 class="panel-title">Project Scan Information</h2>
-            <div class="panel-subtitle">Core information that will be used before starting the technical scan.</div>
+            <h2 class="panel-title">{{ __('backend.scanner_review.project_scan_information') }}</h2>
+            <div class="panel-subtitle">{{ __('backend.scanner_review.project_scan_information_subtitle') }}</div>
         </div>
 
         <div class="table-wrap">
             <div class="row">
                 <div class="col-md-4 mb-3">
                     <div class="info-box">
-                        <div class="info-label">Project Name</div>
+                        <div class="info-label">{{ __('backend.scanner_review.project_name') }}</div>
                         <div class="info-value">{{ $project->name ?? '—' }}</div>
                     </div>
                 </div>
 
                 <div class="col-md-4 mb-3">
                     <div class="info-box">
-                        <div class="info-label">Student Name</div>
+                        <div class="info-label">{{ __('backend.scanner_review.student_name') }}</div>
                         <div class="info-value">{{ $project->student->name ?? '—' }}</div>
                     </div>
                 </div>
 
                 <div class="col-md-4 mb-3">
                     <div class="info-box">
-                        <div class="info-label">Student Email</div>
+                        <div class="info-label">{{ __('backend.scanner_review.student_email') }}</div>
                         <div class="info-value">{{ $project->student->email ?? '—' }}</div>
                     </div>
                 </div>
             </div>
 
             <div class="note-box mt-3">
-                By clicking <strong>Start Technical Scan</strong>, the system will create a scanner request for this project and open the scanner platform directly so the scan process can continue there.
+                {!! __('backend.scanner_review.note_box') !!}
             </div>
         </div>
     </div>
@@ -220,11 +220,11 @@
 
         <div class="action-bar">
             <button type="submit" class="btn btn-success search-btn">
-                <i class="fa fa-shield-alt mr-1"></i> Start Technical Scan
+                <i class="fa fa-shield-alt mr-1"></i> {{ __('backend.scanner_review.start_technical_scan') }}
             </button>
 
             <a href="{{ route('admin.projects.edit', $project) }}" class="reset-btn">
-                Cancel
+                {{ __('backend.scanner_review.cancel') }}
             </a>
         </div>
     </form>

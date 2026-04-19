@@ -1,6 +1,6 @@
 @extends('supervisor.layout.app_super')
 
-@section('title', 'All Requests')
+@section('title', __('backend.supervisor_all_requests.page_title'))
 
 @section('content')
 @php
@@ -298,16 +298,16 @@
         <div class="page-header-card mb-4">
             <div class="d-flex justify-content-between align-items-center flex-wrap" style="gap: 15px;">
                 <div>
-                    <h3>All Requests</h3>
-                    <p>Track all requests sent to students, including due dates, request types, and completion status.</p>
+                    <h3>{{ __('backend.supervisor_all_requests.heading') }}</h3>
+                    <p>{{ __('backend.supervisor_all_requests.subtitle') }}</p>
                 </div>
 
                 <div class="header-actions">
                     <a href="{{ route('supervisor.requests.pending') }}" class="btn-outline-header">
-                        <i class="fa fa-clock mr-1"></i> Pending Requests
+                        <i class="fa fa-clock mr-1"></i> {{ __('backend.supervisor_all_requests.pending_requests') }}
                     </a>
                     <a href="{{ route('supervisor.dashboard') }}" class="btn-outline-header">
-                        <i class="fa fa-home mr-1"></i> Dashboard
+                        <i class="fa fa-home mr-1"></i> {{ __('backend.supervisor_all_requests.dashboard') }}
                     </a>
                 </div>
             </div>
@@ -320,7 +320,7 @@
                         <i class="fa fa-list"></i>
                     </div>
                     <div class="stats-number">{{ $totalRequests }}</div>
-                    <p class="stats-label">Total Requests</p>
+                    <p class="stats-label">{{ __('backend.supervisor_all_requests.total_requests') }}</p>
                 </div>
             </div>
 
@@ -330,7 +330,7 @@
                         <i class="fa fa-clock-o"></i>
                     </div>
                     <div class="stats-number">{{ $pendingRequests }}</div>
-                    <p class="stats-label">Pending</p>
+                    <p class="stats-label">{{ __('backend.supervisor_all_requests.pending') }}</p>
                 </div>
             </div>
 
@@ -340,7 +340,7 @@
                         <i class="fa fa-check-circle"></i>
                     </div>
                     <div class="stats-number">{{ $completedRequests }}</div>
-                    <p class="stats-label">Completed</p>
+                    <p class="stats-label">{{ __('backend.supervisor_all_requests.completed') }}</p>
                 </div>
             </div>
 
@@ -350,7 +350,7 @@
                         <i class="fa fa-times-circle"></i>
                     </div>
                     <div class="stats-number">{{ $cancelledRequests }}</div>
-                    <p class="stats-label">Cancelled</p>
+                    <p class="stats-label">{{ __('backend.supervisor_all_requests.cancelled') }}</p>
                 </div>
             </div>
         </div>
@@ -358,8 +358,8 @@
         <div class="table-card">
             <div class="table-card-header">
                 <div>
-                    <h5>Requests List</h5>
-                    <small class="text-muted">Professional overview of all requests sent by the supervisor.</small>
+                    <h5>{{ __('backend.supervisor_all_requests.requests_list') }}</h5>
+                    <small class="text-muted">{{ __('backend.supervisor_all_requests.requests_list_subtitle') }}</small>
                 </div>
             </div>
 
@@ -368,12 +368,12 @@
                     <thead>
                         <tr>
                             <th class="col-id">#</th>
-                            <th class="col-project">Project</th>
-                            <th class="col-student">Student</th>
-                            <th class="col-title">Title</th>
-                            <th class="col-type">Type</th>
-                            <th class="col-date">Due Date</th>
-                            <th class="col-status">Status</th>
+                            <th class="col-project">{{ __('backend.supervisor_all_requests.project') }}</th>
+                            <th class="col-student">{{ __('backend.supervisor_all_requests.student') }}</th>
+                            <th class="col-title">{{ __('backend.supervisor_all_requests.title') }}</th>
+                            <th class="col-type">{{ __('backend.supervisor_all_requests.type') }}</th>
+                            <th class="col-date">{{ __('backend.supervisor_all_requests.due_date') }}</th>
+                            <th class="col-status">{{ __('backend.supervisor_all_requests.status') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -392,14 +392,14 @@
                                 <td>
                                     <div class="td-ellipsis">{{ $requestItem->project->name ?? '—' }}</div>
                                     <div class="mini-text td-ellipsis">
-                                        Project ID: {{ $requestItem->project->project_id ?? '—' }}
+                                        {{ __('backend.supervisor_all_requests.project_id') }} {{ $requestItem->project->project_id ?? '—' }}
                                     </div>
                                 </td>
 
                                 <td>
                                     <div class="td-ellipsis">{{ $requestItem->student->name ?? '—' }}</div>
                                     <div class="mini-text td-ellipsis">
-                                        {{ $requestItem->student->email ?? 'No email' }}
+                                        {{ $requestItem->student->email ?? __('backend.supervisor_all_requests.no_email') }}
                                     </div>
                                 </td>
 
@@ -428,7 +428,7 @@
                                 <td colspan="7">
                                     <div class="empty-state">
                                         <i class="fa fa-inbox"></i>
-                                        <div>No requests found.</div>
+                                        <div>{{ __('backend.supervisor_all_requests.no_requests_found') }}</div>
                                     </div>
                                 </td>
                             </tr>

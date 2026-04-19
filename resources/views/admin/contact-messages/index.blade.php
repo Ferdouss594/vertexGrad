@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Contact Messages')
+@section('title', __('backend.contact_messages_index.page_title'))
 
 @section('content')
 <style>
@@ -263,13 +263,13 @@
         <div class="page-header-card mb-4">
             <div class="d-flex justify-content-between align-items-center flex-wrap" style="gap: 15px;">
                 <div>
-                    <h3>Contact Messages</h3>
-                    <p>Manage public inquiries submitted from the frontend contact page and monitor their handling status professionally.</p>
+                    <h3>{{ __('backend.contact_messages_index.heading') }}</h3>
+                    <p>{{ __('backend.contact_messages_index.subtitle') }}</p>
                 </div>
 
                 <div class="d-flex flex-wrap" style="gap: 10px;">
                     <a href="{{ route('admin.contact-messages.index') }}" class="btn btn-light btn-soft">
-                        <i class="fa fa-refresh mr-1"></i> Refresh
+                        <i class="fa fa-refresh mr-1"></i> {{ __('backend.contact_messages_index.refresh') }}
                     </a>
                 </div>
             </div>
@@ -282,7 +282,7 @@
                         <i class="fa fa-envelope"></i>
                     </div>
                     <div class="stats-number">{{ $totalMessages }}</div>
-                    <p class="stats-label">Total Messages</p>
+                    <p class="stats-label">{{ __('backend.contact_messages_index.total_messages') }}</p>
                 </div>
             </div>
 
@@ -292,7 +292,7 @@
                         <i class="fa fa-bell"></i>
                     </div>
                     <div class="stats-number">{{ $newCount }}</div>
-                    <p class="stats-label">New</p>
+                    <p class="stats-label">{{ __('backend.contact_messages_index.new') }}</p>
                 </div>
             </div>
 
@@ -302,7 +302,7 @@
                         <i class="fa fa-hourglass-half"></i>
                     </div>
                     <div class="stats-number">{{ $inProgressCount }}</div>
-                    <p class="stats-label">In Progress</p>
+                    <p class="stats-label">{{ __('backend.contact_messages_index.in_progress') }}</p>
                 </div>
             </div>
 
@@ -312,7 +312,7 @@
                         <i class="fa fa-check-circle"></i>
                     </div>
                     <div class="stats-number">{{ $closedCount }}</div>
-                    <p class="stats-label">Closed</p>
+                    <p class="stats-label">{{ __('backend.contact_messages_index.closed') }}</p>
                 </div>
             </div>
         </div>
@@ -320,8 +320,8 @@
         <div class="filter-card mb-4">
             <div class="filter-card-header">
                 <div>
-                    <h5>Filters</h5>
-                    <small class="text-muted">Search by sender, email, message content, subject, sender type, or status.</small>
+                    <h5>{{ __('backend.contact_messages_index.filters') }}</h5>
+                    <small class="text-muted">{{ __('backend.contact_messages_index.filters_subtitle') }}</small>
                 </div>
             </div>
 
@@ -329,51 +329,51 @@
                 <form method="GET" action="{{ route('admin.contact-messages.index') }}">
                     <div class="row">
                         <div class="col-lg-3 col-md-6 mb-3">
-                            <label class="filter-label">Search</label>
-                            <input type="text" name="search" class="form-control" placeholder="Name, email, or message" value="{{ request('search') }}">
+                            <label class="filter-label">{{ __('backend.contact_messages_index.search') }}</label>
+                            <input type="text" name="search" class="form-control" placeholder="{{ __('backend.contact_messages_index.search_placeholder') }}" value="{{ request('search') }}">
                         </div>
 
                         <div class="col-lg-3 col-md-6 mb-3">
-                            <label class="filter-label">Status</label>
+                            <label class="filter-label">{{ __('backend.contact_messages_index.status') }}</label>
                             <select name="status" class="form-select">
-                                <option value="">All Statuses</option>
-                                <option value="new" {{ request('status') === 'new' ? 'selected' : '' }}>New</option>
-                                <option value="in_progress" {{ request('status') === 'in_progress' ? 'selected' : '' }}>In Progress</option>
-                                <option value="replied" {{ request('status') === 'replied' ? 'selected' : '' }}>Replied</option>
-                                <option value="closed" {{ request('status') === 'closed' ? 'selected' : '' }}>Closed</option>
+                                <option value="">{{ __('backend.contact_messages_index.all_statuses') }}</option>
+                                <option value="new" {{ request('status') === 'new' ? 'selected' : '' }}>{{ __('backend.contact_messages_index.new') }}</option>
+                                <option value="in_progress" {{ request('status') === 'in_progress' ? 'selected' : '' }}>{{ __('backend.contact_messages_index.in_progress') }}</option>
+                                <option value="replied" {{ request('status') === 'replied' ? 'selected' : '' }}>{{ __('backend.contact_messages_index.replied') }}</option>
+                                <option value="closed" {{ request('status') === 'closed' ? 'selected' : '' }}>{{ __('backend.contact_messages_index.closed') }}</option>
                             </select>
                         </div>
 
                         <div class="col-lg-3 col-md-6 mb-3">
-                            <label class="filter-label">Subject</label>
+                            <label class="filter-label">{{ __('backend.contact_messages_index.subject') }}</label>
                             <select name="subject" class="form-select">
-                                <option value="">All Subjects</option>
-                                <option value="academic" {{ request('subject') === 'academic' ? 'selected' : '' }}>Academic</option>
-                                <option value="investor" {{ request('subject') === 'investor' ? 'selected' : '' }}>Investor</option>
-                                <option value="support" {{ request('subject') === 'support' ? 'selected' : '' }}>Support</option>
-                                <option value="other" {{ request('subject') === 'other' ? 'selected' : '' }}>Other</option>
+                                <option value="">{{ __('backend.contact_messages_index.all_subjects') }}</option>
+                                <option value="academic" {{ request('subject') === 'academic' ? 'selected' : '' }}>{{ __('backend.contact_messages_index.subjects.academic') }}</option>
+                                <option value="investor" {{ request('subject') === 'investor' ? 'selected' : '' }}>{{ __('backend.contact_messages_index.subjects.investor') }}</option>
+                                <option value="support" {{ request('subject') === 'support' ? 'selected' : '' }}>{{ __('backend.contact_messages_index.subjects.support') }}</option>
+                                <option value="other" {{ request('subject') === 'other' ? 'selected' : '' }}>{{ __('backend.contact_messages_index.subjects.other') }}</option>
                             </select>
                         </div>
 
                         <div class="col-lg-3 col-md-6 mb-3">
-                            <label class="filter-label">Sender Type</label>
+                            <label class="filter-label">{{ __('backend.contact_messages_index.sender_type') }}</label>
                             <select name="sender_type" class="form-select">
-                                <option value="">All Sender Types</option>
-                                <option value="guest" {{ request('sender_type') === 'guest' ? 'selected' : '' }}>Guest</option>
-                                <option value="student" {{ request('sender_type') === 'student' ? 'selected' : '' }}>Student</option>
-                                <option value="investor" {{ request('sender_type') === 'investor' ? 'selected' : '' }}>Investor</option>
+                                <option value="">{{ __('backend.contact_messages_index.all_sender_types') }}</option>
+                                <option value="guest" {{ request('sender_type') === 'guest' ? 'selected' : '' }}>{{ __('backend.contact_messages_index.sender_types.guest') }}</option>
+                                <option value="student" {{ request('sender_type') === 'student' ? 'selected' : '' }}>{{ __('backend.contact_messages_index.sender_types.student') }}</option>
+                                <option value="investor" {{ request('sender_type') === 'investor' ? 'selected' : '' }}>{{ __('backend.contact_messages_index.sender_types.investor') }}</option>
                             </select>
                         </div>
 
                         <div class="col-12 d-flex flex-wrap" style="gap: 10px;">
                             <button type="submit" class="btn btn-primary" style="border-radius: 12px; font-weight: 700;">
-                                <i class="fa fa-search mr-1"></i> Filter
+                                <i class="fa fa-search mr-1"></i> {{ __('backend.contact_messages_index.filter') }}
                             </button>
 
                             <a href="{{ route('admin.contact-messages.index') }}"
                                class="btn btn-light"
                                style="border-radius: 12px; font-weight: 700; border: 1px solid #dbe4f0;">
-                                Reset
+                                {{ __('backend.contact_messages_index.reset') }}
                             </a>
                         </div>
                     </div>
@@ -384,8 +384,8 @@
         <div class="table-card">
             <div class="table-card-header">
                 <div>
-                    <h5>Submitted Messages</h5>
-                    <small class="text-muted">Overview of all contact inquiries submitted through the public platform.</small>
+                    <h5>{{ __('backend.contact_messages_index.submitted_messages') }}</h5>
+                    <small class="text-muted">{{ __('backend.contact_messages_index.submitted_messages_subtitle') }}</small>
                 </div>
             </div>
 
@@ -394,12 +394,12 @@
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Sender</th>
-                            <th>Subject</th>
-                            <th>Sender Type</th>
-                            <th>Status</th>
-                            <th>Submitted</th>
-                            <th class="text-right">Action</th>
+                            <th>{{ __('backend.contact_messages_index.sender') }}</th>
+                            <th>{{ __('backend.contact_messages_index.subject') }}</th>
+                            <th>{{ __('backend.contact_messages_index.sender_type') }}</th>
+                            <th>{{ __('backend.contact_messages_index.status') }}</th>
+                            <th>{{ __('backend.contact_messages_index.submitted') }}</th>
+                            <th class="text-right">{{ __('backend.contact_messages_index.action') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -453,7 +453,7 @@
                                 </td>
 
                                 <td class="text-right">
-                                    <a href="{{ route('admin.contact-messages.show', $message) }}" class="icon-action">
+                                    <a href="{{ route('admin.contact-messages.show', $message) }}" class="icon-action" title="{{ __('backend.contact_messages_index.view') }}">
                                         <i class="fa fa-eye"></i>
                                     </a>
                                 </td>
@@ -463,7 +463,7 @@
                                 <td colspan="7">
                                     <div class="empty-state">
                                         <i class="fa fa-envelope-open"></i>
-                                        <div>No contact messages found.</div>
+                                        <div>{{ __('backend.contact_messages_index.no_contact_messages_found') }}</div>
                                     </div>
                                 </td>
                             </tr>

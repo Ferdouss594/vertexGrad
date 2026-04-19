@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Send Notification')
+@section('title', __('backend.investors_notify.page_title'))
 
 @section('content')
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
@@ -151,17 +151,17 @@
     <div class="page-header-card">
         <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3">
             <div>
-                <h1 class="page-title">Send Notification</h1>
+                <h1 class="page-title">{{ __('backend.investors_notify.heading') }}</h1>
                 <p class="page-subtitle">
-                    Send a direct notification to
-                    <strong>{{ $investor->user?->name ?? 'Investor' }}</strong>
-                    from the manager panel.
+                    {{ __('backend.investors_notify.subtitle_prefix') }}
+                    <strong>{{ $investor->user?->name ?? __('backend.investors_notify.investor_fallback') }}</strong>
+                    {{ __('backend.investors_notify.subtitle_suffix') }}
                 </p>
             </div>
 
             <div>
                 <a href="{{ route('admin.investors.show', $investor->user_id) }}" class="reset-btn px-4">
-                    <i class="fa fa-arrow-left mr-1"></i> Back
+                    <i class="fa fa-arrow-left mr-1"></i> {{ __('backend.investors_notify.back') }}
                 </a>
             </div>
         </div>
@@ -170,9 +170,9 @@
     <div class="main-panel">
         <div class="panel-head">
             <h2 class="panel-title">
-                <i class="fa fa-bell mr-2"></i>Notification Form
+                <i class="fa fa-bell mr-2"></i>{{ __('backend.investors_notify.form_title') }}
             </h2>
-            <div class="panel-subtitle">Create and send a direct platform notification to this investor.</div>
+            <div class="panel-subtitle">{{ __('backend.investors_notify.form_subtitle') }}</div>
         </div>
 
         <div class="table-wrap">
@@ -180,35 +180,35 @@
                 @csrf
 
                 <div class="mb-3">
-                    <label class="filter-label">Title</label>
+                    <label class="filter-label">{{ __('backend.investors_notify.title') }}</label>
                     <input
                         type="text"
                         name="title"
                         class="form-control filter-input"
                         value="{{ old('title') }}"
-                        placeholder="Enter notification title">
+                        placeholder="{{ __('backend.investors_notify.title_placeholder') }}">
                 </div>
 
                 <div class="mb-3">
-                    <label class="filter-label">Message</label>
+                    <label class="filter-label">{{ __('backend.investors_notify.message') }}</label>
                     <textarea
                         name="message"
                         class="form-control filter-input"
-                        placeholder="Write your message here...">{{ old('message') }}</textarea>
+                        placeholder="{{ __('backend.investors_notify.message_placeholder') }}">{{ old('message') }}</textarea>
                 </div>
 
                 <div class="mb-4">
-                    <label class="filter-label">Optional URL</label>
+                    <label class="filter-label">{{ __('backend.investors_notify.optional_url') }}</label>
                     <input
                         type="text"
                         name="url"
                         class="form-control filter-input"
                         value="{{ old('url') }}"
-                        placeholder="Optional link for the investor to open">
+                        placeholder="{{ __('backend.investors_notify.url_placeholder') }}">
                 </div>
 
                 <button type="submit" class="btn btn-primary search-btn">
-                    <i class="fa fa-paper-plane mr-1"></i> Send Notification
+                    <i class="fa fa-paper-plane mr-1"></i> {{ __('backend.investors_notify.send_notification') }}
                 </button>
             </form>
         </div>

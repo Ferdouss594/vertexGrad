@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ app()->getLocale() }}">
 <head>
     <meta charset="UTF-8">
-    <title>🚀 Projects Report</title>
+    <title>{{ __('backend.projects_report_pdf.title') }}</title>
     <style>
         /* الخط العربي الافتراضي في DomPDF */
         body {
@@ -53,19 +53,19 @@
 </head>
 <body>
 
-    <h2>🚀 Projects Report</h2>
-    <p class="total">Total Projects: {{ $projects->count() }}</p>
+    <h2>{{ __('backend.projects_report_pdf.heading') }}</h2>
+    <p class="total">{{ __('backend.projects_report_pdf.total_projects') }}: {{ $projects->count() }}</p>
 
     <table>
         <thead>
             <tr>
                 <th>#</th>
-                <th>Project Name</th>
-                <th>Student</th>
-                <th>Supervisor</th>
-                <th>Manager</th>
-                <th>Investor</th>
-                <th>Status</th>
+                <th>{{ __('backend.projects_report_pdf.project_name') }}</th>
+                <th>{{ __('backend.projects_report_pdf.student') }}</th>
+                <th>{{ __('backend.projects_report_pdf.supervisor') }}</th>
+                <th>{{ __('backend.projects_report_pdf.manager') }}</th>
+                <th>{{ __('backend.projects_report_pdf.investor') }}</th>
+                <th>{{ __('backend.projects_report_pdf.status') }}</th>
             </tr>
         </thead>
         <tbody>
@@ -73,10 +73,10 @@
                 <tr>
                     <td>{{ $loop->iteration }}</td>
                     <td>{{ $project->name }}</td>
-                    <td>{{ $project->student->name ?? '—' }}</td>
-                    <td>{{ $project->supervisor->name ?? '—' }}</td>
-                    <td>{{ $project->manager->name ?? '—' }}</td>
-                    <td>{{ $project->investor->name ?? '—' }}</td>
+                    <td>{{ $project->student->name ?? __('backend.projects_report_pdf.empty') }}</td>
+                    <td>{{ $project->supervisor->name ?? __('backend.projects_report_pdf.empty') }}</td>
+                    <td>{{ $project->manager->name ?? __('backend.projects_report_pdf.empty') }}</td>
+                    <td>{{ $project->investor->name ?? __('backend.projects_report_pdf.empty') }}</td>
                     <td class="
                         @if(strtolower($project->status) == 'active') status-active
                         @elseif(strtolower($project->status) == 'pending') status-pending

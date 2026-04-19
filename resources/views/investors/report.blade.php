@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Investor Report')
+@section('title', __('backend.investor_single_report.page_title'))
 
 @section('content')
 <style>
@@ -101,66 +101,108 @@
         <div class="page-header-card">
             <div class="d-flex justify-content-between align-items-center flex-wrap" style="gap: 15px;">
                 <div>
-                    <h3 class="mb-1">{{ $investor->user?->name ?? 'Investor Report' }}</h3>
-                    <p class="mb-0" style="color:#7b8497;">Detailed investor report including requests, funding activity, notes, files, and actions.</p>
+                    <h3 class="mb-1">{{ $investor->user?->name ?? __('backend.investor_single_report.page_heading_fallback') }}</h3>
+                    <p class="mb-0" style="color:#7b8497;">{{ __('backend.investor_single_report.page_subtitle') }}</p>
                 </div>
 
                 <div class="d-flex flex-wrap" style="gap: 10px;">
                     <a href="{{ route('admin.investors.show', $investor->user_id) }}" class="btn-back">
-                        <i class="fa fa-arrow-left mr-1"></i> Back to Investor
+                        <i class="fa fa-arrow-left mr-1"></i> {{ __('backend.investor_single_report.back_to_investor') }}
                     </a>
 
                     <a href="{{ route('admin.investors.report.export', $investor->user_id) }}" class="btn-export">
-                        <i class="fa fa-file-excel mr-1"></i> Export Report
+                        <i class="fa fa-file-excel mr-1"></i> {{ __('backend.investor_single_report.export_report') }}
                     </a>
                 </div>
             </div>
         </div>
 
         <div class="row mb-4">
-            <div class="col-xl-3 col-md-6 mb-3"><div class="stats-card"><div class="stats-number">{{ $stats['total_requests'] }}</div><p class="stats-label">Total Requests</p></div></div>
-            <div class="col-xl-3 col-md-6 mb-3"><div class="stats-card"><div class="stats-number">{{ $stats['approved'] }}</div><p class="stats-label">Approved</p></div></div>
-            <div class="col-xl-3 col-md-6 mb-3"><div class="stats-card"><div class="stats-number">{{ $stats['rejected'] }}</div><p class="stats-label">Rejected</p></div></div>
-            <div class="col-xl-3 col-md-6 mb-3"><div class="stats-card"><div class="stats-number">${{ number_format($stats['approved_amount'], 2) }}</div><p class="stats-label">Approved Amount</p></div></div>
+            <div class="col-xl-3 col-md-6 mb-3">
+                <div class="stats-card">
+                    <div class="stats-number">{{ $stats['total_requests'] }}</div>
+                    <p class="stats-label">{{ __('backend.investor_single_report.total_requests') }}</p>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6 mb-3">
+                <div class="stats-card">
+                    <div class="stats-number">{{ $stats['approved'] }}</div>
+                    <p class="stats-label">{{ __('backend.investor_single_report.approved') }}</p>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6 mb-3">
+                <div class="stats-card">
+                    <div class="stats-number">{{ $stats['rejected'] }}</div>
+                    <p class="stats-label">{{ __('backend.investor_single_report.rejected') }}</p>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6 mb-3">
+                <div class="stats-card">
+                    <div class="stats-number">${{ number_format($stats['approved_amount'], 2) }}</div>
+                    <p class="stats-label">{{ __('backend.investor_single_report.approved_amount') }}</p>
+                </div>
+            </div>
         </div>
 
         <div class="row mb-4">
-            <div class="col-xl-3 col-md-6 mb-3"><div class="stats-card"><div class="stats-number">{{ $stats['interested'] }}</div><p class="stats-label">Interested</p></div></div>
-            <div class="col-xl-3 col-md-6 mb-3"><div class="stats-card"><div class="stats-number">{{ $stats['requested'] }}</div><p class="stats-label">Requested</p></div></div>
-            <div class="col-xl-3 col-md-6 mb-3"><div class="stats-card"><div class="stats-number">{{ $stats['notes_count'] }}</div><p class="stats-label">Notes</p></div></div>
-            <div class="col-xl-3 col-md-6 mb-3"><div class="stats-card"><div class="stats-number">{{ $stats['files_count'] }}</div><p class="stats-label">Files</p></div></div>
+            <div class="col-xl-3 col-md-6 mb-3">
+                <div class="stats-card">
+                    <div class="stats-number">{{ $stats['interested'] }}</div>
+                    <p class="stats-label">{{ __('backend.investor_single_report.interested') }}</p>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6 mb-3">
+                <div class="stats-card">
+                    <div class="stats-number">{{ $stats['requested'] }}</div>
+                    <p class="stats-label">{{ __('backend.investor_single_report.requested') }}</p>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6 mb-3">
+                <div class="stats-card">
+                    <div class="stats-number">{{ $stats['notes_count'] }}</div>
+                    <p class="stats-label">{{ __('backend.investor_single_report.notes') }}</p>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6 mb-3">
+                <div class="stats-card">
+                    <div class="stats-number">{{ $stats['files_count'] }}</div>
+                    <p class="stats-label">{{ __('backend.investor_single_report.files') }}</p>
+                </div>
+            </div>
         </div>
 
         <div class="row mb-4">
             <div class="col-xl-12">
                 <div class="section-card">
-                    <div class="section-header">Funding Request History</div>
+                    <div class="section-header">{{ __('backend.investor_single_report.funding_request_history') }}</div>
                     <div class="section-body p-0">
                         <div class="table-responsive">
                             <table class="table modern-table">
                                 <thead>
                                     <tr>
-                                        <th>#</th>
-                                        <th>Project</th>
-                                        <th>Status</th>
-                                        <th>Amount</th>
-                                        <th>Message</th>
-                                        <th>Date</th>
+                                        <th>{{ __('backend.investor_single_report.table_number') }}</th>
+                                        <th>{{ __('backend.investor_single_report.project') }}</th>
+                                        <th>{{ __('backend.investor_single_report.status') }}</th>
+                                        <th>{{ __('backend.investor_single_report.amount') }}</th>
+                                        <th>{{ __('backend.investor_single_report.message') }}</th>
+                                        <th>{{ __('backend.investor_single_report.date') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @forelse($investmentRequests as $item)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ optional($item->project)->name ?? '—' }}</td>
+                                            <td>{{ optional($item->project)->name ?? __('backend.investor_single_report.empty_value') }}</td>
                                             <td>{{ ucfirst($item->status) }}</td>
-                                            <td>{{ $item->amount !== null ? '$' . number_format($item->amount, 2) : '—' }}</td>
-                                            <td>{{ $item->message ?: '—' }}</td>
+                                            <td>{{ $item->amount !== null ? '$' . number_format($item->amount, 2) : __('backend.investor_single_report.empty_value') }}</td>
+                                            <td>{{ $item->message ?: __('backend.investor_single_report.empty_value') }}</td>
                                             <td>{{ optional($item->created_at)->format('Y-m-d h:i A') }}</td>
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="6" class="text-center text-muted py-4">No funding requests found for this investor.</td>
+                                            <td colspan="6" class="text-center text-muted py-4">
+                                                {{ __('backend.investor_single_report.no_funding_requests_found') }}
+                                            </td>
                                         </tr>
                                     @endforelse
                                 </tbody>

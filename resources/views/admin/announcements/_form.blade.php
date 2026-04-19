@@ -67,11 +67,11 @@
     <div class="card-header bg-white border-0 px-4 py-4">
         <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
             <div>
-                <h4 class="mb-1 fw-bold text-dark">Announcement Details</h4>
-                <p class="mb-0 text-muted small">Create and publish a professional platform announcement.</p>
+                <h4 class="mb-1 fw-bold text-dark">{{ __('backend.announcements_form.announcement_details') }}</h4>
+                <p class="mb-0 text-muted small">{{ __('backend.announcements_form.announcement_details_subtitle') }}</p>
             </div>
             <div class="d-flex align-items-center gap-2">
-                <span class="badge rounded-pill text-bg-light border px-3 py-2">Admin Panel</span>
+                <span class="badge rounded-pill text-bg-light border px-3 py-2">{{ __('backend.announcements_form.admin_panel') }}</span>
             </div>
         </div>
     </div>
@@ -82,12 +82,12 @@
             {{-- Title --}}
             <div class="col-12">
                 <div class="bg-white border rounded-4 p-4 shadow-sm h-100">
-                    <label class="form-label fw-semibold text-dark mb-2">Title</label>
+                    <label class="form-label fw-semibold text-dark mb-2">{{ __('backend.announcements_form.title') }}</label>
                     <input
                         type="text"
                         name="title"
                         class="form-control form-control-lg rounded-3 border-2"
-                        placeholder="Enter announcement title"
+                        placeholder="{{ __('backend.announcements_form.enter_announcement_title') }}"
                         value="{{ old('title', $announcement->title ?? '') }}"
                         required
                     >
@@ -97,12 +97,12 @@
             {{-- Body --}}
             <div class="col-12">
                 <div class="bg-white border rounded-4 p-4 shadow-sm h-100">
-                    <label class="form-label fw-semibold text-dark mb-2">Body</label>
+                    <label class="form-label fw-semibold text-dark mb-2">{{ __('backend.announcements_form.body') }}</label>
                     <textarea
                         name="body"
                         rows="6"
                         class="form-control rounded-3 border-2"
-                        placeholder="Write the full announcement message here..."
+                        placeholder="{{ __('backend.announcements_form.write_full_message') }}"
                         required>{{ old('body', $announcement->body ?? '') }}</textarea>
                 </div>
             </div>
@@ -110,15 +110,15 @@
             {{-- Audience --}}
             <div class="col-12">
                 <div class="bg-white border rounded-4 p-4 shadow-sm h-100">
-                    <label class="form-label fw-semibold text-dark mb-2">Audience</label>
+                    <label class="form-label fw-semibold text-dark mb-2">{{ __('backend.announcements_form.audience') }}</label>
                     <select name="audience" class="form-select form-select-lg rounded-3 border-2" required>
                         @php
                             $selectedAudience = old('audience', $announcement->audience ?? 'all');
                         @endphp
-                        <option value="all" {{ $selectedAudience == 'all' ? 'selected' : '' }}>All Users</option>
-                        <option value="students" {{ $selectedAudience == 'students' ? 'selected' : '' }}>Students</option>
-                        <option value="investors" {{ $selectedAudience == 'investors' ? 'selected' : '' }}>Investors</option>
-                        <option value="supervisors" {{ $selectedAudience == 'supervisors' ? 'selected' : '' }}>Supervisors</option>
+                        <option value="all" {{ $selectedAudience == 'all' ? 'selected' : '' }}>{{ __('backend.announcements_form.audiences.all') }}</option>
+                        <option value="students" {{ $selectedAudience == 'students' ? 'selected' : '' }}>{{ __('backend.announcements_form.audiences.students') }}</option>
+                        <option value="investors" {{ $selectedAudience == 'investors' ? 'selected' : '' }}>{{ __('backend.announcements_form.audiences.investors') }}</option>
+                        <option value="supervisors" {{ $selectedAudience == 'supervisors' ? 'selected' : '' }}>{{ __('backend.announcements_form.audiences.supervisors') }}</option>
                     </select>
                 </div>
             </div>
@@ -126,7 +126,7 @@
             {{-- Publish / Expire --}}
             <div class="col-md-6">
                 <div class="bg-white border rounded-4 p-4 shadow-sm h-100">
-                    <label class="form-label fw-semibold text-dark mb-2">Publish At</label>
+                    <label class="form-label fw-semibold text-dark mb-2">{{ __('backend.announcements_form.publish_at') }}</label>
                     <input
                         type="datetime-local"
                         name="publish_at"
@@ -138,7 +138,7 @@
 
             <div class="col-md-6">
                 <div class="bg-white border rounded-4 p-4 shadow-sm h-100">
-                    <label class="form-label fw-semibold text-dark mb-2">Expires At</label>
+                    <label class="form-label fw-semibold text-dark mb-2">{{ __('backend.announcements_form.expires_at') }}</label>
                     <input
                         type="datetime-local"
                         name="expires_at"
@@ -162,8 +162,8 @@
                                 {{ old('is_pinned', $announcement->is_pinned ?? false) ? 'checked' : '' }}
                             >
                             <span class="announcement-option-content">
-                                <span class="announcement-option-title">Pinned Announcement</span>
-                                <span class="announcement-option-text">Keep this announcement at the top for maximum visibility.</span>
+                                <span class="announcement-option-title">{{ __('backend.announcements_form.pinned_announcement') }}</span>
+                                <span class="announcement-option-text">{{ __('backend.announcements_form.pinned_announcement_text') }}</span>
                             </span>
                         </label>
 
@@ -176,8 +176,8 @@
                                 {{ old('is_active', $announcement->is_active ?? true) ? 'checked' : '' }}
                             >
                             <span class="announcement-option-content">
-                                <span class="announcement-option-title">Active Status</span>
-                                <span class="announcement-option-text">Only active announcements will be visible to users.</span>
+                                <span class="announcement-option-title">{{ __('backend.announcements_form.active_status') }}</span>
+                                <span class="announcement-option-text">{{ __('backend.announcements_form.active_status_text') }}</span>
                             </span>
                         </label>
 
@@ -191,12 +191,12 @@
         <div class="d-flex flex-column flex-sm-row justify-content-end gap-3 mt-4 pt-3 border-top">
             <a href="{{ route('admin.announcements.index') }}"
                class="btn btn-light border rounded-3 px-4 py-2 fw-semibold">
-                Cancel
+                {{ __('backend.announcements_form.cancel') }}
             </a>
 
             <button type="submit"
                     class="btn btn-primary rounded-3 px-5 py-2 fw-semibold shadow-sm">
-                <i class="bi bi-check2-circle me-2"></i> Save Announcement
+                <i class="bi bi-check2-circle me-2"></i> {{ __('backend.announcements_form.save_announcement') }}
             </button>
         </div>
     </div>

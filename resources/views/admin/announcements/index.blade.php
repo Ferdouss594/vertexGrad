@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Announcements')
+@section('title', __('backend.announcements_index.title'))
 
 @section('content')
 <div class="container-fluid py-4 px-lg-5">
@@ -8,19 +8,19 @@
     {{-- Header --}}
     <div class="d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center mb-4 gap-3">
         <div>
-            <h3 class="fw-bold mb-1 text-dark">Announcements</h3>
-            <p class="text-muted mb-0 small">Manage and control platform announcements professionally.</p>
+            <h3 class="fw-bold mb-1 text-dark">{{ __('backend.announcements_index.page_title') }}</h3>
+            <p class="text-muted mb-0 small">{{ __('backend.announcements_index.page_subtitle') }}</p>
         </div>
 
         <div class="d-flex align-items-center gap-2 flex-wrap">
             <a href="{{ route('admin.announcements.history') }}"
                class="btn btn-light border rounded-3 px-4 py-2 fw-semibold history-btn">
-                <i class="bi bi-clock-history me-2"></i> History
+                <i class="bi bi-clock-history me-2"></i> {{ __('backend.announcements_index.history') }}
             </a>
 
             <a href="{{ route('admin.announcements.create') }}"
                class="btn btn-primary px-4 py-2 rounded-3 fw-semibold shadow-sm create-btn">
-                <i class="bi bi-plus-lg me-2"></i> Create Announcement
+                <i class="bi bi-plus-lg me-2"></i> {{ __('backend.announcements_index.create_announcement') }}
             </a>
         </div>
     </div>
@@ -34,13 +34,13 @@
                 <table class="table align-middle custom-table mb-0">
                     <thead>
                         <tr>
-                            <th>Title</th>
-                            <th>Audience</th>
-                            <th>Pinned</th>
-                            <th>Status</th>
-                            <th>Publish</th>
-                            <th>Expire</th>
-                            <th class="text-end">Actions</th>
+                            <th>{{ __('backend.announcements_index.title_column') }}</th>
+                            <th>{{ __('backend.announcements_index.audience') }}</th>
+                            <th>{{ __('backend.announcements_index.pinned') }}</th>
+                            <th>{{ __('backend.announcements_index.status') }}</th>
+                            <th>{{ __('backend.announcements_index.publish') }}</th>
+                            <th>{{ __('backend.announcements_index.expire') }}</th>
+                            <th class="text-end">{{ __('backend.announcements_index.actions') }}</th>
                         </tr>
                     </thead>
 
@@ -62,7 +62,7 @@
                                 <td>
                                     @if($announcement->is_pinned)
                                         <span class="badge bg-warning text-dark px-3 py-2 rounded-pill pinned-badge">
-                                            <i class="fa fa-thumbtack me-1"></i> Pinned
+                                            <i class="fa fa-thumbtack me-1"></i> {{ __('backend.announcements_index.pinned') }}
                                         </span>
                                     @else
                                         <span class="text-muted small">—</span>
@@ -72,11 +72,11 @@
                                 <td>
                                     @if($announcement->is_active)
                                         <span class="badge bg-success px-3 py-2 rounded-pill status-badge">
-                                            Active
+                                            {{ __('backend.announcements_index.active') }}
                                         </span>
                                     @else
                                         <span class="badge bg-secondary px-3 py-2 rounded-pill status-badge">
-                                            Disabled
+                                            {{ __('backend.announcements_index.disabled') }}
                                         </span>
                                     @endif
                                 </td>
@@ -109,7 +109,7 @@
 
                                             <button type="submit"
                                                     class="btn btn-danger btn-sm rounded-3 action-btn"
-                                                    onclick="return confirm('Delete this announcement?')">
+                                                    onclick="return confirm('{{ __('backend.announcements_index.confirm_delete') }}')">
                                                 <i class="bi bi-trash"></i>
                                             </button>
                                         </form>
@@ -123,11 +123,11 @@
                                         <div class="empty-state-icon mb-3">
                                             <i class="bi bi-megaphone"></i>
                                         </div>
-                                        <h6 class="fw-bold text-dark mb-2">No announcements found</h6>
-                                        <p class="text-muted mb-3">Start by creating your first announcement.</p>
+                                        <h6 class="fw-bold text-dark mb-2">{{ __('backend.announcements_index.no_announcements_found') }}</h6>
+                                        <p class="text-muted mb-3">{{ __('backend.announcements_index.no_announcements_subtitle') }}</p>
                                         <a href="{{ route('admin.announcements.create') }}"
                                            class="btn btn-primary btn-sm rounded-3 px-4">
-                                            Create your first announcement
+                                            {{ __('backend.announcements_index.create_first_announcement') }}
                                         </a>
                                     </div>
                                 </td>

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Edit Student')
+@section('title', __('backend.students_edit.title'))
 
 @section('content')
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
@@ -205,15 +205,15 @@
     <div class="page-header-card">
         <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3">
             <div>
-                <h1 class="page-title">Edit Student</h1>
+                <h1 class="page-title">{{ __('backend.students_edit.page_title') }}</h1>
                 <p class="page-subtitle">
-                    Update the student account information and academic profile without changing the underlying logic.
+                    {{ __('backend.students_edit.page_subtitle') }}
                 </p>
             </div>
 
             <div>
                 <a href="{{ route('admin.students.index') }}" class="btn btn-soft-back">
-                    <i class="bi bi-arrow-left me-2"></i>Back to Students
+                    <i class="bi bi-arrow-left me-2"></i>{{ __('backend.students_edit.back_to_students') }}
                 </a>
             </div>
         </div>
@@ -224,7 +224,7 @@
             <div class="d-flex align-items-start gap-2">
                 <i class="bi bi-exclamation-triangle-fill mt-1"></i>
                 <div>
-                    <div class="fw-bold mb-1">Please review the following errors:</div>
+                    <div class="fw-bold mb-1">{{ __('backend.students_edit.errors_review') }}</div>
                     <ul class="error-list">
                         @foreach ($errors->all() as $error)
                             <li>{{ $error }}</li>
@@ -241,35 +241,35 @@
 
         <div class="main-card">
             <div class="card-head">
-                <h2 class="card-title">Student Update Form</h2>
-                <div class="card-subtitle">Edit user details, status, and academic information from one place.</div>
+                <h2 class="card-title">{{ __('backend.students_edit.form_title') }}</h2>
+                <div class="card-subtitle">{{ __('backend.students_edit.form_subtitle') }}</div>
             </div>
 
             <div class="card-body-custom">
                 <div class="section-block mb-4">
                     <div class="section-title">
                         <span class="icon-wrap"><i class="bi bi-person-lines-fill"></i></span>
-                        Basic User Information
+                        {{ __('backend.students_edit.basic_user_information') }}
                     </div>
 
                     <div class="row g-4">
                         <div class="col-md-6">
-                            <label class="form-label">Name</label>
+                            <label class="form-label">{{ __('backend.students_edit.name') }}</label>
                             <input type="text" name="name" class="form-control" value="{{ old('name', $student->name) }}" required>
                         </div>
 
                         <div class="col-md-6">
-                            <label class="form-label">Email</label>
+                            <label class="form-label">{{ __('backend.students_edit.email') }}</label>
                             <input type="email" name="email" class="form-control" value="{{ old('email', $student->email) }}" required>
                         </div>
 
                         <div class="col-md-6">
-                            <label class="form-label">Status</label>
+                            <label class="form-label">{{ __('backend.students_edit.status') }}</label>
                             <select name="status" class="form-select" required>
-                                <option value="active" {{ old('status', $student->status) == 'active' ? 'selected' : '' }}>Active</option>
-                                <option value="pending" {{ old('status', $student->status) == 'pending' ? 'selected' : '' }}>Pending</option>
-                                <option value="inactive" {{ old('status', $student->status) == 'inactive' ? 'selected' : '' }}>Inactive</option>
-                                <option value="disabled" {{ old('status', $student->status) == 'disabled' ? 'selected' : '' }}>Disabled</option>
+                                <option value="active" {{ old('status', $student->status) == 'active' ? 'selected' : '' }}>{{ __('backend.students_edit.status_active') }}</option>
+                                <option value="pending" {{ old('status', $student->status) == 'pending' ? 'selected' : '' }}>{{ __('backend.students_edit.status_pending') }}</option>
+                                <option value="inactive" {{ old('status', $student->status) == 'inactive' ? 'selected' : '' }}>{{ __('backend.students_edit.status_inactive') }}</option>
+                                <option value="disabled" {{ old('status', $student->status) == 'disabled' ? 'selected' : '' }}>{{ __('backend.students_edit.status_disabled') }}</option>
                             </select>
                         </div>
                     </div>
@@ -278,37 +278,37 @@
                 <div class="section-block">
                     <div class="section-title">
                         <span class="icon-wrap"><i class="bi bi-mortarboard-fill"></i></span>
-                        Academic Information
+                        {{ __('backend.students_edit.academic_information') }}
                     </div>
 
                     <div class="row g-4">
                         <div class="col-md-4">
-                            <label class="form-label">Major</label>
+                            <label class="form-label">{{ __('backend.students_edit.major') }}</label>
                             <input type="text" name="major" class="form-control" value="{{ old('major', $student->student->major ?? '') }}">
                         </div>
 
                         <div class="col-md-4">
-                            <label class="form-label">Phone</label>
+                            <label class="form-label">{{ __('backend.students_edit.phone') }}</label>
                             <input type="text" name="phone" class="form-control" value="{{ old('phone', $student->student->phone ?? '') }}">
                         </div>
 
                         <div class="col-md-4">
-                            <label class="form-label">Address</label>
+                            <label class="form-label">{{ __('backend.students_edit.address') }}</label>
                             <input type="text" name="address" class="form-control" value="{{ old('address', $student->student->address ?? '') }}">
                         </div>
 
                         <div class="col-md-4">
-                            <label class="form-label">Current Courses</label>
+                            <label class="form-label">{{ __('backend.students_edit.current_courses') }}</label>
                             <input type="text" name="current_courses" class="form-control" value="{{ old('current_courses', $student->student->current_courses ?? '') }}">
                         </div>
 
                         <div class="col-md-4">
-                            <label class="form-label">Completed Courses</label>
+                            <label class="form-label">{{ __('backend.students_edit.completed_courses') }}</label>
                             <input type="text" name="completed_courses" class="form-control" value="{{ old('completed_courses', $student->student->completed_courses ?? '') }}">
                         </div>
 
                         <div class="col-md-4">
-                            <label class="form-label">Academic Advisor</label>
+                            <label class="form-label">{{ __('backend.students_edit.academic_advisor') }}</label>
                             <input type="text" name="academic_advisor" class="form-control" value="{{ old('academic_advisor', $student->student->academic_advisor ?? '') }}">
                         </div>
                     </div>
@@ -316,11 +316,11 @@
 
                 <div class="actions-bar">
                     <a href="{{ route('admin.students.index') }}" class="btn btn-soft-back">
-                        <i class="bi bi-arrow-left me-2"></i>Back
+                        <i class="bi bi-arrow-left me-2"></i>{{ __('backend.students_edit.back') }}
                     </a>
 
                     <button type="submit" class="btn btn-update-student" id="submitUpdateBtn">
-                        <i class="bi bi-check2-circle me-2"></i>Update Student
+                        <i class="bi bi-check2-circle me-2"></i>{{ __('backend.students_edit.update_student') }}
                     </button>
                 </div>
             </div>
@@ -336,7 +336,7 @@
         if (form && submitBtn) {
             form.addEventListener('submit', function () {
                 submitBtn.disabled = true;
-                submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Updating...';
+                submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>{{ __('backend.students_edit.updating') }}';
             });
         }
     });

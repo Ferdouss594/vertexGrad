@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Add Student')
+@section('title', __('backend.students_create.title'))
 
 @section('content')
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
@@ -213,15 +213,15 @@
     <div class="page-header-card">
         <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3">
             <div>
-                <h1 class="page-title">Add New Student</h1>
+                <h1 class="page-title">{{ __('backend.students_create.page_title') }}</h1>
                 <p class="page-subtitle">
-                    Create a new student account and save the academic details in one clean, structured form.
+                    {{ __('backend.students_create.page_subtitle') }}
                 </p>
             </div>
 
             <div>
                 <a href="{{ route('admin.students.index') }}" class="btn btn-soft-back">
-                    <i class="bi bi-arrow-left me-2"></i>Back to Students
+                    <i class="bi bi-arrow-left me-2"></i>{{ __('backend.students_create.back_to_students') }}
                 </a>
             </div>
         </div>
@@ -232,7 +232,7 @@
             <div class="d-flex align-items-start gap-2">
                 <i class="bi bi-exclamation-triangle-fill mt-1"></i>
                 <div>
-                    <div class="fw-bold mb-1">Please review the following errors:</div>
+                    <div class="fw-bold mb-1">{{ __('backend.students_create.errors_review') }}</div>
                     <ul class="error-list">
                         @foreach ($errors->all() as $error)
                             <li>{{ $error }}</li>
@@ -248,46 +248,46 @@
 
         <div class="main-card">
             <div class="card-head">
-                <h2 class="card-title">Student Registration Form</h2>
-                <div class="card-subtitle">Fill in the basic user data and student-specific information below.</div>
+                <h2 class="card-title">{{ __('backend.students_create.form_title') }}</h2>
+                <div class="card-subtitle">{{ __('backend.students_create.form_subtitle') }}</div>
             </div>
 
             <div class="card-body-custom">
                 <div class="section-block mb-4">
                     <div class="section-title">
                         <span class="icon-wrap"><i class="bi bi-person-badge"></i></span>
-                        Basic User Information
+                        {{ __('backend.students_create.basic_user_information') }}
                     </div>
 
                     <div class="row g-4">
                         <div class="col-md-6">
-                            <label class="form-label">Name</label>
+                            <label class="form-label">{{ __('backend.students_create.name') }}</label>
                             <input type="text" name="name" class="form-control" value="{{ old('name') }}" required>
                         </div>
 
                         <div class="col-md-6">
-                            <label class="form-label">Email</label>
+                            <label class="form-label">{{ __('backend.students_create.email') }}</label>
                             <input type="email" name="email" class="form-control" value="{{ old('email') }}" required>
                         </div>
 
                         <div class="col-md-6">
-                            <label class="form-label">Password</label>
+                            <label class="form-label">{{ __('backend.students_create.password') }}</label>
                             <div class="position-relative">
                                 <input type="password" name="password" id="passwordField" class="form-control pe-5" required>
                                 <button type="button" class="btn position-absolute top-50 end-0 translate-middle-y border-0 bg-transparent text-muted me-2" id="togglePassword">
                                     <i class="bi bi-eye"></i>
                                 </button>
                             </div>
-                            <div class="field-hint">Use a strong password for the new student account.</div>
+                            <div class="field-hint">{{ __('backend.students_create.password_hint') }}</div>
                         </div>
 
                         <div class="col-md-6">
-                            <label class="form-label">Status</label>
+                            <label class="form-label">{{ __('backend.students_create.status') }}</label>
                             <select name="status" class="form-select">
-                                <option value="active" {{ old('status')=='active' ? 'selected' : '' }}>Active</option>
-                                <option value="pending" {{ old('status')=='pending' ? 'selected' : '' }}>Pending</option>
-                                <option value="inactive" {{ old('status')=='inactive' ? 'selected' : '' }}>Inactive</option>
-                                <option value="disabled" {{ old('status')=='disabled' ? 'selected' : '' }}>Disabled</option>
+                                <option value="active" {{ old('status')=='active' ? 'selected' : '' }}>{{ __('backend.students_create.status_active') }}</option>
+                                <option value="pending" {{ old('status')=='pending' ? 'selected' : '' }}>{{ __('backend.students_create.status_pending') }}</option>
+                                <option value="inactive" {{ old('status')=='inactive' ? 'selected' : '' }}>{{ __('backend.students_create.status_inactive') }}</option>
+                                <option value="disabled" {{ old('status')=='disabled' ? 'selected' : '' }}>{{ __('backend.students_create.status_disabled') }}</option>
                             </select>
                         </div>
                     </div>
@@ -296,22 +296,22 @@
                 <div class="section-block">
                     <div class="section-title">
                         <span class="icon-wrap"><i class="bi bi-mortarboard"></i></span>
-                        Student Academic Information
+                        {{ __('backend.students_create.student_academic_information') }}
                     </div>
 
                     <div class="row g-4">
                         <div class="col-md-4">
-                            <label class="form-label">Major</label>
+                            <label class="form-label">{{ __('backend.students_create.major') }}</label>
                             <input type="text" name="major" class="form-control" value="{{ old('major') }}">
                         </div>
 
                         <div class="col-md-4">
-                            <label class="form-label">Phone</label>
+                            <label class="form-label">{{ __('backend.students_create.phone') }}</label>
                             <input type="text" name="phone" class="form-control" value="{{ old('phone') }}">
                         </div>
 
                         <div class="col-md-4">
-                            <label class="form-label">Address</label>
+                            <label class="form-label">{{ __('backend.students_create.address') }}</label>
                             <input type="text" name="address" class="form-control" value="{{ old('address') }}">
                         </div>
                     </div>
@@ -319,11 +319,11 @@
 
                 <div class="actions-bar">
                     <a href="{{ route('admin.students.index') }}" class="btn btn-soft-back">
-                        <i class="bi bi-arrow-left me-2"></i>Back
+                        <i class="bi bi-arrow-left me-2"></i>{{ __('backend.students_create.back') }}
                     </a>
 
                     <button type="submit" class="btn btn-create-student" id="submitCreateBtn">
-                        <i class="bi bi-person-plus-fill me-2"></i>Create Student
+                        <i class="bi bi-person-plus-fill me-2"></i>{{ __('backend.students_create.create_student') }}
                     </button>
                 </div>
             </div>
@@ -351,7 +351,7 @@
         if (form && submitBtn) {
             form.addEventListener('submit', function () {
                 submitBtn.disabled = true;
-                submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Creating...';
+                submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>{{ __('backend.students_create.creating') }}';
             });
         }
     });

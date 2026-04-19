@@ -1,22 +1,22 @@
 @extends('layouts.app')
 
-@section('title', 'Notifications')
+@section('title', __('backend.notifications.title'))
 
 @section('content')
 <div class="container py-4">
     <div class="d-flex align-items-center justify-content-between mb-3">
-        <h2 class="mb-0">Notifications</h2>
+        <h2 class="mb-0">{{ __('backend.notifications.page_title') }}</h2>
 
         <form method="POST" action="{{ route('admin.notifications.markAllRead') }}">
             @csrf
-            <button type="submit" class="btn btn-outline-primary btn-sm">Mark all as read</button>
+            <button type="submit" class="btn btn-outline-primary btn-sm">{{ __('backend.notifications.mark_all_as_read') }}</button>
         </form>
     </div>
     <div class="card shadow-sm border-0">
         <div class="card-body p-0">
             @forelse($notifications as $n)
                 @php
-                    $title = $n->data['title'] ?? 'Notification';
+                    $title = $n->data['title'] ?? __('backend.notifications.notification');
                     $message = $n->data['message'] ?? '';
                     $url = $n->data['url'] ?? null;
                     $icon = $n->data['icon'] ?? 'fas fa-bell';
@@ -45,7 +45,7 @@
                                     @csrf
                                     <input type="hidden" name="redirect" value="{{ $url }}">
                                     <button type="submit" class="btn btn-sm btn-secondary">
-                                        Open
+                                        {{ __('backend.notifications.open') }}
                                     </button>
                                 </form>
                             @endif
@@ -54,7 +54,7 @@
                                 <form method="POST" action="{{ route('admin.notifications.read', $n->id) }}">
                                     @csrf
                                     <button type="submit" class="btn btn-sm btn-primary">
-                                        Mark read
+                                        {{ __('backend.notifications.mark_read') }}
                                     </button>
                                 </form>
                             @endif
@@ -62,7 +62,7 @@
                     </div>
                 </div>
             @empty
-                <div class="p-4 text-muted">No notifications.</div>
+                <div class="p-4 text-muted">{{ __('backend.notifications.no_notifications') }}</div>
             @endforelse
         </div>
     </div>

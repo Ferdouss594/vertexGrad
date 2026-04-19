@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Add New Investor')
+@section('title', __('backend.investors_create.page_title'))
 
 @section('content')
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
@@ -134,7 +134,7 @@
 
     @if ($errors->any())
         <div class="alert alert-danger custom-alert mb-4" role="alert">
-            <strong>Please fix the following errors:</strong>
+            <strong>{{ __('backend.investors_create.fix_errors') }}</strong>
             <ul class="mb-0 mt-2">
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
@@ -146,15 +146,15 @@
     <div class="page-header-card">
         <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3">
             <div>
-                <h1 class="page-title">Add New Investor</h1>
+                <h1 class="page-title">{{ __('backend.investors_create.heading') }}</h1>
                 <p class="page-subtitle">
-                    Create a complete investor account with profile information, source, investment type, and budget details.
+                    {{ __('backend.investors_create.subtitle') }}
                 </p>
             </div>
 
             <div>
                 <a href="{{ route('admin.investors.index') }}" class="reset-btn px-4">
-                    <i class="fa fa-arrow-left mr-1"></i> Back
+                    <i class="fa fa-arrow-left mr-1"></i> {{ __('backend.investors_create.back') }}
                 </a>
             </div>
         </div>
@@ -162,16 +162,16 @@
 
     <div class="main-panel">
         <div class="panel-head">
-            <h2 class="panel-title">Investor Registration Form</h2>
-            <div class="panel-subtitle">Fill in the required account and profile information to create a new investor.</div>
+            <h2 class="panel-title">{{ __('backend.investors_create.form_title') }}</h2>
+            <div class="panel-subtitle">{{ __('backend.investors_create.form_subtitle') }}</div>
         </div>
 
         <div class="table-wrap">
             <form action="{{ route('admin.investors.store') }}"
                   method="POST"
                   class="ajax-ui-form"
-                  data-submit-text="Create Investor"
-                  data-loading-text="Creating...">
+                  data-submit-text="{{ __('backend.investors_create.create_investor') }}"
+                  data-loading-text="{{ __('backend.investors_create.creating') }}">
                 @csrf
                 @include('investors._form')
             </form>
@@ -188,7 +188,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!btn) return;
 
             btn.disabled = true;
-            btn.innerHTML = '<i class="fa fa-spinner fa-spin mr-1"></i> ' + (form.dataset.loadingText || 'Processing...');
+            btn.innerHTML = '<i class="fa fa-spinner fa-spin mr-1"></i> ' + (form.dataset.loadingText || @json(__('backend.investors_create.processing')));
         });
     });
 

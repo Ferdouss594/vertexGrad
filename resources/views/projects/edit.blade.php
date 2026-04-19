@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Edit Project')
+@section('title', __('backend.projects_edit.page_title'))
 
 @section('content')
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
@@ -252,7 +252,7 @@
 
     @if($errors->any())
         <div class="alert alert-danger custom-alert mb-4">
-            <strong>Please fix the following errors:</strong>
+            <strong>{{ __('backend.projects_edit.please_fix_errors') }}</strong>
             <ul class="mb-0 mt-2 pl-3">
                 @foreach($errors->all() as $error)
                     <li>{{ $error }}</li>
@@ -264,18 +264,18 @@
     <div class="page-header-card">
         <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3">
             <div>
-                <h1 class="page-title">Edit Project</h1>
+                <h1 class="page-title">{{ __('backend.projects_edit.heading') }}</h1>
                 <p class="page-subtitle">
-                    Update project details, assign related users, manage workflow status, and keep the record organized professionally.
+                    {{ __('backend.projects_edit.subtitle') }}
                 </p>
             </div>
 
             <div class="d-flex flex-wrap gap-2">
                 <a href="{{ route('admin.projects.show', $project) }}" class="reset-btn">
-                    <i class="fa fa-eye mr-1"></i> View Project
+                    <i class="fa fa-eye mr-1"></i> {{ __('backend.projects_edit.view_project') }}
                 </a>
                 <a href="{{ route('admin.projects.index') }}" class="reset-btn">
-                    <i class="fa fa-arrow-left mr-1"></i> Back
+                    <i class="fa fa-arrow-left mr-1"></i> {{ __('backend.projects_edit.back') }}
                 </a>
             </div>
         </div>
@@ -283,39 +283,39 @@
 
     @if(in_array($project->status, ['pending', 'active', 'draft']))
         <div class="notice-box notice-info">
-            <strong>Scanner Action Available:</strong>
-            This project can be sent to the scanner platform for technical analysis when you are ready.
+            <strong>{{ __('backend.projects_edit.scanner_action_available') }}</strong>
+            {{ __('backend.projects_edit.scanner_action_available_text') }}
         </div>
     @endif
 
     @if(in_array($project->status, ['scan_requested', 'awaiting_manual_review']))
         <div class="notice-box notice-info">
-            <strong>Project Under Review:</strong>
-            This project has already entered the scanning/review workflow.
+            <strong>{{ __('backend.projects_edit.project_under_review') }}</strong>
+            {{ __('backend.projects_edit.project_under_review_text') }}
         </div>
     @endif
 
     @if(in_array($project->status, ['approved', 'published', 'completed']))
         <div class="notice-box notice-success">
-            <strong>Approved Workflow:</strong>
-            This project has already passed the approval stage and the student can now upload media files.
+            <strong>{{ __('backend.projects_edit.approved_workflow') }}</strong>
+            {{ __('backend.projects_edit.approved_workflow_text') }}
         </div>
     @endif
 
     <div class="main-panel form-animate">
         <div class="panel-head">
-            <h2 class="panel-title">Project Actions</h2>
-            <div class="panel-subtitle">Quick access to scan page and project details.</div>
+            <h2 class="panel-title">{{ __('backend.projects_edit.project_actions') }}</h2>
+            <div class="panel-subtitle">{{ __('backend.projects_edit.project_actions_subtitle') }}</div>
         </div>
 
         <div class="table-wrap">
             <div class="action-bar">
                 <a href="{{ route('admin.projects.scannerReview', $project) }}" class="btn btn-outline-info search-btn">
-                    <i class="fa fa-search mr-1"></i> Go to Scan Page
+                    <i class="fa fa-search mr-1"></i> {{ __('backend.projects_edit.go_to_scan_page') }}
                 </a>
 
                 <a href="{{ route('admin.projects.show', $project) }}" class="btn btn-outline-primary search-btn">
-                    <i class="fa fa-folder-open mr-1"></i> Open Details
+                    <i class="fa fa-folder-open mr-1"></i> {{ __('backend.projects_edit.open_details') }}
                 </a>
             </div>
         </div>
@@ -327,40 +327,40 @@
 
         <div class="main-panel form-animate">
             <div class="panel-head">
-                <h2 class="panel-title">Project Overview</h2>
-                <div class="panel-subtitle">Basic information and system status for this project.</div>
+                <h2 class="panel-title">{{ __('backend.projects_edit.project_overview') }}</h2>
+                <div class="panel-subtitle">{{ __('backend.projects_edit.project_overview_subtitle') }}</div>
             </div>
 
             <div class="table-wrap">
                 <div class="row">
                     <div class="col-md-6 mb-4">
                         <div class="mb-3">
-                            <label class="form-label-custom" for="name">Project Name</label>
+                            <label class="form-label-custom" for="name">{{ __('backend.projects_edit.project_name') }}</label>
                             <input type="text" id="name" name="name" class="form-control custom-input" value="{{ old('name', $project->name) }}" required>
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label-custom" for="category">Category</label>
-                            <input type="text" id="category" name="category" class="form-control custom-input" value="{{ old('category', $project->category) }}" placeholder="e.g. Software, Healthcare, AI">
+                            <label class="form-label-custom" for="category">{{ __('backend.projects_edit.category') }}</label>
+                            <input type="text" id="category" name="category" class="form-control custom-input" value="{{ old('category', $project->category) }}" placeholder="{{ __('backend.projects_edit.category_placeholder') }}">
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label-custom" for="budget">Budget</label>
+                            <label class="form-label-custom" for="budget">{{ __('backend.projects_edit.budget') }}</label>
                             <input type="number" step="0.01" id="budget" name="budget" class="form-control custom-input" value="{{ old('budget', $project->budget) }}" placeholder="0.00">
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label-custom" for="priority">Priority</label>
+                            <label class="form-label-custom" for="priority">{{ __('backend.projects_edit.priority') }}</label>
                             <select id="priority" name="priority" class="form-select custom-input">
-                                <option value="Low" {{ old('priority', $project->priority) === 'Low' ? 'selected' : '' }}>Low</option>
-                                <option value="Medium" {{ old('priority', $project->priority) === 'Medium' ? 'selected' : '' }}>Medium</option>
-                                <option value="High" {{ old('priority', $project->priority) === 'High' ? 'selected' : '' }}>High</option>
+                                <option value="Low" {{ old('priority', $project->priority) === 'Low' ? 'selected' : '' }}>{{ __('backend.projects_edit.priority_low') }}</option>
+                                <option value="Medium" {{ old('priority', $project->priority) === 'Medium' ? 'selected' : '' }}>{{ __('backend.projects_edit.priority_medium') }}</option>
+                                <option value="High" {{ old('priority', $project->priority) === 'High' ? 'selected' : '' }}>{{ __('backend.projects_edit.priority_high') }}</option>
                             </select>
                         </div>
 
                         <div class="mb-0">
-                            <label class="form-label-custom" for="description">Description</label>
-                            <textarea id="description" name="description" class="form-control custom-input" rows="6" placeholder="Write a clear description of the project...">{{ old('description', $project->description) }}</textarea>
+                            <label class="form-label-custom" for="description">{{ __('backend.projects_edit.description') }}</label>
+                            <textarea id="description" name="description" class="form-control custom-input" rows="6" placeholder="{{ __('backend.projects_edit.description_placeholder') }}">{{ old('description', $project->description) }}</textarea>
                         </div>
                     </div>
 
@@ -376,65 +376,65 @@
 
                         <div class="mb-3">
                             <span class="badge-soft {{ $statusClass }}">
-                                Current Status: {{ ucfirst(str_replace('_', ' ', $project->status ?? 'unknown')) }}
+                                {{ __('backend.projects_edit.current_status') }} {{ ucfirst(str_replace('_', ' ', $project->status ?? 'unknown')) }}
                             </span>
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label-custom" for="status">Project Status</label>
+                            <label class="form-label-custom" for="status">{{ __('backend.projects_edit.project_status') }}</label>
                             <select id="status" name="status" class="form-select custom-input" required>
-                                <option value="draft" {{ old('status', $project->status) === 'draft' ? 'selected' : '' }}>Draft</option>
-                                <option value="pending" {{ old('status', $project->status) === 'pending' ? 'selected' : '' }}>Pending</option>
-                                <option value="scan_requested" {{ old('status', $project->status) === 'scan_requested' ? 'selected' : '' }}>Scan Requested</option>
-                                <option value="awaiting_manual_review" {{ old('status', $project->status) === 'awaiting_manual_review' ? 'selected' : '' }}>Awaiting Manual Review</option>
-                                <option value="approved" {{ old('status', $project->status) === 'approved' ? 'selected' : '' }}>Approved</option>
-                                <option value="published" {{ old('status', $project->status) === 'published' ? 'selected' : '' }}>Published</option>
-                                <option value="active" {{ old('status', $project->status) === 'active' ? 'selected' : '' }}>Active</option>
-                                <option value="completed" {{ old('status', $project->status) === 'completed' ? 'selected' : '' }}>Completed</option>
-                                <option value="rejected" {{ old('status', $project->status) === 'rejected' ? 'selected' : '' }}>Rejected</option>
-                                <option value="scan_failed" {{ old('status', $project->status) === 'scan_failed' ? 'selected' : '' }}>Scan Failed</option>
+                                <option value="draft" {{ old('status', $project->status) === 'draft' ? 'selected' : '' }}>{{ __('backend.projects_edit.status_draft') }}</option>
+                                <option value="pending" {{ old('status', $project->status) === 'pending' ? 'selected' : '' }}>{{ __('backend.projects_edit.status_pending') }}</option>
+                                <option value="scan_requested" {{ old('status', $project->status) === 'scan_requested' ? 'selected' : '' }}>{{ __('backend.projects_edit.status_scan_requested') }}</option>
+                                <option value="awaiting_manual_review" {{ old('status', $project->status) === 'awaiting_manual_review' ? 'selected' : '' }}>{{ __('backend.projects_edit.status_awaiting_manual_review') }}</option>
+                                <option value="approved" {{ old('status', $project->status) === 'approved' ? 'selected' : '' }}>{{ __('backend.projects_edit.status_approved') }}</option>
+                                <option value="published" {{ old('status', $project->status) === 'published' ? 'selected' : '' }}>{{ __('backend.projects_edit.status_published') }}</option>
+                                <option value="active" {{ old('status', $project->status) === 'active' ? 'selected' : '' }}>{{ __('backend.projects_edit.status_active') }}</option>
+                                <option value="completed" {{ old('status', $project->status) === 'completed' ? 'selected' : '' }}>{{ __('backend.projects_edit.status_completed') }}</option>
+                                <option value="rejected" {{ old('status', $project->status) === 'rejected' ? 'selected' : '' }}>{{ __('backend.projects_edit.status_rejected') }}</option>
+                                <option value="scan_failed" {{ old('status', $project->status) === 'scan_failed' ? 'selected' : '' }}>{{ __('backend.projects_edit.status_scan_failed') }}</option>
                             </select>
                         </div>
 
                         <div class="row">
                             <div class="col-sm-6 mb-3">
                                 <div class="info-box">
-                                    <div class="info-label">Project ID</div>
+                                    <div class="info-label">{{ __('backend.projects_edit.project_id') }}</div>
                                     <div class="info-value">{{ $project->project_id ?? $project->id }}</div>
                                 </div>
                             </div>
 
                             <div class="col-sm-6 mb-3">
                                 <div class="info-box">
-                                    <div class="info-label">Scanner Status</div>
+                                    <div class="info-label">{{ __('backend.projects_edit.scanner_status') }}</div>
                                     <div class="info-value">{{ $project->scanner_status ?? '—' }}</div>
                                 </div>
                             </div>
 
                             <div class="col-sm-6 mb-3">
                                 <div class="info-box">
-                                    <div class="info-label">Scanner Project ID</div>
+                                    <div class="info-label">{{ __('backend.projects_edit.scanner_project_id') }}</div>
                                     <div class="info-value">{{ $project->scanner_project_id ?? '—' }}</div>
                                 </div>
                             </div>
 
                             <div class="col-sm-6 mb-3">
                                 <div class="info-box">
-                                    <div class="info-label">Scan Score</div>
+                                    <div class="info-label">{{ __('backend.projects_edit.scan_score') }}</div>
                                     <div class="info-value">{{ $project->scan_score ?? '—' }}</div>
                                 </div>
                             </div>
 
                             <div class="col-sm-6 mb-3">
                                 <div class="info-box">
-                                    <div class="info-label">Created At</div>
+                                    <div class="info-label">{{ __('backend.projects_edit.created_at') }}</div>
                                     <div class="info-value">{{ optional($project->created_at)->format('Y-m-d h:i A') ?? '—' }}</div>
                                 </div>
                             </div>
 
                             <div class="col-sm-6 mb-3">
                                 <div class="info-box">
-                                    <div class="info-label">Updated At</div>
+                                    <div class="info-label">{{ __('backend.projects_edit.updated_at') }}</div>
                                     <div class="info-value">{{ optional($project->updated_at)->format('Y-m-d h:i A') ?? '—' }}</div>
                                 </div>
                             </div>
@@ -446,17 +446,17 @@
 
         <div class="main-panel form-animate">
             <div class="panel-head">
-                <h2 class="panel-title">Assignments</h2>
-                <div class="panel-subtitle">Assign student, supervisor, manager, and investor.</div>
+                <h2 class="panel-title">{{ __('backend.projects_edit.assignments') }}</h2>
+                <div class="panel-subtitle">{{ __('backend.projects_edit.assignments_subtitle') }}</div>
             </div>
 
             <div class="table-wrap">
                 <div class="row">
                     <div class="col-md-6 mb-4">
-                        <label class="form-label-custom" for="student_id">Student</label>
+                        <label class="form-label-custom" for="student_id">{{ __('backend.projects_edit.student') }}</label>
                         <div class="student-row">
                             <select id="student_id" name="student_id" class="form-select custom-input">
-                                <option value="">Select Student</option>
+                                <option value="">{{ __('backend.projects_edit.select_student') }}</option>
                                 @foreach($students as $student)
                                     <option value="{{ $student->id }}"
                                         {{ (string) old('student_id', $project->student_id) === (string) $student->id ? 'selected' : '' }}>
@@ -466,15 +466,15 @@
                             </select>
 
                             <a href="{{ route('register.academic') }}" class="btn btn-success search-btn">
-                                <i class="fa fa-user-plus mr-1"></i> Add New Student
+                                <i class="fa fa-user-plus mr-1"></i> {{ __('backend.projects_edit.add_new_student') }}
                             </a>
                         </div>
                     </div>
 
                     <div class="col-md-6 mb-4">
-                        <label class="form-label-custom" for="supervisor_id">Supervisor</label>
+                        <label class="form-label-custom" for="supervisor_id">{{ __('backend.projects_edit.supervisor') }}</label>
                         <select id="supervisor_id" name="supervisor_id" class="form-select custom-input">
-                            <option value="">Select Supervisor</option>
+                            <option value="">{{ __('backend.projects_edit.select_supervisor') }}</option>
                             @foreach($supervisors as $supervisor)
                                 <option value="{{ $supervisor->id }}"
                                     {{ (string) old('supervisor_id', $project->supervisor_id) === (string) $supervisor->id ? 'selected' : '' }}>
@@ -485,9 +485,9 @@
                     </div>
 
                     <div class="col-md-6 mb-4">
-                        <label class="form-label-custom" for="manager_id">Manager</label>
+                        <label class="form-label-custom" for="manager_id">{{ __('backend.projects_edit.manager') }}</label>
                         <select id="manager_id" name="manager_id" class="form-select custom-input">
-                            <option value="">Select Manager</option>
+                            <option value="">{{ __('backend.projects_edit.select_manager') }}</option>
                             @foreach($managers as $manager)
                                 <option value="{{ $manager->id }}"
                                     {{ (string) old('manager_id', $project->manager_id) === (string) $manager->id ? 'selected' : '' }}>
@@ -498,9 +498,9 @@
                     </div>
 
                     <div class="col-md-6 mb-4">
-                        <label class="form-label-custom" for="investor_id">Investor</label>
+                        <label class="form-label-custom" for="investor_id">{{ __('backend.projects_edit.investor') }}</label>
                         <select id="investor_id" name="investor_id" class="form-select custom-input">
-                            <option value="">Select Investor</option>
+                            <option value="">{{ __('backend.projects_edit.select_investor') }}</option>
                             @foreach($investors as $investor)
                                 <option value="{{ $investor->id }}"
                                     {{ (string) old('investor_id', $project->investor_id) === (string) $investor->id ? 'selected' : '' }}>
@@ -515,15 +515,15 @@
 
         <div class="action-bar">
             <button type="submit" class="btn btn-primary search-btn">
-                <i class="fa fa-save mr-1"></i> Save Changes
+                <i class="fa fa-save mr-1"></i> {{ __('backend.projects_edit.save_changes') }}
             </button>
 
             <a href="{{ route('admin.projects.show', $project) }}" class="reset-btn">
-                <i class="fa fa-eye mr-1"></i> View
+                <i class="fa fa-eye mr-1"></i> {{ __('backend.projects_edit.view') }}
             </a>
 
             <a href="{{ route('admin.projects.index') }}" class="reset-btn">
-                Cancel
+                {{ __('backend.projects_edit.cancel') }}
             </a>
         </div>
     </form>

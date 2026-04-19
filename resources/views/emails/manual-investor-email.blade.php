@@ -15,7 +15,7 @@
         <hr style="border:none; border-top:1px solid #e5e7eb; margin:24px 0;">
 
         <div style="font-size:12px; color:#6b7280;">
-            Sent from VertexGrad Manager Panel
+            {{ __('backend.mail_manager_panel.sent_from_manager_panel') }}
         </div>
     </div>
 </body>

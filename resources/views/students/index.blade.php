@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Students')
+@section('title', __('backend.students_index.title'))
 
 @section('content')
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
@@ -445,15 +445,15 @@
     <div class="page-header-card">
         <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3">
             <div>
-                <h1 class="page-title">Students</h1>
+                <h1 class="page-title">{{ __('backend.students_index.page_title') }}</h1>
                 <p class="page-subtitle">
-                    Browse, filter, search, and manage student records through one unified professional dashboard.
+                    {{ __('backend.students_index.page_subtitle') }}
                 </p>
             </div>
 
             <div>
                 <a href="{{ route('admin.students.create') }}" class="btn btn-primary px-4 py-2 rounded-pill fw-semibold">
-                    <i class="bi bi-plus-lg me-2"></i>Add Student
+                    <i class="bi bi-plus-lg me-2"></i>{{ __('backend.students_index.add_student') }}
                 </a>
             </div>
         </div>
@@ -463,66 +463,66 @@
         <div class="col-lg-2 col-md-4 col-sm-6">
             <div class="stat-card stat-all" onclick="clearStatusFilter()">
                 <div class="stat-top">
-                    <p class="stat-label">All Students</p>
+                    <p class="stat-label">{{ __('backend.students_index.all_students') }}</p>
                     <span class="stat-icon"><i class="bi bi-people-fill"></i></span>
                 </div>
                 <h3 class="stat-value">{{ $allCount }}</h3>
-                <div class="stat-note">Complete student overview</div>
+                <div class="stat-note">{{ __('backend.students_index.all_students_note') }}</div>
             </div>
         </div>
 
         <div class="col-lg-2 col-md-4 col-sm-6">
             <div class="stat-card stat-pending" onclick="setStatusFilter('pending')">
                 <div class="stat-top">
-                    <p class="stat-label">Pending</p>
+                    <p class="stat-label">{{ __('backend.students_index.status_pending') }}</p>
                     <span class="stat-icon"><i class="bi bi-hourglass-split"></i></span>
                 </div>
                 <h3 class="stat-value">{{ $pendingCount }}</h3>
-                <div class="stat-note">Awaiting confirmation</div>
+                <div class="stat-note">{{ __('backend.students_index.pending_note') }}</div>
             </div>
         </div>
 
         <div class="col-lg-2 col-md-4 col-sm-6">
             <div class="stat-card stat-active" onclick="setStatusFilter('active')">
                 <div class="stat-top">
-                    <p class="stat-label">Active</p>
+                    <p class="stat-label">{{ __('backend.students_index.status_active') }}</p>
                     <span class="stat-icon"><i class="bi bi-check-circle-fill"></i></span>
                 </div>
                 <h3 class="stat-value">{{ $activeCount }}</h3>
-                <div class="stat-note">Enabled student accounts</div>
+                <div class="stat-note">{{ __('backend.students_index.active_note') }}</div>
             </div>
         </div>
 
         <div class="col-lg-2 col-md-4 col-sm-6">
             <div class="stat-card stat-inactive" onclick="setStatusFilter('inactive')">
                 <div class="stat-top">
-                    <p class="stat-label">Inactive</p>
+                    <p class="stat-label">{{ __('backend.students_index.status_inactive') }}</p>
                     <span class="stat-icon"><i class="bi bi-pause-circle-fill"></i></span>
                 </div>
                 <h3 class="stat-value">{{ $inactiveCount }}</h3>
-                <div class="stat-note">Temporarily inactive</div>
+                <div class="stat-note">{{ __('backend.students_index.inactive_note') }}</div>
             </div>
         </div>
 
         <div class="col-lg-2 col-md-4 col-sm-6">
             <div class="stat-card stat-disabled" onclick="setStatusFilter('disabled')">
                 <div class="stat-top">
-                    <p class="stat-label">Disabled</p>
+                    <p class="stat-label">{{ __('backend.students_index.status_disabled') }}</p>
                     <span class="stat-icon"><i class="bi bi-slash-circle-fill"></i></span>
                 </div>
                 <h3 class="stat-value">{{ $disabledCount }}</h3>
-                <div class="stat-note">Restricted accounts</div>
+                <div class="stat-note">{{ __('backend.students_index.disabled_note') }}</div>
             </div>
         </div>
 
         <div class="col-lg-2 col-md-4 col-sm-6">
             <div class="stat-card stat-add" onclick="window.location.href='{{ route('admin.students.create') }}'">
                 <div class="stat-top">
-                    <p class="stat-label">Quick Create</p>
+                    <p class="stat-label">{{ __('backend.students_index.quick_create') }}</p>
                     <span class="stat-icon"><i class="bi bi-person-plus-fill"></i></span>
                 </div>
-                <h3 class="stat-value">New</h3>
-                <div class="stat-note">Create a student instantly</div>
+                <h3 class="stat-value">{{ __('backend.students_index.new') }}</h3>
+                <div class="stat-note">{{ __('backend.students_index.quick_create_note') }}</div>
             </div>
         </div>
     </div>
@@ -531,28 +531,28 @@
         <form method="GET" action="{{ route('admin.students.index') }}" id="studentsFilterForm">
             <div class="row g-3 align-items-end">
                 <div class="col-lg-4 col-md-6">
-                    <label class="filter-label">Search</label>
+                    <label class="filter-label">{{ __('backend.students_index.search') }}</label>
                     <input
                         type="text"
                         name="search"
                         value="{{ request('search') }}"
                         class="form-control filter-input"
-                        placeholder="Search by name or email">
+                        placeholder="{{ __('backend.students_index.search_placeholder') }}">
                 </div>
 
                 <div class="col-lg-3 col-md-6">
-                    <label class="filter-label">Status</label>
+                    <label class="filter-label">{{ __('backend.students_index.status') }}</label>
                     <select id="statusFilter" name="status" class="form-select filter-select">
-                        <option value="">All</option>
-                        <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Active</option>
-                        <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
-                        <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>Inactive</option>
-                        <option value="disabled" {{ request('status') == 'disabled' ? 'selected' : '' }}>Disabled</option>
+                        <option value="">{{ __('backend.students_index.all') }}</option>
+                        <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>{{ __('backend.students_index.status_active') }}</option>
+                        <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>{{ __('backend.students_index.status_pending') }}</option>
+                        <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>{{ __('backend.students_index.status_inactive') }}</option>
+                        <option value="disabled" {{ request('status') == 'disabled' ? 'selected' : '' }}>{{ __('backend.students_index.status_disabled') }}</option>
                     </select>
                 </div>
 
                 <div class="col-lg-2 col-md-4">
-                    <label class="filter-label">Show entries</label>
+                    <label class="filter-label">{{ __('backend.students_index.show_entries') }}</label>
                     <select id="entries" name="per_page" class="form-select filter-select">
                         <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
                         <option value="15" {{ request('per_page', 15) == 15 ? 'selected' : '' }}>15</option>
@@ -565,10 +565,10 @@
                 <div class="col-lg-3 col-md-8">
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-primary search-btn w-100">
-                            <i class="bi bi-search me-2"></i>Apply
+                            <i class="bi bi-search me-2"></i>{{ __('backend.students_index.apply') }}
                         </button>
                         <a href="{{ route('admin.students.index') }}" class="reset-btn w-100">
-                            <i class="bi bi-arrow-counterclockwise me-2"></i>Reset
+                            <i class="bi bi-arrow-counterclockwise me-2"></i>{{ __('backend.students_index.reset') }}
                         </a>
                     </div>
                 </div>
@@ -578,8 +578,8 @@
 
     <div class="main-panel">
         <div class="panel-head">
-            <h2 class="panel-title">Students Directory</h2>
-            <div class="panel-subtitle">Sortable student records with quick actions and clear status management.</div>
+            <h2 class="panel-title">{{ __('backend.students_index.directory_title') }}</h2>
+            <div class="panel-subtitle">{{ __('backend.students_index.directory_subtitle') }}</div>
         </div>
 
         <div class="table-wrap">
@@ -587,13 +587,13 @@
                 <table id="studentsTable" class="table students-table align-middle">
                     <thead>
                         <tr>
-                            <th class="sortable text-center">Name <i class="bi"></i></th>
-                            <th class="sortable text-center">Email <i class="bi"></i></th>
-                            <th class="sortable text-center">Major <i class="bi"></i></th>
-                            <th class="sortable text-center">Phone <i class="bi"></i></th>
-                            <th class="sortable text-center">Address <i class="bi"></i></th>
-                            <th class="sortable text-center">Status <i class="bi"></i></th>
-                            <th class="text-center">Actions</th>
+                            <th class="sortable text-center">{{ __('backend.students_index.name') }} <i class="bi"></i></th>
+                            <th class="sortable text-center">{{ __('backend.students_index.email') }} <i class="bi"></i></th>
+                            <th class="sortable text-center">{{ __('backend.students_index.major') }} <i class="bi"></i></th>
+                            <th class="sortable text-center">{{ __('backend.students_index.phone') }} <i class="bi"></i></th>
+                            <th class="sortable text-center">{{ __('backend.students_index.address') }} <i class="bi"></i></th>
+                            <th class="sortable text-center">{{ __('backend.students_index.status') }} <i class="bi"></i></th>
+                            <th class="text-center">{{ __('backend.students_index.actions') }}</th>
                         </tr>
                     </thead>
 
@@ -632,24 +632,30 @@
                                     @endphp
 
                                     <span class="badge-status {{ $statusClass }}">
-                                        {{ ucfirst($user->status ?? '—') }}
+                                        {{ match($user->status) {
+                                            'active' => __('backend.students_index.status_active'),
+                                            'inactive' => __('backend.students_index.status_inactive'),
+                                            'pending' => __('backend.students_index.status_pending'),
+                                            'disabled' => __('backend.students_index.status_disabled'),
+                                            default => '—',
+                                        } }}
                                     </span>
                                 </td>
 
                                 <td class="text-center">
                                     <div class="actions-group">
-                                        <a href="{{ route('admin.students.show', $user->id) }}" class="action-btn btn-view" title="View">
+                                        <a href="{{ route('admin.students.show', $user->id) }}" class="action-btn btn-view" title="{{ __('backend.students_index.view') }}">
                                             <i class="bi bi-eye"></i>
                                         </a>
 
-                                        <a href="{{ route('admin.students.edit', $user->id) }}" class="action-btn btn-edit" title="Edit">
+                                        <a href="{{ route('admin.students.edit', $user->id) }}" class="action-btn btn-edit" title="{{ __('backend.students_index.edit') }}">
                                             <i class="bi bi-pencil-square"></i>
                                         </a>
 
                                         <form action="{{ route('admin.students.destroy', $user->id) }}" method="POST" class="d-inline">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="action-btn btn-delete" onclick="return confirm('Are you sure?')" title="Delete">
+                                            <button type="submit" class="action-btn btn-delete" onclick="return confirm('{{ __('backend.students_index.delete_confirm') }}')" title="{{ __('backend.students_index.delete') }}">
                                                 <i class="bi bi-trash"></i>
                                             </button>
                                         </form>
@@ -658,7 +664,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="empty-state">No students found</td>
+                                <td colspan="7" class="empty-state">{{ __('backend.students_index.no_students_found') }}</td>
                             </tr>
                         @endforelse
                     </tbody>

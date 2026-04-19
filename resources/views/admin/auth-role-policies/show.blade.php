@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Manage Role Authentication Policy')
+@section('title', __('backend.auth_role_policies_show.title'))
 
 @section('content')
 <style>
@@ -109,26 +109,27 @@
         <div class="hero-card">
             <div class="d-flex justify-content-between align-items-start flex-wrap" style="gap: 16px;">
                 <div>
-                    <div class="hero-title">Manage Role Authentication Policy</div>
+                    <div class="hero-title">{{ __('backend.auth_role_policies_show.page_title') }}</div>
                     <p class="hero-text">
-                        Update the default authentication behavior for the <strong>{{ $rolePolicy->role_name }}</strong> role.
-                        Any new user in this role will inherit these settings automatically.
+                        {{ __('backend.auth_role_policies_show.page_subtitle_before') }}
+                        <strong>{{ $rolePolicy->role_name }}</strong>
+                        {{ __('backend.auth_role_policies_show.page_subtitle_after') }}
                     </p>
                 </div>
 
                 <a href="{{ route('admin.auth-role-policies.index') }}"
                    class="btn btn-light btn-sm"
                    style="border-radius: 10px; font-weight: 700;">
-                    Back
+                    {{ __('backend.auth_role_policies_show.back') }}
                 </a>
             </div>
         </div>
 
         <div class="section-card">
             <div class="section-header">
-                <h4>Role Policy Summary</h4>
+                <h4>{{ __('backend.auth_role_policies_show.summary_title') }}</h4>
                 <div class="section-subtext">
-                    This is the current default security policy for the selected role.
+                    {{ __('backend.auth_role_policies_show.summary_subtitle') }}
                 </div>
             </div>
 
@@ -136,57 +137,57 @@
                 <div class="row">
                     <div class="col-md-4 mb-3">
                         <div class="info-box">
-                            <div class="info-label">Role Name</div>
+                            <div class="info-label">{{ __('backend.auth_role_policies_show.role_name') }}</div>
                             <div class="info-value">{{ $rolePolicy->role_name }}</div>
                         </div>
                     </div>
 
                     <div class="col-md-4 mb-3">
                         <div class="info-box">
-                            <div class="info-label">Email Verification</div>
+                            <div class="info-label">{{ __('backend.auth_role_policies_show.email_verification') }}</div>
                             <div class="info-value">{{ ucfirst($rolePolicy->email_verification_mode) }}</div>
                         </div>
                     </div>
 
                     <div class="col-md-4 mb-3">
                         <div class="info-box">
-                            <div class="info-label">OTP Mode</div>
+                            <div class="info-label">{{ __('backend.auth_role_policies_show.otp_mode') }}</div>
                             <div class="info-value">{{ ucfirst($rolePolicy->otp_mode) }}</div>
                         </div>
                     </div>
 
                     <div class="col-md-4 mb-3">
                         <div class="info-box">
-                            <div class="info-label">Trusted Devices</div>
-                            <div class="info-value">{{ $rolePolicy->trusted_devices_enabled ? 'Enabled' : 'Disabled' }}</div>
+                            <div class="info-label">{{ __('backend.auth_role_policies_show.trusted_devices') }}</div>
+                            <div class="info-value">{{ $rolePolicy->trusted_devices_enabled ? __('backend.auth_role_policies_show.enabled') : __('backend.auth_role_policies_show.disabled') }}</div>
                         </div>
                     </div>
 
                     <div class="col-md-4 mb-3">
                         <div class="info-box">
-                            <div class="info-label">Recovery Codes</div>
-                            <div class="info-value">{{ $rolePolicy->recovery_codes_enabled ? 'Enabled' : 'Disabled' }}</div>
+                            <div class="info-label">{{ __('backend.auth_role_policies_show.recovery_codes') }}</div>
+                            <div class="info-value">{{ $rolePolicy->recovery_codes_enabled ? __('backend.auth_role_policies_show.enabled') : __('backend.auth_role_policies_show.disabled') }}</div>
                         </div>
                     </div>
 
                     <div class="col-md-4 mb-3">
                         <div class="info-box">
-                            <div class="info-label">Suspicious Login Alerts</div>
-                            <div class="info-value">{{ $rolePolicy->suspicious_login_alerts_enabled ? 'Enabled' : 'Disabled' }}</div>
+                            <div class="info-label">{{ __('backend.auth_role_policies_show.suspicious_login_alerts') }}</div>
+                            <div class="info-value">{{ $rolePolicy->suspicious_login_alerts_enabled ? __('backend.auth_role_policies_show.enabled') : __('backend.auth_role_policies_show.disabled') }}</div>
                         </div>
                     </div>
 
                     <div class="col-md-4 mb-3">
                         <div class="info-box">
-                            <div class="info-label">Remember Me</div>
-                            <div class="info-value">{{ $rolePolicy->remember_me_enabled ? 'Enabled' : 'Disabled' }}</div>
+                            <div class="info-label">{{ __('backend.auth_role_policies_show.remember_me') }}</div>
+                            <div class="info-value">{{ $rolePolicy->remember_me_enabled ? __('backend.auth_role_policies_show.enabled') : __('backend.auth_role_policies_show.disabled') }}</div>
                         </div>
                     </div>
 
                     <div class="col-md-4 mb-3">
                         <div class="info-box">
-                            <div class="info-label">Emergency Bypass</div>
-                            <div class="info-value">{{ $rolePolicy->emergency_bypass_enabled ? 'Enabled' : 'Disabled' }}</div>
+                            <div class="info-label">{{ __('backend.auth_role_policies_show.emergency_bypass') }}</div>
+                            <div class="info-value">{{ $rolePolicy->emergency_bypass_enabled ? __('backend.auth_role_policies_show.enabled') : __('backend.auth_role_policies_show.disabled') }}</div>
                         </div>
                     </div>
                 </div>
@@ -195,9 +196,9 @@
 
         <div class="section-card">
             <div class="section-header">
-                <h5>Edit Role Default Policy</h5>
+                <h5>{{ __('backend.auth_role_policies_show.edit_title') }}</h5>
                 <div class="section-subtext">
-                    Changing this affects new users in this role, and existing users who still use role defaults.
+                    {{ __('backend.auth_role_policies_show.edit_subtitle') }}
                 </div>
             </div>
 
@@ -207,72 +208,72 @@
 
                     <div class="row">
                         <div class="col-md-6 mb-4">
-                            <label class="font-weight-bold">Email Verification Mode</label>
+                            <label class="font-weight-bold">{{ __('backend.auth_role_policies_show.email_verification_mode') }}</label>
                             <select name="email_verification_mode" class="form-control" style="border-radius: 12px;">
-                                <option value="required" {{ $rolePolicy->email_verification_mode === 'required' ? 'selected' : '' }}>Required</option>
-                                <option value="optional" {{ $rolePolicy->email_verification_mode === 'optional' ? 'selected' : '' }}>Optional</option>
-                                <option value="disabled" {{ $rolePolicy->email_verification_mode === 'disabled' ? 'selected' : '' }}>Disabled</option>
+                                <option value="required" {{ $rolePolicy->email_verification_mode === 'required' ? 'selected' : '' }}>{{ __('backend.auth_role_policies_show.required') }}</option>
+                                <option value="optional" {{ $rolePolicy->email_verification_mode === 'optional' ? 'selected' : '' }}>{{ __('backend.auth_role_policies_show.optional') }}</option>
+                                <option value="disabled" {{ $rolePolicy->email_verification_mode === 'disabled' ? 'selected' : '' }}>{{ __('backend.auth_role_policies_show.disabled') }}</option>
                             </select>
                         </div>
 
                         <div class="col-md-6 mb-4">
-                            <label class="font-weight-bold">OTP Mode</label>
+                            <label class="font-weight-bold">{{ __('backend.auth_role_policies_show.otp_mode') }}</label>
                             <select name="otp_mode" class="form-control" style="border-radius: 12px;">
-                                <option value="required" {{ $rolePolicy->otp_mode === 'required' ? 'selected' : '' }}>Required</option>
-                                <option value="optional" {{ $rolePolicy->otp_mode === 'optional' ? 'selected' : '' }}>Optional</option>
-                                <option value="disabled" {{ $rolePolicy->otp_mode === 'disabled' ? 'selected' : '' }}>Disabled</option>
+                                <option value="required" {{ $rolePolicy->otp_mode === 'required' ? 'selected' : '' }}>{{ __('backend.auth_role_policies_show.required') }}</option>
+                                <option value="optional" {{ $rolePolicy->otp_mode === 'optional' ? 'selected' : '' }}>{{ __('backend.auth_role_policies_show.optional') }}</option>
+                                <option value="disabled" {{ $rolePolicy->otp_mode === 'disabled' ? 'selected' : '' }}>{{ __('backend.auth_role_policies_show.disabled') }}</option>
                             </select>
                         </div>
 
                         <div class="col-md-6 mb-4">
-                            <label class="font-weight-bold">Trusted Devices</label>
+                            <label class="font-weight-bold">{{ __('backend.auth_role_policies_show.trusted_devices') }}</label>
                             <select name="trusted_devices_enabled" class="form-control" style="border-radius: 12px;">
-                                <option value="1" {{ $rolePolicy->trusted_devices_enabled ? 'selected' : '' }}>Enabled</option>
-                                <option value="0" {{ ! $rolePolicy->trusted_devices_enabled ? 'selected' : '' }}>Disabled</option>
+                                <option value="1" {{ $rolePolicy->trusted_devices_enabled ? 'selected' : '' }}>{{ __('backend.auth_role_policies_show.enabled') }}</option>
+                                <option value="0" {{ ! $rolePolicy->trusted_devices_enabled ? 'selected' : '' }}>{{ __('backend.auth_role_policies_show.disabled') }}</option>
                             </select>
                         </div>
 
                         <div class="col-md-6 mb-4">
-                            <label class="font-weight-bold">Recovery Codes</label>
+                            <label class="font-weight-bold">{{ __('backend.auth_role_policies_show.recovery_codes') }}</label>
                             <select name="recovery_codes_enabled" class="form-control" style="border-radius: 12px;">
-                                <option value="1" {{ $rolePolicy->recovery_codes_enabled ? 'selected' : '' }}>Enabled</option>
-                                <option value="0" {{ ! $rolePolicy->recovery_codes_enabled ? 'selected' : '' }}>Disabled</option>
+                                <option value="1" {{ $rolePolicy->recovery_codes_enabled ? 'selected' : '' }}>{{ __('backend.auth_role_policies_show.enabled') }}</option>
+                                <option value="0" {{ ! $rolePolicy->recovery_codes_enabled ? 'selected' : '' }}>{{ __('backend.auth_role_policies_show.disabled') }}</option>
                             </select>
                         </div>
 
                         <div class="col-md-6 mb-4">
-                            <label class="font-weight-bold">Suspicious Login Alerts</label>
+                            <label class="font-weight-bold">{{ __('backend.auth_role_policies_show.suspicious_login_alerts') }}</label>
                             <select name="suspicious_login_alerts_enabled" class="form-control" style="border-radius: 12px;">
-                                <option value="1" {{ $rolePolicy->suspicious_login_alerts_enabled ? 'selected' : '' }}>Enabled</option>
-                                <option value="0" {{ ! $rolePolicy->suspicious_login_alerts_enabled ? 'selected' : '' }}>Disabled</option>
+                                <option value="1" {{ $rolePolicy->suspicious_login_alerts_enabled ? 'selected' : '' }}>{{ __('backend.auth_role_policies_show.enabled') }}</option>
+                                <option value="0" {{ ! $rolePolicy->suspicious_login_alerts_enabled ? 'selected' : '' }}>{{ __('backend.auth_role_policies_show.disabled') }}</option>
                             </select>
                         </div>
 
                         <div class="col-md-6 mb-4">
-                            <label class="font-weight-bold">Remember Me</label>
+                            <label class="font-weight-bold">{{ __('backend.auth_role_policies_show.remember_me') }}</label>
                             <select name="remember_me_enabled" class="form-control" style="border-radius: 12px;">
-                                <option value="1" {{ $rolePolicy->remember_me_enabled ? 'selected' : '' }}>Enabled</option>
-                                <option value="0" {{ ! $rolePolicy->remember_me_enabled ? 'selected' : '' }}>Disabled</option>
+                                <option value="1" {{ $rolePolicy->remember_me_enabled ? 'selected' : '' }}>{{ __('backend.auth_role_policies_show.enabled') }}</option>
+                                <option value="0" {{ ! $rolePolicy->remember_me_enabled ? 'selected' : '' }}>{{ __('backend.auth_role_policies_show.disabled') }}</option>
                             </select>
                         </div>
 
                         <div class="col-md-6 mb-4">
-                            <label class="font-weight-bold">Emergency Bypass</label>
+                            <label class="font-weight-bold">{{ __('backend.auth_role_policies_show.emergency_bypass') }}</label>
                             <select name="emergency_bypass_enabled" class="form-control" style="border-radius: 12px;">
-                                <option value="1" {{ $rolePolicy->emergency_bypass_enabled ? 'selected' : '' }}>Enabled</option>
-                                <option value="0" {{ ! $rolePolicy->emergency_bypass_enabled ? 'selected' : '' }}>Disabled</option>
+                                <option value="1" {{ $rolePolicy->emergency_bypass_enabled ? 'selected' : '' }}>{{ __('backend.auth_role_policies_show.enabled') }}</option>
+                                <option value="0" {{ ! $rolePolicy->emergency_bypass_enabled ? 'selected' : '' }}>{{ __('backend.auth_role_policies_show.disabled') }}</option>
                             </select>
                         </div>
 
                         <div class="col-12 mb-4">
-                            <label class="font-weight-bold">Notes</label>
+                            <label class="font-weight-bold">{{ __('backend.auth_role_policies_show.notes') }}</label>
                             <textarea name="notes" rows="4" class="form-control" style="border-radius: 12px;">{{ old('notes', $rolePolicy->notes) }}</textarea>
                         </div>
                     </div>
 
                     <div class="d-flex justify-content-end">
                         <button type="submit" class="btn btn-primary save-btn">
-                            Save Role Policy
+                            {{ __('backend.auth_role_policies_show.save_role_policy') }}
                         </button>
                     </div>
                 </form>

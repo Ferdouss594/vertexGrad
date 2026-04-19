@@ -6,14 +6,14 @@
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Project</th>
-                            <th>Student</th>
-                            <th>Status</th>
-                            <th>Scanner</th>
-                            <th>Score</th>
-                            <th>Supervisor Review</th>
-                            <th>Updated</th>
-                            <th class="text-end">Action</th>
+                            <th>{{ __('backend.supervisor_projects_table.project') }}</th>
+                            <th>{{ __('backend.supervisor_projects_table.student') }}</th>
+                            <th>{{ __('backend.supervisor_projects_table.status') }}</th>
+                            <th>{{ __('backend.supervisor_projects_table.scanner') }}</th>
+                            <th>{{ __('backend.supervisor_projects_table.score') }}</th>
+                            <th>{{ __('backend.supervisor_projects_table.supervisor_review') }}</th>
+                            <th>{{ __('backend.supervisor_projects_table.updated') }}</th>
+                            <th class="text-end">{{ __('backend.supervisor_projects_table.action') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -24,27 +24,27 @@
                                     <div class="fw-semibold">{{ $project->name }}</div>
                                     <small class="text-muted">{{ $project->category ?? '—' }}</small>
                                 </td>
-                                <td>{{ $project->student->name ?? 'N/A' }}</td>
+                                <td>{{ $project->student->name ?? __('backend.supervisor_projects_table.not_available') }}</td>
                                 <td>
                                     <span class="badge bg-light text-dark border">
-                                        {{ $project->status ?? 'N/A' }}
+                                        {{ $project->status ?? __('backend.supervisor_projects_table.not_available') }}
                                     </span>
                                 </td>
                                 <td>
                                     <span class="badge bg-light text-dark border">
-                                        {{ $project->scanner_status ?? 'N/A' }}
+                                        {{ $project->scanner_status ?? __('backend.supervisor_projects_table.not_available') }}
                                     </span>
                                 </td>
                                 <td>{{ $project->scan_score ?? '—' }}</td>
                                 <td>
                                     <span class="badge bg-light text-dark border">
-                                        {{ $project->supervisor_status ?? 'Not reviewed' }}
+                                        {{ $project->supervisor_status ?? __('backend.supervisor_projects_table.not_reviewed') }}
                                     </span>
                                 </td>
                                 <td>{{ optional($project->updated_at)->format('Y-m-d h:i A') }}</td>
                                 <td class="text-end">
                                     <a href="{{ route('supervisor.projects.show', $project->project_id) }}" class="btn btn-sm btn-primary">
-                                        Open
+                                        {{ __('backend.supervisor_projects_table.open') }}
                                     </a>
                                 </td>
                             </tr>
@@ -59,8 +59,8 @@
         @else
             <div class="text-center py-5">
                 <i class="fa fa-folder-open-o fa-3x text-muted mb-3"></i>
-                <h6 class="mb-1">No projects found</h6>
-                <p class="text-muted mb-0">Projects will appear here when available.</p>
+                <h6 class="mb-1">{{ __('backend.supervisor_projects_table.no_projects_found') }}</h6>
+                <p class="text-muted mb-0">{{ __('backend.supervisor_projects_table.no_projects_found_text') }}</p>
             </div>
         @endif
     </div>

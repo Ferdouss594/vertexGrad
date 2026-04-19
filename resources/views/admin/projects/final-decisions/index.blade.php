@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Final Project Decisions')
+@section('title', __('backend.final_decisions_index.page_title'))
 
 @section('content')
 @php
@@ -211,37 +211,37 @@
 <div class="container-fluid final-decisions-page">
 
     <div class="page-header-card">
-        <div class="page-header-title">Final Project Decisions</div>
+        <div class="page-header-title">{{ __('backend.final_decisions_index.heading') }}</div>
         <p class="page-header-text">
-            Review supervisor evaluations, compare project outcomes, and make the final management decision for publishing, revisions, or rejection.
+            {{ __('backend.final_decisions_index.subtitle') }}
         </p>
     </div>
 
     <div class="row mb-4">
         <div class="col-lg-3 col-md-6 mb-3">
             <div class="stats-card">
-                <div class="stats-label">Projects with Reviews</div>
+                <div class="stats-label">{{ __('backend.final_decisions_index.projects_with_reviews') }}</div>
                 <div class="stats-value">{{ $totalProjects }}</div>
             </div>
         </div>
 
         <div class="col-lg-3 col-md-6 mb-3">
             <div class="stats-card">
-                <div class="stats-label">Published</div>
+                <div class="stats-label">{{ __('backend.final_decisions_index.published') }}</div>
                 <div class="stats-value">{{ $publishedCount }}</div>
             </div>
         </div>
 
         <div class="col-lg-3 col-md-6 mb-3">
             <div class="stats-card">
-                <div class="stats-label">Revision Requested</div>
+                <div class="stats-label">{{ __('backend.final_decisions_index.revision_requested') }}</div>
                 <div class="stats-value">{{ $revisionCount }}</div>
             </div>
         </div>
 
         <div class="col-lg-3 col-md-6 mb-3">
             <div class="stats-card">
-                <div class="stats-label">Rejected</div>
+                <div class="stats-label">{{ __('backend.final_decisions_index.rejected') }}</div>
                 <div class="stats-value">{{ $rejectedCount }}</div>
             </div>
         </div>
@@ -249,7 +249,7 @@
 
     <div class="card table-card">
         <div class="card-header">
-            <h5>Projects Pending Final Review</h5>
+            <h5>{{ __('backend.final_decisions_index.projects_pending_final_review') }}</h5>
         </div>
 
         <div class="card-body p-0">
@@ -258,14 +258,14 @@
                     <table class="table align-middle">
                         <thead>
                             <tr>
-                                <th>Project</th>
-                                <th>Student</th>
-                                <th>Category</th>
-                                <th>Reviews</th>
-                                <th>Average Score</th>
-                                <th>Final Decision</th>
-                                <th>Manager</th>
-                                <th>Action</th>
+                                <th>{{ __('backend.final_decisions_index.project') }}</th>
+                                <th>{{ __('backend.final_decisions_index.student') }}</th>
+                                <th>{{ __('backend.final_decisions_index.category') }}</th>
+                                <th>{{ __('backend.final_decisions_index.reviews') }}</th>
+                                <th>{{ __('backend.final_decisions_index.average_score') }}</th>
+                                <th>{{ __('backend.final_decisions_index.final_decision') }}</th>
+                                <th>{{ __('backend.final_decisions_index.manager') }}</th>
+                                <th>{{ __('backend.final_decisions_index.action') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -284,10 +284,10 @@
                                     };
 
                                     $finalDecisionText = match($project->final_decision) {
-                                        'published' => 'Published',
-                                        'revision_requested' => 'Revision Requested',
-                                        'rejected' => 'Rejected',
-                                        default => 'Pending',
+                                        'published' => __('backend.final_decisions_index.final_decision_published'),
+                                        'revision_requested' => __('backend.final_decisions_index.final_decision_revision_requested'),
+                                        'rejected' => __('backend.final_decisions_index.final_decision_rejected'),
+                                        default => __('backend.final_decisions_index.final_decision_pending'),
                                     };
                                 @endphp
 
@@ -305,9 +305,9 @@
                                     <td>{{ $project->category ?? '-' }}</td>
 
                                     <td>
-                                        <span class="review-chip review-approved" title="Approved">{{ $approved }}</span>
-                                        <span class="review-chip review-revision" title="Revision Requested">{{ $revision }}</span>
-                                        <span class="review-chip review-rejected" title="Rejected">{{ $rejected }}</span>
+                                        <span class="review-chip review-approved" title="{{ __('backend.final_decisions_index.approved') }}">{{ $approved }}</span>
+                                        <span class="review-chip review-revision" title="{{ __('backend.final_decisions_index.revision_requested') }}">{{ $revision }}</span>
+                                        <span class="review-chip review-rejected" title="{{ __('backend.final_decisions_index.rejected') }}">{{ $rejected }}</span>
                                     </td>
 
                                     <td>
@@ -336,7 +336,7 @@
                                     <td>
                                         <a href="{{ route('admin.projects.final-decisions.show', $project->project_id) }}"
                                            class="btn btn-primary btn-sm action-btn">
-                                            Review Decision
+                                            {{ __('backend.final_decisions_index.review_decision') }}
                                         </a>
                                     </td>
                                 </tr>
@@ -346,8 +346,8 @@
                 </div>
             @else
                 <div class="empty-state">
-                    <h6 class="fw-bold mb-2">No reviewed projects found</h6>
-                    <p class="mb-0">Projects with supervisor evaluations will appear here for final management review.</p>
+                    <h6 class="fw-bold mb-2">{{ __('backend.final_decisions_index.no_reviewed_projects_found') }}</h6>
+                    <p class="mb-0">{{ __('backend.final_decisions_index.no_reviewed_projects_text') }}</p>
                 </div>
             @endif
         </div>

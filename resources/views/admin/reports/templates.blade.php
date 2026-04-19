@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Saved Report Templates')
+@section('title', __('backend.report_templates.title'))
 
 @section('content')
 <style>
@@ -86,9 +86,9 @@
 
 <div class="pd-ltr-20 xs-pd-20-10 report-templates-page">
     <div class="hero-card">
-        <div class="hero-title">Saved Report Templates</div>
+        <div class="hero-title">{{ __('backend.report_templates.page_title') }}</div>
         <p class="hero-text">
-            Reuse your saved report configurations instantly and generate recurring reports faster.
+            {{ __('backend.report_templates.page_subtitle') }}
         </p>
     </div>
 
@@ -102,20 +102,20 @@
                     </div>
 
                     <div class="template-meta">
-                        <div><strong>Period:</strong> {{ ucfirst($template->period) }}</div>
-                        <div><strong>Created By:</strong> {{ $template->creator?->name ?? '-' }}</div>
-                        <div><strong>Created At:</strong> {{ $template->created_at?->format('Y-m-d h:i A') }}</div>
+                        <div><strong>{{ __('backend.report_templates.period') }}</strong> {{ ucfirst($template->period) }}</div>
+                        <div><strong>{{ __('backend.report_templates.created_by') }}</strong> {{ $template->creator?->name ?? '-' }}</div>
+                        <div><strong>{{ __('backend.report_templates.created_at') }}</strong> {{ $template->created_at?->format('Y-m-d h:i A') }}</div>
                     </div>
 
                     <div class="template-actions">
                         <a href="{{ route('admin.reports.templates.run', $template->id) }}" class="btn btn-primary btn-sm">
-                            Run Template
+                            {{ __('backend.report_templates.run_template') }}
                         </a>
 
-                        <form action="{{ route('admin.reports.templates.delete', $template->id) }}" method="POST" onsubmit="return confirm('Delete this template?')">
+                        <form action="{{ route('admin.reports.templates.delete', $template->id) }}" method="POST" onsubmit="return confirm('{{ __('backend.report_templates.confirm_delete_template') }}')">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                            <button type="submit" class="btn btn-danger btn-sm">{{ __('backend.report_templates.delete') }}</button>
                         </form>
                     </div>
                 </div>
@@ -123,9 +123,9 @@
         @empty
             <div class="col-12">
                 <div class="card-box p-5 text-center" style="border-radius: 20px;">
-                    <h5 class="mb-2">No Saved Templates Yet</h5>
-                    <p class="text-muted mb-3">Create your first reusable report template from the Reports Center.</p>
-                    <a href="{{ route('admin.reports.index') }}" class="btn btn-primary">Go to Reports Center</a>
+                    <h5 class="mb-2">{{ __('backend.report_templates.no_saved_templates_yet') }}</h5>
+                    <p class="text-muted mb-3">{{ __('backend.report_templates.no_saved_templates_text') }}</p>
+                    <a href="{{ route('admin.reports.index') }}" class="btn btn-primary">{{ __('backend.report_templates.go_to_reports_center') }}</a>
                 </div>
             </div>
         @endforelse

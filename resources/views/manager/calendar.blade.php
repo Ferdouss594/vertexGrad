@@ -1,100 +1,85 @@
 @extends('layouts.app')
 
-@section('title', 'Platform Calendar')
+@section('title', __('backend.platform_calendar.page_title'))
 
 @section('content')
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <div class="container-fluid px-0">
-    <h1 class="text-center mb-4" style="font-weight:800; font-size:32px;">VERTEXGRAD Calendar </h1>
-<!-- شريط التحكم الأعلى -->
-<!-- شريط التحكم الأعلى مع الانعكاس -->
-<div class="d-flex justify-content-between align-items-center mb-3 px-3">
-    <!-- أزرار العرض على اليسار -->
-    <div class="d-flex gap-2">
-        <button id="monthViewBtn" class="btn btn-outline-secondary btn-sm">Month</button>
-        <button id="weekViewBtn" class="btn btn-outline-secondary btn-sm">Week</button>
-        <button id="dayViewBtn" class="btn btn-outline-secondary btn-sm">Day</button>
+    <h1 class="text-center mb-4" style="font-weight:800; font-size:32px;">{{ __('backend.platform_calendar.heading') }}</h1>
 
+    <div class="d-flex justify-content-between align-items-center mb-3 px-3">
+        <div class="d-flex gap-2">
+            <button id="monthViewBtn" class="btn btn-outline-secondary btn-sm">{{ __('backend.platform_calendar.month') }}</button>
+            <button id="weekViewBtn" class="btn btn-outline-secondary btn-sm">{{ __('backend.platform_calendar.week') }}</button>
+            <button id="dayViewBtn" class="btn btn-outline-secondary btn-sm">{{ __('backend.platform_calendar.day') }}</button>
+        </div>
+
+        <div>
+            <span id="currentViewLabel" class="h5 fw-bold"></span>
+        </div>
+
+        <div class="d-flex gap-2">
+            <button id="prevBtn" class="btn btn-outline-primary">&lt; {{ __('backend.platform_calendar.previous') }}</button>
+            <button id="nextBtn" class="btn btn-outline-primary">{{ __('backend.platform_calendar.next') }} &gt;</button>
+        </div>
     </div>
 
-    <!-- عنوان الشهر/اليوم/الأسبوع في الوسط -->
-    <div>
-        <span id="currentViewLabel" class="h5 fw-bold"></span>
-    </div>
-
-    <!-- أزرار التنقل على اليمين -->
-    <div class="d-flex gap-2">
-        <button id="prevBtn" class="btn btn-outline-primary">&lt; Previous</button>
-        <button id="nextBtn" class="btn btn-outline-primary">Next &gt;</button>
-        
-    </div>
-</div>
-
-
-
-    <!-- تقويم -->
     <div class="calendar-container border shadow-sm mx-3" style="background:#fff; min-height:70vh;">
         <div id="calendarContent"></div>
     </div>
 
-    <!-- عرض الأحداث -->
     <div class="modal fade" id="modal-view-event" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-body">
-                    <h4>Events on <span id="eventDateTitle"></span></h4>
+                    <h4>{{ __('backend.platform_calendar.events_on') }} <span id="eventDateTitle"></span></h4>
                     <div id="modalEventsList"></div>
                     <div id="modalEventsControls" class="mt-2"></div>
                 </div>
                 <div class="modal-footer">
-                    <button id="openAddEvent" class="btn btn-primary">Add Event</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button id="openAddEvent" class="btn btn-primary">{{ __('backend.platform_calendar.add_event') }}</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('backend.platform_calendar.close') }}</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- إضافة حدث -->
     <div class="modal fade" id="modal-view-event-add" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <form id="add-event-form">
                     <div class="modal-body">
-                        <h4>Add Event</h4>
-                        <input name="title" class="form-control mb-2" placeholder="Title" required>
-                        <textarea name="description" class="form-control mb-2" placeholder="Description"></textarea>
+                        <h4>{{ __('backend.platform_calendar.add_event') }}</h4>
+                        <input name="title" class="form-control mb-2" placeholder="{{ __('backend.platform_calendar.title') }}" required>
+                        <textarea name="description" class="form-control mb-2" placeholder="{{ __('backend.platform_calendar.description') }}"></textarea>
                         <select name="color" class="form-control mb-2">
-                            <option value="blue">Blue</option>
-                            <option value="green">Green</option>
-                            <option value="red">Red</option>
+                            <option value="blue">{{ __('backend.platform_calendar.colors.blue') }}</option>
+                            <option value="green">{{ __('backend.platform_calendar.colors.green') }}</option>
+                            <option value="red">{{ __('backend.platform_calendar.colors.red') }}</option>
                         </select>
                         <select name="icon" class="form-control">
-                            <option value="calendar">Calendar</option>
-                            <option value="group">Group</option>
+                            <option value="calendar">{{ __('backend.platform_calendar.icons.calendar') }}</option>
+                            <option value="group">{{ __('backend.platform_calendar.icons.group') }}</option>
                         </select>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-primary" type="submit">Save</button>
-                        <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
+                        <button class="btn btn-primary" type="submit">{{ __('backend.platform_calendar.save') }}</button>
+                        <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">{{ __('backend.platform_calendar.close') }}</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
+
 <style>
-/* =========================
-   تقويم احترافي UI/UX
-=========================== */
 .calendar-container {
     width: 100%;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: #333;
 }
-
-/* ====== شريط التحكم الرئيسي ====== */
 .calendar-header {
     display: flex;
     justify-content: space-between;
@@ -105,8 +90,6 @@
     background-color: #f8f9fa;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
-
-/* ====== أزرار العرض على اليسار ====== */
 .calendar-header .view-buttons {
     display: flex;
     gap: 8px;
@@ -127,16 +110,12 @@
     border-color: #061523;
     color: #fff;
 }
-
-/* ====== عنوان الشهر/اليوم/الأسبوع في الوسط ====== */
 #currentViewLabel {
     font-size: 1.25rem;
     font-weight: 600;
     text-align: center;
     color: #333;
 }
-
-/* ====== أزرار التنقل على اليمين ====== */
 .calendar-header .nav-buttons {
     display: flex;
     gap: 8px;
@@ -159,8 +138,6 @@
 #deleteEventsBtn:hover {
     background-color: #c82333;
 }
-
-/* ====== أيام الأسبوع ====== */
 .weekdays {
     display: flex;
     gap: 2px;
@@ -168,7 +145,7 @@
 }
 .weekdays div {
     flex: 1;
-    background-color: #1a548d; /* اللون الأزرق */
+    background-color: #1a548d;
     color: #fff;
     font-weight: 600;
     text-align: center;
@@ -181,8 +158,6 @@
     background-color: #66b3ff;
     transform: translateY(-1px);
 }
-
-/* ====== خلايا الأيام ====== */
 .day-cell {
     flex: 1 0 14.28%;
     border-radius: 10px;
@@ -198,7 +173,7 @@
     cursor: pointer;
 }
 .day-cell.today {
-    background-color: #a6469c; /* لون خفيف لليوم الحالي */
+    background-color: #a6469c;
     border: 2px solid #3399ff;
 }
 .day-cell:hover {
@@ -206,8 +181,6 @@
     box-shadow: 0 4px 8px rgba(0,0,0,0.15);
     transform: translateY(-2px);
 }
-
-/* ====== الأحداث ====== */
 .event {
     font-size: 13px;
     margin-top: 5px;
@@ -228,8 +201,6 @@
 .event.blue { background: linear-gradient(135deg,#3399ff,#66ccff); }
 .event.green { background: linear-gradient(135deg,#28a745,#71e175); }
 .event.red { background: linear-gradient(135deg,#dc3545,#ff7f7f); }
-
-/* ====== صفوف الأسبوع ====== */
 .week-row {
     display: flex;
     margin-bottom: 5px;
@@ -243,8 +214,6 @@
     background: #b7cdf3;
     border: 1px solid #e0e0e0;
 }
-
-/* ====== عرض اليوم ====== */
 .day-view {
     display: flex;
     flex-direction: column;
@@ -258,20 +227,37 @@
     background: #ffffff;
     box-shadow: 0 2px 4px rgba(0,0,0,0.08);
 }
-
-/* ====== مودال الأحداث ====== */
 .modal-backdrop { display: none !important; }
 .tooltip-inner { max-width: 250px; text-align: left; font-size: 0.9rem; }
-
-/* نصوص */
 h4,h5 { font-weight: 700; color: #222; }
 </style>
 
-
 <script>
 document.addEventListener('DOMContentLoaded', function(){
-    const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
-    const daysOfWeek=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const months = [
+    @json(__('backend.platform_calendar.month_names.january')),
+    @json(__('backend.platform_calendar.month_names.february')),
+    @json(__('backend.platform_calendar.month_names.march')),
+    @json(__('backend.platform_calendar.month_names.april')),
+    @json(__('backend.platform_calendar.month_names.may')),
+    @json(__('backend.platform_calendar.month_names.june')),
+    @json(__('backend.platform_calendar.month_names.july')),
+    @json(__('backend.platform_calendar.month_names.august')),
+    @json(__('backend.platform_calendar.month_names.september')),
+    @json(__('backend.platform_calendar.month_names.october')),
+    @json(__('backend.platform_calendar.month_names.november')),
+    @json(__('backend.platform_calendar.month_names.december'))
+];
+
+const daysOfWeek = [
+    @json(__('backend.platform_calendar.day_names.sun')),
+    @json(__('backend.platform_calendar.day_names.mon')),
+    @json(__('backend.platform_calendar.day_names.tue')),
+    @json(__('backend.platform_calendar.day_names.wed')),
+    @json(__('backend.platform_calendar.day_names.thu')),
+    @json(__('backend.platform_calendar.day_names.fri')),
+    @json(__('backend.platform_calendar.day_names.sat'))
+];
 
     let currentMonth=0;
     let currentYear=2026;
@@ -321,7 +307,7 @@ document.addEventListener('DOMContentLoaded', function(){
             }
             calendarContent.appendChild(daysContainer);
         } else if(currentView==='week'){
-            label.innerText=`Week of ${months[currentMonth]} ${currentYear}`;
+            label.innerText=`${__('backend.platform_calendar.week_of')} ${months[currentMonth]} ${currentYear}`;
             const weekRow=document.createElement('div');
             weekRow.className='week-row';
             for(let i=1;i<=7;i++){
@@ -337,7 +323,7 @@ document.addEventListener('DOMContentLoaded', function(){
             }
             calendarContent.appendChild(weekRow);
         } else {
-            label.innerText=`Day of ${months[currentMonth]} ${currentYear}`;
+            label.innerText=`${__('backend.platform_calendar.day_of')} ${months[currentMonth]} ${currentYear}`;
             const dayDiv=document.createElement('div');
             dayDiv.className='day-view';
             const key=`${currentYear}-${String(currentMonth+1).padStart(2,'0')}-01`;
@@ -352,7 +338,6 @@ document.addEventListener('DOMContentLoaded', function(){
             calendarContent.appendChild(dayDiv);
         }
 
-        // تفعيل Bootstrap tooltip لكل الأحداث
         const tooltipTriggerList=[].slice.call(calendarContent.querySelectorAll('[data-bs-toggle="tooltip"]'));
         tooltipTriggerList.map(el=>new bootstrap.Tooltip(el));
     }
@@ -379,32 +364,32 @@ document.addEventListener('DOMContentLoaded', function(){
             });
 
             const selectAllBtn=document.createElement('button');
-            selectAllBtn.textContent='Select All';
+            selectAllBtn.textContent=@json(__('backend.platform_calendar.select_all'));
             selectAllBtn.className='btn btn-sm btn-secondary me-2';
             selectAllBtn.onclick=()=>{ list.querySelectorAll('input[type="checkbox"]').forEach(cb=>cb.checked=true); };
 
             const deleteSelectedBtn=document.createElement('button');
-            deleteSelectedBtn.textContent='Delete Selected';
+            deleteSelectedBtn.textContent=@json(__('backend.platform_calendar.delete_selected'));
             deleteSelectedBtn.className='btn btn-sm btn-danger me-2';
             deleteSelectedBtn.onclick=()=>deleteEvents(Array.from(list.querySelectorAll('input[type="checkbox"]:checked')).map(cb=>cb.value));
 
             controls.appendChild(selectAllBtn);
             controls.appendChild(deleteSelectedBtn);
 
-        } else { list.innerHTML='<i>No events</i>'; }
+        } else { list.innerHTML=`<i>${@json(__('backend.platform_calendar.no_events'))}</i>`; }
 
         viewModal.show();
     }
 
     async function deleteEvents(ids){
-        if(ids.length===0) return alert('No events selected');
+        if(ids.length===0) return alert(@json(__('backend.platform_calendar.no_events_selected')));
         const res=await fetch('{{ url("manager/calendar/delete-events") }}',{
             method:'POST',
             headers:{'Content-Type':'application/json','X-CSRF-TOKEN':document.querySelector('meta[name="csrf-token"]').content},
             body:JSON.stringify({ids})
         });
         const data=await res.json();
-        if(data.success){ fetchEvents(); openDay(selectedDate); } else alert('Failed to delete events');
+        if(data.success){ fetchEvents(); openDay(selectedDate); } else alert(@json(__('backend.platform_calendar.failed_delete_events')));
     }
 
     document.getElementById('openAddEvent').addEventListener('click',()=>{ viewModal.hide(); addModal.show(); });
@@ -424,7 +409,7 @@ document.addEventListener('DOMContentLoaded', function(){
                 })
             });
             const data=await res.json();
-            if(data.success){ addEventForm.reset(); addModal.hide(); fetchEvents(); } else alert('Failed to save event!');
+            if(data.success){ addEventForm.reset(); addModal.hide(); fetchEvents(); } else alert(@json(__('backend.platform_calendar.failed_save_event')));
         });
         addEventForm.dataset.listenerAdded="true";
     }
@@ -438,67 +423,4 @@ document.addEventListener('DOMContentLoaded', function(){
 
     fetchEvents();
 });
-
-document.addEventListener('DOMContentLoaded', function () {
-
-    const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-    let currentMonth = 0;
-    let currentYear = 2026;
-    let events = {};
-
-    async function fetchEvents() {
-        const res = await fetch('{{ url("manager/calendar/events") }}');
-        events = await res.json();
-        renderCalendar();
-    }
-
-    function renderCalendar() {
-        document.getElementById('currentViewLabel').innerText = months[currentMonth] + ' ' + currentYear;
-        // هنا ضع الكود الخاص برسم الأيام...
-    }
-
-    // زر حذف كل أحداث الشهر
-    const deleteBtn = document.getElementById('deleteEventsBtn');
-    deleteBtn.addEventListener('click', async () => {
-
-        if(!confirm(`Are you sure you want to delete ALL events for ${months[currentMonth]} ${currentYear}?`)) return;
-
-        // نجمع كل الـ IDs للأحداث في الشهر الحالي
-        const ids = [];
-        for(let date in events){
-            if(date.startsWith(`${currentYear}-${String(currentMonth+1).padStart(2,'0')}`)){
-                events[date].forEach(e => ids.push(e.id));
-            }
-        }
-
-        if(ids.length === 0){
-            alert('No events found for this month!');
-            return;
-        }
-
-        // طلب الحذف
-        const res = await fetch('{{ url("manager/calendar/delete-events") }}', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-            },
-            body: JSON.stringify({ ids })
-        });
-
-        const data = await res.json();
-        if(data.success){
-            alert('All events for the month have been deleted!');
-            fetchEvents(); // إعادة تحميل الأحداث بعد الحذف
-        } else {
-            alert('Failed to delete events!');
-        }
-
-    });
-
-    fetchEvents();
-});
-
-
-</script>
 @endsection
