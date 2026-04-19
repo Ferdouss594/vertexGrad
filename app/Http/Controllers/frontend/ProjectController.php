@@ -13,80 +13,89 @@ use App\Notifications\FundingRequestSubmittedNotification;
 
 class ProjectController extends Controller
 {
-public function index(Request $request)
-{
-    $query = Project::with(['media', 'student', 'investors'])
-        ->whereIn('status', ['active', 'published']);
+    public function index(Request $request)
+    {
+        $query = Project::with(['media', 'student', 'investors', 'projectCategory'])
+            ->whereIn('status', ['active', 'published']);
 
-    $search = trim((string) $request->get('search', ''));
-    $selectedCategory = trim((string) $request->get('category', ''));
-    $sort = trim((string) $request->get('sort', 'latest'));
+        $search = trim((string) $request->get('search', ''));
+        $selectedCategory = trim((string) $request->get('category', ''));
+        $sort = trim((string) $request->get('sort', 'latest'));
 
-    if ($search !== '') {
-        $query->where(function ($q) use ($search) {
-            $q->where('name', 'like', "%{$search}%")
-              ->orWhere('description', 'like', "%{$search}%")
-              ->orWhere('category', 'like', "%{$search}%")
-              ->orWhereHas('student', function ($studentQuery) use ($search) {
-                  $studentQuery->where('name', 'like', "%{$search}%");
-              });
-        });
+        if ($search !== '') {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%")
+                  ->orWhere('category', 'like', "%{$search}%")
+                  ->orWhereHas('projectCategory', function ($categoryQuery) use ($search) {
+                      $categoryQuery->where('name_en', 'like', "%{$search}%")
+                                    ->orWhere('name_ar', 'like', "%{$search}%");
+                  })
+                  ->orWhereHas('student', function ($studentQuery) use ($search) {
+                      $studentQuery->where('name', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        if ($selectedCategory !== '') {
+            $query->where(function ($q) use ($selectedCategory) {
+                $q->whereRaw('LOWER(TRIM(category)) = ?', [mb_strtolower($selectedCategory)])
+                  ->orWhereHas('projectCategory', function ($categoryQuery) use ($selectedCategory) {
+                      $categoryQuery->whereRaw('LOWER(TRIM(name_en)) = ?', [mb_strtolower($selectedCategory)])
+                                    ->orWhereRaw('LOWER(TRIM(name_ar)) = ?', [mb_strtolower($selectedCategory)]);
+                  });
+            });
+        }
+
+        if ($request->filled('budget_min')) {
+            $query->where('budget', '>=', (float) $request->budget_min);
+        }
+
+        if ($request->filled('budget_max')) {
+            $query->where('budget', '<=', (float) $request->budget_max);
+        }
+
+        switch ($sort) {
+            case 'oldest':
+                $query->orderBy('project_id', 'asc');
+                break;
+
+            case 'budget_low':
+                $query->orderBy('budget', 'asc')
+                      ->orderBy('project_id', 'desc');
+                break;
+
+            case 'budget_high':
+                $query->orderBy('budget', 'desc')
+                      ->orderBy('project_id', 'desc');
+                break;
+
+            case 'name':
+                $query->orderBy('name', 'asc');
+                break;
+
+            case 'latest':
+            default:
+                $query->latest('project_id');
+                break;
+        }
+
+        $projects = $query->paginate(12)->appends($request->all());
+
+        $categories = \App\Models\ProjectCategory::query()
+            ->where('is_active', true)
+            ->orderBy('name_en')
+            ->get()
+            ->map(function ($category) {
+                return $category->display_name;
+            });
+
+        return view('frontend.projects.index', compact('projects', 'categories'));
     }
-
-    if ($selectedCategory !== '') {
-        $query->whereRaw('LOWER(TRIM(category)) = ?', [mb_strtolower($selectedCategory)]);
-    }
-
-    if ($request->filled('budget_min')) {
-        $query->where('budget', '>=', (float) $request->budget_min);
-    }
-
-    if ($request->filled('budget_max')) {
-        $query->where('budget', '<=', (float) $request->budget_max);
-    }
-
-    switch ($sort) {
-        case 'oldest':
-            $query->orderBy('project_id', 'asc');
-            break;
-
-        case 'budget_low':
-            $query->orderBy('budget', 'asc')
-                  ->orderBy('project_id', 'desc');
-            break;
-
-        case 'budget_high':
-            $query->orderBy('budget', 'desc')
-                  ->orderBy('project_id', 'desc');
-            break;
-
-        case 'name':
-            $query->orderBy('name', 'asc');
-            break;
-
-        case 'latest':
-        default:
-            $query->latest('project_id');
-            break;
-    }
-
-    $projects = $query->paginate(12)->appends($request->all());
-
-    $categories = Project::query()
-        ->whereIn('status', ['active', 'published'])
-        ->whereNotNull('category')
-        ->whereRaw('TRIM(category) != ""')
-        ->select('category')
-        ->distinct()
-        ->orderBy('category')
-        ->pluck('category');
-
-    return view('frontend.projects.index', compact('projects', 'categories'));
-}
 
     public function show(Project $project)
     {
-        $project->load(['media', 'student', 'files', 'investors']);
+        $project->load(['media', 'student', 'files', 'investors', 'projectCategory']);
 
         $user = auth('web')->user();
 

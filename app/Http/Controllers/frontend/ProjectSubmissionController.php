@@ -16,6 +16,7 @@ use App\Http\Requests\Frontend\SubmitProjectStep1Request;
 use App\Http\Requests\Frontend\SubmitProjectFinalRequest;
 use App\Notifications\ProjectSubmittedNotification;
 use App\Notifications\ProjectPendingNotification;
+use App\Models\ProjectCategory;
 
 class ProjectSubmissionController extends Controller
 {
@@ -465,56 +466,56 @@ private function shouldBypassScannerLocally(): bool
     |--------------------------------------------------------------------------
     */
 
-    private function buildProjectPayload(array $projectData, int $studentId): array
-    {
-        return [
-            // Step 1
-            'name' => $projectData['project_title'] ?? null,
-            'description' => $projectData['abstract'] ?? null,
-            'category' => $projectData['discipline'] ?? null,
-            'project_type' => $projectData['project_type'] ?? null,
-            'project_nature' => $projectData['project_nature'] ?? null,
-            'problem_statement' => $projectData['problem_statement'] ?? null,
-            'target_beneficiaries' => $projectData['target_beneficiaries'] ?? null,
+    // private function buildProjectPayload(array $projectData, int $studentId): array
+    // {
+    //     return [
+    //         // Step 1
+    //         'name' => $projectData['project_title'] ?? null,
+    //         'description' => $projectData['abstract'] ?? null,
+    //         'category' => $projectData['discipline'] ?? null,
+    //         'project_type' => $projectData['project_type'] ?? null,
+    //         'project_nature' => $projectData['project_nature'] ?? null,
+    //         'problem_statement' => $projectData['problem_statement'] ?? null,
+    //         'target_beneficiaries' => $projectData['target_beneficiaries'] ?? null,
 
-            // Step 2
-            'student_name' => $projectData['student_name'] ?? null,
-            'academic_level' => $projectData['academic_level'] ?? null,
-            'supervisor_name' => $projectData['supervisor_name'] ?? null,
-            'supervisor_title' => $projectData['supervisor_title'] ?? null,
-            'university_name' => $projectData['university_name'] ?? null,
-            'college_name' => $projectData['college_name'] ?? null,
-            'department' => $projectData['department'] ?? null,
-            'governorate' => $projectData['governorate'] ?? null,
+    //         // Step 2
+    //         'student_name' => $projectData['student_name'] ?? null,
+    //         'academic_level' => $projectData['academic_level'] ?? null,
+    //         'supervisor_name' => $projectData['supervisor_name'] ?? null,
+    //         'supervisor_title' => $projectData['supervisor_title'] ?? null,
+    //         'university_name' => $projectData['university_name'] ?? null,
+    //         'college_name' => $projectData['college_name'] ?? null,
+    //         'department' => $projectData['department'] ?? null,
+    //         'governorate' => $projectData['governorate'] ?? null,
 
-            // Step 3
-            'is_feasible' => $projectData['is_feasible'] ?? null,
-            'local_implementation' => $projectData['local_implementation'] ?? null,
-            'expected_impact' => $projectData['expected_impact'] ?? null,
-            'community_benefit' => $projectData['community_benefit'] ?? null,
-            'needs_funding' => $projectData['needs_funding'] ?? null,
-            'budget' => $projectData['requested_amount'] ?? null,
-            'duration_months' => $projectData['duration_months'] ?? null,
-            'support_type' => $projectData['support_type'] ?? null,
-            'budget_breakdown' => $projectData['budget_breakdown'] ?? null,
+    //         // Step 3
+    //         'is_feasible' => $projectData['is_feasible'] ?? null,
+    //         'local_implementation' => $projectData['local_implementation'] ?? null,
+    //         'expected_impact' => $projectData['expected_impact'] ?? null,
+    //         'community_benefit' => $projectData['community_benefit'] ?? null,
+    //         'needs_funding' => $projectData['needs_funding'] ?? null,
+    //         'budget' => $projectData['requested_amount'] ?? null,
+    //         'duration_months' => $projectData['duration_months'] ?? null,
+    //         'support_type' => $projectData['support_type'] ?? null,
+    //         'budget_breakdown' => $projectData['budget_breakdown'] ?? null,
 
-            // Milestones
-            'milestone_1' => $projectData['milestone_1'] ?? null,
-            'milestone_1_month' => $projectData['milestone_1_month'] ?? null,
-            'milestone_2' => $projectData['milestone_2'] ?? null,
-            'milestone_2_month' => $projectData['milestone_2_month'] ?? null,
-            'milestone_3' => $projectData['milestone_3'] ?? null,
-            'milestone_3_month' => $projectData['milestone_3_month'] ?? null,
+    //         // Milestones
+    //         'milestone_1' => $projectData['milestone_1'] ?? null,
+    //         'milestone_1_month' => $projectData['milestone_1_month'] ?? null,
+    //         'milestone_2' => $projectData['milestone_2'] ?? null,
+    //         'milestone_2_month' => $projectData['milestone_2_month'] ?? null,
+    //         'milestone_3' => $projectData['milestone_3'] ?? null,
+    //         'milestone_3_month' => $projectData['milestone_3_month'] ?? null,
 
-            // System
-            'student_id' => $studentId,
-            'status' => 'scan_requested',
-            'scanner_status' => 'pending',
-            'scan_score' => null,
-            'scan_report' => null,
-            'scanned_at' => null,
-        ];
-    }
+    //         // System
+    //         'student_id' => $studentId,
+    //         'status' => 'scan_requested',
+    //         'scanner_status' => 'pending',
+    //         'scan_score' => null,
+    //         'scan_report' => null,
+    //         'scanned_at' => null,
+    //     ];
+    // }
 
     private function appendProjectHistory(Project $project, array $entry): void
     {
@@ -548,4 +549,76 @@ private function shouldBypassScannerLocally(): bool
             abort(403, 'Only students can submit projects.');
         }
     }
+    private function buildProjectPayload(array $projectData, int $studentId): array
+{
+    return [
+        // Step 1
+        'name' => $projectData['project_title'] ?? null,
+        'description' => $projectData['abstract'] ?? null,
+        'category' => $projectData['discipline'] ?? null,
+        'project_category_id' => $this->resolveProjectCategoryId($projectData['discipline'] ?? null),
+        'project_type' => $projectData['project_type'] ?? null,
+        'project_nature' => $projectData['project_nature'] ?? null,
+        'problem_statement' => $projectData['problem_statement'] ?? null,
+        'target_beneficiaries' => $projectData['target_beneficiaries'] ?? null,
+
+        // Step 2
+        'student_name' => $projectData['student_name'] ?? null,
+        'academic_level' => $projectData['academic_level'] ?? null,
+        'supervisor_name' => $projectData['supervisor_name'] ?? null,
+        'supervisor_title' => $projectData['supervisor_title'] ?? null,
+        'university_name' => $projectData['university_name'] ?? null,
+        'college_name' => $projectData['college_name'] ?? null,
+        'department' => $projectData['department'] ?? null,
+        'governorate' => $projectData['governorate'] ?? null,
+
+        // Step 3
+        'is_feasible' => $projectData['is_feasible'] ?? null,
+        'local_implementation' => $projectData['local_implementation'] ?? null,
+        'expected_impact' => $projectData['expected_impact'] ?? null,
+        'community_benefit' => $projectData['community_benefit'] ?? null,
+        'needs_funding' => $projectData['needs_funding'] ?? null,
+        'budget' => $projectData['requested_amount'] ?? null,
+        'duration_months' => $projectData['duration_months'] ?? null,
+        'support_type' => $projectData['support_type'] ?? null,
+        'budget_breakdown' => $projectData['budget_breakdown'] ?? null,
+
+        // Milestones
+        'milestone_1' => $projectData['milestone_1'] ?? null,
+        'milestone_1_month' => $projectData['milestone_1_month'] ?? null,
+        'milestone_2' => $projectData['milestone_2'] ?? null,
+        'milestone_2_month' => $projectData['milestone_2_month'] ?? null,
+        'milestone_3' => $projectData['milestone_3'] ?? null,
+        'milestone_3_month' => $projectData['milestone_3_month'] ?? null,
+
+        // System
+        'student_id' => $studentId,
+        'status' => 'scan_requested',
+        'scanner_status' => 'pending',
+        'scan_score' => null,
+        'scan_report' => null,
+        'scanned_at' => null,
+    ];
+}
+private function resolveProjectCategoryId(?string $discipline): ?int
+{
+    $normalized = mb_strtolower(trim((string) $discipline));
+
+    $map = [
+        'information technology' => 'information-technology',
+        'software engineering' => 'software-engineering',
+        'artificial intelligence & machine learning' => 'artificial-intelligence-machine-learning',
+        'medical / health' => 'medical-health',
+        'electrical engineering' => 'electrical-engineering',
+        'renewable energy' => 'renewable-energy',
+        'agriculture' => 'agriculture',
+        'education' => 'education',
+        'business / management' => 'business-management',
+        'other' => 'other',
+    ];
+
+    $slug = $map[$normalized] ?? 'other';
+
+    return ProjectCategory::where('slug', $slug)->value('id');
+}
 }

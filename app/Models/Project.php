@@ -29,6 +29,7 @@ class Project extends Model implements HasMedia
         'category',
         'project_type',
         'project_nature',
+        'project_category_id',
         'problem_statement',
         'target_beneficiaries',
 
@@ -207,5 +208,9 @@ class Project extends Model implements HasMedia
 public function latestPitchDeck()
 {
     return $this->hasOne(\App\Models\ProjectPitchDeck::class, 'project_id', 'project_id')->latestOfMany();
+}
+public function projectCategory()
+{
+    return $this->belongsTo(\App\Models\ProjectCategory::class, 'project_category_id');
 }
 }

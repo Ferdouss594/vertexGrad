@@ -21,7 +21,13 @@ use App\Http\Controllers\Frontend\ContactController;
 
 use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\Frontend\Auth\SecurityController;
+Route::get('/session-test', function () {
+    $count = session('count', 0);
+    $count++;
+    session(['count' => $count]);
 
+    return $count;
+});
 /*
 |--------------------------------------------------------------------------
 | Frontend Routes

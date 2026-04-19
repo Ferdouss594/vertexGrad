@@ -16,8 +16,11 @@ use PhpOffice\PhpPresentation\Style\Fill;
 
 class PitchDeckGenerator
 {
-    protected int $slideWidth = 1280;
-    protected int $slideHeight = 720;
+    protected int $baseSlideWidth = 9144000;
+    protected int $baseSlideHeight = 5147000;
+
+   protected int $slideWidth = 9144000;
+protected int $slideHeight = 5147000;
 
     protected string $white = 'FFFFFFFF';
     protected string $textOnDark = 'FFE5E7EB';
@@ -60,7 +63,11 @@ class PitchDeckGenerator
 
         try {
             $presentation = new PhpPresentation();
+
             $presentation->getLayout()->setDocumentLayout(DocumentLayout::LAYOUT_SCREEN_16X9);
+            $presentation->getLayout()->setCX($this->slideWidth);
+            $presentation->getLayout()->setCY($this->slideHeight);
+
             $presentation->removeSlideByIndex(0);
 
             $this->coverSlide($presentation, $project, $data);
@@ -104,10 +111,9 @@ class PitchDeckGenerator
     {
         $slide = $presentation->createSlide();
 
-        $this->shape($slide, 0, 0, $this->slideWidth, $this->slideHeight, $this->dark, $this->dark);
-        $this->shape($slide, 0, 0, $this->slideWidth, 12, $this->accent, $this->accent);
-        $this->shape($slide, 0, 565, $this->slideWidth, 155, 'FF09182F', 'FF09182F');
-
+      $this->shape($slide, -200000, -200000, $this->baseSlideWidth + 400000, $this->baseSlideHeight + 400000, $this->dark, $this->dark);
+$this->shape($slide, -200000, -200000, $this->baseSlideWidth + 400000, 300000, $this->accent, $this->accent);
+$this->shape($slide, -200000, 4000000, $this->baseSlideWidth + 400000, 1600000, 'FF09182F', 'FF09182F');
         $this->text($slide, 72, 52, 340, 20, 'VERTEXGRAD · INVESTOR PITCH DECK', 13, true, 'FFBFDBFE');
 
         $this->text(
@@ -163,10 +169,10 @@ class PitchDeckGenerator
         if ($imagePath) {
             $shape = new DrawingFile();
             $shape->setPath($imagePath)
-                ->setWidth($imageW - 32)
-                ->setHeight($imageH - 32)
-                ->setOffsetX($imageX + 16)
-                ->setOffsetY($imageY + 16);
+                ->setWidth($this->scaleX($imageW - 32))
+                ->setHeight($this->scaleY($imageH - 32))
+                ->setOffsetX($this->scaleX($imageX + 16))
+                ->setOffsetY($this->scaleY($imageY + 16));
             $slide->addShape($shape);
         } else {
             $this->text($slide, $imageX + 40, $imageY + 160, $imageW - 80, 40, 'VertexGrad', 29, true, 'FF93C5FD', Alignment::HORIZONTAL_CENTER);
@@ -391,8 +397,8 @@ class PitchDeckGenerator
 
     protected function pageBase($slide, string $title, string $subtitle): void
     {
-        $this->shape($slide, 0, 0, $this->slideWidth, $this->slideHeight, $this->dark, $this->dark);
-        $this->shape($slide, 0, 0, $this->slideWidth, 74, 'FF06101F', 'FF06101F');
+      $this->shape($slide, 0, 0, $this->baseSlideWidth, $this->baseSlideHeight, $this->dark, $this->dark);
+$this->shape($slide, 0, 0, $this->baseSlideWidth, 74, 'FF06101F', 'FF06101F');
 
         $this->text($slide, 70, 18, 760, 28, $title, 24, true, $this->white);
         $this->text($slide, 70, 94, 860, 20, $subtitle, 13, false, $this->mutedOnDark);
@@ -511,14 +517,18 @@ class PitchDeckGenerator
         return $value === '' || $value === '-' ? $fallback : $value;
     }
 
-    protected function shape($slide, int $x, int $y, int $w, int $h, string $fill, string $border): void
+    protected function shape($slide, int $x, int $y, int $w, int $h, string $fill, string $border, bool $scale = true): void
     {
+        $finalX = $this->scaleX($x);
+$finalY = $this->scaleY($y);
+       $finalW = $this->scaleX($w);
+$finalH = $this->scaleY($h);
         $shape = new AutoShape();
         $shape->setType(AutoShape::TYPE_RECTANGLE)
-            ->setOffsetX($x)
-            ->setOffsetY($y)
-            ->setWidth($w)
-            ->setHeight($h);
+            ->setOffsetX($finalX)
+            ->setOffsetY($finalY)
+            ->setWidth($finalW)
+            ->setHeight($finalH);
 
         $shape->getFill()->setFillType(Fill::FILL_SOLID)->setStartColor(new Color($fill));
         $shape->getBorder()->setColor(new Color($border));
@@ -538,16 +548,16 @@ class PitchDeckGenerator
         string $align = Alignment::HORIZONTAL_LEFT
     ): void {
         $shape = $slide->createRichTextShape()
-            ->setOffsetX($x)
-            ->setOffsetY($y)
-            ->setWidth($w)
-            ->setHeight($h);
+            ->setOffsetX($this->scaleX($x))
+            ->setOffsetY($this->scaleY($y))
+            ->setWidth($this->scaleX($w))
+            ->setHeight($this->scaleY($h));
 
         $shape->getActiveParagraph()->getAlignment()->setHorizontal($align);
 
         $run = $shape->createTextRun($text);
         $run->getFont()
-            ->setSize($size)
+            ->setSize($this->scaleFont($size))
             ->setBold($bold)
             ->setColor(new Color($color));
     }
@@ -585,5 +595,22 @@ class PitchDeckGenerator
         return mb_strlen($text) > $limit
             ? mb_substr($text, 0, $limit - 3) . '...'
             : $text;
+    }
+
+    protected function scaleX(float|int $value): int
+    {
+        return (int) round(($value / $this->baseSlideWidth) * $this->slideWidth);
+    }
+
+    protected function scaleY(float|int $value): int
+    {
+        return (int) round(($value / $this->baseSlideHeight) * $this->slideHeight);
+    }
+
+    protected function scaleFont(float|int $value): int
+    {
+        $ratio = $this->slideWidth / $this->baseSlideWidth;
+
+        return max(1, (int) round($value * $ratio));
     }
 }

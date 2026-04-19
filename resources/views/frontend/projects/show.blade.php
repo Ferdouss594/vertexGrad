@@ -54,7 +54,7 @@
                 <div class="lg:col-span-2 space-y-8">
                     <div class="theme-panel p-8 rounded-3xl shadow-brand-soft">
                         <span class="text-brand-accent font-bold uppercase tracking-widest text-xs">
-                            {{ $project->category ?? __('frontend.project_show.uncategorized') }}
+                            {{ $project->projectCategory?->display_name ?? $project->category ?? __('frontend.project_show.uncategorized') }}
                         </span>
 
                         <h1 class="text-4xl font-bold text-theme-text mt-2">

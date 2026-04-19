@@ -15,13 +15,19 @@ class PitchDeckDataBuilder
             'reviews.supervisor',
             'files',
             'approvedInvestments',
+            'projectCategory',
         ]);
 
         return [
             'project_id' => $project->project_id,
             'title' => $project->name,
             'description' => $project->description,
-            'category' => $project->category,
+
+            'category' => $project->projectCategory?->display_name ?? $project->category,
+            'category_slug' => $project->projectCategory?->slug,
+            'deck_theme' => $project->projectCategory?->deck_theme ?? 'default',
+            'accent_color' => $project->projectCategory?->accent_color,
+
             'project_type' => $project->project_type,
             'project_nature' => $project->project_nature,
 
