@@ -133,7 +133,6 @@
         </div>
 
         <form method="GET" action="{{ url()->current() }}">
-            {{-- Quick Row --}}
             <div class="row g-3 align-items-end">
                 <div class="col-lg-8">
                     <label class="audit-label">{{ __('backend.audit_center.quick_search') }}</label>
@@ -162,7 +161,6 @@
                 </div>
             </div>
 
-            {{-- Advanced Collapse --}}
             <div class="collapse {{ request()->hasAny(['user','category','event','from','to']) ? 'show' : '' }}" id="advancedAuditFilters">
                 <div class="audit-advanced-wrap mt-4">
                     <div class="row g-3">
@@ -437,9 +435,61 @@
             </table>
         </div>
 
-        @if(method_exists($logs, 'links'))
+        @if(method_exists($logs, 'hasPages') && $logs->hasPages())
             <div class="audit-pagination-wrap">
-                {{ $logs->links() }}
+                <div class="custom-pagination">
+                    @if ($logs->onFirstPage())
+                        <span class="page-box disabled">‹</span>
+                    @else
+                        <a href="{{ $logs->appends(request()->query())->previousPageUrl() }}" class="page-box">‹</a>
+                    @endif
+
+                    @php
+                        $current = $logs->currentPage();
+                        $last = $logs->lastPage();
+
+                        $start = max($current - 1, 1);
+                        $end = min($current + 1, $last);
+
+                        if ($current <= 2) {
+                            $end = min(3, $last);
+                        }
+
+                        if ($current >= $last - 1) {
+                            $start = max($last - 2, 1);
+                        }
+                    @endphp
+
+                    @if ($start > 1)
+                        <a href="{{ $logs->appends(request()->query())->url(1) }}" class="page-box">1</a>
+
+                        @if ($start > 2)
+                            <span class="page-box dots">...</span>
+                        @endif
+                    @endif
+
+                    @for ($page = $start; $page <= $end; $page++)
+                        @if ($page == $current)
+                            <span class="page-box active">{{ $page }}</span>
+                        @else
+                            <a href="{{ $logs->appends(request()->query())->url($page) }}" class="page-box">{{ $page }}</a>
+                        @endif
+                    @endfor
+
+                    @if ($end < $last)
+                        @if ($end < $last - 1)
+                            <span class="page-box dots">...</span>
+                        @endif
+
+                        <a href="{{ $logs->appends(request()->query())->url($last) }}" class="page-box">{{ $last }}</a>
+                    @endif
+
+                    @if ($logs->hasMorePages())
+                        <a href="{{ $logs->appends(request()->query())->nextPageUrl() }}" class="page-box">›</a>
+                    @else
+                        <span class="page-box disabled">›</span>
+                    @endif
+                </div>
             </div>
         @endif
     </div>
@@ -839,7 +889,7 @@
     padding: 7px 12px;
     font-size: 12px;
     font-weight: 700;
-   white-space: normal;
+    white-space: normal;
     text-align: center;
     line-height: 1.3;
     max-width: 500px;
@@ -1074,6 +1124,62 @@
     background: #fff;
 }
 
+.custom-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.custom-pagination .page-box {
+    min-width: 44px;
+    height: 44px;
+    padding: 0 14px;
+    border-radius: 12px;
+    border: 1px solid #e3e8f2;
+    background: #ffffff;
+    color: #172033;
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 12px rgba(18, 38, 63, 0.05);
+}
+
+.custom-pagination .page-box:hover {
+    background: #4e73df;
+    color: #ffffff;
+    border-color: #4e73df;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(78, 115, 223, 0.18);
+}
+
+.custom-pagination .page-box.active {
+    background: linear-gradient(135deg, #4e73df, #224abe);
+    color: #ffffff;
+    border-color: transparent;
+    box-shadow: 0 10px 22px rgba(78, 115, 223, 0.28);
+}
+
+.custom-pagination .page-box.disabled {
+    opacity: 0.45;
+    pointer-events: none;
+    background: #f5f7fb;
+    color: #98a2b3;
+    box-shadow: none;
+}
+
+.custom-pagination .page-box.dots {
+    border-style: dashed;
+    background: #f9fbff;
+    color: #7b8497;
+    pointer-events: none;
+}
+
 @media (max-width: 1399.98px) {
     .audit-table thead th,
     .audit-table tbody td {
@@ -1110,6 +1216,20 @@
 
     .audit-date-stack {
         min-width: auto;
+    }
+}
+
+@media (max-width: 576px) {
+    .custom-pagination {
+        gap: 8px;
+    }
+
+    .custom-pagination .page-box {
+        min-width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        font-size: 0.88rem;
+        padding: 0 10px;
     }
 }
 </style>

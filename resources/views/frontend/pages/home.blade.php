@@ -173,7 +173,6 @@
 {{-- ---------------------------------------------------------------- --}}
 {{-- START OF SECTION 2: FEATURED PROJECTS --}}
 {{-- ---------------------------------------------------------------- --}}
-
 @php
     $design = config('design');
     $c = $design['classes'];
@@ -188,23 +187,24 @@
 
             <div class="lg:col-span-1 opacity-0 translate-y-8 section-anim">
                 <h2 class="text-4xl lg:text-5xl font-extrabold text-theme-text leading-tight">
-                    {{ __('frontend.home.featured_title_before') }} <span class="text-brand-accent">{{ __('frontend.home.featured_title_highlight') }}</span>
+                    {{ __('frontend.home.projects_title_before') }}
+                    <span class="text-brand-accent">{{ __('frontend.home.projects_title_highlight') }}</span>
                 </h2>
 
                 <p class="mt-4 text-theme-muted text-lg leading-relaxed">
-                    {{ __('frontend.home.featured_subtitle') }}
+                    {{ __('frontend.home.projects_subtitle') }}
                 </p>
 
                 <a href="{{ route('frontend.projects.index') }}"
                    class="mt-8 inline-flex items-center justify-center rounded-lg px-8 py-3 text-base font-semibold border border-brand-accent text-theme-text hover:bg-brand-accent hover:text-white transition duration-300">
-                    {{ __('frontend.home.view_all_projects') }}
+                    {{ __('frontend.home.explore_all_projects') }}
                 </a>
             </div>
 
             <div class="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-8">
-                @forelse ($featuredProjects as $project)
+                @forelse ($homeProjects as $project)
                     <div class="opacity-0 translate-y-8 section-anim">
-                        <div class="group rounded-xl overflow-hidden theme-panel hover:shadow-brand-soft transition duration-300">
+                        <div class="group rounded-xl overflow-hidden theme-panel hover:shadow-brand-soft transition duration-300 h-full flex flex-col">
                             <div class="relative h-48 w-full bg-theme-surface-2 overflow-hidden">
                                 @if(method_exists($project, 'hasMedia') && $project->hasMedia('images'))
                                     <img src="{{ $project->getFirstMediaUrl('images') }}"
@@ -217,16 +217,16 @@
                                 @endif
                             </div>
 
-                            <div class="p-6">
+                            <div class="p-6 flex flex-col flex-1">
                                 <p class="text-brand-accent text-sm font-semibold mb-2">
-                                    {{ $project->category ?? __('frontend.home.general') }}
+                                    {{ $project->projectCategory->display_name ?? $project->category ?? __('frontend.home.general') }}
                                 </p>
 
                                 <h3 class="text-xl font-bold text-theme-text leading-tight mb-3">
                                     {{ $project->name }}
                                 </h3>
 
-                                <p class="text-theme-muted text-sm mb-4 line-clamp-2">
+                                <p class="text-theme-muted text-sm mb-4 line-clamp-2 flex-1">
                                     {{ $project->description ?? '' }}
                                 </p>
 
@@ -245,7 +245,7 @@
                     </div>
                 @empty
                     <div class="sm:col-span-2 p-10 rounded-2xl border border-dashed border-theme-border text-center text-theme-muted bg-theme-surface">
-                        {{ __('frontend.home.no_featured_projects') }}
+                        {{ __('frontend.home.no_projects') }}
                     </div>
                 @endforelse
             </div>
@@ -257,17 +257,23 @@
 document.addEventListener('DOMContentLoaded', () => {
     if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
         gsap.registerPlugin(ScrollTrigger);
-        gsap.fromTo(".section-anim",
-            { opacity: 0, y: 30 },
-            {
-                opacity: 1,
-                y: 0,
-                duration: 0.8,
-                stagger: 0.15,
-                ease: "power3.out",
-                scrollTrigger: { trigger: ".section-anim", start: "top 85%", once: true }
-            }
-        );
+
+        gsap.utils.toArray(".section-anim").forEach((el) => {
+            gsap.fromTo(el,
+                { opacity: 0, y: 30 },
+                {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.8,
+                    ease: "power3.out",
+                    scrollTrigger: {
+                        trigger: el,
+                        start: "top 85%",
+                        once: true
+                    }
+                }
+            );
+        });
     }
 });
 </script>
@@ -415,33 +421,6 @@ document.addEventListener('DOMContentLoaded', () => {
 {{-- START OF SECTION 5: TRUSTED PARTNERS & UNIVERSITIES --}}
 {{-- ---------------------------------------------------------------- --}}
 
-<section id="partners" class="{{ $sectionYClass }} bg-theme-surface relative border-b border-theme-border transition-colors duration-300">
-    <div class="{{ $containerClass }} text-center">
-        <h2 class="text-xl font-semibold uppercase tracking-widest text-theme-muted mb-12">
-            {{ __('frontend.home.partners_title') }}
-        </h2>
-
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-12 items-center justify-center">
-            @foreach($partnerLogos as $logo)
-                <div class="flex items-center justify-center h-16 opacity-50 hover:opacity-100 transition duration-500">
-                    <img src="/img/logos/{{ $logo }}"
-                         alt="{{ pathinfo($logo, PATHINFO_FILENAME) }} logo"
-                         class="max-h-full w-auto transition duration-300"
-                         style="filter: grayscale(100%); mix-blend-mode: luminosity;">
-                </div>
-            @endforeach
-        </div>
-
-        <div class="mt-12">
-            <p class="text-theme-muted text-sm">
-                {{ __('frontend.home.partner_prompt') }}
-                <a href="{{ route('utility.partnerships') }}" class="text-brand-accent font-bold hover:text-theme-text transition">
-                    {{ __('frontend.home.learn_more') }} <i class="fas fa-external-link-alt ml-1"></i>
-                </a>
-            </p>
-        </div>
-    </div>
-</section>
 
 {{-- ---------------------------------------------------------------- --}}
 {{-- END OF SECTION 5 --}}

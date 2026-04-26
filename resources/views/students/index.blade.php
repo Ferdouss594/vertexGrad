@@ -401,6 +401,62 @@
         padding: 0 24px 24px;
     }
 
+    .custom-pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .custom-pagination .page-box {
+        min-width: 44px;
+        height: 44px;
+        padding: 0 14px;
+        border-radius: 12px;
+        border: 1px solid #e3e8f2;
+        background: #ffffff;
+        color: #172033;
+        font-weight: 700;
+        font-size: 0.95rem;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.25s ease;
+        box-shadow: 0 4px 12px rgba(18, 38, 63, 0.05);
+    }
+
+    .custom-pagination .page-box:hover {
+        background: #4e73df;
+        color: #ffffff;
+        border-color: #4e73df;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(78, 115, 223, 0.18);
+    }
+
+    .custom-pagination .page-box.active {
+        background: linear-gradient(135deg, #4e73df, #224abe);
+        color: #ffffff;
+        border-color: transparent;
+        box-shadow: 0 10px 22px rgba(78, 115, 223, 0.28);
+    }
+
+    .custom-pagination .page-box.disabled {
+        opacity: 0.45;
+        pointer-events: none;
+        background: #f5f7fb;
+        color: #98a2b3;
+        box-shadow: none;
+    }
+
+    .custom-pagination .page-box.dots {
+        border-style: dashed;
+        background: #f9fbff;
+        color: #7b8497;
+        pointer-events: none;
+    }
+
     @media (max-width: 991px) {
         .page-header-card {
             padding: 22px 20px;
@@ -426,6 +482,18 @@
         .students-table thead th,
         .students-table tbody td {
             white-space: nowrap;
+        }
+
+        .custom-pagination {
+            gap: 8px;
+        }
+
+        .custom-pagination .page-box {
+            min-width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            font-size: 0.88rem;
+            padding: 0 10px;
         }
     }
 </style>
@@ -673,7 +741,61 @@
         </div>
 
         <div class="pagination-wrap">
-            {{ $students->appends(request()->query())->links() }}
+            @if ($students->hasPages())
+                <div class="custom-pagination">
+                    @if ($students->onFirstPage())
+                        <span class="page-box disabled">‹</span>
+                    @else
+                        <a href="{{ $students->appends(request()->query())->previousPageUrl() }}" class="page-box">‹</a>
+                    @endif
+
+                    @php
+                        $current = $students->currentPage();
+                        $last = $students->lastPage();
+
+                        $start = max($current - 1, 1);
+                        $end = min($current + 1, $last);
+
+                        if ($current <= 2) {
+                            $end = min(3, $last);
+                        }
+
+                        if ($current >= $last - 1) {
+                            $start = max($last - 2, 1);
+                        }
+                    @endphp
+
+                    @if ($start > 1)
+                        <a href="{{ $students->appends(request()->query())->url(1) }}" class="page-box">1</a>
+
+                        @if ($start > 2)
+                            <span class="page-box dots">...</span>
+                        @endif
+                    @endif
+
+                    @for ($page = $start; $page <= $end; $page++)
+                        @if ($page == $current)
+                            <span class="page-box active">{{ $page }}</span>
+                        @else
+                            <a href="{{ $students->appends(request()->query())->url($page) }}" class="page-box">{{ $page }}</a>
+                        @endif
+                    @endfor
+
+                    @if ($end < $last)
+                        @if ($end < $last - 1)
+                            <span class="page-box dots">...</span>
+                        @endif
+
+                        <a href="{{ $students->appends(request()->query())->url($last) }}" class="page-box">{{ $last }}</a>
+                    @endif
+
+                    @if ($students->hasMorePages())
+                        <a href="{{ $students->appends(request()->query())->nextPageUrl() }}" class="page-box">›</a>
+                    @else
+                        <span class="page-box disabled">›</span>
+                    @endif
+                </div>
+            @endif
         </div>
     </div>
 </div>

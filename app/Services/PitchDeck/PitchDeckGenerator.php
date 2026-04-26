@@ -16,11 +16,13 @@ use PhpOffice\PhpPresentation\Style\Fill;
 
 class PitchDeckGenerator
 {
-    protected int $baseSlideWidth = 9144000;
-    protected int $baseSlideHeight = 5147000;
+    // Design canvas: true 16:9. Every element is positioned against this grid.
+    protected int $baseSlideWidth = 1280;
+    protected int $baseSlideHeight = 720;
 
-   protected int $slideWidth = 9144000;
-protected int $slideHeight = 5147000;
+    // Output canvas: keep the same 16:9 ratio to prevent stretching/compression.
+    protected int $slideWidth = 1280;
+    protected int $slideHeight = 720;
 
     protected string $white = 'FFFFFFFF';
     protected string $textOnDark = 'FFE5E7EB';
@@ -64,9 +66,9 @@ protected int $slideHeight = 5147000;
         try {
             $presentation = new PhpPresentation();
 
+            // Standard PowerPoint widescreen slide: 16:9.
+            // Do not force CX/CY manually here; PhpPresentation writes a valid 16:9 layout.
             $presentation->getLayout()->setDocumentLayout(DocumentLayout::LAYOUT_SCREEN_16X9);
-            $presentation->getLayout()->setCX($this->slideWidth);
-            $presentation->getLayout()->setCY($this->slideHeight);
 
             $presentation->removeSlideByIndex(0);
 
@@ -111,9 +113,9 @@ protected int $slideHeight = 5147000;
     {
         $slide = $presentation->createSlide();
 
-      $this->shape($slide, -200000, -200000, $this->baseSlideWidth + 400000, $this->baseSlideHeight + 400000, $this->dark, $this->dark);
-$this->shape($slide, -200000, -200000, $this->baseSlideWidth + 400000, 300000, $this->accent, $this->accent);
-$this->shape($slide, -200000, 4000000, $this->baseSlideWidth + 400000, 1600000, 'FF09182F', 'FF09182F');
+        $this->shape($slide, 0, 0, $this->baseSlideWidth, $this->baseSlideHeight, $this->dark, $this->dark);
+        $this->shape($slide, 0, 0, $this->baseSlideWidth, 18, $this->accent, $this->accent);
+        $this->shape($slide, 0, 560, $this->baseSlideWidth, 160, 'FF09182F', 'FF09182F');
         $this->text($slide, 72, 52, 340, 20, 'VERTEXGRAD · INVESTOR PITCH DECK', 13, true, 'FFBFDBFE');
 
         $this->text(
@@ -397,8 +399,8 @@ $this->shape($slide, -200000, 4000000, $this->baseSlideWidth + 400000, 1600000, 
 
     protected function pageBase($slide, string $title, string $subtitle): void
     {
-      $this->shape($slide, 0, 0, $this->baseSlideWidth, $this->baseSlideHeight, $this->dark, $this->dark);
-$this->shape($slide, 0, 0, $this->baseSlideWidth, 74, 'FF06101F', 'FF06101F');
+        $this->shape($slide, 0, 0, $this->baseSlideWidth, $this->baseSlideHeight, $this->dark, $this->dark);
+        $this->shape($slide, 0, 0, $this->baseSlideWidth, 74, 'FF06101F', 'FF06101F');
 
         $this->text($slide, 70, 18, 760, 28, $title, 24, true, $this->white);
         $this->text($slide, 70, 94, 860, 20, $subtitle, 13, false, $this->mutedOnDark);
@@ -520,9 +522,9 @@ $this->shape($slide, 0, 0, $this->baseSlideWidth, 74, 'FF06101F', 'FF06101F');
     protected function shape($slide, int $x, int $y, int $w, int $h, string $fill, string $border, bool $scale = true): void
     {
         $finalX = $this->scaleX($x);
-$finalY = $this->scaleY($y);
-       $finalW = $this->scaleX($w);
-$finalH = $this->scaleY($h);
+        $finalY = $this->scaleY($y);
+        $finalW = $this->scaleX($w);
+        $finalH = $this->scaleY($h);
         $shape = new AutoShape();
         $shape->setType(AutoShape::TYPE_RECTANGLE)
             ->setOffsetX($finalX)
@@ -557,6 +559,7 @@ $finalH = $this->scaleY($h);
 
         $run = $shape->createTextRun($text);
         $run->getFont()
+            ->setName('Arial')
             ->setSize($this->scaleFont($size))
             ->setBold($bold)
             ->setColor(new Color($color));
@@ -566,13 +569,30 @@ $finalH = $this->scaleY($h);
     {
         try {
             $media = $project->getFirstMedia('images');
-            if ($media && file_exists($media->getPath())) {
-                return $media->getPath();
-            }
-        } catch (\Throwable $e) {
-        }
 
-        return null;
+            if (!$media || !file_exists($media->getPath())) {
+                return null;
+            }
+
+            $path = $media->getPath();
+            $imageInfo = @getimagesize($path);
+
+            if (!$imageInfo || empty($imageInfo['mime'])) {
+                return null;
+            }
+
+            // PowerPoint repair warnings usually happen when an unsupported image
+            // type is embedded. Keep only formats PowerPoint opens cleanly.
+            $allowedMimes = [
+                'image/jpeg',
+                'image/png',
+                'image/gif',
+            ];
+
+            return in_array($imageInfo['mime'], $allowedMimes, true) ? $path : null;
+        } catch (\Throwable $e) {
+            return null;
+        }
     }
 
     protected function money($value): string

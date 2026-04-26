@@ -743,11 +743,20 @@ return [
     'find_projects' => 'Find Projects',
     'creator_prompt' => 'Are you a Project Creator or Faculty Partner?',
     'submit_for_vetting' => 'Submit Your Project for Vetting',
-
+  'explore_all_projects' => 'Explore All Projects',
     'featured_title_before' => 'Featured',
     'featured_title_highlight' => 'Projects',
     'featured_subtitle' => 'Explore high-impact innovations selected by academic partners.',
     'view_all_projects' => 'View All Projects',
+     'projects_title_before' => 'Explore Our',
+    'projects_title_highlight' => 'Projects',
+    'projects_subtitle' => 'Browse a selected set of innovative academic projects available on the platform.',
+    'explore_all_projects' => 'Explore All Projects',
+    'general' => 'General',
+    'by' => 'By',
+    'student' => 'Student',
+    'details' => 'Details',
+    'no_projects' => 'No projects available right now.',
     'general' => 'General',
     'by' => 'By',
     'student' => 'Student',
@@ -898,4 +907,5 @@ return [
     'event_recovery_code_used' => 'Recovery code used',
     'event_recovery_code_failed' => 'Recovery code failed',
 ],
+
 ];

@@ -136,15 +136,6 @@
                 </div>
             </section>
         @endif
-
-        @if(session('error'))
-            <div class="max-w-6xl mx-auto px-4 mb-6">
-                <div class="p-4 rounded-xl border border-red-500/40 bg-red-500/10 text-red-600">
-                    {{ session('error') }}
-                </div>
-            </div>
-        @endif
-
         @if($errors->any())
             <div class="max-w-6xl mx-auto px-4 mb-6">
                 <div class="p-4 rounded-xl border border-red-500/40 bg-red-500/10 text-red-600">
@@ -254,9 +245,8 @@
                                 @if($currentImages->count() > 0)
                                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
                                         @foreach($currentImages->take(4) as $m)
-                                            <a href="{{ $m->getUrl() }}" target="_blank"
-                                               class="relative overflow-hidden rounded-2xl border border-theme-border bg-theme-surface-2 transition">
-                                                <img src="{{ $m->getUrl() }}" class="w-full h-28 object-cover" alt="{{ __('frontend.academic_dashboard.project_image') }}">
+                                         <a href="{{ $m->getUrl() }}" target="_blank"
+   class="project-preview-link relative overflow-hidden rounded-2xl border border-theme-border bg-theme-surface-2 transition">   <img src="{{ $m->getUrl() }}" class="w-full h-28 object-cover" alt="{{ __('frontend.academic_dashboard.project_image') }}">
                                             </a>
                                         @endforeach
                                     </div>
@@ -308,7 +298,17 @@
                             @endphp
 
                             @if(in_array($scanState, ['draft', 'scan_failed', 'scan_requested', 'pending', 'rejected']))
-                                <a href="http://127.0.0.1:8000/submit?platform_project_id={{ $currentProject->project_id }}&project_name={{ urlencode($currentProject->name) }}&student_name={{ urlencode($user->name) }}&student_email={{ urlencode($user->email) }}&language={{ urlencode($currentProject->primary_language ?? 'php') }}"
+                                @php
+                                    $scanData = base64_encode(json_encode([
+                                        'platform_project_id' => $currentProject->project_id,
+                                        'project_name' => $currentProject->name,
+                                        'student_name' => $user->name,
+                                        'student_email' => $user->email,
+                                        'language' => $currentProject->primary_language ?? 'php',
+                                    ]));
+                                @endphp
+
+                                <a href="http://127.0.0.1:8000/submit?data={{ urlencode($scanData) }}"
                                    class="flex items-center justify-between p-2 bg-blue-600 text-white rounded-2xl transition-all hover:bg-blue-700 group">
                                     <div>
                                         <span class="block font-black uppercase text-xs tracking-wider">
@@ -322,7 +322,17 @@
                                 </a>
 
                             @elseif(in_array($scanState, ['scan_completed', 'awaiting_manual_review', 'approved', 'published', 'active']))
-                                <a href="http://127.0.0.1:8000/submit?platform_project_id={{ $currentProject->project_id }}&project_name={{ urlencode($currentProject->name) }}&student_name={{ urlencode($user->name) }}&student_email={{ urlencode($user->email) }}&language={{ urlencode($currentProject->language ?? $currentProject->primary_language ?? 'php') }}"
+                                @php
+                                    $scanData = base64_encode(json_encode([
+                                        'platform_project_id' => $currentProject->project_id,
+                                        'project_name' => $currentProject->name,
+                                        'student_name' => $user->name,
+                                        'student_email' => $user->email,
+                                        'language' => $currentProject->language ?? $currentProject->primary_language ?? 'php',
+                                    ]));
+                                @endphp
+
+                                <a href="http://127.0.0.1:8000/submit?data={{ urlencode($scanData) }}"
                                    class="flex items-center justify-between p-2 bg-green-600 text-white rounded-2xl hover:bg-green-700 transition group">
                                     <div>
                                         <span class="block font-black uppercase text-xs tracking-wider">
@@ -550,9 +560,8 @@
                             $projectDecision = $project->final_decision ?? null;
                         @endphp
 
-                        <a href="{{ route('dashboard.academic', ['project' => $project->project_id]) }}"
-                           class="block rounded-[2rem] overflow-hidden transition border {{ $active ? 'border-brand-accent shadow-brand-soft' : 'border-theme-border theme-panel hover:border-brand-accent/40' }}">
-                            <div class="h-44 bg-theme-surface-2 relative">
+                      <a href="{{ route('frontend.projects.show', $project) }}"
+   class="block rounded-[2rem] overflow-hidden transition border {{ $active ? 'border-brand-accent shadow-brand-soft' : 'border-theme-border theme-panel hover:border-brand-accent/40' }}">  <div class="h-44 bg-theme-surface-2 relative">
                                 @if($thumb)
                                     <img src="{{ $thumb }}" class="w-full h-full object-cover" alt="{{ __('frontend.academic_dashboard.project_thumbnail') }}">
                                 @else
@@ -1011,7 +1020,7 @@
         }
 
         // Image preview lightbox
-        const previewLinks = document.querySelectorAll('a[href] img');
+        const previewLinks = document.querySelectorAll('.project-preview-link img');
         if (previewLinks.length) {
             const modal = document.createElement('div');
             modal.innerHTML = `

@@ -4,7 +4,7 @@ return [
     'brand' => [
         'name'    => env('APP_NAME', 'VertexGrad'),
         'tagline' => 'Where Innovation Meets Opportunity',
-        'logo'    => '/assets/images/logo.png',
+        'logo'    => 'images/logo.png',
     ],
 
     'default_theme' => 'brand',

@@ -814,7 +814,16 @@ return [
     'find_projects' => 'ابحث عن المشاريع',
     'creator_prompt' => 'هل أنت صاحب مشروع أو شريك أكاديمي؟',
     'submit_for_vetting' => 'قدّم مشروعك للتحقق',
-
+    'projects_title_before' => 'استكشف',
+    'projects_title_highlight' => 'المشاريع',
+    'projects_subtitle' => 'تصفح مجموعة من المشاريع الأكاديمية الابتكارية المتاحة على المنصة.',
+    'view_all_projects' => 'عرض جميع المشاريع',
+    'general' => 'عام',
+    'by' => 'بواسطة',
+    'student' => 'الطالب',
+    'details' => 'التفاصيل',
+    'no_projects' => 'لا توجد مشاريع متاحة حالياً.',
+  'explore_all_projects' => 'عرض جميع المشاريع',
     'featured_title_before' => 'المشاريع',
     'featured_title_highlight' => 'المميزة',
     'featured_subtitle' => 'استكشف الابتكارات عالية الأثر المختارة من الشركاء الأكاديميين.',
@@ -899,4 +908,5 @@ return [
     'not_available' => 'غير متوفر',
     'view_summary' => 'عرض الملخص',
 ],
+
 ];

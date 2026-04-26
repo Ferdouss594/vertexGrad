@@ -5,7 +5,7 @@
         {{-- 1. BRAND / LOGO & TAGLINE --}}
         <div class="space-y-4 col-span-1 sm:col-span-2 md:col-span-1">
             <a href="{{ route('home') }}" class="flex items-center gap-2 group">
-                <img src="{{ config('design.brand.logo') }}" alt="{{ config('design.brand.name') }} logo" class="w-10 h-10 transition-transform group-hover:rotate-12">
+                <img src="{{ asset(config('design.brand.logo')) }}" alt="{{ config('design.brand.name') }} logo" class="w-10 h-10 object-contain transition-transform group-hover:rotate-12">
                 <span class="font-extrabold text-2xl tracking-wider text-brand-accent transition-colors group-hover:opacity-90">
                     {{ config('design.brand.name') }}
                 </span>

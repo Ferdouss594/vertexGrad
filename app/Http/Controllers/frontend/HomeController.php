@@ -9,28 +9,21 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $featuredProjects = Project::with(['media', 'student'])
-            ->where('status', 'active')
+        $homeProjects = Project::with(['media', 'student', 'projectCategory'])
+            ->whereIn('status', ['active', 'published'])
             ->latest('project_id')
-            ->take(6)
-            ->get();
-
-        $latestProjects = Project::with(['media', 'student'])
-            ->where('status', 'active')
-            ->latest('project_id')
-            ->take(3)
+            ->take(4)
             ->get();
 
         $stats = [
-            'active_projects' => Project::where('status', 'active')->count(),
+            'active_projects' => Project::whereIn('status', ['active', 'published'])->count(),
             'completed_projects' => Project::where('status', 'completed')->count(),
-            'total_visible_projects' => Project::whereIn('status', ['active', 'completed'])->count(),
-            'total_funding' => Project::whereIn('status', ['active', 'completed'])->sum('budget'),
+            'total_visible_projects' => Project::whereIn('status', ['active', 'published', 'completed'])->count(),
+            'total_funding' => Project::whereIn('status', ['active', 'published', 'completed'])->sum('budget'),
         ];
 
         return view('frontend.pages.home', compact(
-            'featuredProjects',
-            'latestProjects',
+            'homeProjects',
             'stats'
         ));
     }
