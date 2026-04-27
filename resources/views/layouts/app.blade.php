@@ -972,28 +972,26 @@
                             <span class="mtext">{{ __('backend.manager_layout.permissions') }}</span>
                         </a>
                     </li>
-                @endif
+ @endif
+@if(Route::has('admin.auth-role-policies.index'))
+    <li>
+        <a href="{{ route('admin.auth-role-policies.index') }}"
+           class="dropdown-toggle no-arrow {{ request()->routeIs('admin.auth-role-policies.*') ? 'active' : '' }}">
+            <span class="micon fa fa-shield-alt"></span>
+            <span class="mtext">{{ __('backend.manager_layout.role_auth_policies') }}</span>
+        </a>
+    </li>
+@endif
 
-                @if(Route::has('admin.auth-role-policies.index'))
-                    <li>
-                        <a href="{{ route('admin.auth-role-policies.index') }}"
-                           class="dropdown-toggle no-arrow {{ request()->routeIs('admin.auth-role-policies.*') ? 'active' : '' }}">
-                            <span class="micon fas fa-user-shield"></span>
-                            <span class="mtext">{{ __('backend.manager_layout.role_auth_policies') }}</span>
-                        </a>
-                    </li>
-                @endif
-
-                @if(Route::has('admin.auth-policies.index'))
-                    <li>
-                        <a href="{{ route('admin.auth-policies.index') }}"
-                           class="dropdown-toggle no-arrow {{ request()->routeIs('admin.auth-policies.*') ? 'active' : '' }}">
-                            <span class="micon fas fa-user-lock"></span>
-                            <span class="mtext">{{ __('backend.manager_layout.user_auth_policies') }}</span>
-                        </a>
-                    </li>
-                @endif
-
+@if(Route::has('admin.auth-policies.index'))
+    <li>
+        <a href="{{ route('admin.auth-policies.index') }}"
+           class="dropdown-toggle no-arrow {{ request()->routeIs('admin.auth-policies.*') ? 'active' : '' }}">
+            <span class="micon fa fa-lock"></span>
+            <span class="mtext">{{ __('backend.manager_layout.user_auth_policies') }}</span>
+        </a>
+    </li>
+@endif
                 @if(Route::has('admin.announcements.index'))
                     <li>
                         <a href="{{ route('admin.announcements.index') }}"

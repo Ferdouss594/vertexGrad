@@ -27,27 +27,46 @@
 @endphp
 
 <style>
+    .manager-decision-page {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden;
+        padding: 28px 24px 40px;
+    }
+
+    .manager-decision-page * {
+        box-sizing: border-box;
+    }
+
     .manager-decision-page .hero-card {
         background: linear-gradient(135deg, #0f172a 0%, #1d4ed8 100%);
         border-radius: 22px;
-        padding: 28px 30px;
+        padding: 30px 32px;
         color: #fff;
         box-shadow: 0 18px 40px rgba(15, 23, 42, 0.16);
         margin-bottom: 24px;
         border: none;
+        overflow: hidden;
     }
 
     .manager-decision-page .hero-title {
-        font-size: 30px;
-        font-weight: 800;
-        margin-bottom: 8px;
+        font-size: clamp(22px, 2vw, 30px);
+        font-weight: 900;
+        margin-bottom: 10px;
+        line-height: 1.45;
+        color: #ffffff;
+        text-shadow: 0 2px 12px rgba(0,0,0,.22);
+        word-break: break-word;
+        overflow-wrap: anywhere;
+        max-width: 100%;
     }
 
     .manager-decision-page .hero-text {
         font-size: 14px;
-        color: rgba(255,255,255,.88);
+        color: rgba(255,255,255,.92);
         margin-bottom: 0;
         max-width: 780px;
+        line-height: 1.7;
     }
 
     .manager-decision-page .section-card {
@@ -57,6 +76,7 @@
         border: 1px solid #edf2f7;
         overflow: hidden;
         margin-bottom: 22px;
+        width: 100%;
     }
 
     .manager-decision-page .section-card .card-header {
@@ -68,14 +88,19 @@
     .manager-decision-page .section-card .card-header h5 {
         margin: 0;
         font-size: 18px;
-        font-weight: 800;
+        font-weight: 900;
         color: #0f172a;
+    }
+
+    .manager-decision-page .section-card .card-body {
+        padding: 22px;
+        overflow-x: hidden;
     }
 
     .manager-decision-page .stats-card {
         background: #fff;
         border-radius: 18px;
-        padding: 20px;
+        padding: 20px 22px;
         box-shadow: 0 10px 26px rgba(15, 23, 42, 0.06);
         border: 1px solid #edf2f7;
         height: 100%;
@@ -84,14 +109,14 @@
     .manager-decision-page .stats-label {
         font-size: 13px;
         color: #64748b;
-        font-weight: 700;
-        margin-bottom: 8px;
+        font-weight: 800;
+        margin-bottom: 10px;
     }
 
     .manager-decision-page .stats-value {
-        font-size: 28px;
-        font-weight: 800;
-        color: #0f172a;
+        font-size: 30px;
+        font-weight: 900;
+        color: #020617;
         line-height: 1;
     }
 
@@ -99,10 +124,10 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        padding: 7px 12px;
+        padding: 8px 14px;
         border-radius: 999px;
         font-size: 12px;
-        font-weight: 800;
+        font-weight: 900;
         white-space: nowrap;
     }
 
@@ -131,27 +156,33 @@
         color: #1d4ed8;
     }
 
-    .manager-decision-page .detail-grid .item {
-        padding: 14px 0;
-        border-bottom: 1px dashed #e5e7eb;
+    .manager-decision-page .detail-grid {
+        margin-left: 0;
+        margin-right: 0;
     }
 
-    .manager-decision-page .detail-grid .item:last-child {
-        border-bottom: 0;
+    .manager-decision-page .detail-grid .item {
+        padding: 14px 12px;
+        border-bottom: 1px dashed #e5e7eb;
+        min-width: 0;
     }
 
     .manager-decision-page .detail-label {
         font-size: 13px;
         color: #64748b;
-        font-weight: 700;
-        margin-bottom: 4px;
+        font-weight: 800;
+        margin-bottom: 6px;
+        line-height: 1.4;
     }
 
     .manager-decision-page .detail-value {
         font-size: 15px;
-        color: #0f172a;
-        font-weight: 600;
+        color: #020617;
+        font-weight: 700;
+        line-height: 1.7;
         word-break: break-word;
+        overflow-wrap: anywhere;
+        max-width: 100%;
     }
 
     .manager-decision-page .review-card {
@@ -160,10 +191,11 @@
         padding: 18px;
         background: #fff;
         margin-bottom: 14px;
+        overflow: hidden;
     }
 
     .manager-decision-page .review-title {
-        font-weight: 800;
+        font-weight: 900;
         font-size: 15px;
         color: #0f172a;
         margin-bottom: 8px;
@@ -172,12 +204,16 @@
     .manager-decision-page .review-meta {
         font-size: 13px;
         color: #64748b;
-        margin-bottom: 10px;
+        margin-bottom: 12px;
+        line-height: 1.6;
     }
 
     .manager-decision-page .review-notes {
         color: #334155;
         white-space: pre-line;
+        line-height: 1.8;
+        word-break: break-word;
+        overflow-wrap: anywhere;
     }
 
     .manager-decision-page .decision-form-box {
@@ -189,15 +225,26 @@
 
     .manager-decision-page .decision-form-box label {
         font-size: 13px;
-        font-weight: 700;
+        font-weight: 800;
         color: #475569;
         margin-bottom: 8px;
         display: block;
     }
 
+    .manager-decision-page .form-control {
+        border-radius: 12px;
+        min-height: 46px;
+        border-color: #dbe3ef;
+    }
+
+    .manager-decision-page textarea.form-control {
+        min-height: 150px;
+        resize: vertical;
+    }
+
     .manager-decision-page .action-btn {
         border-radius: 12px;
-        font-weight: 700;
+        font-weight: 800;
         padding: 10px 16px;
     }
 
@@ -226,7 +273,7 @@
 
     .manager-decision-page .project-alert-title {
         font-size: 15px;
-        font-weight: 800;
+        font-weight: 900;
         margin-bottom: 4px;
         color: #1e3a8a;
     }
@@ -243,11 +290,25 @@
         padding: 8px 14px;
         border-radius: 999px;
         font-size: 12px;
-        font-weight: 800;
+        font-weight: 900;
         display: inline-flex;
         align-items: center;
         justify-content: center;
         white-space: nowrap;
+    }
+
+    @media (max-width: 991px) {
+        .manager-decision-page {
+            padding: 22px 14px 34px;
+        }
+
+        .manager-decision-page .hero-card {
+            padding: 24px 20px;
+        }
+
+        .manager-decision-page .section-card .card-body {
+            padding: 18px;
+        }
     }
 </style>
 
@@ -287,15 +348,15 @@
     @endif
 
     <div class="hero-card">
-        <div class="d-flex justify-content-between align-items-start flex-wrap" style="gap: 16px;">
-            <div>
+        <div class="d-flex justify-content-between align-items-start flex-wrap" style="gap: 18px;">
+            <div style="min-width: 0; flex: 1;">
                 <div class="hero-title">{{ $project->name }}</div>
                 <p class="hero-text">
                     {{ __('backend.final_decisions_show.subtitle') }}
                 </p>
             </div>
 
-            <div class="d-flex flex-wrap" style="gap: 10px;">
+            <div class="d-flex flex-wrap justify-content-end" style="gap: 10px;">
                 @if(isset($projectAddedNotification) && $projectAddedNotification)
                     <span class="badge-soft badge-new-project">
                         {{ __('backend.final_decisions_show.new_project_added') }}
@@ -314,28 +375,28 @@
     </div>
 
     <div class="row mb-4">
-        <div class="col-lg-3 col-md-6 mb-3">
+        <div class="col-xl-3 col-lg-6 col-md-6 mb-3">
             <div class="stats-card">
                 <div class="stats-label">{{ __('backend.final_decisions_show.average_score') }}</div>
                 <div class="stats-value">{{ $averageScore }}</div>
             </div>
         </div>
 
-        <div class="col-lg-3 col-md-6 mb-3">
+        <div class="col-xl-3 col-lg-6 col-md-6 mb-3">
             <div class="stats-card">
                 <div class="stats-label">{{ __('backend.final_decisions_show.approved_reviews') }}</div>
                 <div class="stats-value">{{ $approvedCount }}</div>
             </div>
         </div>
 
-        <div class="col-lg-3 col-md-6 mb-3">
+        <div class="col-xl-3 col-lg-6 col-md-6 mb-3">
             <div class="stats-card">
                 <div class="stats-label">{{ __('backend.final_decisions_show.revision_requests') }}</div>
                 <div class="stats-value">{{ $revisionCount }}</div>
             </div>
         </div>
 
-        <div class="col-lg-3 col-md-6 mb-3">
+        <div class="col-xl-3 col-lg-6 col-md-6 mb-3">
             <div class="stats-card">
                 <div class="stats-label">{{ __('backend.final_decisions_show.rejected_reviews') }}</div>
                 <div class="stats-value">{{ $rejectedCount }}</div>
@@ -344,7 +405,7 @@
     </div>
 
     <div class="row">
-        <div class="col-lg-5">
+        <div class="col-xl-5 col-lg-12">
             <div class="section-card">
                 <div class="card-header">
                     <h5>{{ __('backend.final_decisions_show.project_overview') }}</h5>
@@ -464,7 +525,7 @@
             </div>
         </div>
 
-        <div class="col-lg-7">
+        <div class="col-xl-7 col-lg-12">
             <div class="section-card">
                 <div class="card-header">
                     <h5>{{ __('backend.final_decisions_show.supervisor_evaluations') }}</h5>
@@ -484,7 +545,7 @@
 
                         <div class="review-card">
                             <div class="d-flex justify-content-between align-items-start flex-wrap" style="gap: 10px;">
-                                <div>
+                                <div style="min-width: 0;">
                                     <div class="review-title">
                                         {{ $review->supervisor?->name ?? __('backend.final_decisions_show.supervisor') }}
                                     </div>
