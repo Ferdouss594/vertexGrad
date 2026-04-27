@@ -30,13 +30,13 @@
 <form action="{{ route('frontend.projects.index') }}" method="GET" class="space-y-6">
     <div>
         <label class="text-[10px] font-black text-theme-muted uppercase tracking-widest block mb-3">
-            Search
+            {{ __('frontend.pipeline.search') }}
         </label>
         <input
             type="text"
             name="search"
             value="{{ request('search') }}"
-            placeholder="Search projects, description, researcher..."
+            placeholder="{{ __('frontend.pipeline.search_placeholder') }}"
             class="w-full bg-theme-surface-2 border border-theme-border rounded-xl p-3 text-theme-text text-sm focus:border-brand-accent outline-none transition-all"
         >
     </div>
@@ -59,7 +59,7 @@
     <div class="grid grid-cols-2 gap-3">
         <div>
             <label class="text-[10px] font-black text-theme-muted uppercase tracking-widest block mb-3">
-                Min Budget
+                {{ __('frontend.pipeline.min_budget') }}
             </label>
             <input
                 type="number"
@@ -74,7 +74,7 @@
 
         <div>
             <label class="text-[10px] font-black text-theme-muted uppercase tracking-widest block mb-3">
-                Max Budget
+                {{ __('frontend.pipeline.max_budget') }}
             </label>
             <input
                 type="number"
@@ -90,21 +90,31 @@
 
     <div>
         <label class="text-[10px] font-black text-theme-muted uppercase tracking-widest block mb-3">
-            Sort By
+            {{ __('frontend.pipeline.sort_by') }}
         </label>
 
         <select name="sort" class="w-full bg-theme-surface-2 border border-theme-border rounded-xl p-3 text-theme-text text-sm focus:border-brand-accent outline-none transition-all">
-            <option value="latest" {{ request('sort', 'latest') == 'latest' ? 'selected' : '' }}>Latest</option>
-            <option value="oldest" {{ request('sort') == 'oldest' ? 'selected' : '' }}>Oldest</option>
-            <option value="budget_low" {{ request('sort') == 'budget_low' ? 'selected' : '' }}>Budget: Low to High</option>
-            <option value="budget_high" {{ request('sort') == 'budget_high' ? 'selected' : '' }}>Budget: High to Low</option>
-            <option value="name" {{ request('sort') == 'name' ? 'selected' : '' }}>Name A-Z</option>
+            <option value="latest" {{ request('sort', 'latest') == 'latest' ? 'selected' : '' }}>
+                {{ __('frontend.pipeline.sort_latest') }}
+            </option>
+            <option value="oldest" {{ request('sort') == 'oldest' ? 'selected' : '' }}>
+                {{ __('frontend.pipeline.sort_oldest') }}
+            </option>
+            <option value="budget_low" {{ request('sort') == 'budget_low' ? 'selected' : '' }}>
+                {{ __('frontend.pipeline.sort_budget_low') }}
+            </option>
+            <option value="budget_high" {{ request('sort') == 'budget_high' ? 'selected' : '' }}>
+                {{ __('frontend.pipeline.sort_budget_high') }}
+            </option>
+            <option value="name" {{ request('sort') == 'name' ? 'selected' : '' }}>
+                {{ __('frontend.pipeline.sort_name') }}
+            </option>
         </select>
     </div>
 
     <div class="pt-4 space-y-3">
         <button type="submit" class="w-full py-4 bg-brand-accent text-white font-black text-xs uppercase tracking-widest rounded-xl hover:bg-brand-accent-strong transition-all shadow-brand-soft">
-            Apply Filters
+            {{ __('frontend.pipeline.apply_filters') }}
         </button>
 
         @if(
@@ -115,7 +125,7 @@
             request()->filled('sort')
         )
             <a href="{{ route('frontend.projects.index') }}" class="block text-center text-[10px] font-black text-theme-muted uppercase tracking-widest hover:text-red-500 transition-colors">
-                Clear Filters
+                {{ __('frontend.pipeline.clear_filters') }}
             </a>
         @endif
     </div>
@@ -126,11 +136,17 @@
             <section class="lg:col-span-3">
                 <div class="theme-panel p-5 rounded-[1.5rem] mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
     <div>
-        <h3 class="text-theme-text font-bold text-lg">Projects Directory</h3>
-        <p class="text-sm text-theme-muted">
-            Showing {{ $projects->firstItem() ?? 0 }} - {{ $projects->lastItem() ?? 0 }}
-            of {{ $projects->total() }} projects
-        </p>
+<h2>
+    {{ __('frontend.projects_directory.title') }}
+</h2>
+
+<p>
+    {{ __('frontend.projects_directory.showing_results', [
+        'from' => $projects->firstItem(),
+        'to' => $projects->lastItem(),
+        'total' => $projects->total(),
+    ]) }}
+</p>
     </div>
 
     @if(request()->filled('search') || request()->filled('category') || request()->filled('budget_min') || request()->filled('budget_max'))

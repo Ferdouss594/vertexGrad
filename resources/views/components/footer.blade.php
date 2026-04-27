@@ -1,74 +1,117 @@
 <footer class="w-full border-t border-theme-border bg-theme-surface transition-colors duration-300">
-
     <div class="{{ config('design.classes.container') }} py-16 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-12 gap-y-10 text-theme-muted">
 
-        {{-- 1. BRAND / LOGO & TAGLINE --}}
+        {{-- Brand --}}
         <div class="space-y-4 col-span-1 sm:col-span-2 md:col-span-1">
             <a href="{{ route('home') }}" class="flex items-center gap-2 group">
-                <img src="{{ asset(config('design.brand.logo')) }}" alt="{{ config('design.brand.name') }} logo" class="w-10 h-10 object-contain transition-transform group-hover:rotate-12">
-                <span class="font-extrabold text-2xl tracking-wider text-brand-accent transition-colors group-hover:opacity-90">
+                <img
+                    src="{{ asset(config('design.brand.logo')) }}"
+                    alt="{{ config('design.brand.name') }} logo"
+                    class="w-10 h-10 object-contain transition-transform duration-300 group-hover:scale-105"
+                >
+
+                <span class="font-extrabold text-2xl tracking-wider text-brand-accent transition-opacity duration-300 group-hover:opacity-90">
                     {{ config('design.brand.name') }}
                 </span>
             </a>
 
-            <p class="text-sm max-w-xs text-theme-muted">
+            <p class="text-sm max-w-xs text-theme-muted leading-relaxed">
                 {{ __('frontend.footer.tagline') }}
             </p>
         </div>
 
-        {{-- 2. COMPANY LINKS --}}
-        <nav aria-labelledby="footer-company-heading" class="space-y-4">
+        {{-- Company --}}
+        <nav aria-labelledby="footer-company-heading" class="footer-column space-y-4">
             <h4 id="footer-company-heading" class="font-bold text-theme-text uppercase tracking-wider mb-4 border-b border-theme-border pb-1">
                 {{ __('frontend.footer.company') }}
             </h4>
 
             <ul class="space-y-2 text-sm">
-                <li><a href="{{ route('utility.about') }}" class="hover-text-brand-accent transition-colors duration-300">{{ __('frontend.footer.about') }}</a></li>
-                <li><a href="{{ route('utility.contact') }}" class="hover-text-brand-accent transition-colors duration-300">{{ __('frontend.footer.contact') }}</a></li>
-                <li><a href="{{ route('utility.careers') }}" class="hover-text-brand-accent transition-colors duration-300">{{ __('frontend.footer.careers') }}</a></li>
-                <li><a href="{{ route('utility.partnerships') }}" class="hover-text-brand-accent transition-colors duration-300">{{ __('frontend.footer.partnerships') }}</a></li>
+                <li>
+                    <a href="{{ route('utility.about') }}" class="footer-link hover-text-brand-accent">
+                        {{ __('frontend.footer.about') }}
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('utility.contact') }}" class="footer-link hover-text-brand-accent">
+                        {{ __('frontend.footer.contact') }}
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('utility.partnerships') }}" class="footer-link hover-text-brand-accent">
+                        {{ __('frontend.footer.partnerships') }}
+                    </a>
+                </li>
             </ul>
         </nav>
 
-        {{-- 3. RESOURCES --}}
-        <nav aria-labelledby="footer-resources-heading" class="space-y-4">
+        {{-- Resources --}}
+        <nav aria-labelledby="footer-resources-heading" class="footer-column space-y-4">
             <h4 id="footer-resources-heading" class="font-bold text-theme-text uppercase tracking-wider mb-4 border-b border-theme-border pb-1">
                 {{ __('frontend.footer.resources') }}
             </h4>
 
             <ul class="space-y-2 text-sm">
-                <li><a href="{{ route('frontend.projects.index') }}" class="hover-text-brand-accent transition-colors duration-300">{{ __('frontend.footer.explore_projects') }}</a></li>
-                <li><a href="{{ route('utility.how-it-works') }}" class="hover-text-brand-accent transition-colors duration-300">{{ __('frontend.footer.how_it_works') }}</a></li>
-                <li><a href="{{ route('project.submit.step1') }}" class="hover-text-brand-accent transition-colors duration-300">{{ __('frontend.footer.submit_idea') }}</a></li>
-                <li><a href="{{ route('utility.support') }}" class="hover-text-brand-accent transition-colors duration-300">{{ __('frontend.footer.support') }}</a></li>
+                <li>
+                    <a href="{{ route('frontend.projects.index') }}" class="footer-link hover-text-brand-accent">
+                        {{ __('frontend.footer.explore_projects') }}
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('utility.how-it-works') }}" class="footer-link hover-text-brand-accent">
+                        {{ __('frontend.footer.how_it_works') }}
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('project.submit.step1') }}" class="footer-link hover-text-brand-accent">
+                        {{ __('frontend.footer.submit_idea') }}
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('utility.support') }}" class="footer-link hover-text-brand-accent">
+                        {{ __('frontend.footer.support') }}
+                    </a>
+                </li>
             </ul>
         </nav>
 
-        {{-- 4. LEGAL & SOCIAL --}}
-        <div class="space-y-4">
+        {{-- Legal & Social --}}
+        <div class="footer-column space-y-4">
             <nav aria-labelledby="footer-legal-heading">
                 <h4 id="footer-legal-heading" class="font-bold text-theme-text uppercase tracking-wider mb-4 border-b border-theme-border pb-1">
                     {{ __('frontend.footer.legal') }}
                 </h4>
 
                 <ul class="space-y-2 text-sm">
-                    <li><a href="{{ route('utility.terms') }}" class="hover-text-brand-accent transition-colors duration-300">{{ __('frontend.footer.terms') }}</a></li>
-                    <li><a href="{{ route('utility.privacy') }}" class="hover-text-brand-accent transition-colors duration-300">{{ __('frontend.footer.privacy') }}</a></li>
-                    <li><a href="{{ route('utility.disclosures') }}" class="hover-text-brand-accent transition-colors duration-300">{{ __('frontend.footer.disclosures') }}</a></li>
+                    <li>
+                        <a href="{{ route('utility.terms') }}" class="footer-link hover-text-brand-accent">
+                            {{ __('frontend.footer.terms') }}
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('utility.privacy') }}" class="footer-link hover-text-brand-accent">
+                            {{ __('frontend.footer.privacy') }}
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('utility.disclosures') }}" class="footer-link hover-text-brand-accent">
+                            {{ __('frontend.footer.disclosures') }}
+                        </a>
+                    </li>
                 </ul>
             </nav>
 
-            <div class="space-y-2 pt-2">
-                <h4 class="font-bold text-theme-text uppercase tracking-wider">{{ __('frontend.footer.connect') }}</h4>
-
+            <div class="pt-2">
                 <div class="flex gap-4">
-                    <a href="#" class="text-xl text-theme-muted hover-text-brand-accent hover:scale-110 transition-transform duration-300" aria-label="{{ __('frontend.footer.linkedin') }}">
+                    <a href="#" class="footer-social text-xl text-theme-muted hover-text-brand-accent" aria-label="{{ __('frontend.footer.linkedin') }}">
                         <i class="fab fa-linkedin"></i>
                     </a>
-                    <a href="#" class="text-xl text-theme-muted hover-text-brand-accent hover:scale-110 transition-transform duration-300" aria-label="{{ __('frontend.footer.twitter') }}">
+
+                    <a href="#" class="footer-social text-xl text-theme-muted hover-text-brand-accent" aria-label="{{ __('frontend.footer.twitter') }}">
                         <i class="fab fa-twitter"></i>
                     </a>
-                    <a href="#" class="text-xl text-theme-muted hover-text-brand-accent hover:scale-110 transition-transform duration-300" aria-label="{{ __('frontend.footer.facebook') }}">
+
+                    <a href="#" class="footer-social text-xl text-theme-muted hover-text-brand-accent" aria-label="{{ __('frontend.footer.facebook') }}">
                         <i class="fab fa-facebook"></i>
                     </a>
                 </div>
@@ -82,76 +125,100 @@
         </div>
     </div>
 </footer>
+
 <script>
 (function () {
     function initVertexFooter() {
         const footer = document.querySelector('footer');
-        if (!footer) return;
 
-        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        const footerColumns = footer.querySelectorAll('nav, .space-y-4, .space-y-2.pt-2');
-
-        // reveal footer when it appears
-        if (!prefersReducedMotion && 'IntersectionObserver' in window) {
-            footer.style.opacity = '0';
-            footer.style.transform = 'translateY(34px)';
-            footer.style.transition = 'opacity 1s ease, transform 1s cubic-bezier(0.22, 1, 0.36, 1)';
-
-            const observer = new IntersectionObserver((entries, obs) => {
-                entries.forEach(entry => {
-                    if (!entry.isIntersecting) return;
-
-                    footer.style.opacity = '1';
-                    footer.style.transform = 'translateY(0)';
-
-                    footerColumns.forEach((col, index) => {
-                        col.style.opacity = '0';
-                        col.style.transform = 'translateY(20px)';
-                        col.style.transition = 'opacity 0.85s ease, transform 0.85s ease';
-
-                        setTimeout(() => {
-                            col.style.opacity = '1';
-                            col.style.transform = 'translateY(0)';
-                        }, 140 + (index * 120));
-                    });
-
-                    obs.unobserve(footer);
-                });
-            }, { threshold: 0.15 });
-
-            observer.observe(footer);
+        if (!footer) {
+            return;
         }
 
-        // footer links hover
-        const links = footer.querySelectorAll('a');
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const footerColumns = footer.querySelectorAll('.footer-column');
+
+        revealFooter(footer, footerColumns, prefersReducedMotion);
+        initFooterLinks(footer, prefersReducedMotion);
+        initSocialLinks(footer, prefersReducedMotion);
+    }
+
+    function revealFooter(footer, footerColumns, prefersReducedMotion) {
+        if (prefersReducedMotion || !('IntersectionObserver' in window)) {
+            return;
+        }
+
+        footer.style.opacity = '0';
+        footer.style.transform = 'translateY(34px)';
+        footer.style.transition = 'opacity 1s ease, transform 1s cubic-bezier(0.22, 1, 0.36, 1)';
+
+        const observer = new IntersectionObserver((entries, obs) => {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) {
+                    return;
+                }
+
+                footer.style.opacity = '1';
+                footer.style.transform = 'translateY(0)';
+
+                footerColumns.forEach((column, index) => {
+                    column.style.opacity = '0';
+                    column.style.transform = 'translateY(20px)';
+                    column.style.transition = 'opacity 0.85s ease, transform 0.85s ease';
+
+                    setTimeout(() => {
+                        column.style.opacity = '1';
+                        column.style.transform = 'translateY(0)';
+                    }, 140 + (index * 120));
+                });
+
+                obs.unobserve(footer);
+            });
+        }, {
+            threshold: 0.15
+        });
+
+        observer.observe(footer);
+    }
+
+    function initFooterLinks(footer, prefersReducedMotion) {
+        const links = footer.querySelectorAll('.footer-link');
+
         links.forEach(link => {
             link.style.transition = 'transform 0.25s ease, color 0.25s ease';
 
-            link.addEventListener('mouseenter', function () {
-                if (prefersReducedMotion) return;
-                link.style.transform = 'translateX(3px)';
+            link.addEventListener('mouseenter', () => {
+                if (prefersReducedMotion) {
+                    return;
+                }
+
+                link.style.transform = document.documentElement.dir === 'rtl'
+                    ? 'translateX(-3px)'
+                    : 'translateX(3px)';
             });
 
-            link.addEventListener('mouseleave', function () {
+            link.addEventListener('mouseleave', () => {
                 link.style.transform = '';
             });
         });
+    }
 
-        // social icons
-        const socialLinks = footer.querySelectorAll('.fab');
-        socialLinks.forEach(icon => {
-            const parent = icon.closest('a');
-            if (!parent) return;
+    function initSocialLinks(footer, prefersReducedMotion) {
+        const socialLinks = footer.querySelectorAll('.footer-social');
 
-            parent.style.transition = 'transform 0.28s ease';
+        socialLinks.forEach(link => {
+            link.style.transition = 'transform 0.28s ease, color 0.25s ease';
 
-            parent.addEventListener('mouseenter', function () {
-                if (prefersReducedMotion) return;
-                parent.style.transform = 'translateY(-4px) scale(1.06)';
+            link.addEventListener('mouseenter', () => {
+                if (prefersReducedMotion) {
+                    return;
+                }
+
+                link.style.transform = 'translateY(-4px) scale(1.06)';
             });
 
-            parent.addEventListener('mouseleave', function () {
-                parent.style.transform = '';
+            link.addEventListener('mouseleave', () => {
+                link.style.transform = '';
             });
         });
     }
