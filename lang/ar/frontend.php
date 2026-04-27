@@ -723,7 +723,21 @@ return [
     'nature_practical' => 'عملي',
     'nature_research_practical' => 'بحثي + عملي',
 ],
-
+'project_meta' => [
+    'discipline' => [
+        'it' => 'تقنية المعلومات',
+        'software' => 'هندسة البرمجيات',
+        'software_development' => 'تطوير البرمجيات',
+        'ai_ml' => 'الذكاء الاصطناعي وتعلم الآلة',
+        'medical' => 'طبي / صحي',
+        'electrical' => 'الهندسة الكهربائية',
+        'energy' => 'الطاقة المتجددة',
+        'agriculture' => 'الزراعة',
+        'education' => 'التعليم',
+        'business' => 'الأعمال / الإدارة',
+        'other' => 'أخرى',
+    ],
+],
 'submit_step2' => [
     'step_title' => 'الخطوة 2 من 5: المعلومات الأكاديمية',
     'page_title' => 'المعلومات الأكاديمية والمؤسسية',

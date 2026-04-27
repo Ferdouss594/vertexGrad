@@ -46,6 +46,21 @@ return [
     'facebook' => 'Join us on Facebook',
     'rights' => 'All rights reserved.',
 ],
+'project_meta' => [
+    'discipline' => [
+        'it' => 'Information Technology',
+        'software' => 'Software Engineering',
+        'software_development' => 'Software Development',
+        'ai_ml' => 'Artificial Intelligence & Machine Learning',
+        'medical' => 'Medical / Health',
+        'electrical' => 'Electrical Engineering',
+        'energy' => 'Renewable Energy',
+        'agriculture' => 'Agriculture',
+        'education' => 'Education',
+        'business' => 'Business / Management',
+        'other' => 'Other',
+    ],
+],
 'process' => [
     'title_before' => 'The VertexGrad',
     'title_highlight' => 'Process',

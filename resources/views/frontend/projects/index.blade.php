@@ -1,141 +1,33 @@
 @php
     $authUser = auth('web')->user();
     $isInvestor = $authUser && $authUser->role === 'Investor';
+
+    $translateProjectMeta = function ($value, $group = 'discipline') {
+        $raw = trim((string) $value);
+
+        if ($raw === '') {
+            return $raw;
+        }
+
+        $key = strtolower($raw);
+        $key = str_replace(['&', '/', '-', ' '], ['and', '_', '_', '_'], $key);
+        $key = preg_replace('/[^a-z0-9_]/', '', $key);
+        $key = preg_replace('/_+/', '_', $key);
+        $key = trim($key, '_');
+
+        $translationKey = "frontend.project_meta.{$group}.{$key}";
+
+        return __($translationKey) !== $translationKey ? __($translationKey) : $raw;
+    };
 @endphp
 
 @extends('frontend.layouts.app')
-
-@push('styles')
-<style>
-    .vg-reveal {
-        opacity: 0;
-        transform: translateY(26px);
-        transition:
-            opacity 0.75s cubic-bezier(.22, 1, .36, 1),
-            transform 0.75s cubic-bezier(.22, 1, .36, 1);
-        will-change: opacity, transform;
-    }
-
-    .vg-reveal.is-visible {
-        opacity: 1;
-        transform: translateY(0);
-    }
-
-    .vg-project-card {
-        position: relative;
-        transition:
-            transform 0.35s ease,
-            border-color 0.35s ease,
-            box-shadow 0.35s ease;
-    }
-
-    .vg-project-card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 24px 70px rgba(0, 224, 255, 0.08);
-    }
-
-    .vg-project-card::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        pointer-events: none;
-        border-radius: 2.5rem;
-        background: linear-gradient(135deg, rgba(0, 224, 255, 0.12), transparent 42%);
-        opacity: 0;
-        transition: opacity 0.35s ease;
-    }
-
-    .vg-project-card:hover::before {
-        opacity: 1;
-    }
-
-    .vg-image-wrap {
-        position: relative;
-    }
-
-    .vg-image-wrap::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(110deg, transparent 20%, rgba(255,255,255,0.08) 45%, transparent 70%);
-        transform: translateX(-120%);
-        transition: transform 0.9s ease;
-    }
-
-    .vg-project-card:hover .vg-image-wrap::after {
-        transform: translateX(120%);
-    }
-
-    .vg-filter-panel {
-        transition: transform 0.35s ease, box-shadow 0.35s ease;
-    }
-
-    .vg-filter-panel:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 22px 60px rgba(0, 224, 255, 0.06);
-    }
-
-    .vg-directory-panel {
-        position: relative;
-        overflow: hidden;
-    }
-
-    .vg-directory-panel::before {
-        content: "";
-        position: absolute;
-        width: 220px;
-        height: 220px;
-        border-radius: 999px;
-        background: rgba(0, 224, 255, 0.12);
-        filter: blur(42px);
-        top: -110px;
-        inset-inline-end: -80px;
-        pointer-events: none;
-    }
-
-    .vg-directory-panel::after {
-        content: "";
-        position: absolute;
-        width: 260px;
-        height: 260px;
-        border-radius: 999px;
-        background: rgba(0, 224, 255, 0.06);
-        filter: blur(48px);
-        bottom: -150px;
-        inset-inline-start: -120px;
-        pointer-events: none;
-    }
-
-    .vg-chip {
-        transition: transform 0.25s ease, background-color 0.25s ease;
-    }
-
-    .vg-chip:hover {
-        transform: translateY(-2px);
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-        .vg-reveal,
-        .vg-project-card,
-        .vg-filter-panel,
-        .vg-image-wrap::after,
-        .vg-chip {
-            transition: none !important;
-            transform: none !important;
-        }
-
-        .vg-reveal {
-            opacity: 1 !important;
-        }
-    }
-</style>
-@endpush
 
 @section('content')
 <div class="min-h-screen pt-28 pb-12 bg-theme-bg transition-colors duration-300">
     <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        <header class="mb-12 vg-reveal">
+        <header class="mb-12">
             <h1 class="text-5xl font-black text-theme-text tracking-tight">
                 {{ __('frontend.pipeline.title_before') }}
                 <span class="text-brand-accent">{{ __('frontend.pipeline.title_highlight') }}</span>
@@ -149,8 +41,8 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-10">
 
-            <aside class="lg:col-span-1 vg-reveal">
-                <div class="theme-panel vg-filter-panel p-8 rounded-[2rem] sticky top-32">
+            <aside class="lg:col-span-1">
+                <div class="theme-panel p-8 rounded-[2rem] sticky top-32">
                     <h3 class="text-theme-text font-bold mb-6 flex items-center uppercase tracking-widest text-sm">
                         <i class="fas fa-filter me-3 text-brand-accent text-xs"></i>
                         {{ __('frontend.pipeline.filter') }}
@@ -181,7 +73,7 @@
 
                                 @foreach($categories as $category)
                                     <option value="{{ $category }}" {{ request('category') == $category ? 'selected' : '' }}>
-                                        {{ $category }}
+                                        {{ $translateProjectMeta($category, 'discipline') }}
                                     </option>
                                 @endforeach
                             </select>
@@ -271,26 +163,19 @@
             </aside>
 
             <section class="lg:col-span-3">
+                <div class="theme-panel p-5 rounded-[1.5rem] mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                    <div>
+                        <h2 class="text-theme-text font-black text-xl">
+                            {{ __('frontend.projects_directory.title') }}
+                        </h2>
 
-                <div class="theme-panel vg-directory-panel vg-reveal p-6 rounded-[2rem] mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-5 border border-brand-accent/20">
-                    <div class="relative z-10 flex items-center gap-4">
-                        <span class="w-11 h-11 rounded-2xl bg-brand-accent-soft border border-brand-accent/20 flex items-center justify-center text-brand-accent shrink-0">
-                            <i class="fas fa-layer-group"></i>
-                        </span>
-
-                        <div>
-                            <h2 class="text-theme-text font-black text-xl tracking-tight">
-                                {{ __('frontend.projects_directory.title') }}
-                            </h2>
-
-                            <p class="text-sm text-theme-muted mt-1">
-                                {{ __('frontend.projects_directory.showing_results', [
-                                    'from' => $projects->firstItem() ?? 0,
-                                    'to' => $projects->lastItem() ?? 0,
-                                    'total' => $projects->total(),
-                                ]) }}
-                            </p>
-                        </div>
+                        <p class="text-theme-muted text-sm mt-1">
+                            {{ __('frontend.projects_directory.showing_results', [
+                                'from' => $projects->firstItem() ?? 0,
+                                'to' => $projects->lastItem() ?? 0,
+                                'total' => $projects->total(),
+                            ]) }}
+                        </p>
                     </div>
 
                     @if(
@@ -299,27 +184,27 @@
                         request()->filled('budget_min') ||
                         request()->filled('budget_max')
                     )
-                        <div class="relative z-10 flex flex-wrap gap-2 md:justify-end">
+                        <div class="flex flex-wrap gap-2">
                             @if(request('search'))
-                                <span class="vg-chip px-3 py-1.5 rounded-full bg-brand-accent-soft text-brand-accent text-[10px] font-black uppercase tracking-widest border border-brand-accent/20">
+                                <span class="px-3 py-1 rounded-full bg-brand-accent-soft text-brand-accent text-xs font-bold">
                                     {{ __('frontend.projects_directory.search_chip') }}: {{ request('search') }}
                                 </span>
                             @endif
 
                             @if(request('category'))
-                                <span class="vg-chip px-3 py-1.5 rounded-full bg-brand-accent-soft text-brand-accent text-[10px] font-black uppercase tracking-widest border border-brand-accent/20">
-                                    {{ request('category') }}
+                                <span class="px-3 py-1 rounded-full bg-brand-accent-soft text-brand-accent text-xs font-bold">
+                                    {{ $translateProjectMeta(request('category'), 'discipline') }}
                                 </span>
                             @endif
 
                             @if(request('budget_min'))
-                                <span class="vg-chip px-3 py-1.5 rounded-full bg-brand-accent-soft text-brand-accent text-[10px] font-black uppercase tracking-widest border border-brand-accent/20">
+                                <span class="px-3 py-1 rounded-full bg-brand-accent-soft text-brand-accent text-xs font-bold">
                                     {{ __('frontend.projects_directory.min_chip') }} ${{ number_format((float) request('budget_min')) }}
                                 </span>
                             @endif
 
                             @if(request('budget_max'))
-                                <span class="vg-chip px-3 py-1.5 rounded-full bg-brand-accent-soft text-brand-accent text-[10px] font-black uppercase tracking-widest border border-brand-accent/20">
+                                <span class="px-3 py-1 rounded-full bg-brand-accent-soft text-brand-accent text-xs font-bold">
                                     {{ __('frontend.projects_directory.max_chip') }} ${{ number_format((float) request('budget_max')) }}
                                 </span>
                             @endif
@@ -337,21 +222,21 @@
                             $hasInterest = $isInvestor ? $project->investors->contains('id', $authUser->id) : false;
                         @endphp
 
-                        <div class="theme-panel vg-project-card vg-reveal rounded-[2.5rem] overflow-hidden hover:border-brand-accent/40 transition-all group">
-                            <div class="vg-image-wrap h-52 bg-theme-surface-2 overflow-hidden flex items-center justify-center">
+                        <div class="theme-panel rounded-[2.5rem] overflow-hidden hover:border-brand-accent/40 transition-all group">
+                            <div class="h-52 bg-theme-surface-2 overflow-hidden flex items-center justify-center">
                                 @if($image)
-                                    <img src="{{ $image }}" alt="{{ $project->name }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                                    <img src="{{ $image }}" alt="{{ $project->name }}" class="w-full h-full object-cover">
                                 @else
-                                    <div class="text-theme-muted text-4xl transition-transform duration-500 group-hover:scale-110">
+                                    <div class="text-theme-muted text-4xl">
                                         <i class="fas fa-image"></i>
                                     </div>
                                 @endif
                             </div>
 
-                            <div class="p-8 relative z-10">
+                            <div class="p-8">
                                 <div class="flex justify-between items-start mb-6 gap-4">
                                     <span class="px-3 py-1 bg-brand-accent-soft text-brand-accent text-[10px] font-black rounded-lg border border-brand-accent/20 uppercase tracking-widest">
-                                        {{ $project->category ?? __('frontend.pipeline.general') }}
+                                        {{ $project->category ? $translateProjectMeta($project->category, 'discipline') : __('frontend.pipeline.general') }}
                                     </span>
 
                                     <span class="text-green-600 font-mono font-bold shrink-0">
@@ -425,7 +310,7 @@
                             </div>
                         </div>
                     @empty
-                        <div class="col-span-full py-20 text-center theme-panel vg-reveal rounded-[2.5rem] border-dashed">
+                        <div class="col-span-full py-20 text-center theme-panel rounded-[2.5rem] border-dashed">
                             <p class="text-theme-muted italic">
                                 {{ __('frontend.pipeline.no_projects_match') }}
                             </p>
@@ -433,7 +318,7 @@
                     @endforelse
                 </div>
 
-                <div class="mt-12 vg-reveal">
+                <div class="mt-12">
                     {{ $projects->links() }}
                 </div>
             </section>
@@ -441,43 +326,3 @@
     </div>
 </div>
 @endsection
-
-@push('scripts')
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    const revealItems = document.querySelectorAll('.vg-reveal');
-
-    if (!('IntersectionObserver' in window)) {
-        revealItems.forEach(function (item) {
-            item.classList.add('is-visible');
-        });
-        return;
-    }
-
-    const observer = new IntersectionObserver(function (entries) {
-        entries.forEach(function (entry) {
-            if (!entry.isIntersecting) {
-                return;
-            }
-
-            const item = entry.target;
-            const delay = Number(item.dataset.delay || 0);
-
-            window.setTimeout(function () {
-                item.classList.add('is-visible');
-            }, delay);
-
-            observer.unobserve(item);
-        });
-    }, {
-        threshold: 0.12,
-        rootMargin: '0px 0px -40px 0px'
-    });
-
-    revealItems.forEach(function (item, index) {
-        item.dataset.delay = String(Math.min(index * 70, 420));
-        observer.observe(item);
-    });
-});
-</script>
-@endpush
