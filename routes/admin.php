@@ -8,12 +8,12 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\CalendarController;
-use App\Http\Controllers\ManagerController;
-use App\Http\Controllers\StudentController;
-use App\Http\Controllers\InvestorController;
-use App\Http\Controllers\ProjectTaskController;
+use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\CalendarController;
+use App\Http\Controllers\Admin\ManagerController;
+use App\Http\Controllers\Admin\StudentController;
+use App\Http\Controllers\Admin\InvestorController;
+use App\Http\Controllers\Admin\ProjectTaskController;
 
 use App\Http\Controllers\Manager\UserApproveController;
 use App\Http\Controllers\Manager\UserController;
