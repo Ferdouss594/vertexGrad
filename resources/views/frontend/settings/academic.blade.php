@@ -308,32 +308,39 @@
                 </div>
             </section>
 
-            <section class="theme-panel rounded-[2.5rem] p-6 md:p-8">
-                <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-                    <div class="flex items-start gap-4">
-                        <div class="w-14 h-14 rounded-2xl bg-brand-accent-soft border border-brand-accent flex items-center justify-center shrink-0">
-                            <i class="fas fa-shield-alt text-2xl text-brand-accent"></i>
-                        </div>
+<section class="theme-panel rounded-[2.5rem] p-6 md:p-8">
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+        <div class="flex items-start gap-4">
+            <div class="w-14 h-14 rounded-2xl bg-brand-accent-soft border border-brand-accent flex items-center justify-center shrink-0 text-brand-accent">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M12 3l7 3v5c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V6l7-3z"/>
+                    <path d="M9.5 12l1.8 1.8L15 10"/>
+                </svg>
+            </div>
 
-<div>
-    <div class="text-xs font-black uppercase tracking-[0.15em] text-brand-accent mb-2">
-        {{ __('frontend.security.badge') }}
-    </div>
-    <h2 class="text-xl font-black text-theme-text uppercase tracking-[0.16em]">
-        {{ __('frontend.security.security_center') }}
-    </h2>
-    <p class="text-sm text-theme-muted mt-2 max-w-2xl leading-7">
-        {{ __('frontend.security.security_card_text_academic') }}
-    </p>
-</div>
-
-<a href="{{ route('security.index') }}" class="{{ $btnSecondaryClass }}">
-    <i class="fas fa-arrow-up-right-from-square mr-2"></i>
-    {{ __('frontend.security.open_security_center') }}
-</a>
-                    </div>
+            <div class="min-w-0">
+                <div class="text-xs font-black uppercase tracking-[0.15em] text-brand-accent mb-2">
+                    {{ __('frontend.security.badge') }}
                 </div>
-            </section>
+
+                <h2 class="text-xl font-black text-theme-text uppercase tracking-[0.16em]">
+                    {{ __('frontend.security.security_center') }}
+                </h2>
+
+                <p class="text-sm text-theme-muted mt-2 max-w-2xl leading-7">
+                    {{ __('frontend.security.security_card_text_academic') }}
+                </p>
+            </div>
+        </div>
+
+        <div class="flex lg:justify-end">
+            <a href="{{ route('security.index') }}" class="{{ $btnSecondaryClass }}">
+                <i class="fas fa-arrow-up-right-from-square mr-2"></i>
+                {{ __('frontend.security.open_security_center') }}
+            </a>
+        </div>
+    </div>
+</section>
 
             <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-3">
                 <a href="{{ route('dashboard.academic') }}" class="{{ $btnSecondaryClass }}">

@@ -34,8 +34,11 @@
                 <div class="p-8 md:p-10">
                     <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
                         <div class="flex items-start gap-5">
-                            <div class="w-16 h-16 rounded-2xl bg-brand-accent-soft border border-brand-accent flex items-center justify-center shrink-0">
-                                <i class="fas fa-shield-alt text-2xl text-brand-accent"></i>
+                            <div class="w-16 h-16 rounded-2xl bg-brand-accent-soft border border-brand-accent flex items-center justify-center shrink-0 text-brand-accent">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <path d="M12 3l7 3v5c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V6l7-3z"/>
+                                    <path d="M9.5 12l1.8 1.8L15 10"/>
+                                </svg>
                             </div>
 
                             <div class="min-w-0">
@@ -124,10 +127,7 @@
                             @unless ($session->is_current)
                                 <form method="POST" action="{{ route('security.sessions.revoke', $session->id) }}">
                                     @csrf
-                                    <button
-                                        type="submit"
-                                        class="inline-flex items-center justify-center rounded-xl px-4 py-2 text-xs font-black uppercase tracking-[0.14em] border border-red-500/30 text-red-500 hover:bg-red-500/10 transition"
-                                    >
+                                    <button type="submit" class="inline-flex items-center justify-center rounded-xl px-4 py-2 text-xs font-black uppercase tracking-[0.14em] border border-red-500/30 text-red-500 hover:bg-red-500/10 transition">
                                         {{ __('frontend.security.revoke') }}
                                     </button>
                                 </form>
@@ -171,10 +171,7 @@
 
                             <form method="POST" action="{{ route('security.trusted-devices.revoke', $device->id) }}">
                                 @csrf
-                                <button
-                                    type="submit"
-                                    class="inline-flex items-center justify-center rounded-xl px-4 py-2 text-xs font-black uppercase tracking-[0.14em] border border-red-500/30 text-red-500 hover:bg-red-500/10 transition"
-                                >
+                                <button type="submit" class="inline-flex items-center justify-center rounded-xl px-4 py-2 text-xs font-black uppercase tracking-[0.14em] border border-red-500/30 text-red-500 hover:bg-red-500/10 transition">
                                     {{ __('frontend.security.remove') }}
                                 </button>
                             </form>
@@ -215,10 +212,7 @@
                     >
                 </div>
 
-                <button
-                    type="submit"
-                    class="inline-flex items-center justify-center gap-2 rounded-2xl px-6 py-3 text-sm font-black uppercase tracking-[0.14em] bg-red-500 text-white hover:opacity-90 transition shadow-brand-soft"
-                >
+                <button type="submit" class="inline-flex items-center justify-center gap-2 rounded-2xl px-6 py-3 text-sm font-black uppercase tracking-[0.14em] bg-red-500 text-white hover:opacity-90 transition shadow-brand-soft">
                     <i class="fas fa-power-off"></i>
                     <span>{{ __('frontend.security.logout_other_devices') }}</span>
                 </button>
@@ -259,20 +253,15 @@
                         <a href="{{ route('security.recovery-codes.download') }}"
                            class="inline-flex items-center justify-center gap-2 rounded-2xl px-5 py-3 text-sm font-black uppercase tracking-[0.14em] border border-theme-border text-theme-text hover:bg-theme-surface-2 transition">
                             <i class="fas fa-download"></i>
-                           <span>{{ __('frontend.security.download_recovery_codes') }}</span>
+                            <span>{{ __('frontend.security.download_recovery_codes') }}</span>
                         </a>
                     </div>
                 </div>
             @endif
 
-            <form method="POST"
-                  action="{{ route('security.recovery-codes.regenerate') }}"
-                  onsubmit="return confirm(@js(__('frontend.security.confirm_regenerate_recovery_codes')))">
+            <form method="POST" action="{{ route('security.recovery-codes.regenerate') }}" onsubmit="return confirm(@js(__('frontend.security.confirm_regenerate_recovery_codes')))">
                 @csrf
-                <button
-                    type="submit"
-                    class="inline-flex items-center justify-center gap-2 rounded-2xl px-6 py-3 text-sm font-black uppercase tracking-[0.14em] bg-brand-accent text-white hover:bg-brand-accent-strong transition shadow-brand-soft"
-                >
+                <button type="submit" class="inline-flex items-center justify-center gap-2 rounded-2xl px-6 py-3 text-sm font-black uppercase tracking-[0.14em] bg-brand-accent text-white hover:bg-brand-accent-strong transition shadow-brand-soft">
                     <i class="fas fa-key"></i>
                     <span>{{ __('frontend.security.generate_recovery_codes') }}</span>
                 </button>
@@ -321,7 +310,9 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="py-4 text-theme-muted">{{ __('frontend.security.no_recent_activity') }}</td>
+                                <td colspan="6" class="py-4 text-theme-muted">
+                                    {{ __('frontend.security.no_recent_activity') }}
+                                </td>
                             </tr>
                         @endforelse
                     </tbody>
