@@ -1,52 +1,52 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
+
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\User;
-use Jenssegers\Agent\Agent;
-use App\Models\LoginLog;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
     // 🟢 عرض صفحة تسجيل الدخول
-  public function showLogin(Request $request)
-{
-
-    return view('auth.login');
-}
+    public function showLogin(Request $request)
+    {
+        return view('auth.login');
+    }
 
     // 🟢 تنفيذ تسجيل الدخول مع تتبع الجهاز والمتصفح والجلسة
     public function login(Request $request)
     {
-        $fieldType = filter_var($request->login_id, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+        $loginId = (string) $request->input('login_id');
 
-        $request->validate([
+        $fieldType = filter_var($loginId, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+
+        $validated = $request->validate([
             'login_id' => 'required|' . ($fieldType === 'email' ? 'email' : 'string'),
             'password' => 'required|min:6',
-            'role'     => 'required|in:Manager,Supervisor',
+            'role' => 'required|in:Manager,Supervisor',
         ]);
 
         $credentials = [
-            $fieldType => $request->login_id,
-            'password' => $request->password,
+            $fieldType => $validated['login_id'],
+            'password' => $validated['password'],
         ];
 
-        $user = User::where($fieldType, $request->login_id)->first();
+        $user = User::where($fieldType, $validated['login_id'])->first();
 
         if (!$user) {
             return back()->withErrors(['login_id' => 'User not found.'])->withInput();
         }
 
-        if (trim(strtolower($user->role)) !== trim(strtolower($request->role))) {
+        if (trim(strtolower((string) $user->role)) !== trim(strtolower((string) $validated['role']))) {
             return back()->withErrors([
-                'role' => 'This account is not registered as a ' . $request->role
+                'role' => 'This account is not registered as a ' . $validated['role'],
             ])->withInput();
         }
 
-        if (Auth::guard('admin')->attempt($credentials, $request->has('remember'))) {
+        if (Auth::guard('admin')->attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
 
             session(['active_guard' => 'admin']);
@@ -72,27 +72,27 @@ class AuthController extends Controller
     // 🟢 تنفيذ التسجيل
     public function register(Request $request)
     {
-        $request->validate([
-            'username'  => 'required|string|max:50|unique:users,username',
+        $validated = $request->validate([
+            'username' => 'required|string|max:50|unique:users,username',
             'full_name' => 'nullable|string|max:150',
-            'email'     => 'required|email|unique:users,email',
-            'password'  => 'required|min:6|confirmed',
-            'gender'    => 'nullable|in:male,female',
-            'city'      => 'nullable|string|max:100',
-            'state'     => 'nullable|string|max:100',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|min:6|confirmed',
+            'gender' => 'nullable|in:male,female',
+            'city' => 'nullable|string|max:100',
+            'state' => 'nullable|string|max:100',
         ]);
 
         try {
             User::create([
-                'username' => $request->username,
-                'name'     => $request->full_name,
-                'email'    => $request->email,
-                'password' => Hash::make($request->password),
-                'role'     => 'Supervisor',
-                'status'   => 'pending',
-                'gender'   => $request->gender,
-                'city'     => $request->city,
-                'state'    => $request->state,
+                'username' => $validated['username'],
+                'name' => $validated['full_name'] ?? null,
+                'email' => $validated['email'],
+                'password' => Hash::make($validated['password']),
+                'role' => 'Supervisor',
+                'status' => 'pending',
+                'gender' => $validated['gender'] ?? null,
+                'city' => $validated['city'] ?? null,
+                'state' => $validated['state'] ?? null,
             ]);
 
             return response()->json([
@@ -121,6 +121,7 @@ class AuthController extends Controller
     public function profile()
     {
         $user = auth()->user();
+
         return view('auth.profile', compact('user'));
     }
 }

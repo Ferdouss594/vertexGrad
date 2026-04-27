@@ -1,8 +1,8 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
-use App\Http\Controllers\Controller;
 
+use App\Http\Controllers\Controller;
 use App\Models\Project;
 use App\Models\ProjectTask;
 use Illuminate\Http\Request;
@@ -18,10 +18,10 @@ class ProjectTaskController extends Controller
             'status' => 'required|in:Pending,In Progress,Completed',
             'assigned_to' => 'nullable|exists:students,student_id',
             'due_date' => 'nullable|date',
-            'progress' => 'nullable|integer|min:0|max:100'
+            'progress' => 'nullable|integer|min:0|max:100',
         ]);
 
-        $task = $project->tasks()->create($data);
+        $project->tasks()->create($data);
 
         // تحديث تقدم المشروع تلقائياً
         $project->updateProgress();
@@ -38,13 +38,14 @@ class ProjectTaskController extends Controller
             'status' => 'required|in:Pending,In Progress,Completed',
             'assigned_to' => 'nullable|exists:students,student_id',
             'due_date' => 'nullable|date',
-            'progress' => 'nullable|integer|min:0|max:100'
+            'progress' => 'nullable|integer|min:0|max:100',
         ]);
 
         $task->update($data);
 
         // تحديث تقدم المشروع تلقائياً
-        $task->project->updateProgress();
+        $project = $task->project()->firstOrFail();
+        $project->updateProgress();
 
         return redirect()->back()->with('success', 'Task updated successfully!');
     }
@@ -52,9 +53,12 @@ class ProjectTaskController extends Controller
     // حذف مهمة
     public function destroy(ProjectTask $task)
     {
-        $project = $task->project;
+        $project = $task->project()->firstOrFail();
+
         $task->delete();
+
         $project->updateProgress();
+
         return redirect()->back()->with('success', 'Task deleted successfully!');
     }
 }

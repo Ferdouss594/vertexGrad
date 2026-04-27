@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\CalendarEvent;
 use App\Services\AuditLogService;
+use Illuminate\Http\Request;
 
 class CalendarController extends Controller
 {
@@ -77,7 +77,7 @@ class CalendarController extends Controller
                 ]);
             }
 
-            $oldValues = $events->map(function ($event) {
+            $oldValues = $events->map(function (CalendarEvent $event) {
                 return $this->auditCalendarPayload($event);
             })->values()->toArray();
 
@@ -126,7 +126,7 @@ class CalendarController extends Controller
     protected function auditCalendarPayload(CalendarEvent $event): array
     {
         return [
-            'id' => $event->id,
+            'id' => $event->getKey(),
             'title' => $event->title,
             'description' => $event->description,
             'color' => $event->color,

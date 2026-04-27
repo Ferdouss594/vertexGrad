@@ -1,8 +1,8 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
-use App\Http\Controllers\Controller;
 
+use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -14,14 +14,16 @@ class StudentController extends Controller
         $query = User::where('role', 'Student')->with('student');
 
         if ($request->filled('search')) {
-            $query->where(function($q) use ($request) {
-                $q->where('name', 'like', "%{$request->search}%")
-                  ->orWhere('email', 'like', "%{$request->search}%");
+            $search = (string) $request->input('search');
+
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%");
             });
         }
 
         if ($request->filled('status')) {
-            $query->where('status', $request->status);
+            $query->where('status', $request->input('status'));
         }
 
         $students = $query->paginate(15);
@@ -38,7 +40,7 @@ class StudentController extends Controller
     // حفظ طالب جديد
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:150',
             'email' => 'required|email|unique:users,email',
             'status' => 'nullable|string|in:active,pending,inactive,disabled',
@@ -48,20 +50,23 @@ class StudentController extends Controller
         ]);
 
         $user = User::create([
-    'username' => explode('@', $request->email)[0], // توليد تلقائي
-    'name'     => $request->name,
-    'email'    => $request->email,
-    'role'     => 'Student',
-    'status'   => $request->status ?? 'active',
-    'password' => bcrypt('12345678'),
-]);
+            'username' => explode('@', $validated['email'])[0],
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'role' => 'Student',
+            'status' => $validated['status'] ?? 'active',
+            'password' => bcrypt('12345678'),
+        ]);
 
-
-        if ($request->filled('major') || $request->filled('phone') || $request->filled('address')) {
+        if (
+            !empty($validated['major']) ||
+            !empty($validated['phone']) ||
+            !empty($validated['address'])
+        ) {
             $user->student()->create([
-                'major' => $request->major,
-                'phone' => $request->phone,
-                'address' => $request->address,
+                'major' => $validated['major'] ?? null,
+                'phone' => $validated['phone'] ?? null,
+                'address' => $validated['address'] ?? null,
             ]);
         }
 
@@ -72,15 +77,16 @@ class StudentController extends Controller
     public function edit(User $student)
     {
         $student->load('student');
+
         return view('students.edit', compact('student'));
     }
 
     // تحديث بيانات الطالب والمستخدم
     public function update(Request $request, User $student)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:150',
-            'email' => 'required|email|unique:users,email,' . $student->id,
+            'email' => 'required|email|unique:users,email,' . $student->getKey(),
             'status' => 'required|string|in:active,pending,inactive,disabled',
             'major' => 'nullable|string|max:50',
             'phone' => 'nullable|string|max:20',
@@ -88,25 +94,29 @@ class StudentController extends Controller
         ]);
 
         $student->update([
-            'name' => $request->name,
-            'email' => $request->email,
-            'status' => $request->status,
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'status' => $validated['status'],
         ]);
 
-        if ($student->student) {
-            $student->student->update([
-                'major' => $request->major,
-                'phone' => $request->phone,
-                'address' => $request->address,
+        $studentProfile = $student->student()->first();
+
+        if ($studentProfile) {
+            $studentProfile->update([
+                'major' => $validated['major'] ?? null,
+                'phone' => $validated['phone'] ?? null,
+                'address' => $validated['address'] ?? null,
             ]);
-        } else {
-            if ($request->filled('major') || $request->filled('phone') || $request->filled('address')) {
-                $student->student()->create([
-                    'major' => $request->major,
-                    'phone' => $request->phone,
-                    'address' => $request->address,
-                ]);
-            }
+        } elseif (
+            !empty($validated['major']) ||
+            !empty($validated['phone']) ||
+            !empty($validated['address'])
+        ) {
+            $student->student()->create([
+                'major' => $validated['major'] ?? null,
+                'phone' => $validated['phone'] ?? null,
+                'address' => $validated['address'] ?? null,
+            ]);
         }
 
         return redirect()->route('students.index')->with('success', 'Student updated successfully.');
@@ -116,6 +126,7 @@ class StudentController extends Controller
     public function destroy(User $student)
     {
         $student->delete();
+
         return redirect()->route('students.index')->with('success', 'Student deleted successfully.');
     }
 
@@ -123,22 +134,23 @@ class StudentController extends Controller
     public function show(User $student)
     {
         $student->load('student');
+
         return view('students.show', compact('student'));
     }
+
     public function updateStatus($id, $status)
-{
-    // التحقق أن الحالة صحيحة
-    if (!in_array($status, ['active', 'inactive', 'pending', 'disabled'])) {
-        return back()->with('error', 'Invalid status value.');
+    {
+        // التحقق أن الحالة صحيحة
+        if (!in_array($status, ['active', 'inactive', 'pending', 'disabled'], true)) {
+            return back()->with('error', 'Invalid status value.');
+        }
+
+        // جلب المستخدم الطالب
+        $student = User::where('role', 'Student')->findOrFail($id);
+
+        // تحديث الحالة
+        $student->update(['status' => $status]);
+
+        return redirect()->route('students.index')->with('success', 'Status updated successfully.');
     }
-
-    // جلب المستخدم الطالب
-    $student = User::where('role', 'Student')->findOrFail($id);
-
-    // تحديث الحالة
-    $student->update(['status' => $status]);
-
-    return redirect()->route('students.index')->with('success', 'Status updated successfully.');
-}
-
 }
