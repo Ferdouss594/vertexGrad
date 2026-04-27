@@ -1,3 +1,26 @@
+<style>
+    .brand-logo {
+        transition: filter 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    [data-theme="dark"] .brand-logo,
+    [data-theme="brand"] .brand-logo {
+        filter: brightness(0) invert(1) sepia(1) saturate(5) hue-rotate(180deg);
+        opacity: 0.9;
+        transform: scale(1.08);
+    }
+
+    [data-theme="light"] .brand-logo {
+        filter: none;
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    .brand-logo:hover {
+        transform: scale(1.15) rotate(6deg);
+    }
+</style>
+
 <footer class="w-full border-t border-theme-border bg-theme-surface transition-colors duration-300">
     <div class="{{ config('design.classes.container') }} py-16 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-12 gap-y-10 text-theme-muted">
 
@@ -7,7 +30,7 @@
                 <img
                     src="{{ asset(config('design.brand.logo')) }}"
                     alt="{{ config('design.brand.name') }} logo"
-                    class="w-10 h-10 object-contain transition-transform duration-300 group-hover:scale-105"
+                    class="brand-logo w-10 h-10 object-contain shrink-0"
                 >
 
                 <span class="font-extrabold text-2xl tracking-wider text-brand-accent transition-opacity duration-300 group-hover:opacity-90">
@@ -27,21 +50,9 @@
             </h4>
 
             <ul class="space-y-2 text-sm">
-                <li>
-                    <a href="{{ route('utility.about') }}" class="footer-link hover-text-brand-accent">
-                        {{ __('frontend.footer.about') }}
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ route('utility.contact') }}" class="footer-link hover-text-brand-accent">
-                        {{ __('frontend.footer.contact') }}
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ route('utility.partnerships') }}" class="footer-link hover-text-brand-accent">
-                        {{ __('frontend.footer.partnerships') }}
-                    </a>
-                </li>
+                <li><a href="{{ route('utility.about') }}" class="footer-link hover-text-brand-accent">{{ __('frontend.footer.about') }}</a></li>
+                <li><a href="{{ route('utility.contact') }}" class="footer-link hover-text-brand-accent">{{ __('frontend.footer.contact') }}</a></li>
+                <li><a href="{{ route('utility.partnerships') }}" class="footer-link hover-text-brand-accent">{{ __('frontend.footer.partnerships') }}</a></li>
             </ul>
         </nav>
 
@@ -52,26 +63,10 @@
             </h4>
 
             <ul class="space-y-2 text-sm">
-                <li>
-                    <a href="{{ route('frontend.projects.index') }}" class="footer-link hover-text-brand-accent">
-                        {{ __('frontend.footer.explore_projects') }}
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ route('utility.how-it-works') }}" class="footer-link hover-text-brand-accent">
-                        {{ __('frontend.footer.how_it_works') }}
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ route('project.submit.step1') }}" class="footer-link hover-text-brand-accent">
-                        {{ __('frontend.footer.submit_idea') }}
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ route('utility.support') }}" class="footer-link hover-text-brand-accent">
-                        {{ __('frontend.footer.support') }}
-                    </a>
-                </li>
+                <li><a href="{{ route('frontend.projects.index') }}" class="footer-link hover-text-brand-accent">{{ __('frontend.footer.explore_projects') }}</a></li>
+                <li><a href="{{ route('utility.how-it-works') }}" class="footer-link hover-text-brand-accent">{{ __('frontend.footer.how_it_works') }}</a></li>
+                <li><a href="{{ route('project.submit.step1') }}" class="footer-link hover-text-brand-accent">{{ __('frontend.footer.submit_idea') }}</a></li>
+                <li><a href="{{ route('utility.support') }}" class="footer-link hover-text-brand-accent">{{ __('frontend.footer.support') }}</a></li>
             </ul>
         </nav>
 
@@ -83,21 +78,9 @@
                 </h4>
 
                 <ul class="space-y-2 text-sm">
-                    <li>
-                        <a href="{{ route('utility.terms') }}" class="footer-link hover-text-brand-accent">
-                            {{ __('frontend.footer.terms') }}
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('utility.privacy') }}" class="footer-link hover-text-brand-accent">
-                            {{ __('frontend.footer.privacy') }}
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('utility.disclosures') }}" class="footer-link hover-text-brand-accent">
-                            {{ __('frontend.footer.disclosures') }}
-                        </a>
-                    </li>
+                    <li><a href="{{ route('utility.terms') }}" class="footer-link hover-text-brand-accent">{{ __('frontend.footer.terms') }}</a></li>
+                    <li><a href="{{ route('utility.privacy') }}" class="footer-link hover-text-brand-accent">{{ __('frontend.footer.privacy') }}</a></li>
+                    <li><a href="{{ route('utility.disclosures') }}" class="footer-link hover-text-brand-accent">{{ __('frontend.footer.disclosures') }}</a></li>
                 </ul>
             </nav>
 
@@ -106,11 +89,9 @@
                     <a href="#" class="footer-social text-xl text-theme-muted hover-text-brand-accent" aria-label="{{ __('frontend.footer.linkedin') }}">
                         <i class="fab fa-linkedin"></i>
                     </a>
-
                     <a href="#" class="footer-social text-xl text-theme-muted hover-text-brand-accent" aria-label="{{ __('frontend.footer.twitter') }}">
                         <i class="fab fa-twitter"></i>
                     </a>
-
                     <a href="#" class="footer-social text-xl text-theme-muted hover-text-brand-accent" aria-label="{{ __('frontend.footer.facebook') }}">
                         <i class="fab fa-facebook"></i>
                     </a>

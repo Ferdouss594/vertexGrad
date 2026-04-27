@@ -28,6 +28,29 @@
     $languageLabel = $currentLocale === 'ar' ? 'English' : 'العربية';
 @endphp
 
+<style>
+    .brand-logo {
+        transition: filter 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    [data-theme="dark"] .brand-logo,
+    [data-theme="brand"] .brand-logo {
+        filter: brightness(0) invert(1) sepia(1) saturate(5) hue-rotate(180deg);
+        opacity: 0.9;
+        transform: scale(1.08);
+    }
+
+    [data-theme="light"] .brand-logo {
+        filter: none;
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    .brand-logo:hover {
+        transform: scale(1.15) rotate(6deg);
+    }
+</style>
+
 <header class="w-full fixed top-0 left-0 z-50 border-b header-shell transition-colors duration-300">
     <div class="{{ config('design.classes.container') }} flex items-center justify-between h-20 gap-4">
 
@@ -36,7 +59,7 @@
             <img
                 src="{{ config('design.brand.logo') ? asset(config('design.brand.logo')) : asset('images/logo.png') }}"
                 alt="{{ config('design.brand.name', 'VertexGrad') }}"
-                class="w-10 h-10 object-contain shrink-0"
+                class="brand-logo w-10 h-10 object-contain shrink-0"
             >
             <span class="font-extrabold text-2xl tracking-tight text-brand-accent whitespace-nowrap">
                 {{ config('design.brand.name', 'VertexGrad') }}
@@ -147,13 +170,12 @@
                 @endphp
 
                 {{-- NOTIFICATIONS --}}
-<div
-    id="frontend-notification-bell"
-    class="relative flex items-center"
-    x-data="{ open:false }"
-    data-latest-url="{{ route('frontend.notifications.latest') }}"
->
-
+                <div
+                    id="frontend-notification-bell"
+                    class="relative flex items-center"
+                    x-data="{ open:false }"
+                    data-latest-url="{{ route('frontend.notifications.latest') }}"
+                >
                     <button type="button"
                             @click="open = !open"
                             class="relative flex items-center justify-center w-10 h-10 rounded-full bg-brand-accent-soft border border-theme-border text-brand-accent hover:bg-brand-accent hover:text-white transition-all focus:outline-none shadow-brand-soft">
@@ -161,12 +183,12 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V4a2 2 0 10-4 0v1.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0a3 3 0 11-6 0m6 0H9" />
                         </svg>
 
-<span
-    id="frontendUnreadBadge"
-    class="absolute -top-1 -right-1 {{ $initialUnread > 0 ? 'flex' : 'hidden' }} h-4 min-w-[16px] px-1 items-center justify-center rounded-full bg-red-500 text-[10px] font-black text-white shadow"
->
-    {{ $initialUnread > 9 ? '9+' : $initialUnread }}
-</span>
+                        <span
+                            id="frontendUnreadBadge"
+                            class="absolute -top-1 -right-1 {{ $initialUnread > 0 ? 'flex' : 'hidden' }} h-4 min-w-[16px] px-1 items-center justify-center rounded-full bg-red-500 text-[10px] font-black text-white shadow"
+                        >
+                            {{ $initialUnread > 9 ? '9+' : $initialUnread }}
+                        </span>
                     </button>
 
                     <div x-show="open"
@@ -183,8 +205,8 @@
                                 {{ __('frontend.header.alerts') }}
                             </h3>
                             <span class="text-[10px] text-theme-muted">
-    <span id="frontendUnreadText">{{ $initialUnread }}</span> {{ __('frontend.header.unread') }}
-</span>
+                                <span id="frontendUnreadText">{{ $initialUnread }}</span> {{ __('frontend.header.unread') }}
+                            </span>
                         </div>
 
                         <div id="frontendNotificationList" class="max-h-80 overflow-y-auto">
@@ -322,6 +344,7 @@
         </div>
     </div>
 </header>
+
 <script>
 (function () {
     function initVertexHeader() {
