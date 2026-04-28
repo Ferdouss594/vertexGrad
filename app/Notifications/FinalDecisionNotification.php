@@ -26,40 +26,26 @@ class FinalDecisionNotification extends Notification
         return ['database'];
     }
 
-    public function toDatabase(object $notifiable): array
-    {
-        $title = 'Final Decision on Your Project';
-        $message = 'A final decision has been made on your project.';
+public function toDatabase(object $notifiable): array
+{
+    $notificationKey = match ($this->decision) {
+        'published' => 'project_published',
+        'revision'  => 'project_revision',
+        'rejected'  => 'project_rejected',
+        default     => 'project_final_decision',
+    };
 
-        switch ($this->decision) {
-            case 'published':
-                $title = 'Project Published';
-                $message = '🎉 Your project has been approved and published successfully.';
-                break;
-
-            case 'revision':
-                $title = 'Project Needs Revision';
-                $message = '✏️ Your project needs revisions before final approval.';
-                break;
-
-            case 'rejected':
-                $title = 'Project Rejected';
-                $message = '❌ Your project has been rejected.';
-                break;
-        }
-
-        return [
-            'title' => $title,
-            'message' => $message,
-            'project_id' => $this->project->project_id,
-            'project_title' => $this->project->title ?? $this->project->name ?? 'Project',
-            'decision' => $this->decision,
-            'manager_note' => $this->managerNote,
-            'url' => route('frontend.projects.show', $this->project, false),
-            'icon' => 'fas fa-gavel',
-            'type' => 'final_decision',
-        ];
-    }
+    return [
+        'key' => $notificationKey,
+        'project_id' => $this->project->project_id,
+        'project_title' => $this->project->title ?? $this->project->name ?? 'Project',
+        'decision' => $this->decision,
+        'manager_note' => $this->managerNote,
+        'url' => route('frontend.projects.show', $this->project, false),
+        'icon' => 'gavel',
+        'type' => 'final_decision',
+    ];
+}
 
     public function toArray(object $notifiable): array
     {

@@ -25,11 +25,12 @@ class ProjectApproved extends Notification
     public function toDatabase($notifiable)
     {
         return [
-            'title'   => 'Project Approved! 🎉',
-            'message' => 'Your project "' . $this->project->name . '" has been verified and is now live.',
-            'url'     => route('dashboard.academic', [], false),
-            'icon'    => 'fas fa-check-double',
-            'type'    => 'project_approved',
+            'key' => 'project_approved',
+            'project_id' => $this->project->project_id,
+            'project_name' => $this->project->name,
+            'url' => route('dashboard.academic', [], false),
+            'icon' => 'fas fa-check-double',
+            'type' => 'project_approved',
         ];
     }
 

@@ -21,8 +21,11 @@
             <div class="theme-panel rounded-2xl shadow-brand-soft border border-theme-border/60 p-8 backdrop-blur-sm">
 
                 <div class="text-center mb-8">
-                    <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-accent/10 border border-brand-accent/20">
-                        <i class="fas fa-shield-alt text-3xl text-brand-accent"></i>
+                    <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-accent/10 border border-brand-accent/20 text-brand-accent">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M12 3l7 3v5c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V6l7-3z"/>
+                            <path d="M9.5 12l1.8 1.8L15 10"/>
+                        </svg>
                     </div>
 
                     <h2 class="text-3xl font-bold text-theme-text mb-2">
@@ -37,7 +40,9 @@
                 @if (session('status'))
                     <div class="mb-6 rounded-xl border border-green-400/30 bg-green-500/10 px-4 py-3 text-sm text-green-500">
                         <div class="flex items-start gap-3">
-                            <i class="fas fa-circle-check mt-0.5"></i>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="mt-0.5 h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20 6 9 17l-5-5"/>
+                            </svg>
                             <span>{{ session('status') }}</span>
                         </div>
                     </div>
@@ -93,7 +98,10 @@
                         type="submit"
                         class="w-full inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-base font-semibold bg-brand-accent text-white hover:bg-brand-accent-strong transition duration-300 shadow-brand-soft"
                     >
-                        <i class="fas fa-shield-check"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 3l7 3v5c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V6l7-3z"/>
+                            <path d="M9.5 12l1.8 1.8L15 10"/>
+                        </svg>
                         <span>{{ __('frontend.auth.verify_and_continue') }}</span>
                     </button>
                 </form>
@@ -104,7 +112,10 @@
                         type="submit"
                         class="w-full inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold border border-theme-border text-theme-text hover:bg-theme-surface-2 transition duration-300"
                     >
-                        <i class="fas fa-rotate-right"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 12a9 9 0 1 1-2.64-6.36"/>
+                            <path d="M21 3v6h-6"/>
+                        </svg>
                         <span>{{ __('frontend.auth.resend_code') }}</span>
                     </button>
                 </form>
@@ -139,7 +150,12 @@
                                     type="submit"
                                     class="w-full inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold border border-theme-border text-theme-text hover:bg-theme-surface-2 transition duration-300"
                                 >
-                                    <i class="fas fa-key"></i>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M21 2l-2 2"/>
+                                        <path d="M15.5 7.5l3.5-3.5"/>
+                                        <circle cx="9" cy="15" r="6"/>
+                                        <path d="M9 15h.01"/>
+                                    </svg>
                                     <span>{{ __('frontend.auth.use_recovery_code') }}</span>
                                 </button>
                             </form>
@@ -149,7 +165,10 @@
 
                 <div class="mt-8 border-t border-theme-border/60 pt-6 text-center">
                     <a href="{{ route('login.show') }}" class="inline-flex items-center gap-2 text-sm font-medium text-brand-accent hover:underline">
-                        <i class="fas fa-arrow-left"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M19 12H5"/>
+                            <path d="m12 19-7-7 7-7"/>
+                        </svg>
                         <span>{{ __('frontend.auth.back_to_login') }}</span>
                     </a>
                 </div>
@@ -171,6 +190,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const style = document.createElement('style');
         style.id = 'vg-login-otp-style';
         style.textContent = `
+            @keyframes vgSpin {
+                from { transform: rotate(0deg); }
+                to { transform: rotate(360deg); }
+            }
+
             .vg-reveal {
                 opacity: 0;
                 transform: translateY(18px);
@@ -202,6 +226,16 @@ document.addEventListener('DOMContentLoaded', () => {
             .vg-auth-btn.is-loading {
                 pointer-events: none;
                 opacity: .92;
+            }
+
+            .vg-spinner {
+                width: 16px;
+                height: 16px;
+                border: 2px solid rgba(255,255,255,.45);
+                border-top-color: #fff;
+                border-radius: 9999px;
+                display: inline-block;
+                animation: vgSpin .7s linear infinite;
             }
 
             @media (prefers-reduced-motion: reduce) {
@@ -246,7 +280,7 @@ document.addEventListener('DOMContentLoaded', () => {
             verifyButton.classList.add('is-loading');
             verifyButton.innerHTML = `
                 <span class="inline-flex items-center gap-2">
-                    <i class="fas fa-circle-notch fa-spin"></i>
+                    <span class="vg-spinner"></span>
                     {{ __('frontend.auth.verify_and_continue') }}
                 </span>
             `;
@@ -260,7 +294,7 @@ document.addEventListener('DOMContentLoaded', () => {
             resendButton.classList.add('is-loading');
             resendButton.innerHTML = `
                 <span class="inline-flex items-center gap-2">
-                    <i class="fas fa-circle-notch fa-spin"></i>
+                    <span class="vg-spinner"></span>
                     {{ __('frontend.auth.resend_code') }}
                 </span>
             `;

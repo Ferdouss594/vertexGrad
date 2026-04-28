@@ -21,8 +21,7 @@ class InvestorInterestRejectedNotification extends Notification
     public function toDatabase($notifiable)
     {
         return [
-            'title' => 'Investment Interest Rejected',
-            'message' => 'Your interest in project "' . $this->project->name . '" was not approved.',
+            'key' => 'investor_interest_rejected',
             'project_id' => $this->project->project_id,
             'project_name' => $this->project->name,
             'url' => route('frontend.projects.show', $this->project, false),

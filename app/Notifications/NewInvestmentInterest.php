@@ -27,11 +27,13 @@ class NewInvestmentInterest extends Notification
     public function toDatabase($notifiable)
     {
         return [
-            'title'   => 'New Investor Interest!',
-            'message' => $this->investorName . ' is interested in your project "' . $this->project->name . '".',
-            'url'     => route('dashboard.academic', [], false),
-            'icon'    => 'fas fa-hand-holding-usd',
-            'type'    => 'new_investment_interest',
+            'key' => 'new_investment_interest',
+            'project_id' => $this->project->project_id,
+            'project_name' => $this->project->name,
+            'investor_name' => $this->investorName,
+            'url' => route('dashboard.academic', [], false),
+            'icon' => 'fas fa-hand-holding-usd',
+            'type' => 'new_investment_interest',
         ];
     }
 

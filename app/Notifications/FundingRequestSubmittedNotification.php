@@ -21,11 +21,11 @@ class FundingRequestSubmittedNotification extends Notification
     public function toDatabase($notifiable)
     {
         return [
-            'title' => 'New Funding Request',
-            'message' => $this->investor->name . ' submitted a funding request for "' . $this->project->name . '"',
+            'key' => 'funding_request_submitted',
             'project_id' => $this->project->project_id,
             'project_name' => $this->project->name,
             'investor_id' => $this->investor->id,
+            'investor_name' => $this->investor->name,
             'amount' => $this->amount,
             'url' => route('admin.projects.show', ['project' => $this->project->project_id], false),
             'icon' => 'fas fa-hand-holding-usd',

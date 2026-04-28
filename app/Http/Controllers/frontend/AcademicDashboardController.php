@@ -230,16 +230,18 @@ class AcademicDashboardController extends Controller
         if ($requestItem->supervisor) {
             $isSystemVerification = strtolower($requestItem->request_type ?? '') === 'system_verification';
 
-            $requestItem->supervisor->notify(new GeneralNotification([
-                'title' => $isSystemVerification
-                    ? 'System Verification Submitted'
-                    : 'Student Response Submitted',
-                'message' => $isSystemVerification
-                    ? 'The student submitted the system verification details for the project.'
-                    : 'The student submitted a response to your request: ' . $requestItem->title,
-                'url' => route('supervisor.projects.show', $requestItem->project_id),
-                'icon' => $isSystemVerification ? 'fas fa-server' : 'fas fa-reply',
-            ]));
+$requestItem->supervisor->notify(new GeneralNotification([
+    'key' => $isSystemVerification
+        ? 'system_verification_submitted'
+        : 'student_response_submitted',
+    'request_title' => $requestItem->title,
+    'project_id' => $requestItem->project_id,
+    'url' => route('supervisor.projects.show', $requestItem->project_id),
+    'icon' => $isSystemVerification ? 'fas fa-server' : 'fas fa-reply',
+    'type' => $isSystemVerification
+        ? 'system_verification_submitted'
+        : 'student_response_submitted',
+]));
         }
 
         return redirect()

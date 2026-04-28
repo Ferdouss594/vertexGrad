@@ -21,13 +21,12 @@ class ProjectPendingNotification extends Notification
     public function toDatabase($notifiable)
     {
         return [
-            'title'        => 'Project Submitted',
-            'message'      => 'Your project "' . $this->project->name . '" was submitted successfully and is now pending review.',
-            'project_id'   => $this->project->project_id,
+            'key' => 'project_pending',
+            'project_id' => $this->project->project_id,
             'project_name' => $this->project->name,
-            'url'          => route('frontend.projects.show', $this->project, false),
-            'icon'         => 'fas fa-hourglass-half',
-            'type'         => 'project_pending',
+            'url' => route('frontend.projects.show', $this->project, false),
+            'icon' => 'fas fa-hourglass-half',
+            'type' => 'project_pending',
         ];
     }
 

@@ -26,14 +26,14 @@ class SuspiciousLoginAlertNotification extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('New sign-in detected on your VertexGrad account')
-            ->greeting('Hello ' . $notifiable->name . ',')
-            ->line('We detected a sign-in from a device or environment that looks new.')
-            ->line('IP: ' . $this->ip)
-            ->line('Browser: ' . $this->browser)
-            ->line('OS: ' . $this->os)
-            ->line('Device: ' . $this->device)
-            ->line('If this was you, no action is needed.')
-            ->line('If this was not you, please reset your password immediately.');
+            ->subject(__('mail.suspicious_login.subject'))
+            ->greeting(__('mail.suspicious_login.greeting', ['name' => $notifiable->name]))
+            ->line(__('mail.suspicious_login.line_1'))
+            ->line(__('mail.suspicious_login.ip', ['ip' => $this->ip]))
+            ->line(__('mail.suspicious_login.browser', ['browser' => $this->browser]))
+            ->line(__('mail.suspicious_login.os', ['os' => $this->os]))
+            ->line(__('mail.suspicious_login.device', ['device' => $this->device]))
+            ->line(__('mail.suspicious_login.line_2'))
+            ->line(__('mail.suspicious_login.line_3'));
     }
 }

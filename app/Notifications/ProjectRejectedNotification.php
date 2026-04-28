@@ -21,13 +21,12 @@ class ProjectRejectedNotification extends Notification
     public function toDatabase($notifiable)
     {
         return [
-            'title'        => 'Project Rejected',
-            'message'      => 'Your project "' . $this->project->name . '" was reviewed and rejected.',
-            'project_id'   => $this->project->project_id,
+            'key' => 'project_rejected',
+            'project_id' => $this->project->project_id,
             'project_name' => $this->project->name,
-            'url'          => route('frontend.projects.show', $this->project, false),
-            'icon'         => 'fas fa-times-circle',
-            'type'         => 'project_rejected',
+            'url' => route('frontend.projects.show', $this->project, false),
+            'icon' => 'fas fa-times-circle',
+            'type' => 'project_rejected',
         ];
     }
 

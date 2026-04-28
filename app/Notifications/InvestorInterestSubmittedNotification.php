@@ -21,11 +21,10 @@ class InvestorInterestSubmittedNotification extends Notification
     public function toDatabase($notifiable)
     {
         return [
-            'title' => 'New Investor Interest',
-            'message' => $this->investor->name . ' expressed interest in project "' . $this->project->name . '".',
+            'key' => 'investor_interest_submitted',
             'project_id' => $this->project->project_id,
-            'investor_id' => $this->investor->id,
             'project_name' => $this->project->name,
+            'investor_id' => $this->investor->id,
             'investor_name' => $this->investor->name,
             'url' => route('admin.projects.show', ['project' => $this->project->project_id], false),
             'icon' => 'fas fa-handshake',

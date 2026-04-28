@@ -25,11 +25,12 @@ class NewProjectSubmitted extends Notification
     public function toDatabase($notifiable)
     {
         return [
-            'title'   => 'New Project Review',
-            'message' => 'A new project "' . $this->project->name . '" requires your verification.',
-            'url'     => route('manager.dashboard', [], false),
-            'icon'    => 'fas fa-file-import',
-            'type'    => 'new_project_submitted',
+            'key' => 'new_project_submitted',
+            'project_id' => $this->project->project_id,
+            'project_name' => $this->project->name,
+            'url' => route('manager.dashboard', [], false),
+            'icon' => 'fas fa-file-import',
+            'type' => 'new_project_submitted',
         ];
     }
 

@@ -27,11 +27,13 @@ class ProjectRevisionRequested extends Notification
     public function toDatabase($notifiable)
     {
         return [
-            'title'   => 'Revision Required',
-            'message' => 'Manager requested changes for "' . $this->project->name . '". Reason: ' . $this->reason,
-            'url'     => route('dashboard.academic', [], false),
-            'icon'    => 'fas fa-exclamation-triangle',
-            'type'    => 'project_revision_requested',
+            'key' => 'project_revision_requested',
+            'project_id' => $this->project->project_id,
+            'project_name' => $this->project->name,
+            'reason' => $this->reason,
+            'url' => route('dashboard.academic', [], false),
+            'icon' => 'fas fa-exclamation-triangle',
+            'type' => 'project_revision_requested',
         ];
     }
 

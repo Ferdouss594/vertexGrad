@@ -21,8 +21,7 @@ class FundingRequestApprovedNotification extends Notification
     public function toDatabase($notifiable)
     {
         return [
-            'title' => 'Funding Request Approved',
-            'message' => 'Your funding request for project "' . $this->project->name . '" has been approved.',
+            'key' => 'funding_request_approved',
             'project_id' => $this->project->project_id,
             'project_name' => $this->project->name,
             'url' => route('frontend.projects.show', $this->project, false),

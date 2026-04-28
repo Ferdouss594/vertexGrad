@@ -14,23 +14,29 @@
             <div class="theme-panel rounded-2xl shadow-brand-soft border border-theme-border/60 p-8 backdrop-blur-sm">
 
                 <div class="text-center mb-8">
-                    <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-accent/10 border border-brand-accent/20">
-                        <i class="fas fa-envelope-open-text text-3xl text-brand-accent"></i>
+                    <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-accent/10 border border-brand-accent/20 text-brand-accent">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M4 6.5A2.5 2.5 0 0 1 6.5 4h11A2.5 2.5 0 0 1 20 6.5v11a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 17.5v-11Z"/>
+                            <path d="m4.8 7.2 6.1 5a1.8 1.8 0 0 0 2.2 0l6.1-5"/>
+                            <path d="M9 15h6"/>
+                        </svg>
                     </div>
 
                     <h2 class="text-3xl font-bold text-theme-text mb-2">
-                        {{ __('Verify Your Email') }}
+                        {{ __('frontend.verify_email.title') }}
                     </h2>
 
                     <p class="text-theme-muted leading-relaxed">
-                        {{ __('We sent a verification link to your email address. Please verify your account before continuing.') }}
+                        {{ __('frontend.verify_email.subtitle') }}
                     </p>
                 </div>
 
                 @if (session('success'))
                     <div class="mb-6 rounded-xl border border-green-400/30 bg-green-500/10 px-4 py-3 text-sm text-green-500">
                         <div class="flex items-start gap-3">
-                            <i class="fas fa-circle-check mt-0.5"></i>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="mt-0.5 h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20 6 9 17l-5-5"/>
+                            </svg>
                             <span>{{ session('success') }}</span>
                         </div>
                     </div>
@@ -39,7 +45,10 @@
                 @if (session('status'))
                     <div class="mb-6 rounded-xl border border-green-400/30 bg-green-500/10 px-4 py-3 text-sm text-green-500">
                         <div class="flex items-start gap-3">
-                            <i class="fas fa-envelope mt-0.5"></i>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="mt-0.5 h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M4 4h16v16H4z"/>
+                                <path d="m4 7 8 6 8-6"/>
+                            </svg>
                             <span>{{ session('status') }}</span>
                         </div>
                     </div>
@@ -51,8 +60,11 @@
                         type="submit"
                         class="w-full inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-base font-semibold bg-brand-accent text-white hover:bg-brand-accent-strong transition duration-300 shadow-brand-soft"
                     >
-                        <i class="fas fa-paper-plane"></i>
-                        <span>{{ __('Resend Verification Email') }}</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="m22 2-7 20-4-9-9-4 20-7Z"/>
+                            <path d="M22 2 11 13"/>
+                        </svg>
+                        <span>{{ __('frontend.verify_email.resend') }}</span>
                     </button>
                 </form>
 
@@ -62,8 +74,12 @@
                         type="submit"
                         class="w-full inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold border border-theme-border text-theme-text hover:bg-theme-surface-2 transition duration-300"
                     >
-                        <i class="fas fa-arrow-right-from-bracket"></i>
-                        <span>{{ __('Log Out') }}</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                            <path d="m16 17 5-5-5-5"/>
+                            <path d="M21 12H9"/>
+                        </svg>
+                        <span>{{ __('frontend.verify_email.logout') }}</span>
                     </button>
                 </form>
             </div>
@@ -84,6 +100,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const style = document.createElement('style');
         style.id = 'vg-verify-email-style';
         style.textContent = `
+            @keyframes vgSpin {
+                from { transform: rotate(0deg); }
+                to { transform: rotate(360deg); }
+            }
+
             .vg-reveal {
                 opacity: 0;
                 transform: translateY(18px);
@@ -115,6 +136,16 @@ document.addEventListener('DOMContentLoaded', () => {
             .vg-auth-btn.is-loading {
                 pointer-events: none;
                 opacity: .92;
+            }
+
+            .vg-spinner {
+                width: 16px;
+                height: 16px;
+                border: 2px solid rgba(255,255,255,.45);
+                border-top-color: #fff;
+                border-radius: 9999px;
+                display: inline-block;
+                animation: vgSpin .7s linear infinite;
             }
 
             @media (prefers-reduced-motion: reduce) {
@@ -158,8 +189,8 @@ document.addEventListener('DOMContentLoaded', () => {
             verifyButton.classList.add('is-loading');
             verifyButton.innerHTML = `
                 <span class="inline-flex items-center gap-2">
-                    <i class="fas fa-circle-notch fa-spin"></i>
-                    {{ __('Resend Verification Email') }}
+                    <span class="vg-spinner"></span>
+                    {{ __('frontend.verify_email.resend') }}
                 </span>
             `;
         });
@@ -172,8 +203,8 @@ document.addEventListener('DOMContentLoaded', () => {
             logoutButton.classList.add('is-loading');
             logoutButton.innerHTML = `
                 <span class="inline-flex items-center gap-2">
-                    <i class="fas fa-circle-notch fa-spin"></i>
-                    {{ __('Log Out') }}
+                    <span class="vg-spinner"></span>
+                    {{ __('frontend.verify_email.logout') }}
                 </span>
             `;
         });

@@ -61,6 +61,13 @@ return [
         'other' => 'Other',
     ],
 ],
+'verify_email' => [
+    'title' => 'Verify Your Email',
+    'subtitle' => 'We sent a verification link to your email address. Please verify your account before continuing.',
+    'resend' => 'Resend Verification Email',
+    'logout' => 'Log Out',
+],
+
 'process' => [
     'title_before' => 'The VertexGrad',
     'title_highlight' => 'Process',
@@ -936,6 +943,111 @@ return [
     'event_recovery_codes_regenerated' => 'Recovery codes regenerated',
     'event_recovery_code_used' => 'Recovery code used',
     'event_recovery_code_failed' => 'Recovery code failed',
+],
+'notifications' => [
+    'types' => [
+
+        'investor_interest_approved' => [
+            'title' => 'Investment Interest Approved',
+            'message' => 'Your interest in project ":project_name" has been approved.',
+        ],
+
+        'investor_interest_rejected' => [
+            'title' => 'Investment Interest Rejected',
+            'message' => 'Your interest in project ":project_name" was not approved.',
+        ],
+
+        'investor_interest_submitted' => [
+            'title' => 'New Investor Interest',
+            'message' => ':investor_name expressed interest in project ":project_name".',
+        ],
+
+        'new_investment_interest' => [
+            'title' => 'New Investor Interest',
+            'message' => ':investor_name is interested in your project ":project_name".',
+        ],
+
+        'funding_request_submitted' => [
+            'title' => 'New Funding Request',
+            'message' => ':investor_name submitted a funding request for ":project_name".',
+        ],
+
+        'funding_request_approved' => [
+            'title' => 'Funding Request Approved',
+            'message' => 'Your funding request for project ":project_name" has been approved.',
+        ],
+
+        'funding_request_rejected' => [
+            'title' => 'Funding Request Rejected',
+            'message' => 'Your funding request for project ":project_name" was rejected.',
+        ],
+
+        'new_project_submitted' => [
+            'title' => 'New Project Review',
+            'message' => 'A new project ":project_name" requires verification.',
+        ],
+
+        'project_submitted' => [
+            'title' => 'New Project Submitted',
+            'message' => 'A new project was submitted: :project_name',
+        ],
+
+        'project_pending' => [
+            'title' => 'Project Submitted',
+            'message' => 'Your project ":project_name" was submitted successfully and is now pending review.',
+        ],
+
+        'project_approved' => [
+            'title' => 'Project Approved',
+            'message' => 'Your project ":project_name" has been verified and is now live.',
+        ],
+
+        'project_approved_notification' => [
+            'title' => 'Project Approved',
+            'message' => 'Congratulations! Your project ":project_name" has been approved. Please upload images and videos to showcase it professionally.',
+        ],
+
+        'project_rejected' => [
+            'title' => 'Project Rejected',
+            'message' => 'Your project ":project_name" was reviewed and rejected.',
+        ],
+
+        'project_revision_requested' => [
+            'title' => 'Revision Required',
+            'message' => 'Manager requested changes for ":project_name". Reason: :reason',
+        ],
+
+        'project_published' => [
+            'title' => 'Project Published',
+            'message' => 'Your project ":project_title" has been approved and published successfully.',
+        ],
+
+        'project_revision' => [
+            'title' => 'Project Needs Revision',
+            'message' => 'Your project ":project_title" needs revisions before final approval.',
+        ],
+
+        'project_final_decision' => [
+            'title' => 'Final Decision on Your Project',
+            'message' => 'A final decision has been made on your project ":project_title".',
+        ],
+
+        'system_verification_submitted' => [
+            'title' => 'System Verification Submitted',
+            'message' => 'The student submitted system verification details for the project.',
+        ],
+
+        'student_response_submitted' => [
+            'title' => 'Student Response Submitted',
+            'message' => 'The student submitted a response to your request: :request_title',
+        ],
+
+        'new_student_registered' => [
+            'title' => 'New Student Registered',
+            'message' => 'A new student registered: :name',
+        ],
+
+    ],
 ],
 
 ];

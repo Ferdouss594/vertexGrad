@@ -1282,14 +1282,21 @@
                 <div class="notification-panel-body">
                     @forelse($latestNotifications as $notification)
                         @php
-                            $title = $notification->data['title'] ?? __('backend.supervisor_layout.notification');
-                            $message = $notification->data['message'] ?? '';
-                            $url = $notification->data['url'] ?? route('admin.notifications.index');
+                          $key = $notification->data['key'] ?? null;
+
+$title = $key
+    ? __("backend.notifications.types.{$key}.title", $notification->data)
+    : ($notification->data['title'] ?? __('backend.notifications.notification'));
+
+$message = $key
+    ? __("backend.notifications.types.{$key}.message", $notification->data)
+    : ($notification->data['message'] ?? '');
+                            $url = $notification->data['url'] ?? route('supervisor.notifications.index');
                             $icon = $notification->data['icon'] ?? 'fas fa-bell';
                             $isRead = !is_null($notification->read_at);
                         @endphp
 
-                        <form method="POST" action="{{ route('admin.notifications.read', $notification->id) }}" class="m-0">
+                        <form method="POST" action="{{ route('supervisor.notifications.read', $notification->id) }}" class="m-0">
                             @csrf
                             <input type="hidden" name="redirect" value="{{ $url }}">
 
@@ -1314,11 +1321,11 @@
                 </div>
 
                 <div class="notification-panel-footer">
-                    <a href="{{ route('admin.notifications.index') }}" class="notification-footer-btn">
+                    <a href="{{ route('supervisor.notifications.index') }}" class="notification-footer-btn">
                         {{ __('backend.supervisor_layout.history') }}
                     </a>
 
-                    <form method="POST" action="{{ route('admin.notifications.markAllRead') }}" class="m-0">
+                    <form method="POST" action="{{ route('supervisor.notifications.markAllRead') }}" class="m-0">
                         @csrf
                         <button type="submit" class="notification-footer-btn w-100">
                             {{ __('backend.supervisor_layout.mark_all_read') }}

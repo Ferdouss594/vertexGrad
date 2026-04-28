@@ -15,6 +15,8 @@ use App\Http\Controllers\Admin\StudentController;
 use App\Http\Controllers\Admin\InvestorController;
 use App\Http\Controllers\Admin\ProjectTaskController;
 
+use App\Http\Controllers\Supervisor\NotificationController as SupervisorNotificationController;
+
 use App\Http\Controllers\Manager\UserApproveController;
 use App\Http\Controllers\Manager\UserController;
 
@@ -591,5 +593,25 @@ Route::get('notifications/latest', [AdminNotificationController::class, 'latest'
 
                 return response()->file(storage_path('app/public/' . $file->attachment_path));
             })->name('file.view');
+
+            /*
+|--------------------------------------------------------------------------
+| Supervisor Notifications
+|--------------------------------------------------------------------------
+*/
+Route::get('/notifications', [SupervisorNotificationController::class, 'index'])
+    ->name('notifications.index');
+
+Route::get('/notifications/unread-count', [SupervisorNotificationController::class, 'unreadCount'])
+    ->name('notifications.count');
+
+Route::get('/notifications/latest', [SupervisorNotificationController::class, 'latest'])
+    ->name('notifications.latest');
+
+Route::post('/notifications/{id}/read', [SupervisorNotificationController::class, 'markAsRead'])
+    ->name('notifications.read');
+
+Route::post('/notifications/mark-all-read', [SupervisorNotificationController::class, 'markAllRead'])
+    ->name('notifications.markAllRead');
         });
 });

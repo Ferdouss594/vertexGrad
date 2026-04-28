@@ -12,11 +12,16 @@ class SetBackendLocale
     {
         $supportedLocales = ['en', 'ar'];
 
-        $locale = session('backend_locale', config('app.locale'));
+        $locale = session(
+            'backend_locale',
+            $request->cookie('backend_locale', config('app.locale'))
+        );
 
-        if (! in_array($locale, $supportedLocales)) {
+        if (! in_array($locale, $supportedLocales, true)) {
             $locale = config('app.locale');
         }
+
+        session(['backend_locale' => $locale]);
 
         App::setLocale($locale);
 

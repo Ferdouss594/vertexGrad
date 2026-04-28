@@ -738,6 +738,12 @@ return [
         'other' => 'أخرى',
     ],
 ],
+'verify_email' => [
+    'title' => 'تحقق من بريدك الإلكتروني',
+    'subtitle' => 'أرسلنا رابط تحقق إلى بريدك الإلكتروني. يرجى التحقق من حسابك قبل المتابعة.',
+    'resend' => 'إعادة إرسال رابط التحقق',
+    'logout' => 'تسجيل الخروج',
+],
 'submit_step2' => [
     'step_title' => 'الخطوة 2 من 5: المعلومات الأكاديمية',
     'page_title' => 'المعلومات الأكاديمية والمؤسسية',
@@ -936,6 +942,109 @@ return [
     'not_generated_yet' => 'لم يتم إنشاؤه بعد',
     'not_available' => 'غير متوفر',
     'view_summary' => 'عرض الملخص',
+],
+'notifications' => [
+    'types' => [
+        'investor_interest_approved' => [
+            'title' => 'تمت الموافقة على الاهتمام الاستثماري',
+            'message' => 'تمت الموافقة على اهتمامك بالمشروع ":project_name".',
+        ],
+
+        'investor_interest_rejected' => [
+            'title' => 'تم رفض الاهتمام الاستثماري',
+            'message' => 'لم تتم الموافقة على اهتمامك بالمشروع ":project_name".',
+        ],
+
+        'investor_interest_submitted' => [
+            'title' => 'اهتمام جديد من مستثمر',
+            'message' => 'أبدى :investor_name اهتمامه بالمشروع ":project_name".',
+        ],
+
+        'new_investment_interest' => [
+            'title' => 'اهتمام جديد من مستثمر',
+            'message' => ':investor_name مهتم بمشروعك ":project_name".',
+        ],
+
+        'funding_request_submitted' => [
+            'title' => 'طلب تمويل جديد',
+            'message' => 'قام :investor_name بتقديم طلب تمويل للمشروع ":project_name".',
+        ],
+
+        'funding_request_approved' => [
+            'title' => 'تمت الموافقة على طلب التمويل',
+            'message' => 'تمت الموافقة على طلب التمويل الخاص بك للمشروع ":project_name".',
+        ],
+
+        'funding_request_rejected' => [
+            'title' => 'تم رفض طلب التمويل',
+            'message' => 'تم رفض طلب التمويل الخاص بك للمشروع ":project_name".',
+        ],
+
+        'new_project_submitted' => [
+            'title' => 'مراجعة مشروع جديد',
+            'message' => 'يوجد مشروع جديد ":project_name" يحتاج إلى التحقق.',
+        ],
+
+        'project_submitted' => [
+            'title' => 'تم إرسال مشروع جديد',
+            'message' => 'تم إرسال مشروع جديد: :project_name',
+        ],
+
+        'project_pending' => [
+            'title' => 'تم إرسال المشروع',
+            'message' => 'تم إرسال مشروعك ":project_name" بنجاح وهو الآن بانتظار المراجعة.',
+        ],
+
+        'project_approved' => [
+            'title' => 'تمت الموافقة على المشروع',
+            'message' => 'تم التحقق من مشروعك ":project_name" وأصبح منشوراً الآن.',
+        ],
+
+        'project_approved_notification' => [
+            'title' => 'تمت الموافقة على المشروع',
+            'message' => 'تهانينا! تمت الموافقة على مشروعك ":project_name". يرجى رفع الصور والفيديوهات لعرضه بشكل احترافي.',
+        ],
+
+        'project_rejected' => [
+            'title' => 'تم رفض المشروع',
+            'message' => 'تمت مراجعة مشروعك ":project_name" ورفضه.',
+        ],
+
+        'project_revision_requested' => [
+            'title' => 'مطلوب تعديل',
+            'message' => 'طلب المدير تعديلات على مشروعك ":project_name". السبب: :reason',
+        ],
+
+        'project_published' => [
+            'title' => 'تم نشر المشروع',
+            'message' => 'تمت الموافقة على مشروعك ":project_title" ونشره بنجاح.',
+        ],
+
+        'project_revision' => [
+            'title' => 'المشروع يحتاج إلى تعديل',
+            'message' => 'مشروعك ":project_title" يحتاج إلى تعديلات قبل الموافقة النهائية.',
+        ],
+
+        'project_final_decision' => [
+            'title' => 'قرار نهائي على مشروعك',
+            'message' => 'تم اتخاذ قرار نهائي بشأن مشروعك ":project_title".',
+        ],
+
+        'system_verification_submitted' => [
+            'title' => 'تم إرسال التحقق من النظام',
+            'message' => 'قام الطالب بإرسال تفاصيل التحقق من النظام للمشروع.',
+        ],
+
+        'student_response_submitted' => [
+            'title' => 'تم إرسال رد من الطالب',
+            'message' => 'قام الطالب بإرسال رد على طلبك: :request_title',
+        ],
+
+        'new_student_registered' => [
+            'title' => 'تسجيل طالب جديد',
+            'message' => 'تم تسجيل طالب جديد: :name',
+        ],
+    ],
 ],
 
 ];

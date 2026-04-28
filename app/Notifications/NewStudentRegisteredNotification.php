@@ -21,14 +21,13 @@ class NewStudentRegisteredNotification extends Notification
     public function toDatabase($notifiable)
     {
         return [
-            'title'   => 'New Student Registered',
-            'message' => 'A new student registered: ' . $this->student->name,
+            'key' => 'new_student_registered',
             'user_id' => $this->student->id,
-            'name'    => $this->student->name,
-            'email'   => $this->student->email,
-            'url'     => route('admin.students.index', [], false),
-            'icon'    => 'fas fa-user-plus',
-            'type'    => 'new_student_registered',
+            'name' => $this->student->name,
+            'email' => $this->student->email,
+            'url' => route('admin.students.index', [], false),
+            'icon' => 'fas fa-user-plus',
+            'type' => 'new_student_registered',
         ];
     }
 

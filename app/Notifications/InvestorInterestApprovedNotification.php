@@ -21,8 +21,7 @@ class InvestorInterestApprovedNotification extends Notification
     public function toDatabase($notifiable)
     {
         return [
-            'title' => 'Investment Interest Approved',
-            'message' => 'Your interest in project "' . $this->project->name . '" has been approved.',
+            'key' => 'investor_interest_approved',
             'project_id' => $this->project->project_id,
             'project_name' => $this->project->name,
             'url' => route('frontend.projects.show', $this->project, false),

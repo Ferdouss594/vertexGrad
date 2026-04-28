@@ -759,8 +759,15 @@
                 <div id="adminNotificationList" style="max-height: 340px; overflow-y: auto; background: var(--vg-dropdown-bg);">
                     @forelse($latestNotifications as $notification)
                         @php
-                            $title = $notification->data['title'] ?? __('backend.manager_layout.notification');
-                            $message = $notification->data['message'] ?? '';
+                      $key = $notification->data['key'] ?? null;
+
+$title = $key
+    ? __("backend.notifications.types.{$key}.title", $notification->data)
+    : ($notification->data['title'] ?? __('backend.notifications.notification'));
+
+$message = $key
+    ? __("backend.notifications.types.{$key}.message", $notification->data)
+    : ($notification->data['message'] ?? '');
                             $url = $notification->data['url'] ?? route('admin.notifications.index');
                             $icon = $notification->data['icon'] ?? 'fas fa-bell';
                             $isRead = !is_null($notification->read_at);

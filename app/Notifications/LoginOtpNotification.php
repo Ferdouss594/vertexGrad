@@ -23,11 +23,11 @@ class LoginOtpNotification extends Notification implements ShouldQueue
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('Your VertexGrad Login Verification Code')
-            ->greeting('Hello ' . $notifiable->name . ',')
-            ->line('Use the following verification code to complete your login:')
+            ->subject(__('mail.login_otp.subject'))
+            ->greeting(__('mail.login_otp.greeting', ['name' => $notifiable->name]))
+            ->line(__('mail.login_otp.line_1'))
             ->line($this->code)
-            ->line('This code expires in 10 minutes.')
-            ->line('If you did not try to sign in, you can ignore this email.');
+            ->line(__('mail.login_otp.line_2'))
+            ->line(__('mail.login_otp.line_3'));
     }
 }
