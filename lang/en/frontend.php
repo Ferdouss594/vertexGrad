@@ -701,6 +701,11 @@ return [
 ],
 
 'submit_step3' => [
+    'enter_estimated_amount' => 'Enter the estimated amount needed.',
+'estimated_funding' => 'Estimated funding',
+'set_expected_duration' => 'Set the expected implementation period.',
+'estimated_duration' => 'Estimated duration',
+'months' => 'months',
     'step_title' => 'Step 3 of 5: Feasibility & Execution Plan',
     'page_title' => 'Project Feasibility and Execution Plan',
     'page_subtitle' => 'Explain the practical value of your project, its expected impact, required support, and the implementation plan.',

@@ -175,7 +175,7 @@
 
         @if($currentProject && $currentDecision === 'published')
             <div class="max-w-6xl mx-auto px-4 mb-6">
-                <div class="p-4 rounded-xl border border-green-500/40 bg-green-500/10 text-green-700">
+                <div class="p-4 rounded-xl alert-success-theme">
                     {!! __('frontend.academic_dashboard.project_published', ['name' => e($currentProject->name)]) !!}
                 </div>
             </div>
@@ -183,7 +183,7 @@
 
         @if($currentProject && !$currentDecision && in_array($currentProject->status, $mediaUploadAllowedStatuses))
             <div class="max-w-6xl mx-auto px-4 mb-6">
-                <div class="p-4 rounded-xl border border-green-500/40 bg-green-500/10 text-green-700">
+                <div class="p-4 rounded-xl alert-success-theme">
                     {!! __('frontend.academic_dashboard.project_approved_upload_media', ['name' => e($currentProject->name)]) !!}
                 </div>
             </div>

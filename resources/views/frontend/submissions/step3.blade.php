@@ -401,17 +401,23 @@ document.addEventListener('DOMContentLoaded', () => {
         return note;
     }
 
-    addNote(requestedAmountInput, value => {
-        const number = parseFloat(value);
-        if (Number.isNaN(number) || value === '') return 'Enter the estimated amount needed.';
-        return `Estimated funding: $${number.toLocaleString()}`;
-    });
+addNote(requestedAmountInput, value => {
+    const number = parseFloat(value);
+    if (Number.isNaN(number) || value === '') {
+        return @json(__('frontend.submit_step3.enter_estimated_amount'));
+    }
 
-    addNote(durationInput, value => {
-        const number = parseInt(value, 10);
-        if (Number.isNaN(number) || value === '') return 'Set the expected implementation period.';
-        return `Estimated duration: ${number} month${number > 1 ? 's' : ''}`;
-    });
+    return @json(__('frontend.submit_step3.estimated_funding')) + ': $' + number.toLocaleString();
+});
+
+addNote(durationInput, value => {
+    const number = parseInt(value, 10);
+    if (Number.isNaN(number) || value === '') {
+        return @json(__('frontend.submit_step3.set_expected_duration'));
+    }
+
+    return @json(__('frontend.submit_step3.estimated_duration')) + ': ' + number + ' ' + @json(__('frontend.submit_step3.months'));
+});
 
     milestoneMonthInputs.forEach(input => {
         const validateMonth = () => {

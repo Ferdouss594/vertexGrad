@@ -1,6 +1,63 @@
 @php
     $projectData = session()->get('project_data', []);
     $userData = session()->get('user_data', []);
+
+    $na = __('frontend.common.not_available');
+
+    $transValue = function ($group, $value) use ($na) {
+        if (empty($value)) {
+            return $na;
+        }
+
+        $key = "frontend.{$group}.{$value}";
+        $translated = __($key);
+
+        return $translated === $key ? $value : $translated;
+    };
+
+    $transCommon = function ($value) use ($na) {
+        if (empty($value)) {
+            return $na;
+        }
+
+        $key = "frontend.common.{$value}";
+        $translated = __($key);
+
+        return $translated === $key ? $value : $translated;
+    };
+
+    $transSubmitStep1 = function ($prefix, $value) use ($na) {
+        if (empty($value)) {
+            return $na;
+        }
+
+        $key = "frontend.submit_step1.{$prefix}_{$value}";
+        $translated = __($key);
+
+        return $translated === $key ? $value : $translated;
+    };
+
+    $transSubmitStep2 = function ($prefix, $value) use ($na) {
+        if (empty($value)) {
+            return $na;
+        }
+
+        $key = "frontend.submit_step2.{$prefix}_{$value}";
+        $translated = __($key);
+
+        return $translated === $key ? $value : $translated;
+    };
+
+    $transSubmitStep3 = function ($prefix, $value) use ($na) {
+        if (empty($value)) {
+            return $na;
+        }
+
+        $key = "frontend.submit_step3.{$prefix}_{$value}";
+        $translated = __($key);
+
+        return $translated === $key ? $value : $translated;
+    };
 @endphp
 
 @extends('frontend.layouts.app')
@@ -29,7 +86,7 @@
         @endif
 
         @if (session('success'))
-            <div class="mb-6 p-4 rounded-xl border border-green-500/40 bg-green-500/10 text-green-600">
+            <div class="mb-6 p-4 rounded-xl alert-success-theme">
                 <strong class="block font-bold mb-1">{{ __('frontend.submit_review.success') }}</strong>
                 <div>{{ session('success') }}</div>
             </div>
@@ -57,16 +114,16 @@
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-theme-text">
-                        <p><strong>{{ __('frontend.submit_review.project_title') }}:</strong> {{ $projectData['project_title'] ?? __('frontend.common.not_available') }}</p>
-                        <p><strong>{{ __('frontend.submit_review.discipline') }}:</strong> {{ $projectData['discipline'] ?? __('frontend.common.not_available') }}</p>
-                        <p><strong>{{ __('frontend.submit_review.project_type') }}:</strong> {{ $projectData['project_type'] ?? __('frontend.common.not_available') }}</p>
-                        <p><strong>{{ __('frontend.submit_review.project_nature') }}:</strong> {{ $projectData['project_nature'] ?? __('frontend.common.not_available') }}</p>
+                        <p><strong>{{ __('frontend.submit_review.project_title') }}:</strong> {{ $projectData['project_title'] ?? $na }}</p>
+                        <p><strong>{{ __('frontend.submit_review.discipline') }}:</strong> {{ $transSubmitStep1('discipline', $projectData['discipline'] ?? null) }}</p>
+                        <p><strong>{{ __('frontend.submit_review.project_type') }}:</strong> {{ $transSubmitStep1('type', $projectData['project_type'] ?? null) }}</p>
+                        <p><strong>{{ __('frontend.submit_review.project_nature') }}:</strong> {{ $transSubmitStep1('nature', $projectData['project_nature'] ?? null) }}</p>
                     </div>
 
                     <div class="mt-4 space-y-3 text-theme-text">
-                        <p><strong>{{ __('frontend.submit_review.summary') }}:</strong> {{ $projectData['abstract'] ?? __('frontend.common.not_available') }}</p>
-                        <p><strong>{{ __('frontend.submit_review.problem_statement') }}:</strong> {{ $projectData['problem_statement'] ?? __('frontend.common.not_available') }}</p>
-                        <p><strong>{{ __('frontend.submit_review.target_beneficiaries') }}:</strong> {{ $projectData['target_beneficiaries'] ?? __('frontend.common.not_available') }}</p>
+                        <p><strong>{{ __('frontend.submit_review.summary') }}:</strong> {{ $projectData['abstract'] ?? $na }}</p>
+                        <p><strong>{{ __('frontend.submit_review.problem_statement') }}:</strong> {{ $projectData['problem_statement'] ?? $na }}</p>
+                        <p><strong>{{ __('frontend.submit_review.target_beneficiaries') }}:</strong> {{ $projectData['target_beneficiaries'] ?? $na }}</p>
                     </div>
                 </div>
 
@@ -77,14 +134,14 @@
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-theme-text">
-                        <p><strong>{{ __('frontend.submit_review.student_name') }}:</strong> {{ $projectData['student_name'] ?? __('frontend.common.not_available') }}</p>
-                        <p><strong>{{ __('frontend.submit_review.academic_level') }}:</strong> {{ $projectData['academic_level'] ?? __('frontend.common.not_available') }}</p>
-                        <p><strong>{{ __('frontend.submit_review.supervisor_name') }}:</strong> {{ $projectData['supervisor_name'] ?? __('frontend.common.not_available') }}</p>
-                        <p><strong>{{ __('frontend.submit_review.supervisor_title') }}:</strong> {{ $projectData['supervisor_title'] ?? __('frontend.common.not_available') }}</p>
-                        <p><strong>{{ __('frontend.submit_review.university') }}:</strong> {{ $projectData['university_name'] ?? __('frontend.common.not_available') }}</p>
-                        <p><strong>{{ __('frontend.submit_review.college') }}:</strong> {{ $projectData['college_name'] ?? __('frontend.common.not_available') }}</p>
-                        <p><strong>{{ __('frontend.submit_review.department') }}:</strong> {{ $projectData['department'] ?? __('frontend.common.not_available') }}</p>
-                        <p><strong>{{ __('frontend.submit_review.governorate') }}:</strong> {{ $projectData['governorate'] ?? __('frontend.common.not_available') }}</p>
+                        <p><strong>{{ __('frontend.submit_review.student_name') }}:</strong> {{ $projectData['student_name'] ?? $na }}</p>
+                        <p><strong>{{ __('frontend.submit_review.academic_level') }}:</strong> {{ $transSubmitStep2('level', $projectData['academic_level'] ?? null) }}</p>
+                        <p><strong>{{ __('frontend.submit_review.supervisor_name') }}:</strong> {{ $projectData['supervisor_name'] ?? $na }}</p>
+                        <p><strong>{{ __('frontend.submit_review.supervisor_title') }}:</strong> {{ $projectData['supervisor_title'] ?? $na }}</p>
+                        <p><strong>{{ __('frontend.submit_review.university') }}:</strong> {{ $projectData['university_name'] ?? $na }}</p>
+                        <p><strong>{{ __('frontend.submit_review.college') }}:</strong> {{ $projectData['college_name'] ?? $na }}</p>
+                        <p><strong>{{ __('frontend.submit_review.department') }}:</strong> {{ $projectData['department'] ?? $na }}</p>
+                        <p><strong>{{ __('frontend.submit_review.governorate') }}:</strong> {{ $transValue('governorates', $projectData['governorate'] ?? null) }}</p>
                     </div>
                 </div>
 
@@ -95,18 +152,18 @@
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-theme-text">
-                        <p><strong>{{ __('frontend.submit_review.project_feasibility') }}:</strong> {{ $projectData['is_feasible'] ?? __('frontend.common.not_available') }}</p>
-                        <p><strong>{{ __('frontend.submit_review.implementable_in_yemen') }}:</strong> {{ $projectData['local_implementation'] ?? __('frontend.common.not_available') }}</p>
-                        <p><strong>{{ __('frontend.submit_review.needs_funding') }}:</strong> {{ $projectData['needs_funding'] ?? __('frontend.common.not_available') }}</p>
-                        <p><strong>{{ __('frontend.submit_review.support_type') }}:</strong> {{ $projectData['support_type'] ?? __('frontend.common.not_available') }}</p>
+                        <p><strong>{{ __('frontend.submit_review.project_feasibility') }}:</strong> {{ $transCommon($projectData['is_feasible'] ?? null) }}</p>
+                        <p><strong>{{ __('frontend.submit_review.implementable_in_yemen') }}:</strong> {{ $transCommon($projectData['local_implementation'] ?? null) }}</p>
+                        <p><strong>{{ __('frontend.submit_review.needs_funding') }}:</strong> {{ $transCommon($projectData['needs_funding'] ?? null) }}</p>
+                        <p><strong>{{ __('frontend.submit_review.support_type') }}:</strong> {{ $transSubmitStep3('support', $projectData['support_type'] ?? null) }}</p>
                         <p><strong>{{ __('frontend.submit_review.estimated_funding') }}:</strong> ${{ number_format((float) ($projectData['requested_amount'] ?? 0)) }}</p>
                         <p><strong>{{ __('frontend.submit_review.estimated_duration') }}:</strong> {{ $projectData['duration_months'] ?? '0' }} {{ __('frontend.submit_review.months') }}</p>
                     </div>
 
                     <div class="mt-4 space-y-3 text-theme-text">
-                        <p><strong>{{ __('frontend.submit_review.expected_impact') }}:</strong> {{ $projectData['expected_impact'] ?? __('frontend.common.not_available') }}</p>
-                        <p><strong>{{ __('frontend.submit_review.community_benefit') }}:</strong> {{ $projectData['community_benefit'] ?? __('frontend.common.not_available') }}</p>
-                        <p><strong>{{ __('frontend.submit_review.budget_plan') }}:</strong> {{ $projectData['budget_breakdown'] ?? __('frontend.common.not_available') }}</p>
+                        <p><strong>{{ __('frontend.submit_review.expected_impact') }}:</strong> {{ $projectData['expected_impact'] ?? $na }}</p>
+                        <p><strong>{{ __('frontend.submit_review.community_benefit') }}:</strong> {{ $projectData['community_benefit'] ?? $na }}</p>
+                        <p><strong>{{ __('frontend.submit_review.budget_plan') }}:</strong> {{ $projectData['budget_breakdown'] ?? $na }}</p>
                     </div>
                 </div>
 
@@ -117,7 +174,7 @@
                     </div>
 
                     <div class="space-y-3 text-theme-text">
-                        <p><strong>{{ __('frontend.submit_review.account_email') }}:</strong> {{ $userData['email'] ?? auth()->user()->email ?? __('frontend.common.not_available') }}</p>
+                        <p><strong>{{ __('frontend.submit_review.account_email') }}:</strong> {{ $userData['email'] ?? auth()->user()->email ?? $na }}</p>
                         <p><strong>{{ __('frontend.submit_review.data_confirmation') }}:</strong> {{ !empty($userData['data_confirmation']) ? __('frontend.submit_review.confirmed') : __('frontend.submit_review.confirmed_previous_step') }}</p>
                         <p><strong>{{ __('frontend.submit_review.terms_agreement') }}:</strong> {{ !empty($userData['terms_agreement']) ? __('frontend.submit_review.accepted') : __('frontend.submit_review.accepted_previous_step') }}</p>
                     </div>
@@ -147,6 +204,7 @@
         </form>
     </div>
 </div>
+
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
