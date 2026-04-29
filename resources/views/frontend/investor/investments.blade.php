@@ -88,6 +88,7 @@
 
     </div>
 </div>
+
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -117,15 +118,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             .vg-row {
-                transition:
-                    background-color .22s ease,
-                    box-shadow .22s ease,
-                    border-color .22s ease;
+                transition: background-color .22s ease, box-shadow .22s ease, border-color .22s ease;
             }
 
             .vg-row:hover {
-                background-color: rgba(99, 102, 241, 0.035);
-                box-shadow: inset 3px 0 0 rgba(99, 102, 241, 0.18);
+                background-color: rgba(0, 224, 255, 0.035);
+                box-shadow: inset 3px 0 0 rgba(0, 224, 255, 0.18);
             }
 
             .vg-link {
@@ -148,8 +146,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
             .vg-focus-ring:focus-visible {
                 outline: none;
-                box-shadow: 0 0 0 3px rgba(99,102,241,.16);
+                box-shadow: 0 0 0 3px rgba(0,224,255,.16);
                 border-radius: 12px;
+            }
+
+            @media (max-width: 640px) {
+                .vg-row:hover {
+                    box-shadow: none;
+                }
             }
 
             @media (prefers-reduced-motion: reduce) {
@@ -208,6 +212,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const progress = Math.min((now - start) / duration, 1);
             const eased = 1 - Math.pow(1 - progress, 3);
             const current = Math.floor(finalValue * eased);
+
             el.textContent = prefix + current.toLocaleString();
 
             if (progress < 1) {
@@ -226,7 +231,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         amountCells.forEach((cell, index) => {
             const value = parseInt(cell.textContent.replace(/[^\d]/g, ''), 10);
-            if (Number.isNaN(value)) return;
+
+            if (Number.isNaN(value)) {
+                return;
+            }
 
             cell.textContent = '$0';
 
@@ -247,9 +255,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function initMobileScrollHint() {
-        if (!tableWrap || window.innerWidth >= 768) return;
+        if (!tableWrap || window.innerWidth >= 768) {
+            return;
+        }
+
+        if (document.getElementById('investmentsScrollHint')) {
+            return;
+        }
 
         const hint = document.createElement('div');
+        hint.id = 'investmentsScrollHint';
         hint.className = 'vg-scroll-hint text-xs text-theme-muted px-4 pt-4';
         hint.innerHTML = `
             <span class="inline-flex items-center gap-2">
@@ -260,44 +275,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
         tableWrap.parentNode.insertBefore(hint, tableWrap);
 
-        const updateHint = () => {
+        tableWrap.addEventListener('scroll', () => {
             if (tableWrap.scrollLeft > 12) {
                 hint.classList.add('is-hidden');
-            } else {
-                hint.classList.remove('is-hidden');
             }
-        };
+        }, { passive: true });
 
-        updateHint();
-        tableWrap.addEventListener('scroll', updateHint, { passive: true });
-    }
-
-    function initEmptyButtonFeedback() {
-        if (!emptyButton) return;
-
-        const originalHtml = emptyButton.innerHTML;
-
-        emptyButton.addEventListener('click', () => {
-            emptyButton.style.opacity = '0.9';
-            emptyButton.innerHTML = `
-                <span class="inline-flex items-center gap-2">
-                    <i class="fas fa-arrow-right"></i>
-                    Opening...
-                </span>
-            `;
-
-            setTimeout(() => {
-                emptyButton.style.opacity = '';
-                emptyButton.innerHTML = originalHtml;
-            }, 1200);
-        });
+        setTimeout(() => {
+            hint.classList.add('is-hidden');
+        }, 5000);
     }
 
     revealElements();
     initAmountAnimation();
     initLinks();
     initMobileScrollHint();
-    initEmptyButtonFeedback();
 });
 </script>
 @endsection

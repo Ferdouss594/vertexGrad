@@ -5,29 +5,29 @@
     $btnSecondaryClass = 'inline-flex items-center justify-center rounded-2xl px-6 py-3 font-bold border border-brand-accent text-theme-text hover:bg-brand-accent hover:text-white transition duration-300';
 @endphp
 
-<div class="min-h-screen pt-28 pb-12 bg-theme-bg transition-colors duration-300">
+<div class="min-h-screen pt-28 pb-12 bg-theme-bg transition-colors duration-300 overflow-hidden">
     <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        <header class="mb-12 flex flex-col md:flex-row md:justify-between md:items-end gap-6">
-            <div>
-                <h1 class="text-5xl font-black text-theme-text tracking-tighter uppercase">
+        <header class="mb-10 sm:mb-12 flex flex-col md:flex-row md:justify-between md:items-end gap-6">
+            <div class="min-w-0">
+                <h1 class="text-3xl sm:text-4xl md:text-5xl font-black text-theme-text tracking-tight md:tracking-tighter uppercase leading-tight">
                     {{ __('frontend.investor_dashboard.investor') }}
                     <span class="text-brand-accent">{{ __('frontend.investor_dashboard.dashboard') }}</span>
                 </h1>
 
-                <p class="text-theme-muted text-xs font-bold tracking-[0.3em] mt-2 uppercase">
+                <p class="text-theme-muted text-[10px] sm:text-xs font-bold tracking-[0.18em] sm:tracking-[0.3em] mt-2 uppercase">
                     {{ __('frontend.investor_dashboard.subtitle') }}
                 </p>
             </div>
 
-            <div class="flex flex-wrap items-center gap-3">
-                <a href="{{ route('settings.investor') }}" class="{{ $btnSecondaryClass }}">
-                    <i class="fas fa-cog mr-2"></i>
+            <div class="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3">
+                <a href="{{ route('settings.investor') }}" class="{{ $btnSecondaryClass }} w-full sm:w-auto">
+                    <i class="fas fa-cog me-2"></i>
                     {{ __('frontend.investor_dashboard.settings', [], app()->getLocale()) }}
                 </a>
 
-                <a href="{{ route('investor.investments') }}" class="{{ $btnSecondaryClass }}">
-                    <i class="fas fa-briefcase mr-2"></i>
+                <a href="{{ route('investor.investments') }}" class="{{ $btnSecondaryClass }} w-full sm:w-auto">
+                    <i class="fas fa-briefcase me-2"></i>
                     {{ __('frontend.investments.my_investments', [], app()->getLocale()) }}
                 </a>
             </div>
@@ -45,7 +45,7 @@
         </div>
 
         <div class="hidden md:flex justify-end mb-8">
-            <div class="text-right">
+            <div class="text-end">
                 <p class="text-theme-muted text-[10px] font-black uppercase tracking-widest">
                     {{ __('frontend.investor_dashboard.total_approved_funding') }}
                 </p>
@@ -63,7 +63,7 @@
             @endphp
 
             <section id="announcementSection" class="mb-8">
-                <div class="relative overflow-hidden rounded-[2rem] theme-panel shadow-brand-soft">
+                <div class="relative overflow-hidden rounded-3xl md:rounded-[2rem] theme-panel shadow-brand-soft">
                     <div class="relative z-10 p-5 md:p-7">
                         <div class="flex items-start gap-4">
                             <div class="hidden sm:flex w-14 h-14 rounded-2xl border border-brand-accent bg-brand-accent-soft text-brand-accent items-center justify-center shrink-0">
@@ -102,7 +102,7 @@
 
                             <button type="button"
                                     onclick="dismissAnnouncements()"
-                                    class="shrink-0 w-11 h-11 rounded-2xl border border-theme-border bg-theme-surface-2 hover:bg-brand-accent-soft text-theme-muted hover:text-theme-text transition flex items-center justify-center">
+                                    class="shrink-0 w-10 h-10 sm:w-11 sm:h-11 rounded-2xl border border-theme-border bg-theme-surface-2 hover:bg-brand-accent-soft text-theme-muted hover:text-theme-text transition flex items-center justify-center">
                                 <i class="fas fa-times"></i>
                             </button>
                         </div>
@@ -143,14 +143,14 @@
             </section>
         @endif
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10">
 
             <div class="lg:col-span-2 space-y-8">
 
                 {{-- MY INTERESTED / APPROVED PROJECTS --}}
-                <section class="theme-panel p-10 rounded-[3rem]">
-                    <h3 class="text-xl font-black text-theme-text mb-8 flex items-center uppercase tracking-widest">
-                        <i class="fas fa-briefcase mr-4 text-brand-accent"></i>
+                <section class="theme-panel p-5 sm:p-8 lg:p-10 rounded-3xl lg:rounded-[3rem]">
+                    <h3 class="text-lg sm:text-xl font-black text-theme-text mb-8 flex items-center uppercase tracking-[0.14em] sm:tracking-widest">
+                        <i class="fas fa-briefcase me-4 text-brand-accent"></i>
                         {{ __('frontend.investor_dashboard.my_investment_activity') }}
                     </h3>
 
@@ -163,7 +163,7 @@
                             @endphp
 
                             <a href="{{ route('frontend.projects.show', $investment) }}"
-                               class="p-6 bg-theme-surface-2 rounded-2xl border border-theme-border flex items-center justify-between hover:border-brand-accent/40 transition-all">
+                               class="p-4 sm:p-6 bg-theme-surface-2 rounded-2xl border border-theme-border flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 hover:border-brand-accent/40 transition-all">
                                 <div class="flex items-center gap-4 min-w-0">
                                     <div class="w-16 h-16 rounded-xl overflow-hidden bg-theme-surface flex items-center justify-center shrink-0">
                                         @if($image)
@@ -200,7 +200,7 @@
                                     </div>
                                 </div>
 
-                                <div class="text-right shrink-0 ml-4">
+                                <div class="text-start sm:text-end shrink-0 sm:ms-4">
                                     <span class="text-brand-accent font-bold text-sm">
                                         {{ strtoupper($pivotStatus) }}
                                     </span>
@@ -220,9 +220,9 @@
                 </section>
 
                 {{-- SMART RECOMMENDATIONS --}}
-                <section class="theme-panel p-10 rounded-[3rem]">
+                <section class="theme-panel p-5 sm:p-8 lg:p-10 rounded-3xl lg:rounded-[3rem]">
                     <div class="mb-8">
-                        <h3 class="text-xl font-black text-theme-text uppercase tracking-widest">
+                        <h3 class="text-lg sm:text-xl font-black text-theme-text uppercase tracking-[0.14em] sm:tracking-widest">
                             {{ __('frontend.investor_dashboard.suggested_for_you') }}
                         </h3>
                         <p class="text-sm text-theme-muted mt-2">
@@ -240,7 +240,7 @@
                             @endphp
 
                             <a href="{{ route('frontend.projects.show', $deal) }}"
-                               class="flex items-center justify-between p-6 bg-theme-surface-2 rounded-2xl border border-theme-border hover:border-brand-accent/40 transition-all group">
+                               class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-4 sm:p-6 bg-theme-surface-2 rounded-2xl border border-theme-border hover:border-brand-accent/40 transition-all group">
 
                                 <div class="flex items-center gap-4 min-w-0">
                                     <div class="w-16 h-16 rounded-xl overflow-hidden bg-theme-surface flex items-center justify-center shrink-0">
@@ -275,7 +275,7 @@
 
                                         @if($interestedCount > 0)
                                             <div class="flex items-center gap-2 mt-3">
-                                                <div class="flex -space-x-2">
+                                                <div class="flex -space-x-2 rtl:space-x-reverse">
                                                     @foreach($interestedUsers as $investor)
                                                         <div class="w-7 h-7 rounded-full bg-brand-accent-soft border border-brand-accent text-brand-accent flex items-center justify-center text-[10px] font-black">
                                                             {{ strtoupper(substr($investor->name ?? 'I', 0, 1)) }}
@@ -292,7 +292,7 @@
                                     </div>
                                 </div>
 
-                                <div class="text-right shrink-0 ml-4">
+                                <div class="text-start sm:text-end shrink-0 sm:ms-4">
                                     <span class="text-green-600 font-mono text-sm font-bold block">
                                         ${{ number_format($deal->budget ?? 0) }}
                                     </span>
@@ -311,7 +311,7 @@
                     <div class="mt-6 pt-6 border-t border-theme-border">
                         <a href="{{ route('frontend.projects.index') }}"
                            class="inline-flex items-center justify-center rounded-2xl px-6 py-3 font-bold border border-brand-accent text-theme-text hover:bg-brand-accent hover:text-white transition duration-300">
-                            <i class="fas fa-compass mr-2"></i>
+                            <i class="fas fa-compass me-2"></i>
                             {{ __('frontend.investor_dashboard.explore_all') }}
                         </a>
                     </div>
@@ -319,35 +319,35 @@
             </div>
 
             <div class="space-y-8">
-                <div class="theme-panel p-10 rounded-[3rem]">
+                <div class="theme-panel p-5 sm:p-8 lg:p-10 rounded-3xl lg:rounded-[3rem]">
                     <h3 class="text-theme-text font-black uppercase tracking-widest text-sm mb-6">
                         {{ __('frontend.investor_dashboard.marketplace_overview') }}
                     </h3>
 
                     <div class="space-y-5 text-sm">
-                        <div class="flex justify-between items-center">
+                        <div class="flex justify-between items-center gap-4">
                             <span class="text-theme-muted">{{ __('frontend.investor_dashboard.active_projects') }}</span>
                             <span class="text-brand-accent font-bold">{{ $marketplaceStats['active_projects'] }}</span>
                         </div>
 
-                        <div class="flex justify-between items-center">
+                        <div class="flex justify-between items-center gap-4">
                             <span class="text-theme-muted">{{ __('frontend.investor_dashboard.interested') }}</span>
                             <span class="text-theme-text font-bold">{{ $marketplaceStats['interested_count'] }}</span>
                         </div>
 
-                        <div class="flex justify-between items-center">
+                        <div class="flex justify-between items-center gap-4">
                             <span class="text-theme-muted">{{ __('frontend.investor_dashboard.funding_requested') }}</span>
                             <span class="text-theme-text font-bold">{{ $marketplaceStats['requested_count'] }}</span>
                         </div>
 
-                        <div class="flex justify-between items-center">
+                        <div class="flex justify-between items-center gap-4">
                             <span class="text-theme-muted">{{ __('frontend.investor_dashboard.approved_investments') }}</span>
                             <span class="text-green-600 font-bold">{{ $marketplaceStats['approved_count'] }}</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="theme-panel p-10 rounded-[3rem]">
+                <div class="theme-panel p-5 sm:p-8 lg:p-10 rounded-3xl lg:rounded-[3rem]">
                     <h3 class="text-theme-text font-black uppercase tracking-widest text-sm mb-6">
                         {{ __('frontend.investor_dashboard.investor_summary') }}
                     </h3>
@@ -419,6 +419,23 @@
             }
         } catch (e) {}
 
+        if (!document.getElementById('vg-investor-dashboard-style')) {
+            const style = document.createElement('style');
+            style.id = 'vg-investor-dashboard-style';
+            style.innerHTML = `
+                @media (prefers-reduced-motion: reduce) {
+                    .theme-panel,
+                    .theme-panel *,
+                    a,
+                    button {
+                        transition: none !important;
+                        animation: none !important;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
         if (!prefersReducedMotion) {
             const animatedElements = [
                 document.querySelector('header'),
@@ -438,12 +455,12 @@
             });
         }
 
-        const projectCards = document.querySelectorAll('a[href].p-6, a[href].group');
+        const projectCards = document.querySelectorAll('a[href].p-4, a[href].p-6, a[href].group');
         projectCards.forEach(card => {
             card.style.transition = 'transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease';
 
             card.addEventListener('mouseenter', () => {
-                if (prefersReducedMotion) return;
+                if (prefersReducedMotion || window.innerWidth < 768) return;
                 card.style.transform = 'translateY(-4px)';
                 card.style.boxShadow = '0 16px 36px rgba(0,0,0,0.08)';
             });

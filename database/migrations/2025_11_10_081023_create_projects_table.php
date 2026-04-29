@@ -13,7 +13,7 @@ return new class extends Migration
             $table->string('name', 150);
             $table->text('description')->nullable();
             $table->string('category', 50)->nullable();
-            $table->enum('status', ['pending','active','completed','rejected'])->default('pending');
+            $table->enum('status', ['pending', 'scan_requested', 'awaiting_manual_review', 'approved', 'published', 'active', 'completed', 'rejected', 'scan_failed'])->nullable()->default('pending');
 
             $table->foreignId('student_id')->constrained('users');
             $table->foreignId('supervisor_id')->nullable()->constrained('users');

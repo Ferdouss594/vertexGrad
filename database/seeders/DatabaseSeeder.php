@@ -8,17 +8,16 @@ use Illuminate\Support\Facades\Hash;
 class DatabaseSeeder extends Seeder
 {
     public function run(): void
-    {$this->call([
-    SettingSeeder::class,
-]);
-        // run your other seeders
+    {
         $this->call([
+            SettingSeeder::class,
             ManagerSeeder::class,
-            // OtherSeeders::class,
+            UsersSeeder::class,
+
         ]);
 
-        // ✅ FORCE manager password at the END (guarantee)
-        \App\Models\User::where('email', 'manager@example.com')
-            ->update(['password' => Hash::make('12345678')]);
+        // // ✅ FORCE manager password at the END (guarantee)
+        // \App\Models\User::where('email', 'manager@example.com')
+        //     ->update(['password' => Hash::make('12345678')]);
     }
 }

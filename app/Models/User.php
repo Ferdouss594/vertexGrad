@@ -13,37 +13,39 @@ class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens, HasFactory, Notifiable;
 
-protected $fillable = [
-    'username',
-    'name',
-    'email',
-    'password',
-    'role',
-    'status',
-    'gender',
-    'city',
-    'state',
-    'profile_image',
+    protected $fillable = [
+        'username',
+        'name',
+        'email',
+        'password',
+        'role',
+        'status',
+        'gender',
+        'city',
+        'state',
+        'profile_image',
+        'status',
 
-    // tracking fields
-    'last_login',
-    'last_activity',
-    'login_ip',
-    'device',
-    'browser',
-    'os',
-];
+        // tracking fields
+        'last_login',
+        'last_activity',
+        'login_ip',
+        'device',
+        'browser',
+        'os',
+    ];
 
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-protected $casts = [
-    'email_verified_at' => 'datetime',
-    'last_login' => 'datetime',
-    'last_activity' => 'datetime',
-];
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'last_login' => 'datetime',
+        'last_activity' => 'datetime',
+        'password' => 'hashed',
+    ];
 
     /*
     |--------------------------------------------------------------------------
@@ -113,10 +115,10 @@ protected $casts = [
     {
         return $this->hasOne(Supervisor::class);
     }
-public function authPolicyOverride()
-{
-    return $this->hasOne(UserAuthPolicyOverride::class);
-}
+    public function authPolicyOverride()
+    {
+        return $this->hasOne(UserAuthPolicyOverride::class);
+    }
     public function manager()
     {
         return $this->hasOne(Manager::class);

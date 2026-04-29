@@ -3,11 +3,11 @@
 @section('title', __('frontend.notifications_page.title'))
 
 @section('content')
-<div class="min-h-screen bg-theme-bg text-theme-text pt-28 pb-10 transition-colors duration-300">
+<div class="min-h-screen bg-theme-bg text-theme-text pt-28 pb-10 transition-colors duration-300 overflow-hidden">
     <div class="{{ config('design.classes.container') }}">
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <div class="notifications-top flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
             <div>
-                <h1 class="text-3xl font-extrabold text-theme-text">
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-theme-text leading-tight">
                     <span class="text-brand-accent">{{ __('frontend.notifications_page.heading') }}</span>
                 </h1>
                 <p class="text-theme-muted text-sm mt-1">
@@ -18,13 +18,13 @@
             <form method="POST" action="{{ route('frontend.notifications.markAllRead') }}">
                 @csrf
                 <button type="submit"
-                        class="inline-flex items-center justify-center rounded-lg px-5 py-3 font-semibold border border-brand-accent text-theme-text hover:bg-brand-accent hover:text-white transition duration-300">
+                        class="w-full sm:w-auto inline-flex items-center justify-center rounded-2xl px-5 py-3 font-bold border border-brand-accent text-theme-text hover:bg-brand-accent hover:text-white transition duration-300">
                     {{ __('frontend.notifications_page.mark_all_read') }}
                 </button>
             </form>
         </div>
 
-        <div class="theme-panel rounded-3xl overflow-hidden shadow-brand-soft">
+        <div class="notifications-panel theme-panel rounded-3xl overflow-hidden shadow-brand-soft">
             @forelse($notifications as $n)
                 @php
                     $title = $n->data['title'] ?? __('frontend.notifications_page.notification_fallback');
@@ -34,29 +34,29 @@
                     $isRead = !is_null($n->read_at);
                 @endphp
 
-                <div class="p-5 border-b border-theme-border last:border-b-0 {{ $isRead ? 'opacity-70' : 'bg-brand-accent-soft/40' }}">
-                    <div class="flex items-start justify-between gap-4">
+                <div class="notification-item p-4 sm:p-5 border-b border-theme-border last:border-b-0 {{ $isRead ? 'opacity-70' : 'bg-brand-accent-soft/40' }}">
+                    <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                         <div class="flex items-start gap-3 min-w-0">
-                            <div class="text-brand-accent mt-1">
+                            <div class="text-brand-accent mt-1 shrink-0">
                                 <i class="{{ $icon }}"></i>
                             </div>
 
                             <div class="min-w-0">
-                                <p class="font-bold text-theme-text">{{ $title }}</p>
-                                <p class="text-sm text-theme-muted mt-1">{{ $message }}</p>
+                                <p class="font-bold text-theme-text break-words">{{ $title }}</p>
+                                <p class="text-sm text-theme-muted mt-1 break-words">{{ $message }}</p>
                                 <p class="text-xs text-theme-muted/80 mt-2">
                                     {{ $n->created_at->diffForHumans() }}
                                 </p>
                             </div>
                         </div>
 
-                        <div class="flex items-center gap-2 shrink-0">
+                        <div class="flex flex-col xs:flex-row sm:flex-row items-stretch sm:items-center gap-2 shrink-0">
                             @if($url)
                                 <form method="POST" action="{{ route('frontend.notifications.read', $n->id) }}">
                                     @csrf
                                     <input type="hidden" name="redirect" value="{{ $url }}">
                                     <button type="submit"
-                                            class="px-3 py-2 rounded-lg bg-brand-accent text-white text-xs font-bold hover:bg-brand-accent-strong transition">
+                                            class="w-full sm:w-auto px-3 py-2 rounded-xl bg-brand-accent text-white text-xs font-bold hover:bg-brand-accent-strong transition">
                                         {{ __('frontend.notifications_page.open') }}
                                     </button>
                                 </form>
@@ -66,7 +66,7 @@
                                 <form method="POST" action="{{ route('frontend.notifications.read', $n->id) }}">
                                     @csrf
                                     <button type="submit"
-                                            class="px-3 py-2 rounded-lg bg-theme-surface-2 text-theme-text text-xs font-bold hover:bg-brand-accent-soft transition border border-theme-border">
+                                            class="w-full sm:w-auto px-3 py-2 rounded-xl bg-theme-surface-2 text-theme-text text-xs font-bold hover:bg-brand-accent-soft transition border border-theme-border">
                                         {{ __('frontend.notifications_page.mark_read') }}
                                     </button>
                                 </form>
@@ -75,17 +75,18 @@
                     </div>
                 </div>
             @empty
-                <div class="p-10 text-center text-theme-muted">
+                <div class="notifications-empty p-10 text-center text-theme-muted">
                     {{ __('frontend.notifications_page.empty') }}
                 </div>
             @endforelse
         </div>
 
-        <div class="mt-6">
+        <div class="notifications-pagination mt-6">
             {{ $notifications->links() }}
         </div>
     </div>
 </div>
+
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -102,20 +103,67 @@ document.addEventListener('DOMContentLoaded', function () {
             .vg-progress-line {
                 position: fixed;
                 top: 0;
-                left: 0;
+                inset-inline-start: 0;
                 height: 3px;
                 width: 0%;
                 z-index: 9999;
                 pointer-events: none;
-                background: linear-gradient(90deg, rgba(99,102,241,0.98), rgba(34,197,94,0.98));
-                box-shadow: 0 0 18px rgba(99,102,241,0.28);
+                background: linear-gradient(90deg, rgba(0,224,255,0.98), rgba(34,197,94,0.98));
+                box-shadow: 0 0 18px rgba(0,224,255,0.28);
                 transition: width 0.08s linear;
+            }
+
+            .vg-notification-reveal {
+                opacity: 0;
+                transform: translateY(22px);
+                transition: opacity .75s ease, transform .75s cubic-bezier(.22,1,.36,1);
+            }
+
+            .vg-notification-reveal.is-visible {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            .notification-item {
+                transition: transform .28s ease, background-color .28s ease, box-shadow .28s ease;
+            }
+
+            .notification-item:hover {
+                transform: translateX(4px);
+                box-shadow: 0 14px 32px rgba(0,0,0,0.06);
+            }
+
+            html[dir="rtl"] .notification-item:hover {
+                transform: translateX(-4px);
+            }
+
+            .vg-focus-ring:focus-visible {
+                outline: none;
+                box-shadow: 0 0 0 3px rgba(0,224,255,.16);
+                border-radius: 12px;
+            }
+
+            @media (max-width: 640px) {
+                .notification-item:hover,
+                html[dir="rtl"] .notification-item:hover {
+                    transform: none;
+                    box-shadow: none;
+                }
+            }
+
+            @media (prefers-reduced-motion: reduce) {
+                .vg-progress-line,
+                .vg-notification-reveal,
+                .notification-item {
+                    transition: none !important;
+                    transform: none !important;
+                    animation: none !important;
+                }
             }
         `;
         document.head.appendChild(style);
     }
 
-    // Reading progress
     const progress = document.createElement('div');
     progress.className = 'vg-progress-line';
     document.body.appendChild(progress);
@@ -131,80 +179,45 @@ document.addEventListener('DOMContentLoaded', function () {
     window.addEventListener('scroll', updateProgress, { passive: true });
     window.addEventListener('resize', updateProgress);
 
-    const topBar = document.querySelector('.flex.flex-col.sm\\:flex-row.sm\\:items-center.sm\\:justify-between.gap-4.mb-6');
-    const panel = document.querySelector('.theme-panel');
-    const items = Array.from(document.querySelectorAll('.theme-panel > div.p-5'));
-    const emptyState = document.querySelector('.p-10.text-center.text-theme-muted');
-    const markAllForm = document.querySelector('form[action*="markAllRead"]');
+    [
+        document.querySelector('.notifications-top'),
+        document.querySelector('.notifications-panel'),
+        document.querySelector('.notifications-empty'),
+        document.querySelector('.notifications-pagination')
+    ].filter(Boolean).forEach((el, index) => {
+        el.classList.add('vg-notification-reveal');
 
-    if (!prefersReducedMotion) {
-        if (topBar) {
-            topBar.style.opacity = '0';
-            topBar.style.transform = 'translateY(34px)';
-            topBar.style.transition = 'opacity 1.05s ease, transform 1.05s cubic-bezier(0.22, 1, 0.36, 1)';
-            setTimeout(() => {
-                topBar.style.opacity = '1';
-                topBar.style.transform = 'translateY(0)';
-            }, 120);
+        if (prefersReducedMotion) {
+            el.classList.add('is-visible');
+            return;
         }
 
-        if (panel) {
-            panel.style.opacity = '0';
-            panel.style.transform = 'translateY(36px)';
-            panel.style.transition = 'opacity 1.08s ease, transform 1.08s cubic-bezier(0.22, 1, 0.36, 1)';
-            setTimeout(() => {
-                panel.style.opacity = '1';
-                panel.style.transform = 'translateY(0)';
-            }, 420);
-        }
-
-        items.forEach((item, index) => {
-            item.style.opacity = '0';
-            item.style.transform = 'translateY(20px)';
-            item.style.transition = 'opacity 0.88s ease, transform 0.88s ease';
-            setTimeout(() => {
-                item.style.opacity = '1';
-                item.style.transform = 'translateY(0)';
-            }, 760 + (index * 110));
-        });
-
-        if (emptyState) {
-            emptyState.style.opacity = '0';
-            emptyState.style.transform = 'translateY(22px)';
-            emptyState.style.transition = 'opacity 0.95s ease, transform 0.95s ease';
-            setTimeout(() => {
-                emptyState.style.opacity = '1';
-                emptyState.style.transform = 'translateY(0)';
-            }, 760);
-        }
-    }
-
-    // Item hover polish
-    items.forEach(item => {
-        item.style.transition = 'transform 0.28s ease, background-color 0.28s ease, box-shadow 0.28s ease';
-
-        item.addEventListener('mouseenter', function () {
-            if (prefersReducedMotion) return;
-            item.style.transform = 'translateX(4px)';
-            item.style.boxShadow = '0 14px 32px rgba(0,0,0,0.06)';
-        });
-
-        item.addEventListener('mouseleave', function () {
-            item.style.transform = '';
-            item.style.boxShadow = '';
-        });
+        setTimeout(() => {
+            el.classList.add('is-visible');
+        }, 100 + (index * 120));
     });
 
-    // Unread pulse feel
+    document.querySelectorAll('.notification-item').forEach((item, index) => {
+        item.classList.add('vg-notification-reveal');
+
+        if (prefersReducedMotion) {
+            item.classList.add('is-visible');
+            return;
+        }
+
+        setTimeout(() => {
+            item.classList.add('is-visible');
+        }, 340 + (index * 75));
+    });
+
     if (!prefersReducedMotion) {
-        const unreadItems = Array.from(document.querySelectorAll('.bg-brand-accent-soft\\/40'));
-        unreadItems.forEach((item, index) => {
+        document.querySelectorAll('.bg-brand-accent-soft\\/40').forEach((item, index) => {
             setTimeout(() => {
                 item.animate(
                     [
-                        { boxShadow: '0 0 0 rgba(99,102,241,0)' },
-                        { boxShadow: '0 0 0 10px rgba(99,102,241,0.06)' },
-                        { boxShadow: '0 0 0 rgba(99,102,241,0)' }
+                        { boxShadow: '0 0 0 rgba(0,224,255,0)' },
+                        { boxShadow: '0 0 0 10px rgba(0,224,255,0.06)' },
+                        { boxShadow: '0 0 0 rgba(0,224,255,0)' }
                     ],
                     {
                         duration: 1400,
@@ -212,15 +225,15 @@ document.addEventListener('DOMContentLoaded', function () {
                         iterations: 1
                     }
                 );
-            }, 1100 + (index * 120));
+            }, 900 + (index * 120));
         });
     }
 
-    // Button submit loading feedback
-    const allForms = document.querySelectorAll('form');
-    allForms.forEach(form => {
+    document.querySelectorAll('form').forEach(form => {
         const submitBtn = form.querySelector('button[type="submit"]');
         if (!submitBtn) return;
+
+        submitBtn.classList.add('vg-focus-ring');
 
         if (!submitBtn.dataset.originalHtml) {
             submitBtn.dataset.originalHtml = submitBtn.innerHTML;
@@ -262,17 +275,8 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Accessibility
-    const interactive = document.querySelectorAll('a, button');
-    interactive.forEach(el => {
-        el.addEventListener('focus', function () {
-            el.style.outline = 'none';
-            el.style.boxShadow = '0 0 0 3px rgba(99,102,241,0.18)';
-        });
-
-        el.addEventListener('blur', function () {
-            el.style.boxShadow = '';
-        });
+    document.querySelectorAll('a, button').forEach(el => {
+        el.classList.add('vg-focus-ring');
     });
 });
 </script>

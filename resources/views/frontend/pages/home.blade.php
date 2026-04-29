@@ -32,12 +32,14 @@
 {{-- START OF SECTION 1: HERO SECTION --}}
 {{-- ---------------------------------------------------------------- --}}
 
-<section class="relative w-full h-[700px] lg:h-[850px] overflow-hidden flex items-center justify-center border-b border-theme-border bg-theme-bg transition-colors duration-300">
+<section class="home-hero-section relative w-full h-[720px] sm:h-[760px] lg:h-[850px] overflow-hidden flex items-center justify-center border-b border-theme-border bg-theme-bg transition-colors duration-300">
 
     <div class="absolute inset-0 pointer-events-none"
          style="background: linear-gradient(to top, var(--hero-overlay-from), var(--hero-overlay-to));"></div>
 
-    <svg class="absolute inset-0 w-full h-full" viewBox="0 0 1920 850" preserveAspectRatio="xMidYMid slice" style="opacity: 0.82;">
+    <div class="home-hero-mobile-glow"></div>
+
+    <svg class="home-hero-circuit absolute inset-0 w-full h-full" viewBox="0 0 1920 850" preserveAspectRatio="xMidYMid slice" style="opacity: 0.82;">
         <defs>
             <filter id="neon-glow" x="-50%" y="-50%" width="200%" height="200%">
                 <feGaussianBlur stdDeviation="1.25" result="coloredBlur"/>
@@ -119,48 +121,99 @@
         .animate-flow-10 { animation-delay: 4.5s; }
         .animate-flow-11 { animation-delay: 5s; }
         .animate-flow-12 { animation-delay: 5.5s; }
+
+        .home-hero-mobile-glow {
+            display: none;
+        }
+
+        .home-hero-content,
+        .home-hero-search,
+        .home-hero-creator {
+            will-change: opacity, transform;
+        }
+
+        .home-hero-section {
+            --hero-mouse-x: 0px;
+            --hero-mouse-y: 0px;
+        }
+
+        @media (max-width: 767px) {
+            .home-hero-circuit {
+                opacity: 0.42 !important;
+            }
+
+            .home-hero-mobile-glow {
+                display: block;
+                position: absolute;
+                inset: 0;
+                pointer-events: none;
+                background:
+                    radial-gradient(circle at 50% 28%, rgba(0, 224, 255, 0.14), transparent 34%),
+                    radial-gradient(circle at 50% 62%, rgba(25, 242, 255, 0.10), transparent 38%);
+                opacity: 0.9;
+            }
+        }
+
+        @media (min-width: 768px) and (max-width: 1023px) {
+            .home-hero-circuit {
+                opacity: 0.58 !important;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .circuit-path,
+            .central-node,
+            .home-hero-content,
+            .home-hero-search,
+            .home-hero-creator {
+                animation: none !important;
+                transition: none !important;
+                transform: none !important;
+                opacity: 1 !important;
+            }
+        }
     </style>
 
-    <div class="{{ $containerClass }} relative z-10 text-center pt-24 pb-16">
-        <p class="text-md uppercase font-bold tracking-[0.2em] mb-4 text-brand-accent opacity-90">
+    <div class="{{ $containerClass }} home-hero-content relative z-10 text-center pt-20 sm:pt-24 pb-12 sm:pb-16">
+        <p class="text-xs sm:text-sm lg:text-md uppercase font-bold tracking-[0.18em] lg:tracking-[0.2em] mb-4 text-brand-accent opacity-90">
             {{ __('frontend.home.hero_platform_label') }}
         </p>
 
-        <h1 class="{{ $headingClass }} max-w-6xl mx-auto leading-tight text-theme-text">
+        <h1 class="font-extrabold text-4xl sm:text-5xl lg:text-6xl tracking-tight max-w-6xl mx-auto leading-tight text-theme-text">
             {{ __('frontend.home.hero_title_line1') }}
 
-            <span class="block mt-6 text-7xl lg:text-8xl font-black uppercase tracking-wider text-brand-accent"
+            <span class="block mt-4 sm:mt-5 lg:mt-6 text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black uppercase tracking-wide lg:tracking-wider text-brand-accent break-words"
                   style="text-shadow: var(--hero-title-glow);">
                 {{ __('frontend.home.hero_title_brand') }}
             </span>
         </h1>
 
-        <p class="mt-8 text-xl lg:text-2xl text-theme-muted max-w-4xl mx-auto font-light">
+        <p class="mt-6 sm:mt-8 text-base sm:text-lg lg:text-2xl text-theme-muted max-w-4xl mx-auto font-light leading-relaxed">
             {{ __('frontend.home.hero_subtitle') }}
         </p>
 
-        <div class="mt-14 max-w-4xl mx-auto">
+        <div class="home-hero-search mt-10 sm:mt-12 lg:mt-14 max-w-4xl mx-auto">
             <div class="flex flex-col sm:flex-row items-stretch rounded-xl p-2 bg-theme-surface border border-theme-border shadow-brand-soft transition-colors duration-300">
                 <input
                     type="search"
                     placeholder="{{ __('frontend.home.search_placeholder') }}"
-                    class="flex-grow p-4 text-lg bg-transparent text-theme-text placeholder:text-theme-muted focus:outline-none focus:ring-0"
+                    class="flex-grow w-full p-4 text-base sm:text-lg bg-transparent text-theme-text placeholder:text-theme-muted focus:outline-none focus:ring-0"
                 >
 
                 <a href="/projects"
-                   class="mt-4 sm:mt-0 sm:ml-2 flex-shrink-0 inline-flex items-center justify-center rounded-lg px-8 py-4 text-lg font-semibold bg-brand-accent text-white hover-bg-brand-accent-strong transition duration-300 shadow-brand-soft">
-                    <i class="fas fa-search mr-2"></i> {{ __('frontend.home.find_projects') }}
+                   class="mt-3 sm:mt-0 sm:ms-2 flex-shrink-0 inline-flex items-center justify-center rounded-lg px-6 sm:px-8 py-4 text-base sm:text-lg font-semibold bg-brand-accent text-white hover-bg-brand-accent-strong transition duration-300 shadow-brand-soft">
+                    <i class="fas fa-search me-2"></i> {{ __('frontend.home.find_projects') }}
                 </a>
             </div>
 
-            <div class="mt-8">
-                <p class="text-theme-muted text-sm font-semibold uppercase tracking-widest mb-4">
+            <div class="home-hero-creator mt-8">
+                <p class="text-theme-muted text-xs sm:text-sm font-semibold uppercase tracking-widest mb-4">
                     {{ __('frontend.home.creator_prompt') }}
                 </p>
 
                 <a href="/submit-project"
-                   class="inline-flex items-center justify-center rounded-lg px-6 py-3 text-base font-semibold border border-brand-accent text-theme-text hover:bg-brand-accent hover:text-white transition duration-300">
-                    <i class="fas fa-rocket mr-2"></i> {{ __('frontend.home.submit_for_vetting') }}
+                   class="inline-flex items-center justify-center rounded-lg px-5 sm:px-6 py-3 text-sm sm:text-base font-semibold border border-brand-accent text-theme-text hover:bg-brand-accent hover:text-white transition duration-300">
+                    <i class="fas fa-rocket me-2"></i> {{ __('frontend.home.submit_for_vetting') }}
                 </a>
             </div>
         </div>
@@ -170,9 +223,11 @@
 {{-- ---------------------------------------------------------------- --}}
 {{-- END OF SECTION 1: HERO SECTION --}}
 {{-- ---------------------------------------------------------------- --}}
+
 {{-- ---------------------------------------------------------------- --}}
 {{-- START OF SECTION 2: FEATURED PROJECTS --}}
 {{-- ---------------------------------------------------------------- --}}
+
 @php
     $design = config('design');
     $c = $design['classes'];
@@ -183,29 +238,29 @@
 
 <section class="{{ $sectionY }} bg-theme-surface-2 border-y border-theme-border overflow-hidden transition-colors duration-300">
     <div class="{{ $container }}">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-12 items-start">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-10 lg:gap-12 items-start">
 
             <div class="lg:col-span-1 opacity-0 translate-y-8 section-anim">
-                <h2 class="text-4xl lg:text-5xl font-extrabold text-theme-text leading-tight">
+                <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-theme-text leading-tight">
                     {{ __('frontend.home.projects_title_before') }}
                     <span class="text-brand-accent">{{ __('frontend.home.projects_title_highlight') }}</span>
                 </h2>
 
-                <p class="mt-4 text-theme-muted text-lg leading-relaxed">
+                <p class="mt-4 text-theme-muted text-base sm:text-lg leading-relaxed">
                     {{ __('frontend.home.projects_subtitle') }}
                 </p>
 
                 <a href="{{ route('frontend.projects.index') }}"
-                   class="mt-8 inline-flex items-center justify-center rounded-lg px-8 py-3 text-base font-semibold border border-brand-accent text-theme-text hover:bg-brand-accent hover:text-white transition duration-300">
+                   class="mt-8 inline-flex items-center justify-center rounded-lg px-7 sm:px-8 py-3 text-sm sm:text-base font-semibold border border-brand-accent text-theme-text hover:bg-brand-accent hover:text-white transition duration-300">
                     {{ __('frontend.home.explore_all_projects') }}
                 </a>
             </div>
 
-            <div class="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-8">
+            <div class="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-6 lg:gap-8">
                 @forelse ($homeProjects as $project)
                     <div class="opacity-0 translate-y-8 section-anim">
                         <div class="group rounded-xl overflow-hidden theme-panel hover:shadow-brand-soft transition duration-300 h-full flex flex-col">
-                            <div class="relative h-48 w-full bg-theme-surface-2 overflow-hidden">
+                            <div class="relative h-44 sm:h-48 w-full bg-theme-surface-2 overflow-hidden">
                                 @if(method_exists($project, 'hasMedia') && $project->hasMedia('images'))
                                     <img src="{{ $project->getFirstMediaUrl('images') }}"
                                          alt="{{ $project->name }}"
@@ -217,12 +272,12 @@
                                 @endif
                             </div>
 
-                            <div class="p-6 flex flex-col flex-1">
-                                <p class="text-brand-accent text-sm font-semibold mb-2">
+                            <div class="p-5 sm:p-6 flex flex-col flex-1">
+                                <p class="text-brand-accent text-xs sm:text-sm font-semibold mb-2">
                                     {{ $project->projectCategory->display_name ?? $project->category ?? __('frontend.home.general') }}
                                 </p>
 
-                                <h3 class="text-xl font-bold text-theme-text leading-tight mb-3">
+                                <h3 class="text-lg sm:text-xl font-bold text-theme-text leading-tight mb-3 line-clamp-2">
                                     {{ $project->name }}
                                 </h3>
 
@@ -230,13 +285,13 @@
                                     {{ $project->description ?? '' }}
                                 </p>
 
-                                <div class="flex justify-between items-center mt-auto">
-                                    <p class="text-theme-muted/80 text-xs">
+                                <div class="flex justify-between items-center gap-4 mt-auto">
+                                    <p class="text-theme-muted/80 text-xs truncate">
                                         {{ __('frontend.home.by') }} {{ $project->student->name ?? __('frontend.home.student') }}
                                     </p>
 
                                     <a href="{{ route('frontend.projects.show', $project) }}"
-                                       class="text-brand-accent text-sm font-bold hover:underline">
+                                       class="text-brand-accent text-sm font-bold hover:underline shrink-0">
                                         {{ __('frontend.home.details') }}
                                     </a>
                                 </div>
@@ -244,7 +299,7 @@
                         </div>
                     </div>
                 @empty
-                    <div class="sm:col-span-2 p-10 rounded-2xl border border-dashed border-theme-border text-center text-theme-muted bg-theme-surface">
+                    <div class="sm:col-span-2 p-8 sm:p-10 rounded-2xl border border-dashed border-theme-border text-center text-theme-muted bg-theme-surface">
                         {{ __('frontend.home.no_projects') }}
                     </div>
                 @endforelse
@@ -282,7 +337,6 @@ document.addEventListener('DOMContentLoaded', () => {
 {{-- END OF SECTION 2 --}}
 {{-- ---------------------------------------------------------------- --}}
 
-
 {{-- ---------------------------------------------------------------- --}}
 {{-- START OF SECTION 3: EXPLORE BY CATEGORY --}}
 {{-- ---------------------------------------------------------------- --}}
@@ -305,26 +359,26 @@ document.addEventListener('DOMContentLoaded', () => {
             subtitle="{{ __('frontend.home.categories_subtitle') }}"
         />
 
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 mt-12">
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-6 mt-10 sm:mt-12">
             @foreach($categories as $category)
                 <a href="{{ route('frontend.projects.index', ['category' => $category['query']]) }}"
-                   class="block p-4 rounded-xl theme-panel hover:bg-theme-surface-2 transition duration-300 group">
+                   class="block p-4 sm:p-5 rounded-xl theme-panel hover:bg-theme-surface-2 transition duration-300 group min-h-[128px]">
                     <div class="mb-3">
-                        <i class="{{ $category['icon'] }} text-4xl group-hover:text-brand-accent transition duration-300 text-brand-accent"
+                        <i class="{{ $category['icon'] }} text-3xl sm:text-4xl group-hover:text-brand-accent transition duration-300 text-brand-accent"
                            style="filter: drop-shadow(0 0 6px var(--brand-accent-glow));">
                         </i>
                     </div>
 
-                    <p class="font-semibold text-theme-text text-sm mt-2 group-hover:text-brand-accent transition duration-300">
+                    <p class="font-semibold text-theme-text text-xs sm:text-sm mt-2 group-hover:text-brand-accent transition duration-300 leading-snug">
                         {{ $category['name'] }}
                     </p>
                 </a>
             @endforeach
         </div>
 
-        <div class="mt-12">
-            <a href="{{ route('frontend.projects.index') }}" class="text-sm text-brand-accent hover:text-theme-text font-medium transition">
-                <i class="fas fa-arrow-right mr-1"></i> {{ __('frontend.home.view_all_categories') }}
+        <div class="mt-10 sm:mt-12">
+            <a href="{{ route('frontend.projects.index') }}" class="inline-flex items-center gap-2 text-sm text-brand-accent hover:text-theme-text font-medium transition">
+                <i class="fas fa-arrow-right rtl:rotate-180"></i> {{ __('frontend.home.view_all_categories') }}
             </a>
         </div>
     </div>
@@ -333,7 +387,6 @@ document.addEventListener('DOMContentLoaded', () => {
 {{-- ---------------------------------------------------------------- --}}
 {{-- END OF SECTION 3 --}}
 {{-- ---------------------------------------------------------------- --}}
-
 
 {{-- ---------------------------------------------------------------- --}}
 {{-- START OF SECTION 4: THE VERTEXGRAD ADVANTAGE --}}
@@ -366,39 +419,39 @@ document.addEventListener('DOMContentLoaded', () => {
             subtitle="{{ __('frontend.home.advantage_subtitle') }}"
         />
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12 text-left">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 mt-10 sm:mt-12 text-start">
             @foreach($valueProps as $prop)
-                <div class="p-6 lg:p-8 rounded-2xl theme-panel transition duration-300 hover:bg-theme-surface-2">
+                <div class="p-6 lg:p-8 rounded-2xl theme-panel transition duration-300 hover:bg-theme-surface-2 h-full">
                     <div class="mb-4">
-                        <i class="{{ $prop['icon'] }} text-5xl text-brand-accent"
+                        <i class="{{ $prop['icon'] }} text-4xl sm:text-5xl text-brand-accent"
                            style="filter: drop-shadow(0 0 6px var(--brand-accent-glow));">
                         </i>
                     </div>
 
-                    <h3 class="text-2xl font-bold text-theme-text mb-3 tracking-wide">
+                    <h3 class="text-xl sm:text-2xl font-bold text-theme-text mb-3 tracking-wide leading-tight">
                         {{ $prop['title'] }}
                     </h3>
 
-                    <p class="text-theme-muted text-base leading-relaxed">
+                    <p class="text-theme-muted text-sm sm:text-base leading-relaxed">
                         {{ $prop['description'] }}
                     </p>
                 </div>
             @endforeach
         </div>
 
-        <div class="mt-16">
+        <div class="mt-12 sm:mt-16">
             @guest('web')
-                <p class="text-theme-muted text-md">
+                <p class="text-theme-muted text-sm sm:text-md leading-relaxed">
                     {{ __('frontend.home.ready_prompt') }}
-                    <a href="{{ route('register.investor') }}" class="text-brand-accent font-bold hover:text-theme-text transition">
-                        {{ __('frontend.home.create_investor_account') }} <i class="fas fa-arrow-right ml-1"></i>
+                    <a href="{{ route('register.investor') }}" class="inline-flex items-center gap-2 text-brand-accent font-bold hover:text-theme-text transition">
+                        {{ __('frontend.home.create_investor_account') }} <i class="fas fa-arrow-right rtl:rotate-180"></i>
                     </a>
                 </p>
             @else
-                <p class="text-theme-muted text-md">
+                <p class="text-theme-muted text-sm sm:text-md leading-relaxed">
                     {{ __('frontend.home.welcome_back') }}
-                    <a href="{{ $isInvestor ? route('dashboard.investor') : route('dashboard.academic') }}" class="text-brand-accent font-bold hover:text-theme-text transition">
-                        {{ __('frontend.home.go_to_dashboard') }} <i class="fas fa-arrow-right ml-1"></i>
+                    <a href="{{ $isInvestor ? route('dashboard.investor') : route('dashboard.academic') }}" class="inline-flex items-center gap-2 text-brand-accent font-bold hover:text-theme-text transition">
+                        {{ __('frontend.home.go_to_dashboard') }} <i class="fas fa-arrow-right rtl:rotate-180"></i>
                     </a>
                 </p>
             @endguest
@@ -439,43 +492,43 @@ document.addEventListener('DOMContentLoaded', () => {
             subtitle="{{ __('frontend.home.access_subtitle') }}"
         />
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-20 max-w-6xl mx-auto">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 mt-12 sm:mt-16 lg:mt-20 max-w-6xl mx-auto">
 
-            <div class="p-10 lg:p-16 text-center rounded-2xl theme-panel transition duration-300 hover:bg-theme-surface-2">
-                <i class="fas fa-hand-holding-usd text-7xl text-brand-accent mb-6"
+            <div class="p-8 sm:p-10 lg:p-16 text-center rounded-2xl theme-panel transition duration-300 hover:bg-theme-surface-2">
+                <i class="fas fa-hand-holding-usd text-5xl sm:text-6xl lg:text-7xl text-brand-accent mb-6"
                    style="filter: drop-shadow(0 0 10px var(--brand-accent-glow));">
                 </i>
 
-                <h3 class="text-4xl font-black text-theme-text mb-3 uppercase tracking-wide">
+                <h3 class="text-2xl sm:text-3xl lg:text-4xl font-black text-theme-text mb-3 uppercase tracking-wide leading-tight">
                     {{ __('frontend.home.investor_portal') }}
                 </h3>
 
-                <p class="text-theme-muted mb-10 max-w-sm mx-auto text-lg">
+                <p class="text-theme-muted mb-8 sm:mb-10 max-w-sm mx-auto text-base sm:text-lg leading-relaxed">
                     {{ __('frontend.home.investor_portal_text') }}
                 </p>
 
                 <a href="{{ route('register.investor') }}"
-                   class="inline-flex items-center justify-center rounded-lg px-12 py-4 text-xl font-extrabold bg-brand-accent text-white hover-bg-brand-accent-strong transition duration-300 shadow-brand-soft">
-                    <i class="fas fa-eye mr-2"></i> {{ __('frontend.home.review_projects_now') }}
+                   class="inline-flex items-center justify-center rounded-lg px-7 sm:px-10 lg:px-12 py-4 text-base sm:text-lg lg:text-xl font-extrabold bg-brand-accent text-white hover-bg-brand-accent-strong transition duration-300 shadow-brand-soft">
+                    <i class="fas fa-eye me-2"></i> {{ __('frontend.home.review_projects_now') }}
                 </a>
             </div>
 
-            <div class="p-10 lg:p-16 text-center rounded-2xl theme-panel transition duration-300 hover:bg-theme-surface-2">
-                <i class="fas fa-flask text-7xl text-brand-accent mb-6"
+            <div class="p-8 sm:p-10 lg:p-16 text-center rounded-2xl theme-panel transition duration-300 hover:bg-theme-surface-2">
+                <i class="fas fa-flask text-5xl sm:text-6xl lg:text-7xl text-brand-accent mb-6"
                    style="filter: drop-shadow(0 0 10px var(--brand-accent-glow));">
                 </i>
 
-                <h3 class="text-4xl font-black text-theme-text mb-3 uppercase tracking-wide">
+                <h3 class="text-2xl sm:text-3xl lg:text-4xl font-black text-theme-text mb-3 uppercase tracking-wide leading-tight">
                     {{ __('frontend.home.academic_submission') }}
                 </h3>
 
-                <p class="text-theme-muted mb-10 max-w-sm mx-auto text-lg">
+                <p class="text-theme-muted mb-8 sm:mb-10 max-w-sm mx-auto text-base sm:text-lg leading-relaxed">
                     {{ __('frontend.home.academic_submission_text') }}
                 </p>
 
                 <a href="{{ route('project.submit.step1') }}"
-                   class="inline-flex items-center justify-center rounded-lg px-12 py-4 text-xl font-semibold border border-brand-accent text-theme-text hover:bg-brand-accent hover:text-white transition duration-300">
-                    <i class="fas fa-rocket mr-2"></i> {{ __('frontend.home.start_vetting_process') }}
+                   class="inline-flex items-center justify-center rounded-lg px-7 sm:px-10 lg:px-12 py-4 text-base sm:text-lg lg:text-xl font-semibold border border-brand-accent text-theme-text hover:bg-brand-accent hover:text-white transition duration-300">
+                    <i class="fas fa-rocket me-2"></i> {{ __('frontend.home.start_vetting_process') }}
                 </a>
             </div>
 
@@ -488,4 +541,59 @@ document.addEventListener('DOMContentLoaded', () => {
 {{-- ---------------------------------------------------------------- --}}
 {{-- END OF SECTION 6 --}}
 {{-- ---------------------------------------------------------------- --}}
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const hero = document.querySelector('.home-hero-section');
+    const heroContent = document.querySelector('.home-hero-content');
+    const heroSearch = document.querySelector('.home-hero-search');
+    const heroCreator = document.querySelector('.home-hero-creator');
+
+    if (prefersReducedMotion) {
+        return;
+    }
+
+    function animateIn(element, delay = 0) {
+        if (!element) {
+            return;
+        }
+
+        element.style.opacity = '0';
+        element.style.transform = 'translateY(22px)';
+
+        setTimeout(() => {
+            element.style.transition = 'opacity 900ms ease, transform 900ms cubic-bezier(0.22, 1, 0.36, 1)';
+            element.style.opacity = '1';
+            element.style.transform = 'translateY(0)';
+        }, delay);
+    }
+
+    animateIn(heroContent, 100);
+    animateIn(heroSearch, 260);
+    animateIn(heroCreator, 420);
+
+    if (hero) {
+        hero.addEventListener('mousemove', (event) => {
+            if (window.innerWidth < 1024) {
+                return;
+            }
+
+            const rect = hero.getBoundingClientRect();
+            const x = ((event.clientX - rect.left) / rect.width - 0.5) * 8;
+            const y = ((event.clientY - rect.top) / rect.height - 0.5) * 8;
+
+            hero.style.setProperty('--hero-mouse-x', `${x}px`);
+            hero.style.setProperty('--hero-mouse-y', `${y}px`);
+        });
+
+        hero.addEventListener('mouseleave', () => {
+            hero.style.setProperty('--hero-mouse-x', '0px');
+            hero.style.setProperty('--hero-mouse-y', '0px');
+        });
+    }
+});
+</script>
+
 @endsection

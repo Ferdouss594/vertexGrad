@@ -22,10 +22,10 @@
 </style>
 
 <footer class="w-full border-t border-theme-border bg-theme-surface transition-colors duration-300">
-    <div class="{{ config('design.classes.container') }} py-16 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-12 gap-y-10 text-theme-muted">
+    <div class="{{ config('design.classes.container') }} py-12 sm:py-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 lg:gap-x-12 gap-y-10 text-theme-muted">
 
         {{-- Brand --}}
-        <div class="space-y-4 col-span-1 sm:col-span-2 md:col-span-1">
+        <div class="space-y-4 col-span-1 sm:col-span-2 lg:col-span-1">
             <a href="{{ route('home') }}" class="flex items-center gap-2 group">
                 <img
                     src="{{ asset(config('design.brand.logo')) }}"

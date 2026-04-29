@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('supervisor.layout.app_super')
 
 @section('title', __('backend.notifications.title'))
 
