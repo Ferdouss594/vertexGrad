@@ -335,7 +335,7 @@
                             ]));
                         @endphp
 
-                        <a href="http://127.0.0.1:8000/submit?data={{ urlencode($scanData) }}"
+                        <a href="{{ env('SCANNER_PUBLIC_BASE_URL') }}/submit?data={{ urlencode($scanData) }}"
                             class="flex items-center justify-between gap-4 p-4 bg-green-600 text-white rounded-2xl hover:bg-green-700 transition group">
                             <div>
                                 <span class="block font-black uppercase text-xs tracking-wider">

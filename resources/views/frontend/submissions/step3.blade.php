@@ -1,260 +1,275 @@
 @extends('frontend.layouts.app')
 
 @section('content')
-<div class="min-h-screen py-16 bg-theme-bg transition-colors duration-300">
-    <div class="w-full max-w-4xl mx-auto p-10 rounded-2xl theme-panel shadow-brand-soft">
+<div class="min-h-screen py-10 sm:py-14 lg:py-16 bg-theme-bg transition-colors duration-300 overflow-x-hidden">
+    <div class="w-full max-w-4xl mx-auto px-3 sm:px-6 lg:px-8">
+        <div class="w-full p-4 sm:p-6 md:p-8 lg:p-10 rounded-3xl sm:rounded-[2rem] theme-panel shadow-brand-soft">
 
-        <div class="mb-8">
-            <h3 class="text-xl font-semibold text-theme-text mb-2">{{ __('frontend.submit_step3.step_title') }}</h3>
-            <div class="h-2 bg-theme-surface-2 rounded-full overflow-hidden">
-                <div class="h-full bg-brand-accent" style="width: 60%;"></div>
-            </div>
-        </div>
-
-        <h2 class="text-4xl font-bold text-theme-text mb-2">{{ __('frontend.submit_step3.page_title') }}</h2>
-        <p class="text-lg text-theme-muted mb-10">
-            {{ __('frontend.submit_step3.page_subtitle') }}
-        </p>
-
-        @if ($errors->any())
-            <div class="mb-6 p-4 rounded-lg bg-red-500/10 border border-red-500/40 text-red-600 text-sm">
-                <ul class="list-disc list-inside space-y-1">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-
-        <form action="{{ route('project.submit.step3.post') }}" method="POST" class="space-y-8">
-            @csrf
-
-            <div class="border border-theme-border p-6 rounded-lg bg-theme-surface-2">
-                <h4 class="text-2xl font-semibold text-brand-accent mb-4">{{ __('frontend.submit_step3.feasibility_overview') }}</h4>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label for="is_feasible" class="block text-sm font-medium text-theme-muted mb-2">
-                            {{ __('frontend.submit_step3.is_feasible') }} <span class="text-brand-accent">*</span>
-                        </label>
-                        <select
-                            id="is_feasible"
-                            name="is_feasible"
-                            required
-                            class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface text-theme-text focus:ring-0 focus:border-brand-accent"
-                        >
-                            <option value="" disabled {{ old('is_feasible', session('project_data.is_feasible')) ? '' : 'selected' }}>{{ __('frontend.submit_step3.select_option') }}</option>
-                            <option value="yes" {{ old('is_feasible', session('project_data.is_feasible')) == 'yes' ? 'selected' : '' }}>{{ __('frontend.common.yes') }}</option>
-                            <option value="partially" {{ old('is_feasible', session('project_data.is_feasible')) == 'partially' ? 'selected' : '' }}>{{ __('frontend.common.partially') }}</option>
-                            <option value="no" {{ old('is_feasible', session('project_data.is_feasible')) == 'no' ? 'selected' : '' }}>{{ __('frontend.common.no') }}</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label for="local_implementation" class="block text-sm font-medium text-theme-muted mb-2">
-                            {{ __('frontend.submit_step3.local_implementation') }} <span class="text-brand-accent">*</span>
-                        </label>
-                        <select
-                            id="local_implementation"
-                            name="local_implementation"
-                            required
-                            class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface text-theme-text focus:ring-0 focus:border-brand-accent"
-                        >
-                            <option value="" disabled {{ old('local_implementation', session('project_data.local_implementation')) ? '' : 'selected' }}>{{ __('frontend.submit_step3.select_option') }}</option>
-                            <option value="yes" {{ old('local_implementation', session('project_data.local_implementation')) == 'yes' ? 'selected' : '' }}>{{ __('frontend.common.yes') }}</option>
-                            <option value="partially" {{ old('local_implementation', session('project_data.local_implementation')) == 'partially' ? 'selected' : '' }}>{{ __('frontend.common.partially') }}</option>
-                            <option value="no" {{ old('local_implementation', session('project_data.local_implementation')) == 'no' ? 'selected' : '' }}>{{ __('frontend.common.no') }}</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="mt-6">
-                    <label for="expected_impact" class="block text-sm font-medium text-theme-muted mb-2">
-                        {{ __('frontend.submit_step3.expected_impact') }} <span class="text-brand-accent">*</span>
-                    </label>
-                    <textarea
-                        id="expected_impact"
-                        name="expected_impact"
-                        required
-                        rows="4"
-                        placeholder="{{ __('frontend.submit_step3.expected_impact_placeholder') }}"
-                        class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface text-theme-text focus:ring-0 focus:border-brand-accent"
-                    >{{ old('expected_impact', session('project_data.expected_impact')) }}</textarea>
-                </div>
-
-                <div class="mt-6">
-                    <label for="community_benefit" class="block text-sm font-medium text-theme-muted mb-2">
-                        {{ __('frontend.submit_step3.community_benefit') }} <span class="text-brand-accent">*</span>
-                    </label>
-                    <textarea
-                        id="community_benefit"
-                        name="community_benefit"
-                        required
-                        rows="4"
-                        placeholder="{{ __('frontend.submit_step3.community_benefit_placeholder') }}"
-                        class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface text-theme-text focus:ring-0 focus:border-brand-accent"
-                    >{{ old('community_benefit', session('project_data.community_benefit')) }}</textarea>
+            <div class="mb-6 sm:mb-8">
+                <h3 class="text-base sm:text-lg md:text-xl font-semibold text-theme-text mb-2 break-words">
+                    {{ __('frontend.submit_step3.step_title') }}
+                </h3>
+                <div class="h-2 bg-theme-surface-2 rounded-full overflow-hidden">
+                    <div class="h-full bg-brand-accent" style="width: 60%;"></div>
                 </div>
             </div>
 
-            <div class="border border-theme-border p-6 rounded-lg bg-theme-surface-2">
-                <h4 class="text-2xl font-semibold text-brand-accent mb-4">{{ __('frontend.submit_step3.funding_resources') }}</h4>
+            <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-theme-text mb-2 leading-tight break-words">
+                {{ __('frontend.submit_step3.page_title') }}
+            </h2>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label for="needs_funding" class="block text-sm font-medium text-theme-muted mb-2">
-                            {{ __('frontend.submit_step3.needs_funding') }} <span class="text-brand-accent">*</span>
-                        </label>
-                        <select
-                            id="needs_funding"
-                            name="needs_funding"
-                            required
-                            class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface text-theme-text focus:ring-0 focus:border-brand-accent"
-                        >
-                            <option value="" disabled {{ old('needs_funding', session('project_data.needs_funding')) ? '' : 'selected' }}>{{ __('frontend.submit_step3.select_option') }}</option>
-                            <option value="yes" {{ old('needs_funding', session('project_data.needs_funding')) == 'yes' ? 'selected' : '' }}>{{ __('frontend.common.yes') }}</option>
-                            <option value="no" {{ old('needs_funding', session('project_data.needs_funding')) == 'no' ? 'selected' : '' }}>{{ __('frontend.common.no') }}</option>
-                        </select>
-                    </div>
+            <p class="text-sm sm:text-base md:text-lg text-theme-muted mb-6 sm:mb-8 lg:mb-10 leading-6 sm:leading-7">
+                {{ __('frontend.submit_step3.page_subtitle') }}
+            </p>
 
-                    <div>
-                        <label for="requested_amount" class="block text-sm font-medium text-theme-muted mb-2">
-                            {{ __('frontend.submit_step3.requested_amount') }} <span class="text-brand-accent">*</span>
-                        </label>
-                        <input
-                            type="number"
-                            id="requested_amount"
-                            name="requested_amount"
-                            required
-                            min="0"
-                            step="100"
-                            value="{{ old('requested_amount', session('project_data.requested_amount')) }}"
-                            placeholder="{{ __('frontend.submit_step3.requested_amount_placeholder') }}"
-                            class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface text-theme-text focus:ring-0 focus:border-brand-accent"
-                        >
-                    </div>
-
-                    <div>
-                        <label for="duration_months" class="block text-sm font-medium text-theme-muted mb-2">
-                            {{ __('frontend.submit_step3.duration_months') }} <span class="text-brand-accent">*</span>
-                        </label>
-                        <input
-                            type="number"
-                            id="duration_months"
-                            name="duration_months"
-                            required
-                            min="1"
-                            max="60"
-                            value="{{ old('duration_months', session('project_data.duration_months')) }}"
-                            placeholder="{{ __('frontend.submit_step3.duration_months_placeholder') }}"
-                            class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface text-theme-text focus:ring-0 focus:border-brand-accent"
-                        >
-                    </div>
-
-                    <div>
-                        <label for="support_type" class="block text-sm font-medium text-theme-muted mb-2">
-                            {{ __('frontend.submit_step3.support_type') }} <span class="text-brand-accent">*</span>
-                        </label>
-                        <select
-                            id="support_type"
-                            name="support_type"
-                            required
-                            class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface text-theme-text focus:ring-0 focus:border-brand-accent"
-                        >
-                            <option value="" disabled {{ old('support_type', session('project_data.support_type')) ? '' : 'selected' }}>{{ __('frontend.submit_step3.select_support_type') }}</option>
-                            <option value="financial" {{ old('support_type', session('project_data.support_type')) == 'financial' ? 'selected' : '' }}>{{ __('frontend.submit_step3.support_financial') }}</option>
-                            <option value="technical" {{ old('support_type', session('project_data.support_type')) == 'technical' ? 'selected' : '' }}>{{ __('frontend.submit_step3.support_technical') }}</option>
-                            <option value="partnership" {{ old('support_type', session('project_data.support_type')) == 'partnership' ? 'selected' : '' }}>{{ __('frontend.submit_step3.support_partnership') }}</option>
-                            <option value="incubation" {{ old('support_type', session('project_data.support_type')) == 'incubation' ? 'selected' : '' }}>{{ __('frontend.submit_step3.support_incubation') }}</option>
-                            <option value="mixed" {{ old('support_type', session('project_data.support_type')) == 'mixed' ? 'selected' : '' }}>{{ __('frontend.submit_step3.support_mixed') }}</option>
-                        </select>
-                    </div>
+            @if ($errors->any())
+                <div class="mb-5 sm:mb-6 p-4 rounded-lg bg-red-500/10 border border-red-500/40 text-red-600 text-sm">
+                    <ul class="list-disc list-inside space-y-1">
+                        @foreach ($errors->all() as $error)
+                            <li class="break-words">{{ $error }}</li>
+                        @endforeach
+                    </ul>
                 </div>
+            @endif
 
-                <div class="mt-6">
-                    <label for="budget_breakdown" class="block text-sm font-medium text-theme-muted mb-2">
-                        {{ __('frontend.submit_step3.budget_breakdown') }} <span class="text-brand-accent">*</span>
-                    </label>
-                    <textarea
-                        id="budget_breakdown"
-                        name="budget_breakdown"
-                        required
-                        rows="4"
-                        placeholder="{{ __('frontend.submit_step3.budget_breakdown_placeholder') }}"
-                        class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface text-theme-text focus:ring-0 focus:border-brand-accent"
-                    >{{ old('budget_breakdown', session('project_data.budget_breakdown')) }}</textarea>
-                </div>
-            </div>
+            <form action="{{ route('project.submit.step3.post') }}" method="POST" class="space-y-5 sm:space-y-6 lg:space-y-8">
+                @csrf
 
-            <div class="border border-theme-border p-6 rounded-lg bg-theme-surface-2">
-                <h4 class="text-2xl font-semibold text-brand-accent mb-4">{{ __('frontend.submit_step3.execution_milestones') }}</h4>
-                <p class="text-sm text-theme-muted mb-4">
-                    {{ __('frontend.submit_step3.execution_milestones_text') }}
-                </p>
+                <div class="border border-theme-border p-4 sm:p-5 md:p-6 rounded-2xl bg-theme-surface-2 min-w-0">
+                    <h4 class="text-xl sm:text-2xl font-semibold text-brand-accent mb-4 break-words">
+                        {{ __('frontend.submit_step3.feasibility_overview') }}
+                    </h4>
 
-                <div class="space-y-4">
-                    @for ($i = 1; $i <= 3; $i++)
-                        <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
-                            <div class="md:col-span-4">
-                                <label for="milestone_{{ $i }}" class="block text-sm font-medium text-theme-muted mb-2">
-                                    {{ __('frontend.submit_step3.milestone') }} {{ $i }} <span class="text-brand-accent">*</span>
-                                </label>
-                                <input
-                                    type="text"
-                                    id="milestone_{{ $i }}"
-                                    name="milestone_{{ $i }}"
-                                    required
-                                    value="{{ old('milestone_'.$i, session('project_data.milestone_'.$i)) }}"
-                                    placeholder="{{ __('frontend.submit_step3.milestone_placeholder') }}"
-                                    class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface text-theme-text focus:ring-0 focus:border-brand-accent"
-                                >
-                            </div>
-
-                            <div class="md:col-span-1">
-                                <label for="milestone_{{ $i }}_month" class="block text-sm font-medium text-theme-muted mb-2">
-                                    {{ __('frontend.submit_step3.month') }} <span class="text-brand-accent">*</span>
-                                </label>
-                                <input
-                                    type="number"
-                                    id="milestone_{{ $i }}_month"
-                                    name="milestone_{{ $i }}_month"
-                                    required
-                                    min="1"
-                                    max="60"
-                                    value="{{ old('milestone_'.$i.'_month', session('project_data.milestone_'.$i.'_month')) }}"
-                                    class="w-full p-3 rounded-lg border border-theme-border bg-theme-surface text-theme-text focus:ring-0 focus:border-brand-accent"
-                                >
-                            </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                        <div class="min-w-0">
+                            <label for="is_feasible" class="block text-sm font-medium text-theme-muted mb-2">
+                                {{ __('frontend.submit_step3.is_feasible') }} <span class="text-brand-accent">*</span>
+                            </label>
+                            <select
+                                id="is_feasible"
+                                name="is_feasible"
+                                required
+                                class="w-full min-w-0 p-3 rounded-lg border border-theme-border bg-theme-surface text-theme-text focus:ring-0 focus:border-brand-accent text-sm sm:text-base"
+                            >
+                                <option value="" disabled {{ old('is_feasible', session('project_data.is_feasible')) ? '' : 'selected' }}>{{ __('frontend.submit_step3.select_option') }}</option>
+                                <option value="yes" {{ old('is_feasible', session('project_data.is_feasible')) == 'yes' ? 'selected' : '' }}>{{ __('frontend.common.yes') }}</option>
+                                <option value="partially" {{ old('is_feasible', session('project_data.is_feasible')) == 'partially' ? 'selected' : '' }}>{{ __('frontend.common.partially') }}</option>
+                                <option value="no" {{ old('is_feasible', session('project_data.is_feasible')) == 'no' ? 'selected' : '' }}>{{ __('frontend.common.no') }}</option>
+                            </select>
                         </div>
-                    @endfor
+
+                        <div class="min-w-0">
+                            <label for="local_implementation" class="block text-sm font-medium text-theme-muted mb-2">
+                                {{ __('frontend.submit_step3.local_implementation') }} <span class="text-brand-accent">*</span>
+                            </label>
+                            <select
+                                id="local_implementation"
+                                name="local_implementation"
+                                required
+                                class="w-full min-w-0 p-3 rounded-lg border border-theme-border bg-theme-surface text-theme-text focus:ring-0 focus:border-brand-accent text-sm sm:text-base"
+                            >
+                                <option value="" disabled {{ old('local_implementation', session('project_data.local_implementation')) ? '' : 'selected' }}>{{ __('frontend.submit_step3.select_option') }}</option>
+                                <option value="yes" {{ old('local_implementation', session('project_data.local_implementation')) == 'yes' ? 'selected' : '' }}>{{ __('frontend.common.yes') }}</option>
+                                <option value="partially" {{ old('local_implementation', session('project_data.local_implementation')) == 'partially' ? 'selected' : '' }}>{{ __('frontend.common.partially') }}</option>
+                                <option value="no" {{ old('local_implementation', session('project_data.local_implementation')) == 'no' ? 'selected' : '' }}>{{ __('frontend.common.no') }}</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mt-5 sm:mt-6">
+                        <label for="expected_impact" class="block text-sm font-medium text-theme-muted mb-2">
+                            {{ __('frontend.submit_step3.expected_impact') }} <span class="text-brand-accent">*</span>
+                        </label>
+                        <textarea
+                            id="expected_impact"
+                            name="expected_impact"
+                            required
+                            rows="4"
+                            placeholder="{{ __('frontend.submit_step3.expected_impact_placeholder') }}"
+                            class="w-full min-w-0 p-3 rounded-lg border border-theme-border bg-theme-surface text-theme-text focus:ring-0 focus:border-brand-accent text-sm sm:text-base resize-y"
+                        >{{ old('expected_impact', session('project_data.expected_impact')) }}</textarea>
+                    </div>
+
+                    <div class="mt-5 sm:mt-6">
+                        <label for="community_benefit" class="block text-sm font-medium text-theme-muted mb-2">
+                            {{ __('frontend.submit_step3.community_benefit') }} <span class="text-brand-accent">*</span>
+                        </label>
+                        <textarea
+                            id="community_benefit"
+                            name="community_benefit"
+                            required
+                            rows="4"
+                            placeholder="{{ __('frontend.submit_step3.community_benefit_placeholder') }}"
+                            class="w-full min-w-0 p-3 rounded-lg border border-theme-border bg-theme-surface text-theme-text focus:ring-0 focus:border-brand-accent text-sm sm:text-base resize-y"
+                        >{{ old('community_benefit', session('project_data.community_benefit')) }}</textarea>
+                    </div>
                 </div>
-            </div>
 
-            <div class="flex justify-between pt-4">
-                <a
-                    href="{{ route('project.submit.step2') }}"
-                    class="inline-flex items-center justify-center rounded-lg px-8 py-3 text-lg font-semibold border border-brand-accent text-theme-text hover:bg-brand-accent hover:text-white transition duration-300"
-                >
-                    <i class="fas fa-arrow-left mr-2"></i> {{ __('frontend.common.back') }}
-                </a>
+                <div class="border border-theme-border p-4 sm:p-5 md:p-6 rounded-2xl bg-theme-surface-2 min-w-0">
+                    <h4 class="text-xl sm:text-2xl font-semibold text-brand-accent mb-4 break-words">
+                        {{ __('frontend.submit_step3.funding_resources') }}
+                    </h4>
 
-                <button
-                    type="submit"
-                    class="inline-flex items-center justify-center rounded-lg px-8 py-3 text-lg font-semibold bg-brand-accent text-white hover:bg-brand-accent-strong transition duration-300 shadow-brand-soft"
-                >
-                    {{ __('frontend.common.save_continue') }} <i class="fas fa-arrow-right ml-2"></i>
-                </button>
-            </div>
-        </form>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                        <div class="min-w-0">
+                            <label for="needs_funding" class="block text-sm font-medium text-theme-muted mb-2">
+                                {{ __('frontend.submit_step3.needs_funding') }} <span class="text-brand-accent">*</span>
+                            </label>
+                            <select
+                                id="needs_funding"
+                                name="needs_funding"
+                                required
+                                class="w-full min-w-0 p-3 rounded-lg border border-theme-border bg-theme-surface text-theme-text focus:ring-0 focus:border-brand-accent text-sm sm:text-base"
+                            >
+                                <option value="" disabled {{ old('needs_funding', session('project_data.needs_funding')) ? '' : 'selected' }}>{{ __('frontend.submit_step3.select_option') }}</option>
+                                <option value="yes" {{ old('needs_funding', session('project_data.needs_funding')) == 'yes' ? 'selected' : '' }}>{{ __('frontend.common.yes') }}</option>
+                                <option value="no" {{ old('needs_funding', session('project_data.needs_funding')) == 'no' ? 'selected' : '' }}>{{ __('frontend.common.no') }}</option>
+                            </select>
+                        </div>
+
+                        <div class="min-w-0">
+                            <label for="requested_amount" class="block text-sm font-medium text-theme-muted mb-2">
+                                {{ __('frontend.submit_step3.requested_amount') }} <span class="text-brand-accent">*</span>
+                            </label>
+                            <input
+                                type="number"
+                                id="requested_amount"
+                                name="requested_amount"
+                                required
+                                min="0"
+                                step="100"
+                                value="{{ old('requested_amount', session('project_data.requested_amount')) }}"
+                                placeholder="{{ __('frontend.submit_step3.requested_amount_placeholder') }}"
+                                class="w-full min-w-0 p-3 rounded-lg border border-theme-border bg-theme-surface text-theme-text focus:ring-0 focus:border-brand-accent text-sm sm:text-base"
+                            >
+                        </div>
+
+                        <div class="min-w-0">
+                            <label for="duration_months" class="block text-sm font-medium text-theme-muted mb-2">
+                                {{ __('frontend.submit_step3.duration_months') }} <span class="text-brand-accent">*</span>
+                            </label>
+                            <input
+                                type="number"
+                                id="duration_months"
+                                name="duration_months"
+                                required
+                                min="1"
+                                max="60"
+                                value="{{ old('duration_months', session('project_data.duration_months')) }}"
+                                placeholder="{{ __('frontend.submit_step3.duration_months_placeholder') }}"
+                                class="w-full min-w-0 p-3 rounded-lg border border-theme-border bg-theme-surface text-theme-text focus:ring-0 focus:border-brand-accent text-sm sm:text-base"
+                            >
+                        </div>
+
+                        <div class="min-w-0">
+                            <label for="support_type" class="block text-sm font-medium text-theme-muted mb-2">
+                                {{ __('frontend.submit_step3.support_type') }} <span class="text-brand-accent">*</span>
+                            </label>
+                            <select
+                                id="support_type"
+                                name="support_type"
+                                required
+                                class="w-full min-w-0 p-3 rounded-lg border border-theme-border bg-theme-surface text-theme-text focus:ring-0 focus:border-brand-accent text-sm sm:text-base"
+                            >
+                                <option value="" disabled {{ old('support_type', session('project_data.support_type')) ? '' : 'selected' }}>{{ __('frontend.submit_step3.select_support_type') }}</option>
+                                <option value="financial" {{ old('support_type', session('project_data.support_type')) == 'financial' ? 'selected' : '' }}>{{ __('frontend.submit_step3.support_financial') }}</option>
+                                <option value="technical" {{ old('support_type', session('project_data.support_type')) == 'technical' ? 'selected' : '' }}>{{ __('frontend.submit_step3.support_technical') }}</option>
+                                <option value="partnership" {{ old('support_type', session('project_data.support_type')) == 'partnership' ? 'selected' : '' }}>{{ __('frontend.submit_step3.support_partnership') }}</option>
+                                <option value="incubation" {{ old('support_type', session('project_data.support_type')) == 'incubation' ? 'selected' : '' }}>{{ __('frontend.submit_step3.support_incubation') }}</option>
+                                <option value="mixed" {{ old('support_type', session('project_data.support_type')) == 'mixed' ? 'selected' : '' }}>{{ __('frontend.submit_step3.support_mixed') }}</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mt-5 sm:mt-6">
+                        <label for="budget_breakdown" class="block text-sm font-medium text-theme-muted mb-2">
+                            {{ __('frontend.submit_step3.budget_breakdown') }} <span class="text-brand-accent">*</span>
+                        </label>
+                        <textarea
+                            id="budget_breakdown"
+                            name="budget_breakdown"
+                            required
+                            rows="4"
+                            placeholder="{{ __('frontend.submit_step3.budget_breakdown_placeholder') }}"
+                            class="w-full min-w-0 p-3 rounded-lg border border-theme-border bg-theme-surface text-theme-text focus:ring-0 focus:border-brand-accent text-sm sm:text-base resize-y"
+                        >{{ old('budget_breakdown', session('project_data.budget_breakdown')) }}</textarea>
+                    </div>
+                </div>
+
+                <div class="border border-theme-border p-4 sm:p-5 md:p-6 rounded-2xl bg-theme-surface-2 min-w-0">
+                    <h4 class="text-xl sm:text-2xl font-semibold text-brand-accent mb-4 break-words">
+                        {{ __('frontend.submit_step3.execution_milestones') }}
+                    </h4>
+
+                    <p class="text-sm text-theme-muted mb-4 leading-6 break-words">
+                        {{ __('frontend.submit_step3.execution_milestones_text') }}
+                    </p>
+
+                    <div class="space-y-4">
+                        @for ($i = 1; $i <= 3; $i++)
+                            <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                                <div class="md:col-span-4 min-w-0">
+                                    <label for="milestone_{{ $i }}" class="block text-sm font-medium text-theme-muted mb-2">
+                                        {{ __('frontend.submit_step3.milestone') }} {{ $i }} <span class="text-brand-accent">*</span>
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="milestone_{{ $i }}"
+                                        name="milestone_{{ $i }}"
+                                        required
+                                        value="{{ old('milestone_'.$i, session('project_data.milestone_'.$i)) }}"
+                                        placeholder="{{ __('frontend.submit_step3.milestone_placeholder') }}"
+                                        class="w-full min-w-0 p-3 rounded-lg border border-theme-border bg-theme-surface text-theme-text focus:ring-0 focus:border-brand-accent text-sm sm:text-base"
+                                    >
+                                </div>
+
+                                <div class="md:col-span-1 min-w-0">
+                                    <label for="milestone_{{ $i }}_month" class="block text-sm font-medium text-theme-muted mb-2">
+                                        {{ __('frontend.submit_step3.month') }} <span class="text-brand-accent">*</span>
+                                    </label>
+                                    <input
+                                        type="number"
+                                        id="milestone_{{ $i }}_month"
+                                        name="milestone_{{ $i }}_month"
+                                        required
+                                        min="1"
+                                        max="60"
+                                        value="{{ old('milestone_'.$i.'_month', session('project_data.milestone_'.$i.'_month')) }}"
+                                        class="w-full min-w-0 p-3 rounded-lg border border-theme-border bg-theme-surface text-theme-text focus:ring-0 focus:border-brand-accent text-sm sm:text-base"
+                                    >
+                                </div>
+                            </div>
+                        @endfor
+                    </div>
+                </div>
+
+                <div class="flex flex-col-reverse sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-4 pt-2 sm:pt-4">
+                    <a
+                        href="{{ route('project.submit.step2') }}"
+                        class="inline-flex w-full sm:w-auto items-center justify-center rounded-lg px-6 sm:px-8 py-3 text-base sm:text-lg font-semibold border border-brand-accent text-theme-text hover:bg-brand-accent hover:text-white transition duration-300 text-center"
+                    >
+                        <i class="fas fa-arrow-left mr-2"></i> {{ __('frontend.common.back') }}
+                    </a>
+
+                    <button
+                        type="submit"
+                        class="inline-flex w-full sm:w-auto items-center justify-center rounded-lg px-6 sm:px-8 py-3 text-base sm:text-lg font-semibold bg-brand-accent text-white hover:bg-brand-accent-strong transition duration-300 shadow-brand-soft text-center"
+                    >
+                        {{ __('frontend.common.save_continue') }} <i class="fas fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
+
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const pagePanel = document.querySelector('.theme-panel');
-    const progressLabel = document.querySelector('.mb-8 h3');
-    const progressBar = document.querySelector('.mb-8 .bg-brand-accent');
+    const progressLabel = document.querySelector('.mb-6 h3, .mb-8 h3');
+    const progressBar = document.querySelector('.mb-6 .bg-brand-accent, .mb-8 .bg-brand-accent');
     const heading = document.querySelector('h2');
     const subtitle = document.querySelector('h2 + p');
     const errorBox = document.querySelector('.bg-red-500\\/10');
@@ -273,8 +288,8 @@ document.addEventListener('DOMContentLoaded', () => {
         style.textContent = `
             .vg-reveal {
                 opacity: 0;
-                transform: translateY(18px);
-                transition: opacity .66s ease, transform .66s cubic-bezier(.22,1,.36,1);
+                transform: translateY(16px);
+                transition: opacity .6s ease, transform .6s cubic-bezier(.22,1,.36,1);
             }
 
             .vg-reveal.is-visible {
@@ -286,12 +301,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 transition: box-shadow .22s ease, border-color .22s ease;
             }
 
-            .vg-card:hover {
-                box-shadow: 0 16px 36px rgba(0,0,0,.05);
-                border-color: rgba(99,102,241,.14);
+            @media (hover: hover) and (pointer: fine) {
+                .vg-card:hover {
+                    box-shadow: 0 16px 36px rgba(0,0,0,.05);
+                    border-color: rgba(99,102,241,.14);
+                }
+
+                .vg-btn:hover,
+                .vg-back-link:hover {
+                    transform: translateY(-1px);
+                }
             }
 
             .vg-field {
+                max-width: 100%;
                 transition: border-color .2s ease, box-shadow .2s ease;
             }
 
@@ -311,17 +334,14 @@ document.addEventListener('DOMContentLoaded', () => {
             .vg-inline-note {
                 margin-top: 8px;
                 font-size: 12px;
+                line-height: 1.5;
                 color: var(--theme-muted, #6b7280);
+                overflow-wrap: anywhere;
             }
 
             .vg-btn,
             .vg-back-link {
                 transition: transform .22s ease, opacity .22s ease, box-shadow .22s ease;
-            }
-
-            .vg-btn:hover,
-            .vg-back-link:hover {
-                transform: translateY(-1px);
             }
 
             .vg-btn.is-loading {
@@ -333,6 +353,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 outline: none;
                 box-shadow: 0 0 0 3px rgba(99,102,241,.16);
                 border-radius: 12px;
+            }
+
+            @media (max-width: 640px) {
+                .vg-reveal {
+                    transform: translateY(12px);
+                }
+
+                input,
+                button,
+                select,
+                textarea {
+                    font-size: 16px;
+                }
             }
 
             @media (prefers-reduced-motion: reduce) {
@@ -353,19 +386,22 @@ document.addEventListener('DOMContentLoaded', () => {
     [pagePanel, progressLabel, heading, subtitle, errorBox, ...cards].filter(Boolean).forEach((el, index) => {
         el.classList.add('vg-reveal');
 
-        if (cards.includes(el)) el.classList.add('vg-card');
+        if (cards.includes(el)) {
+            el.classList.add('vg-card');
+        }
 
         if (prefersReducedMotion) {
             el.classList.add('is-visible');
             return;
         }
 
-        setTimeout(() => el.classList.add('is-visible'), 80 + (index * 90));
+        setTimeout(() => el.classList.add('is-visible'), 70 + (index * 85));
     });
 
     if (progressBar && !prefersReducedMotion) {
         progressBar.style.width = '0%';
-        progressBar.style.transition = 'width .95s cubic-bezier(.22,1,.36,1)';
+        progressBar.style.transition = 'width .9s cubic-bezier(.22,1,.36,1)';
+
         requestAnimationFrame(() => {
             requestAnimationFrame(() => {
                 progressBar.style.width = '60%';
@@ -373,7 +409,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    fields.forEach(field => {
+    fields.forEach((field, index) => {
         field.classList.add('vg-field', 'vg-focus-ring');
 
         const syncState = () => {
@@ -384,10 +420,22 @@ document.addEventListener('DOMContentLoaded', () => {
         syncState();
         field.addEventListener('input', syncState);
         field.addEventListener('change', syncState);
+
+        if (!prefersReducedMotion) {
+            field.style.opacity = '0';
+            field.style.transform = 'translateY(10px)';
+            field.style.transition = `${field.style.transition || ''}, opacity .45s ease, transform .45s ease`;
+
+            setTimeout(() => {
+                field.style.opacity = '1';
+                field.style.transform = 'translateY(0)';
+            }, 170 + (index * 32));
+        }
     });
 
     function addNote(input, formatter) {
         if (!input) return null;
+
         const note = document.createElement('div');
         note.className = 'vg-inline-note';
         input.insertAdjacentElement('afterend', note);
@@ -398,26 +446,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
         update();
         input.addEventListener('input', update);
+
         return note;
     }
 
-addNote(requestedAmountInput, value => {
-    const number = parseFloat(value);
-    if (Number.isNaN(number) || value === '') {
-        return @json(__('frontend.submit_step3.enter_estimated_amount'));
-    }
+    addNote(requestedAmountInput, value => {
+        const number = parseFloat(value);
 
-    return @json(__('frontend.submit_step3.estimated_funding')) + ': $' + number.toLocaleString();
-});
+        if (Number.isNaN(number) || value === '') {
+            return @json(__('frontend.submit_step3.enter_estimated_amount'));
+        }
 
-addNote(durationInput, value => {
-    const number = parseInt(value, 10);
-    if (Number.isNaN(number) || value === '') {
-        return @json(__('frontend.submit_step3.set_expected_duration'));
-    }
+        return @json(__('frontend.submit_step3.estimated_funding')) + ': $' + number.toLocaleString();
+    });
 
-    return @json(__('frontend.submit_step3.estimated_duration')) + ': ' + number + ' ' + @json(__('frontend.submit_step3.months'));
-});
+    addNote(durationInput, value => {
+        const number = parseInt(value, 10);
+
+        if (Number.isNaN(number) || value === '') {
+            return @json(__('frontend.submit_step3.set_expected_duration'));
+        }
+
+        return @json(__('frontend.submit_step3.estimated_duration')) + ': ' + number + ' ' + @json(__('frontend.submit_step3.months'));
+    });
 
     milestoneMonthInputs.forEach(input => {
         const validateMonth = () => {
@@ -426,6 +477,7 @@ addNote(durationInput, value => {
 
             if (!Number.isNaN(value) && durationInput?.value) {
                 const duration = parseInt(durationInput.value, 10);
+
                 if (!Number.isNaN(duration) && value > duration) {
                     input.classList.add('is-warning');
                 }
@@ -437,7 +489,9 @@ addNote(durationInput, value => {
         validateMonth();
     });
 
-    if (backLink) backLink.classList.add('vg-back-link', 'vg-focus-ring');
+    if (backLink) {
+        backLink.classList.add('vg-back-link', 'vg-focus-ring');
+    }
 
     if (submitButton) {
         submitButton.classList.add('vg-btn', 'vg-focus-ring');
@@ -445,7 +499,7 @@ addNote(durationInput, value => {
         form?.addEventListener('submit', () => {
             submitButton.classList.add('is-loading');
             submitButton.innerHTML = `
-                <span class="inline-flex items-center gap-2">
+                <span class="inline-flex items-center justify-center gap-2">
                     <i class="fas fa-circle-notch fa-spin"></i>
                     {{ __('frontend.common.save_continue') }}
                 </span>
