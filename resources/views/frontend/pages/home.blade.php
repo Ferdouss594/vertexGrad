@@ -25,14 +25,16 @@
 @endphp
 
 @extends('frontend.layouts.app')
-
+@section('title', __('frontend.about.title_before') . ' ' . __('frontend.about.title_highlight') . ' | ' . config('app.name'))
+@section('meta_description', __('frontend.about.subtitle'))
+@section('canonical', url('/about'))
 @section('content')
 
 {{-- ---------------------------------------------------------------- --}}
 {{-- START OF SECTION 1: HERO SECTION --}}
 {{-- ---------------------------------------------------------------- --}}
 
-<section class="home-hero-section relative w-full h-[720px] sm:h-[760px] lg:h-[850px] overflow-hidden flex items-center justify-center border-b border-theme-border bg-theme-bg transition-colors duration-300">
+<section class="home-hero-section relative w-full min-h-[780px] sm:min-h-[800px] lg:min-h-[850px] overflow-hidden flex items-center justify-center border-b border-theme-border bg-theme-bg transition-colors duration-300 pt-24 sm:pt-28">
 
     <div class="absolute inset-0 pointer-events-none"
          style="background: linear-gradient(to top, var(--hero-overlay-from), var(--hero-overlay-to));"></div>
@@ -175,24 +177,24 @@
     </style>
 
     <div class="{{ $containerClass }} home-hero-content relative z-10 text-center pt-20 sm:pt-24 pb-12 sm:pb-16">
-        <p class="text-xs sm:text-sm lg:text-md uppercase font-bold tracking-[0.18em] lg:tracking-[0.2em] mb-4 text-brand-accent opacity-90">
+        <p class="text-[11px] sm:text-sm lg:text-md uppercase font-bold tracking-[0.16em] sm:tracking-[0.18em] lg:tracking-[0.2em] mb-4 sm:mb-5 text-brand-accent opacity-90">
             {{ __('frontend.home.hero_platform_label') }}
         </p>
 
-        <h1 class="font-extrabold text-4xl sm:text-5xl lg:text-6xl tracking-tight max-w-6xl mx-auto leading-tight text-theme-text">
+        <h1 class="font-extrabold text-2xl sm:text-5xl lg:text-6xl tracking-tight max-w-6xl mx-auto leading-tight text-theme-text">
             {{ __('frontend.home.hero_title_line1') }}
 
-            <span class="block mt-4 sm:mt-5 lg:mt-6 text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black uppercase tracking-wide lg:tracking-wider text-brand-accent break-words"
+            <span class="block mt-3 sm:mt-5 lg:mt-6 text-4xl xs:text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black uppercase tracking-wide lg:tracking-wider text-brand-accent break-words"
                   style="text-shadow: var(--hero-title-glow);">
                 {{ __('frontend.home.hero_title_brand') }}
             </span>
         </h1>
 
-        <p class="mt-6 sm:mt-8 text-base sm:text-lg lg:text-2xl text-theme-muted max-w-4xl mx-auto font-light leading-relaxed">
+        <p class="mt-5 sm:mt-8 text-sm sm:text-lg lg:text-2xl text-theme-muted max-w-4xl mx-auto font-light leading-7 sm:leading-relaxed">
             {{ __('frontend.home.hero_subtitle') }}
         </p>
 
-        <div class="home-hero-search mt-10 sm:mt-12 lg:mt-14 max-w-4xl mx-auto">
+        <div class="home-hero-search mt-7 sm:mt-12 lg:mt-14 max-w-4xl mx-auto">
             <div class="flex flex-col sm:flex-row items-stretch rounded-xl p-2 bg-theme-surface border border-theme-border shadow-brand-soft transition-colors duration-300">
                 <input
                     type="search"
@@ -249,11 +251,12 @@
                 <p class="mt-4 text-theme-muted text-base sm:text-lg leading-relaxed">
                     {{ __('frontend.home.projects_subtitle') }}
                 </p>
-
-                <a href="{{ route('frontend.projects.index') }}"
-                   class="mt-8 inline-flex items-center justify-center rounded-lg px-7 sm:px-8 py-3 text-sm sm:text-base font-semibold border border-brand-accent text-theme-text hover:bg-brand-accent hover:text-white transition duration-300">
-                    {{ __('frontend.home.explore_all_projects') }}
-                </a>
+<a href="{{ route('frontend.projects.index') }}"
+   class="mt-10 sm:mt-8 inline-flex w-full sm:w-auto min-h-[48px] items-center justify-center rounded-xl px-5 sm:px-8 py-3 text-sm sm:text-base font-bold leading-6 text-center border border-brand-accent text-theme-text hover:bg-brand-accent hover:text-white transition duration-300">
+    <span class="whitespace-normal break-words">
+        {{ __('frontend.home.explore_all_projects') }}
+    </span>
+</a>
             </div>
 
             <div class="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-6 lg:gap-8">
@@ -507,10 +510,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     {{ __('frontend.home.investor_portal_text') }}
                 </p>
 
-                <a href="{{ route('register.investor') }}"
-                   class="inline-flex items-center justify-center rounded-lg px-7 sm:px-10 lg:px-12 py-4 text-base sm:text-lg lg:text-xl font-extrabold bg-brand-accent text-white hover-bg-brand-accent-strong transition duration-300 shadow-brand-soft">
-                    <i class="fas fa-eye me-2"></i> {{ __('frontend.home.review_projects_now') }}
-                </a>
+<a href="{{ route('register.investor') }}"
+   class="inline-flex min-w-[180px] max-w-full items-center justify-center gap-2 rounded-xl px-6 sm:px-8 py-4 text-sm sm:text-base lg:text-lg font-bold leading-6 text-center whitespace-normal break-words bg-brand-accent text-white hover-bg-brand-accent-strong transition duration-300 shadow-brand-soft">
+    <i class="fas fa-eye shrink-0"></i>
+    <span>{{ __('frontend.home.review_projects_now') }}</span>
+</a>
             </div>
 
             <div class="p-8 sm:p-10 lg:p-16 text-center rounded-2xl theme-panel transition duration-300 hover:bg-theme-surface-2">
@@ -526,10 +530,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     {{ __('frontend.home.academic_submission_text') }}
                 </p>
 
-                <a href="{{ route('project.submit.step1') }}"
-                   class="inline-flex items-center justify-center rounded-lg px-7 sm:px-10 lg:px-12 py-4 text-base sm:text-lg lg:text-xl font-semibold border border-brand-accent text-theme-text hover:bg-brand-accent hover:text-white transition duration-300">
-                    <i class="fas fa-rocket me-2"></i> {{ __('frontend.home.start_vetting_process') }}
-                </a>
+         <a href="{{ route('project.submit.step1') }}"
+   class="inline-flex min-w-[180px] max-w-full items-center justify-center gap-2 rounded-xl px-6 sm:px-8 py-4 text-sm sm:text-base lg:text-lg font-bold leading-6 text-center whitespace-normal break-words border border-brand-accent text-theme-text hover:bg-brand-accent hover:text-white transition duration-300">
+    <i class="fas fa-rocket shrink-0"></i>
+    <span>{{ __('frontend.home.start_vetting_process') }}</span>
+</a>
             </div>
 
         </div>

@@ -1,5 +1,7 @@
 @extends('frontend.layouts.app')
-
+@section('title', __('frontend.about.title_before') . ' ' . __('frontend.about.title_highlight') . ' | ' . config('app.name'))
+@section('meta_description', __('frontend.about.subtitle'))
+@section('canonical', url('/about'))
 @section('content')
 <div class="min-h-screen py-12 sm:py-16 lg:py-20 bg-theme-bg transition-colors duration-300 overflow-x-hidden">
     <div class="w-full max-w-5xl mx-auto px-3 sm:px-6 lg:px-8">

@@ -1,7 +1,7 @@
 @extends('frontend.layouts.app')
-
+@section('robots', 'noindex, nofollow')
 @section('content')
-<div class="min-h-screen py-10 pt-28 bg-theme-bg transition-colors duration-300 overflow-hidden">
+<div class="min-h-screen py-10 pt-28 bg-theme-bg transition-colors duration-300 overflow-x-hidden">
     <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         <div class="summary-top mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">

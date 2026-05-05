@@ -1,9 +1,9 @@
 @extends('frontend.layouts.app')
-
+@section('robots', 'noindex, nofollow')
 @section('title', __('frontend.notifications_page.title'))
 
 @section('content')
-<div class="min-h-screen bg-theme-bg text-theme-text pt-28 pb-10 transition-colors duration-300 overflow-hidden">
+<div class="min-h-screen bg-theme-bg text-theme-text pt-28 pb-10 transition-colors duration-300 overflow-x-hidden">
     <div class="{{ config('design.classes.container') }}">
         <div class="notifications-top flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
             <div>
@@ -24,7 +24,7 @@
             </form>
         </div>
 
-        <div class="notifications-panel theme-panel rounded-3xl overflow-hidden shadow-brand-soft">
+        <div class="notifications-panel theme-panel rounded-3xl overflow-x-hidden shadow-brand-soft">
             @forelse($notifications as $n)
                 @php
                     $title = $n->data['title'] ?? __('frontend.notifications_page.notification_fallback');

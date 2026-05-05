@@ -1,2 +1,13 @@
 User-agent: *
-Disallow:
+Allow: /
+
+Disallow: /admin
+Disallow: /dashboard
+Disallow: /settings
+Disallow: /security
+Disallow: /notifications
+Disallow: /auth
+Disallow: /submit-project
+Disallow: /_debug
+
+Sitemap: http://localhost:8001/sitemap.xml

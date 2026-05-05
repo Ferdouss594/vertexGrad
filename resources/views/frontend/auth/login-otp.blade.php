@@ -1,5 +1,5 @@
 @extends('frontend.layouts.app')
-
+@section('robots', 'noindex, nofollow')
 @section('content')
 @php
     $policy = $policy ?? [

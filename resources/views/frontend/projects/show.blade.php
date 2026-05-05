@@ -29,16 +29,61 @@
         'completed',
         'investor_visible',
     ], true);
+
+    $projectTitle = isset($project)
+        ? ($project->name ?? __('frontend.project_show.project_name_missing'))
+        : __('frontend.project_show.project_not_found');
+
+    $projectDescription = isset($project)
+        ? \Illuminate\Support\Str::limit(strip_tags($project->description ?? __('frontend.project_show.no_description')), 155)
+        : __('frontend.project_show.project_not_found_text');
+
+    $projectImage = isset($project) && $project->getFirstMediaUrl('images')
+        ? $project->getFirstMediaUrl('images')
+        : asset('images/logo.png');
 @endphp
 
 @extends('frontend.layouts.app')
 
-@section('content')
-<div class="min-h-screen py-10 pt-28 bg-theme-bg transition-colors duration-300 overflow-hidden">
-    <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+@section('title', $projectTitle . ' | ' . config('app.name'))
+@section('meta_description', $projectDescription)
+@section('canonical', isset($project) ? route('frontend.projects.show', $project) : route('frontend.projects.index'))
+@section('og_type', 'article')
+@section('og_image', $projectImage)
 
-        <div class="project-show-reveal mb-6">
-            <a href="{{ route('frontend.projects.index') }}" class="inline-flex items-center text-brand-accent hover:underline font-bold">
+@section('structured_data')
+@if(isset($project))
+<script type="application/ld+json">
+{!! json_encode([
+    '@context' => 'https://schema.org',
+    '@type' => 'CreativeWork',
+    'name' => $projectTitle,
+    'description' => $projectDescription,
+    'url' => route('frontend.projects.show', $project),
+    'image' => $projectImage,
+    'author' => [
+        '@type' => 'Person',
+        'name' => $project->student?->name ?? config('app.name'),
+    ],
+    'publisher' => [
+        '@type' => 'Organization',
+        'name' => config('app.name'),
+        'logo' => [
+            '@type' => 'ImageObject',
+            'url' => asset('images/logo.png'),
+        ],
+    ],
+], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) !!}
+</script>
+@endif
+@endsection
+
+@section('content')
+<div class="min-h-screen py-10 sm:py-12 pt-24 sm:pt-28 bg-theme-bg transition-colors duration-300 overflow-x-hidden">
+    <div class="w-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+
+        <div class="project-show-reveal mb-5 sm:mb-6">
+            <a href="{{ route('frontend.projects.index') }}" class="inline-flex items-center text-brand-accent hover:underline font-bold text-sm sm:text-base">
                 <i class="fas fa-arrow-left me-2 rtl:rotate-180"></i>
                 {{ __('frontend.project_show.back_to_projects') }}
             </a>
@@ -50,43 +95,43 @@
                 $videoUrl = $project->getFirstMediaUrl('videos');
             @endphp
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-8">
 
-                <div class="lg:col-span-2 space-y-8">
-                    <div class="project-show-card theme-panel p-6 sm:p-8 rounded-3xl shadow-brand-soft">
-                        <span class="text-brand-accent font-bold uppercase tracking-widest text-xs">
+                <div class="lg:col-span-2 space-y-5 sm:space-y-6 lg:space-y-8 min-w-0">
+                    <div class="project-show-card theme-panel p-4 sm:p-6 lg:p-8 rounded-3xl shadow-brand-soft min-w-0">
+                        <span class="text-brand-accent font-bold uppercase tracking-widest text-[10px] sm:text-xs break-words">
                             {{ $project->projectCategory?->display_name ?? $project->category ?? __('frontend.project_show.uncategorized') }}
                         </span>
 
-                        <h1 class="text-3xl sm:text-4xl font-bold text-theme-text mt-2 leading-tight break-words">
+                        <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-theme-text mt-2 leading-tight break-words">
                             {{ $project->name ?? __('frontend.project_show.project_name_missing') }}
                         </h1>
 
-                        <div class="mt-8">
-                            <h3 class="text-theme-text font-bold text-xl mb-4">
+                        <div class="mt-6 sm:mt-8">
+                            <h3 class="text-theme-text font-bold text-lg sm:text-xl mb-3 sm:mb-4">
                                 {{ __('frontend.project_show.description') }}
                             </h3>
-                            <p class="text-theme-muted leading-relaxed italic text-base sm:text-lg">
+                            <p class="text-theme-muted leading-7 sm:leading-relaxed italic text-sm sm:text-base lg:text-lg break-words">
                                 "{{ $project->description ?? __('frontend.project_show.no_description') }}"
                             </p>
                         </div>
 
                         @if($interestedCount > 0)
-                            <div class="mt-8 pt-6 border-t border-theme-border">
-                                <h3 class="text-theme-text font-bold text-lg mb-4">
+                            <div class="mt-6 sm:mt-8 pt-5 sm:pt-6 border-t border-theme-border">
+                                <h3 class="text-theme-text font-bold text-base sm:text-lg mb-4">
                                     {{ __('frontend.project_show.interested_investors') }}
                                 </h3>
 
                                 <div class="flex items-center gap-3 flex-wrap">
                                     <div class="flex -space-x-2 rtl:space-x-reverse">
                                         @foreach($interestedUsers as $investor)
-                                            <div class="w-10 h-10 rounded-full bg-brand-accent-soft border border-brand-accent text-brand-accent flex items-center justify-center text-sm font-black">
+                                            <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-brand-accent-soft border border-brand-accent text-brand-accent flex items-center justify-center text-xs sm:text-sm font-black shrink-0">
                                                 {{ strtoupper(substr($investor->name ?? 'I', 0, 1)) }}
                                             </div>
                                         @endforeach
                                     </div>
 
-                                    <span class="text-sm text-theme-muted">
+                                    <span class="text-sm text-theme-muted break-words">
                                         {{ $interestedCount }} {{ trans_choice('frontend.project_show.interested_investor_count', $interestedCount) }}
                                     </span>
                                 </div>
@@ -94,68 +139,69 @@
                         @endif
                     </div>
 
-                    <div class="project-show-card theme-panel p-6 sm:p-8 rounded-3xl shadow-brand-soft">
-                        <h3 class="text-theme-text font-bold text-xl mb-6">
+                    <div class="project-show-card theme-panel p-4 sm:p-6 lg:p-8 rounded-3xl shadow-brand-soft min-w-0">
+                        <h3 class="text-theme-text font-bold text-lg sm:text-xl mb-5 sm:mb-6">
                             {{ __('frontend.project_show.project_images') }}
                         </h3>
 
                         @if($images->count())
-                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4">
                                 @foreach($images as $image)
                                     <a href="{{ $image->getUrl() }}" target="_blank" class="project-image-link block rounded-2xl overflow-hidden border border-theme-border hover:border-brand-accent/40 transition">
-                                        <img src="{{ $image->getUrl() }}" alt="{{ __('frontend.project_show.project_image') }}" class="w-full h-52 object-cover transition duration-500 hover:scale-105">
+                                        <img src="{{ $image->getUrl() }}" loading="lazy" alt="{{ __('frontend.project_show.project_image') }}" class="w-full h-44 sm:h-52 object-cover transition duration-500 hover:scale-105">
                                     </a>
                                 @endforeach
                             </div>
                         @else
-                            <p class="text-theme-muted italic">{{ __('frontend.project_show.no_images_uploaded') }}</p>
+                            <p class="text-theme-muted italic text-sm sm:text-base">{{ __('frontend.project_show.no_images_uploaded') }}</p>
                         @endif
                     </div>
 
-                    <div class="project-show-card theme-panel p-6 sm:p-8 rounded-3xl shadow-brand-soft">
-                        <h3 class="text-theme-text font-bold text-xl mb-6">
+                    <div class="project-show-card theme-panel p-4 sm:p-6 lg:p-8 rounded-3xl shadow-brand-soft min-w-0">
+                        <h3 class="text-theme-text font-bold text-lg sm:text-xl mb-5 sm:mb-6">
                             {{ __('frontend.project_show.project_video') }}
                         </h3>
 
                         @if($videoUrl)
-                            <video class="project-video w-full rounded-2xl border border-theme-border bg-black" controls style="max-height: 500px;" playsinline>
+                            <video class="project-video w-full rounded-2xl border border-theme-border bg-black max-h-[320px] sm:max-h-[420px] lg:max-h-[500px]" controls playsinline>
                                 <source src="{{ $videoUrl }}">
                                 {{ __('frontend.project_show.video_not_supported') }}
                             </video>
                         @else
-                            <p class="text-theme-muted italic">{{ __('frontend.project_show.no_video_uploaded') }}</p>
+                            <p class="text-theme-muted italic text-sm sm:text-base">{{ __('frontend.project_show.no_video_uploaded') }}</p>
                         @endif
                     </div>
                 </div>
 
-                <div class="space-y-6">
-                    <div class="project-show-card theme-panel p-6 sm:p-8 rounded-3xl shadow-brand-soft">
+                <aside class="space-y-5 sm:space-y-6 min-w-0">
+                    <div class="project-show-card theme-panel p-4 sm:p-6 lg:p-8 rounded-3xl shadow-brand-soft min-w-0 lg:sticky lg:top-28">
                         <p class="text-theme-muted text-xs uppercase font-bold mb-1">
                             {{ __('frontend.project_show.requested_budget') }}
                         </p>
-                        <h2 class="project-budget text-3xl sm:text-4xl font-black text-green-600">
+
+                        <h2 class="project-budget text-3xl sm:text-4xl font-black text-green-600 break-words">
                             ${{ is_numeric($project->budget) ? number_format($project->budget) : '0' }}
                         </h2>
 
-                        <div class="mt-6 pt-6 border-t border-theme-border space-y-4">
-                            <div class="flex justify-between gap-4">
+                        <div class="mt-5 sm:mt-6 pt-5 sm:pt-6 border-t border-theme-border space-y-4">
+                            <div class="flex flex-col sm:flex-row sm:justify-between gap-1 sm:gap-4">
                                 <span class="text-theme-muted">{{ __('frontend.project_show.student_lead') }}:</span>
-                                <span class="text-brand-accent font-bold text-end">{{ $project->student?->name ?? __('frontend.project_show.unknown_user') }}</span>
+                                <span class="text-brand-accent font-bold sm:text-end break-words">{{ $project->student?->name ?? __('frontend.project_show.unknown_user') }}</span>
                             </div>
 
-                            <div class="flex justify-between gap-4">
+                            <div class="flex flex-col sm:flex-row sm:justify-between gap-1 sm:gap-4">
                                 <span class="text-theme-muted">{{ __('frontend.project_show.status') }}:</span>
-                                <span class="text-yellow-600 font-bold text-end">{{ $project->status ?? 'pending' }}</span>
+                                <span class="text-yellow-600 font-bold sm:text-end break-words">{{ $project->status ?? 'pending' }}</span>
                             </div>
 
-                            <div class="flex justify-between gap-4">
+                            <div class="flex flex-col sm:flex-row sm:justify-between gap-1 sm:gap-4">
                                 <span class="text-theme-muted">{{ __('frontend.project_show.interest_count') }}:</span>
-                                <span class="text-theme-text font-bold text-end">{{ $interestedCount }}</span>
+                                <span class="text-theme-text font-bold sm:text-end">{{ $interestedCount }}</span>
                             </div>
 
-                            <div class="flex justify-between gap-4">
+                            <div class="flex flex-col sm:flex-row sm:justify-between gap-1 sm:gap-4">
                                 <span class="text-theme-muted">{{ __('frontend.project_show.funding_requests') }}:</span>
-                                <span class="text-theme-text font-bold text-end">{{ $requestedCount }}</span>
+                                <span class="text-theme-text font-bold sm:text-end">{{ $requestedCount }}</span>
                             </div>
                         </div>
 
@@ -163,13 +209,13 @@
                             @if($canViewInvestorDeck)
                                 <div class="mt-6 space-y-3">
                                     <a href="{{ route('investor.projects.summary', $project) }}"
-                                       class="w-full inline-flex items-center justify-center py-3 bg-brand-accent text-white font-bold rounded-xl hover:bg-brand-accent-strong transition">
+                                       class="w-full inline-flex items-center justify-center px-4 py-3 bg-brand-accent text-white font-bold rounded-xl hover:bg-brand-accent-strong transition text-center">
                                         <i class="fas fa-file-lines me-2"></i>
                                         {{ __('frontend.project_show.view_summary') }}
                                     </a>
 
                                     <a href="{{ route('investor.projects.pitch-deck.download', $project) }}"
-                                       class="w-full inline-flex items-center justify-center py-3 bg-theme-surface-2 text-theme-text font-bold rounded-xl border border-theme-border hover:border-brand-accent hover:text-brand-accent transition">
+                                       class="w-full inline-flex items-center justify-center px-4 py-3 bg-theme-surface-2 text-theme-text font-bold rounded-xl border border-theme-border hover:border-brand-accent hover:text-brand-accent transition text-center">
                                         <i class="fas fa-file-powerpoint me-2"></i>
                                         {{ __('frontend.project_show.download_powerpoint') }}
                                     </a>
@@ -180,7 +226,7 @@
                                 <div class="mt-6 space-y-3">
                                     <form method="POST" action="{{ route('frontend.projects.invest', $project) }}">
                                         @csrf
-                                        <button type="submit" class="w-full py-3 bg-brand-accent text-white font-bold rounded-xl hover:bg-brand-accent-strong transition">
+                                        <button type="submit" class="w-full px-4 py-3 bg-brand-accent text-white font-bold rounded-xl hover:bg-brand-accent-strong transition">
                                             {{ __('frontend.project_show.express_investment_interest') }}
                                         </button>
                                     </form>
@@ -193,17 +239,17 @@
                                             min="1"
                                             step="0.01"
                                             placeholder="{{ __('frontend.project_show.funding_amount') }}"
-                                            class="w-full px-4 py-3 rounded-xl bg-theme-surface-2 border border-theme-border text-theme-text placeholder:text-theme-muted focus:outline-none focus:border-brand-accent"
+                                            class="w-full min-w-0 px-4 py-3 rounded-xl bg-theme-surface-2 border border-theme-border text-theme-text placeholder:text-theme-muted focus:outline-none focus:border-brand-accent text-sm sm:text-base"
                                         >
 
                                         <textarea
                                             name="message"
                                             rows="4"
                                             placeholder="{{ __('frontend.project_show.funding_message_placeholder') }}"
-                                            class="w-full px-4 py-3 rounded-xl bg-theme-surface-2 border border-theme-border text-theme-text placeholder:text-theme-muted focus:outline-none focus:border-brand-accent"
+                                            class="w-full min-w-0 px-4 py-3 rounded-xl bg-theme-surface-2 border border-theme-border text-theme-text placeholder:text-theme-muted focus:outline-none focus:border-brand-accent text-sm sm:text-base resize-y"
                                         ></textarea>
 
-                                        <button type="submit" class="w-full py-3 bg-green-500 text-white font-bold rounded-xl hover:bg-green-600 transition">
+                                        <button type="submit" class="w-full px-4 py-3 bg-green-500 text-white font-bold rounded-xl hover:bg-green-600 transition">
                                             {{ __('frontend.project_show.request_funding') }}
                                         </button>
                                     </form>
@@ -218,7 +264,7 @@
                                     <form method="POST" action="{{ route('frontend.projects.interest.remove', $project) }}">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="w-full py-3 bg-theme-surface-2 text-theme-text font-bold rounded-xl hover:bg-red-500/10 hover:text-red-600 transition border border-theme-border">
+                                        <button type="submit" class="w-full px-4 py-3 bg-theme-surface-2 text-theme-text font-bold rounded-xl hover:bg-red-500/10 hover:text-red-600 transition border border-theme-border">
                                             {{ __('frontend.project_show.remove_interest') }}
                                         </button>
                                     </form>
@@ -231,17 +277,17 @@
                                             min="1"
                                             step="0.01"
                                             placeholder="{{ __('frontend.project_show.funding_amount') }}"
-                                            class="w-full px-4 py-3 rounded-xl bg-theme-surface-2 border border-theme-border text-theme-text placeholder:text-theme-muted focus:outline-none focus:border-brand-accent"
+                                            class="w-full min-w-0 px-4 py-3 rounded-xl bg-theme-surface-2 border border-theme-border text-theme-text placeholder:text-theme-muted focus:outline-none focus:border-brand-accent text-sm sm:text-base"
                                         >
 
                                         <textarea
                                             name="message"
                                             rows="4"
                                             placeholder="{{ __('frontend.project_show.funding_message_placeholder') }}"
-                                            class="w-full px-4 py-3 rounded-xl bg-theme-surface-2 border border-theme-border text-theme-text placeholder:text-theme-muted focus:outline-none focus:border-brand-accent"
+                                            class="w-full min-w-0 px-4 py-3 rounded-xl bg-theme-surface-2 border border-theme-border text-theme-text placeholder:text-theme-muted focus:outline-none focus:border-brand-accent text-sm sm:text-base resize-y"
                                         ></textarea>
 
-                                        <button type="submit" class="w-full py-3 bg-green-500 text-white font-bold rounded-xl hover:bg-green-600 transition">
+                                        <button type="submit" class="w-full px-4 py-3 bg-green-500 text-white font-bold rounded-xl hover:bg-green-600 transition">
                                             {{ __('frontend.project_show.upgrade_to_funding_request') }}
                                         </button>
                                     </form>
@@ -271,17 +317,17 @@
                                             min="1"
                                             step="0.01"
                                             placeholder="{{ __('frontend.project_show.new_funding_amount') }}"
-                                            class="w-full px-4 py-3 rounded-xl bg-theme-surface-2 border border-theme-border text-theme-text placeholder:text-theme-muted focus:outline-none focus:border-brand-accent"
+                                            class="w-full min-w-0 px-4 py-3 rounded-xl bg-theme-surface-2 border border-theme-border text-theme-text placeholder:text-theme-muted focus:outline-none focus:border-brand-accent text-sm sm:text-base"
                                         >
 
                                         <textarea
                                             name="message"
                                             rows="4"
                                             placeholder="{{ __('frontend.project_show.new_request_placeholder') }}"
-                                            class="w-full px-4 py-3 rounded-xl bg-theme-surface-2 border border-theme-border text-theme-text placeholder:text-theme-muted focus:outline-none focus:border-brand-accent"
+                                            class="w-full min-w-0 px-4 py-3 rounded-xl bg-theme-surface-2 border border-theme-border text-theme-text placeholder:text-theme-muted focus:outline-none focus:border-brand-accent text-sm sm:text-base resize-y"
                                         ></textarea>
 
-                                        <button type="submit" class="w-full py-3 bg-brand-accent text-white font-bold rounded-xl hover:bg-brand-accent-strong transition">
+                                        <button type="submit" class="w-full px-4 py-3 bg-brand-accent text-white font-bold rounded-xl hover:bg-brand-accent-strong transition">
                                             {{ __('frontend.project_show.submit_new_funding_request') }}
                                         </button>
                                     </form>
@@ -290,8 +336,8 @@
                         @endif
                     </div>
 
-                    <div class="project-show-card theme-panel p-6 rounded-3xl shadow-brand-soft">
-                        <h3 class="text-theme-text font-bold mb-4 flex items-center">
+                    <div class="project-show-card theme-panel p-4 sm:p-6 rounded-3xl shadow-brand-soft min-w-0">
+                        <h3 class="text-theme-text font-bold mb-4 flex items-center text-base sm:text-lg">
                             <i class="fas fa-file-alt me-2 text-brand-accent"></i>
                             {{ __('frontend.project_show.legacy_files') }}
                         </h3>
@@ -299,7 +345,7 @@
                         @if($project->files && $project->files->count() > 0)
                             @foreach($project->files as $file)
                                 <div class="project-file-row flex items-center justify-between gap-4 p-3 bg-theme-surface-2 rounded-xl border border-theme-border mb-2 hover:bg-brand-accent-soft transition-all">
-                                    <span class="text-theme-text text-sm font-semibold break-words">
+                                    <span class="text-theme-text text-sm font-semibold break-words min-w-0">
                                         {{ strtoupper($file->file_type ?? __('frontend.project_show.document')) }}
                                     </span>
                                     <a href="{{ asset('storage/' . ($file->file_path ?? '')) }}" target="_blank" class="text-brand-accent hover:text-theme-text shrink-0">
@@ -313,12 +359,12 @@
                             </p>
                         @endif
                     </div>
-                </div>
+                </aside>
             </div>
         @else
-            <div class="project-show-reveal bg-red-500/10 border border-red-500/40 p-10 rounded-3xl text-center">
-                <h2 class="text-2xl text-red-600 font-bold">{{ __('frontend.project_show.project_not_found') }}</h2>
-                <p class="text-theme-muted mt-2">{{ __('frontend.project_show.project_not_found_text') }}</p>
+            <div class="project-show-reveal bg-red-500/10 border border-red-500/40 p-6 sm:p-10 rounded-3xl text-center">
+                <h2 class="text-xl sm:text-2xl text-red-600 font-bold">{{ __('frontend.project_show.project_not_found') }}</h2>
+                <p class="text-theme-muted mt-2 text-sm sm:text-base">{{ __('frontend.project_show.project_not_found_text') }}</p>
             </div>
         @endif
     </div>
@@ -340,8 +386,8 @@ document.addEventListener('DOMContentLoaded', function () {
             .project-show-reveal,
             .project-show-card {
                 opacity: 0;
-                transform: translateY(24px);
-                transition: opacity .75s ease, transform .75s cubic-bezier(.22,1,.36,1), box-shadow .28s ease;
+                transform: translateY(20px);
+                transition: opacity .65s ease, transform .65s cubic-bezier(.22,1,.36,1), box-shadow .28s ease;
             }
 
             .project-show-reveal.is-visible,
@@ -350,20 +396,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 transform: translateY(0);
             }
 
-            .project-show-card:hover {
-                transform: translateY(-4px);
-                box-shadow: 0 20px 44px rgba(0,0,0,.09);
-            }
-
             .project-image-link,
             .project-file-row {
                 transition: transform .24s ease, box-shadow .24s ease, border-color .24s ease, background-color .24s ease;
-            }
-
-            .project-image-link:hover,
-            .project-file-row:hover {
-                transform: translateY(-3px);
-                box-shadow: 0 14px 32px rgba(0,0,0,.08);
             }
 
             .vg-focus-ring:focus-visible {
@@ -372,12 +407,24 @@ document.addEventListener('DOMContentLoaded', function () {
                 border-radius: 12px;
             }
 
-            @media (max-width: 767px) {
-                .project-show-card:hover,
+            @media (hover: hover) and (pointer: fine) {
+                .project-show-card:hover {
+                    transform: translateY(-4px);
+                    box-shadow: 0 20px 44px rgba(0,0,0,.09);
+                }
+
                 .project-image-link:hover,
                 .project-file-row:hover {
-                    transform: none;
-                    box-shadow: none;
+                    transform: translateY(-3px);
+                    box-shadow: 0 14px 32px rgba(0,0,0,.08);
+                }
+            }
+
+            @media (max-width: 640px) {
+                input,
+                button,
+                textarea {
+                    font-size: 16px;
                 }
             }
 
@@ -414,8 +461,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const budgetEl = document.querySelector('.project-budget');
 
         if (budgetEl) {
-            const originalText = budgetEl.textContent.trim();
-            const value = parseInt(originalText.replace(/[^\d]/g, ''), 10);
+            const value = parseInt(budgetEl.textContent.replace(/[^\d]/g, ''), 10);
 
             if (!Number.isNaN(value)) {
                 budgetEl.textContent = '$0';
@@ -443,6 +489,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     const imageLinks = document.querySelectorAll('.project-image-link');
+
     if (imageLinks.length) {
         const modal = document.createElement('div');
         modal.innerHTML = `
@@ -454,7 +501,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 align-items: center;
                 justify-content: center;
                 z-index: 9999;
-                padding: 24px;
+                padding: 16px;
                 opacity: 0;
                 transition: opacity 0.25s ease;
             ">
@@ -478,6 +525,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     box-shadow: 0 20px 60px rgba(0,0,0,0.35);
                     transform: scale(0.96);
                     transition: transform 0.25s ease;
+                    object-fit: contain;
                 ">
             </div>
         `;
@@ -514,6 +562,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         closeBtn.addEventListener('click', closeModal);
+
         modalEl.addEventListener('click', function (e) {
             if (e.target === modalEl) closeModal();
         });
@@ -526,6 +575,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     const video = document.querySelector('.project-video');
+
     if (video) {
         video.addEventListener('play', function () {
             video.style.boxShadow = '0 20px 45px rgba(0,0,0,0.18)';
@@ -609,7 +659,7 @@ document.addEventListener('DOMContentLoaded', function () {
             submitBtn.style.pointerEvents = 'none';
             submitBtn.style.opacity = '0.9';
             submitBtn.innerHTML = `
-                <span style="display:inline-flex;align-items:center;gap:10px;">
+                <span style="display:inline-flex;align-items:center;justify-content:center;gap:10px;">
                     <span style="
                         width:16px;
                         height:16px;
@@ -637,7 +687,7 @@ document.addEventListener('DOMContentLoaded', function () {
             submitBtn.style.opacity = '0.9';
 
             submitBtn.innerHTML = `
-                <span style="display:inline-flex;align-items:center;gap:10px;">
+                <span style="display:inline-flex;align-items:center;justify-content:center;gap:10px;">
                     <span style="
                         width:16px;
                         height:16px;

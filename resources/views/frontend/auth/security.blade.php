@@ -1,5 +1,5 @@
 @extends('frontend.layouts.app')
-
+@section('robots', 'noindex, nofollow')
 @section('content')
 @php
     $eventLabel = function ($event) {
@@ -26,11 +26,11 @@
     };
 @endphp
 
-<div class="min-h-screen pt-28 pb-12 bg-theme-bg transition-colors duration-300 overflow-hidden">
+<div class="min-h-screen pt-28 pb-12 bg-theme-bg transition-colors duration-300 overflow-x-hidden">
     <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
 
         <header class="security-reveal">
-            <div class="relative overflow-hidden theme-panel rounded-3xl lg:rounded-[2.5rem] shadow-brand-soft">
+            <div class="relative overflow-x-hidden theme-panel rounded-3xl lg:rounded-[2.5rem] shadow-brand-soft">
                 <div class="p-6 sm:p-8 md:p-10">
                     <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
                         <div class="flex flex-col sm:flex-row items-start gap-5">

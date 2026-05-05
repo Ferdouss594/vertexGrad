@@ -1,5 +1,5 @@
 @extends('frontend.layouts.app')
-
+@section('robots', 'noindex, nofollow')
 @section('content')
 <div class="min-h-screen bg-theme-bg transition-colors duration-300 relative overflow-hidden">
     <div class="absolute inset-0 pointer-events-none">

@@ -1,5 +1,5 @@
 @extends('frontend.layouts.app')
-
+@section('robots', 'noindex, nofollow')
 @section('content')
 @php
     $btnPrimaryClass = 'inline-flex w-full sm:w-auto items-center justify-center rounded-2xl px-6 sm:px-8 py-3.5 sm:py-4 text-sm sm:text-base font-black bg-brand-accent text-white hover:bg-brand-accent-strong transition duration-300 shadow-brand-soft text-center';

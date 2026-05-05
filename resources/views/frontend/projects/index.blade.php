@@ -22,7 +22,9 @@
 @endphp
 
 @extends('frontend.layouts.app')
-
+@section('title', __('frontend.projects_directory.title') . ' | ' . config('app.name'))
+@section('meta_description', 'Browse academic projects, research ideas, graduation projects, and innovation opportunities available for investors and academic partners.')
+@section('canonical', route('frontend.projects.index'))
 @section('content')
 <div class="min-h-screen pt-28 pb-12 bg-theme-bg transition-colors duration-300 overflow-hidden">
     <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

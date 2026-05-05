@@ -1,5 +1,5 @@
 @extends('frontend.layouts.app')
-
+@section('robots', 'noindex, nofollow')
 @section('content')
 <div class="min-h-screen pt-28 pb-12 bg-theme-bg transition-colors duration-300">
     <div class="{{ config('design.classes.container') }}">

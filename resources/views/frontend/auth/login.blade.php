@@ -1,48 +1,48 @@
 @extends('frontend.layouts.app')
+@section('robots', 'noindex, nofollow')
 
 @section('content')
-<div class="min-h-screen bg-theme-bg transition-colors duration-300 relative overflow-hidden">
-    <div class="absolute inset-0 pointer-events-none">
-        <div class="absolute -top-24 left-1/2 -translate-x-1/2 h-72 w-72 sm:h-96 sm:w-96 rounded-full blur-3xl opacity-20"
-             style="background: radial-gradient(circle, var(--brand-accent) 0%, transparent 70%);"></div>
+<div class="min-h-screen bg-theme-bg transition-colors duration-300 relative overflow-x-hidden">
 
-        <div class="absolute bottom-0 right-0 h-64 w-64 sm:h-80 sm:w-80 rounded-full blur-3xl opacity-10"
+    <div class="absolute inset-0 pointer-events-none">
+        <div class="absolute -top-24 left-1/2 -translate-x-1/2 h-80 w-80 sm:h-96 sm:w-96 blur-3xl opacity-20"
              style="background: radial-gradient(circle, var(--brand-accent) 0%, transparent 70%);"></div>
     </div>
 
-    <div class="relative min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 pt-32 pb-16">
-        <div class="w-full max-w-lg">
-            <div class="login-panel theme-panel rounded-3xl shadow-brand-soft border border-theme-border/60 p-6 sm:p-8 lg:p-10 backdrop-blur-sm">
+    <div class="login-page-shell relative min-h-[calc(100vh-80px)] flex items-start justify-center px-4 sm:px-6 lg:px-8 pb-24" style="padding-top: 120px;">
+        <div class="w-full max-w-2xl">
 
-                <div class="login-header text-center mb-8">
-                    <div class="login-icon mx-auto mb-4 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-brand-accent/10 border border-brand-accent/20 text-brand-accent shadow-brand-soft">
+            <div class="theme-panel login-panel rounded-3xl shadow-brand-soft border border-theme-border/60 p-6 sm:p-8 lg:p-10">
+
+                <div class="text-center mb-8 sm:mb-10 login-header">
+                    <div class="mx-auto mb-5 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-brand-accent/10 border border-brand-accent/20 text-brand-accent">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 sm:w-8 sm:h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M8.5 16.5 6 19m9.5-2.5L18 19M12 14v7M5 9a7 7 0 0114 0v2a7 7 0 01-14 0V9z" />
                             <path stroke-linecap="round" stroke-linejoin="round" d="M9 10h.01M15 10h.01M10 14h4" />
                         </svg>
                     </div>
 
-                    <h2 class="text-3xl sm:text-4xl font-black text-center text-theme-text mb-2 leading-tight">
+                    <h2 class="text-3xl sm:text-4xl font-black text-theme-text leading-tight">
                         {{ __('frontend.auth.sign_in_to') }}
                         <span class="text-brand-accent">{{ __('frontend.auth.vertexgrad') }}</span>
                     </h2>
 
-                    <p class="text-sm sm:text-base text-center text-theme-muted leading-relaxed max-w-sm mx-auto">
+                    <p class="text-theme-muted mt-3 text-sm sm:text-base leading-7 max-w-xl mx-auto">
                         {{ __('frontend.auth.login_subtitle') }}
                     </p>
                 </div>
 
                 @if ($errors->any())
-                    <div class="login-alert mb-6 rounded-2xl border border-red-400/30 bg-red-500/10 px-4 py-3 text-sm text-red-500">
+                    <div class="mb-6 p-4 rounded-2xl bg-red-500/10 border border-red-400/40 text-red-500 text-sm">
                         <ul class="list-disc list-inside space-y-1 text-start">
                             @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
+                                <li class="break-words">{{ $error }}</li>
                             @endforeach
                         </ul>
                     </div>
                 @endif
 
-                <form method="POST" action="{{ route('login.post') }}" class="login-form space-y-5" id="loginForm">
+                <form method="POST" action="{{ route('login.post') }}" class="space-y-6 login-form" id="loginForm">
                     @csrf
 
                     <div>
@@ -50,8 +50,8 @@
                             {{ __('frontend.auth.username_or_email') }}
                         </label>
 
-                        <div class="relative">
-                            <span class="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-4 text-theme-muted">
+                        <div class="login-field-shell">
+                            <span class="login-field-icon">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0z" />
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M4 21a8 8 0 0116 0" />
@@ -64,7 +64,7 @@
                                 value="{{ old('login_id') }}"
                                 required
                                 autocomplete="username"
-                                class="login-input w-full rounded-2xl border border-theme-border bg-theme-surface-2 py-3.5 ps-12 pe-4 text-theme-text placeholder:text-theme-muted focus:ring-0 focus:border-brand-accent transition duration-300"
+                                class="login-input"
                             >
                         </div>
                     </div>
@@ -74,8 +74,8 @@
                             {{ __('frontend.auth.password') }}
                         </label>
 
-                        <div class="relative">
-                            <span class="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-4 text-theme-muted">
+                        <div class="login-field-shell">
+                            <span class="login-field-icon">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V8a4 4 0 10-8 0v3" />
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 11h12v9H6z" />
@@ -88,56 +88,50 @@
                                 name="password"
                                 required
                                 autocomplete="current-password"
-                                class="login-input w-full rounded-2xl border border-theme-border bg-theme-surface-2 py-3.5 ps-12 pe-12 text-theme-text placeholder:text-theme-muted focus:ring-0 focus:border-brand-accent transition duration-300"
+                                class="login-input login-password-input"
                             >
 
                             <button
                                 type="button"
                                 id="passwordToggle"
-                                class="absolute inset-y-0 end-0 flex items-center pe-4 text-theme-muted hover:text-brand-accent transition"
+                                class="login-password-toggle"
                                 aria-label="Toggle password visibility"
                             >
-                                <svg class="eye-open w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6z" />
-                                    <circle cx="12" cy="12" r="3" />
-                                </svg>
-
-                                <svg class="eye-closed hidden w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 3l18 18M10.6 10.6A2 2 0 0012 14a2 2 0 001.4-.6M7.1 7.1C4.2 8.7 2.5 12 2.5 12s3.5 6 9.5 6c1.7 0 3.2-.5 4.4-1.2M13.8 6.2C18.7 7 21.5 12 21.5 12s-.8 1.4-2.2 2.8" />
-                                </svg>
+                                <i class="fas fa-eye"></i>
                             </button>
                         </div>
                     </div>
 
-                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                        <label class="inline-flex items-center gap-2 text-sm text-theme-muted cursor-pointer">
+                    <div class="flex items-center justify-between gap-4 pt-1">
+                        <label class="inline-flex items-center gap-3 text-sm sm:text-base text-theme-muted cursor-pointer min-w-0">
                             <input
                                 type="checkbox"
                                 name="remember"
-                                class="rounded border-theme-border bg-theme-surface-2 text-brand-accent focus:ring-brand-accent"
+                                class="rounded border-theme-border bg-theme-surface-2 text-brand-accent focus:ring-brand-accent shrink-0"
                             >
-                            <span>{{ __('frontend.auth.remember_me') }}</span>
+                            <span class="whitespace-nowrap">{{ __('frontend.auth.remember_me') }}</span>
                         </label>
 
-                        <a href="{{ route('password.request') }}" class="text-sm font-bold text-brand-accent hover:underline">
+                        <a href="{{ route('password.request') }}" class="text-sm sm:text-base font-bold text-brand-accent hover:underline text-end whitespace-nowrap">
                             {{ __('frontend.auth.forgot_password_short') }}
                         </a>
                     </div>
 
                     <button
                         type="submit"
-                        class="login-submit w-full inline-flex items-center justify-center gap-2 rounded-2xl px-6 py-3.5 text-base font-black bg-brand-accent text-white hover:bg-brand-accent-strong transition duration-300 shadow-brand-soft"
+                        class="login-submit w-full min-h-[56px] inline-flex items-center justify-center rounded-2xl px-6 py-4 text-base sm:text-lg font-black bg-brand-accent text-white hover:bg-brand-accent-strong transition duration-300 shadow-brand-soft"
                     >
-                        <span>{{ __('frontend.auth.log_in') }}</span>
+                        {{ __('frontend.auth.log_in') }}
                     </button>
                 </form>
 
-                <p class="login-footer mt-8 text-center text-theme-muted text-sm leading-relaxed">
+                <p class="mt-8 text-center text-theme-muted text-sm sm:text-base leading-7">
                     {{ __('frontend.auth.no_account') }}
                     <a href="{{ route('register.show') }}" class="text-brand-accent font-bold underline">
                         {{ __('frontend.auth.register_here') }}
                     </a>
                 </p>
+
             </div>
         </div>
     </div>
@@ -145,7 +139,6 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const form = document.getElementById('loginForm');
     const passwordInput = document.getElementById('loginPassword');
     const passwordToggle = document.getElementById('passwordToggle');
@@ -155,40 +148,87 @@ document.addEventListener('DOMContentLoaded', () => {
         const style = document.createElement('style');
         style.id = 'vg-login-page-style';
         style.textContent = `
-            @keyframes vgSpin {
+            @keyframes vgLoginSpin {
                 to { transform: rotate(360deg); }
-            }
-
-            .vg-reveal {
-                opacity: 0;
-                transform: translateY(18px);
-                transition: opacity .65s ease, transform .65s cubic-bezier(.22,1,.36,1);
-            }
-
-            .vg-reveal.is-visible {
-                opacity: 1;
-                transform: translateY(0);
             }
 
             .login-panel {
                 transition: transform .28s ease, box-shadow .28s ease, border-color .28s ease;
             }
 
-            .login-panel:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 22px 52px rgba(0,0,0,.10);
+            .login-field-shell {
+                position: relative;
+                width: 100%;
+            }
+
+            .login-field-icon {
+                position: absolute;
+                top: 50%;
+                inset-inline-start: 22px;
+                transform: translateY(-50%);
+                z-index: 2;
+                color: var(--theme-muted);
+                pointer-events: none;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 22px;
+                height: 22px;
+                line-height: 1;
+            }
+
+            .login-field-icon svg {
+                display: block;
+                width: 20px;
+                height: 20px;
+            }
+
+            .login-input {
+                width: 100%;
+                min-height: 56px;
+                border-radius: 1rem;
+                border: 1px solid var(--theme-border);
+                background: var(--theme-surface-2);
+                color: var(--theme-text);
+                padding-top: 1rem;
+                padding-bottom: 1rem;
+                padding-inline-start: 64px;
+                padding-inline-end: 1.25rem;
+                font-size: 1rem;
+                transition: border-color .3s ease, box-shadow .3s ease, background-color .3s ease;
+            }
+
+            .login-password-input {
+                padding-inline-end: 64px;
             }
 
             .login-input:focus {
+                outline: none;
+                border-color: var(--brand-accent);
                 box-shadow: 0 0 0 4px rgba(0,224,255,.10);
+            }
+
+            .login-password-toggle {
+                position: absolute;
+                top: 50%;
+                inset-inline-end: 22px;
+                transform: translateY(-50%);
+                z-index: 3;
+                color: var(--theme-muted);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 24px;
+                height: 24px;
+                transition: color .2s ease;
+            }
+
+            .login-password-toggle:hover {
+                color: var(--brand-accent);
             }
 
             .login-submit {
                 transition: transform .22s ease, opacity .22s ease, box-shadow .22s ease;
-            }
-
-            .login-submit:hover {
-                transform: translateY(-1px);
             }
 
             .login-submit.is-loading {
@@ -196,24 +236,77 @@ document.addEventListener('DOMContentLoaded', () => {
                 opacity: .92;
             }
 
-            .vg-spinner {
+            .vg-login-spinner {
                 width: 16px;
                 height: 16px;
                 border: 2px solid rgba(255,255,255,.45);
                 border-top-color: #fff;
                 border-radius: 9999px;
                 display: inline-block;
-                animation: vgSpin .7s linear infinite;
+                animation: vgLoginSpin .7s linear infinite;
+            }
+@media (max-width: 640px) {
+    .login-page-shell {
+        padding-top: 112px !important;
+        padding-bottom: 72px !important;
+    }
+}
+
+@media (min-width: 1024px) {
+    .login-page-shell {
+        padding-top: 125px !important;
+        padding-bottom: 96px !important;
+    }
+}
+}
+
+            @media (hover: hover) and (pointer: fine) {
+                .login-panel:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 22px 52px rgba(0,0,0,.10);
+                }
+
+                .login-submit:hover {
+                    transform: translateY(-1px);
+                }
+            }
+
+            @media (max-width: 420px) {
+                .login-panel {
+                    padding-left: 1.125rem !important;
+                    padding-right: 1.125rem !important;
+                }
+
+                .login-form .flex.items-center.justify-between {
+                    align-items: flex-start;
+                    flex-direction: column;
+                }
+
+                .login-form .flex.items-center.justify-between a {
+                    text-align: start;
+                }
             }
 
             @media (max-width: 640px) {
-                .login-panel:hover {
-                    transform: none;
+                input,
+                button {
+                    font-size: 16px;
+                }
+
+                .login-field-icon {
+                    inset-inline-start: 20px;
+                }
+
+                .login-input {
+                    padding-inline-start: 60px;
+                }
+
+                .login-password-toggle {
+                    inset-inline-end: 20px;
                 }
             }
 
             @media (prefers-reduced-motion: reduce) {
-                .vg-reveal,
                 .login-panel,
                 .login-submit {
                     transition: none !important;
@@ -225,32 +318,18 @@ document.addEventListener('DOMContentLoaded', () => {
         document.head.appendChild(style);
     }
 
-    [
-        document.querySelector('.login-icon'),
-        document.querySelector('.login-header h2'),
-        document.querySelector('.login-header p'),
-        document.querySelector('.login-alert'),
-        document.querySelector('.login-form'),
-        document.querySelector('.login-footer')
-    ].filter(Boolean).forEach((el, index) => {
-        el.classList.add('vg-reveal');
-
-        if (prefersReducedMotion) {
-            el.classList.add('is-visible');
-            return;
-        }
-
-        setTimeout(() => el.classList.add('is-visible'), 100 + (index * 90));
-    });
-
     passwordToggle?.addEventListener('click', () => {
         if (!passwordInput) return;
 
+        const icon = passwordToggle.querySelector('i');
         const isPassword = passwordInput.type === 'password';
+
         passwordInput.type = isPassword ? 'text' : 'password';
 
-        passwordToggle.querySelector('.eye-open')?.classList.toggle('hidden', isPassword);
-        passwordToggle.querySelector('.eye-closed')?.classList.toggle('hidden', !isPassword);
+        if (icon) {
+            icon.classList.toggle('fa-eye', !isPassword);
+            icon.classList.toggle('fa-eye-slash', isPassword);
+        }
     });
 
     form?.addEventListener('submit', () => {
@@ -259,7 +338,7 @@ document.addEventListener('DOMContentLoaded', () => {
         submitButton.classList.add('is-loading');
         submitButton.innerHTML = `
             <span class="inline-flex items-center gap-2">
-                <span class="vg-spinner"></span>
+                <span class="vg-login-spinner"></span>
                 {{ __('frontend.auth.log_in') }}
             </span>
         `;
