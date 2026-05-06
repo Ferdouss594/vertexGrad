@@ -25,9 +25,9 @@
 @endphp
 
 @extends('frontend.layouts.app')
-@section('title', __('frontend.about.title_before') . ' ' . __('frontend.about.title_highlight') . ' | ' . config('app.name'))
-@section('meta_description', __('frontend.about.subtitle'))
-@section('canonical', url('/about'))
+@section('title', __('frontend.home.hero_title_brand') . ' | ' . config('app.name'))
+@section('meta_description', __('frontend.home.hero_subtitle'))
+@section('canonical', url('/'))
 @section('content')
 
 {{-- ---------------------------------------------------------------- --}}
@@ -132,6 +132,8 @@
         .home-hero-search,
         .home-hero-creator {
             will-change: opacity, transform;
+            margin-top: 90px;
+            margin-bottom: 20px;
         }
 
         .home-hero-section {
@@ -194,31 +196,27 @@
             {{ __('frontend.home.hero_subtitle') }}
         </p>
 
-        <div class="home-hero-search mt-7 sm:mt-12 lg:mt-14 max-w-4xl mx-auto">
-            <div class="flex flex-col sm:flex-row items-stretch rounded-xl p-2 bg-theme-surface border border-theme-border shadow-brand-soft transition-colors duration-300">
-                <input
-                    type="search"
-                    placeholder="{{ __('frontend.home.search_placeholder') }}"
-                    class="flex-grow w-full p-4 text-base sm:text-lg bg-transparent text-theme-text placeholder:text-theme-muted focus:outline-none focus:ring-0"
-                >
+<div class="home-hero-search mt-7 sm:mt-12 lg:mt-14 max-w-4xl mx-auto">
+  <form
+    action="{{ route('frontend.projects.index') }}"
+    method="GET"
+    class="flex flex-col sm:flex-row items-stretch rounded-xl p-2 bg-theme-surface border border-theme-border shadow-brand-soft transition-colors duration-300"
+>
+    <input
+        type="search"
+        name="search"
+        placeholder="{{ __('frontend.home.search_placeholder') }}"
+        class="flex-grow w-full p-4 text-base sm:text-lg bg-transparent text-theme-text placeholder:text-theme-muted focus:outline-none focus:ring-0"
+        aria-label="{{ __('frontend.home.search_placeholder') }}"
+    >
 
-                <a href="/projects"
-                   class="mt-3 sm:mt-0 sm:ms-2 flex-shrink-0 inline-flex items-center justify-center rounded-lg px-6 sm:px-8 py-4 text-base sm:text-lg font-semibold bg-brand-accent text-white hover-bg-brand-accent-strong transition duration-300 shadow-brand-soft">
-                    <i class="fas fa-search me-2"></i> {{ __('frontend.home.find_projects') }}
-                </a>
-            </div>
-
-            <div class="home-hero-creator mt-8">
-                <p class="text-theme-muted text-xs sm:text-sm font-semibold uppercase tracking-widest mb-4">
-                    {{ __('frontend.home.creator_prompt') }}
-                </p>
-
-                <a href="/submit-project"
-                   class="inline-flex items-center justify-center rounded-lg px-5 sm:px-6 py-3 text-sm sm:text-base font-semibold border border-brand-accent text-theme-text hover:bg-brand-accent hover:text-white transition duration-300">
-                    <i class="fas fa-rocket me-2"></i> {{ __('frontend.home.submit_for_vetting') }}
-                </a>
-            </div>
-        </div>
+    <button
+        type="submit"
+        class="mt-3 sm:mt-0 sm:ms-2 flex-shrink-0 inline-flex items-center justify-center rounded-lg px-6 sm:px-8 py-4 text-base sm:text-lg font-semibold bg-brand-accent text-white hover-bg-brand-accent-strong transition duration-300 shadow-brand-soft"
+    >
+        <i class="fas fa-search me-2"></i> {{ __('frontend.home.find_projects') }}
+    </button>
+</form>
     </div>
 </section>
 

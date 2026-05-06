@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Project;
 use Illuminate\Http\Request;
 
 class StudentController extends Controller
@@ -123,12 +124,15 @@ class StudentController extends Controller
     }
 
     // حذف الطالب والمستخدم
-    public function destroy(User $student)
-    {
-        $student->delete();
+public function destroy(User $student)
+{
+    Project::where('student_id', $student->id)->delete();
 
-        return redirect()->route('admin.students.index')->with('success', 'Student deleted successfully.');
-    }
+    $student->delete();
+
+    return redirect()->route('admin.students.index')
+        ->with('success', 'Student deleted successfully.');
+}
 
     // عرض تفاصيل الطالب
     public function show(User $student)

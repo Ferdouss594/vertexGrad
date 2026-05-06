@@ -69,6 +69,7 @@ return [
 ],
 
 'process' => [
+        'title' => 'Submission Process',
     'title_before' => 'The VertexGrad',
     'title_highlight' => 'Process',
     'subtitle' => 'A simple path that takes strong research from submission to funding.',
@@ -101,6 +102,7 @@ return [
     'name' => 'Your Name',
     'name_placeholder' => 'Enter your full name',
     'email' => 'Email Address',
+    'title' => 'Contact Us',
     'email_placeholder' => 'Enter your email address',
     'subject' => 'Subject',
     'subject_placeholder' => 'Choose the type of your message',
@@ -113,6 +115,7 @@ return [
     'send' => 'Send Message',
 ],
 'disclosures' => [
+        'title' => 'Disclosures',
     'title_before' => 'Platform',
     'title_highlight' => 'Disclosures',
     'subtitle' => 'Important information for academics, institutions, and investors',
@@ -131,6 +134,7 @@ return [
 ],
 
 'partnerships' => [
+        'title' => 'Partnerships',
     'title_before' => 'Institutional',
     'title_highlight' => 'Partnerships',
     'subtitle' => 'Collaborate with VertexGrad to support the commercialization of research from your university or incubator.',
@@ -146,6 +150,8 @@ return [
 ],
 
 'privacy' => [
+        'title' => 'Privacy Policy',
+    'subtitle' => 'Understand how we collect, use, and protect your data.',
     'title_before' => 'Privacy',
     'title_highlight' => 'Policy',
     'effective_date' => 'Effective Date: January 1, 2026',
@@ -160,6 +166,8 @@ return [
     'section3_text' => 'We apply security measures such as encryption and access controls to help protect your personal information and sensitive project data.',
 ],
 'terms' => [
+       'title' => 'Terms and Conditions',
+    'subtitle' => 'Read the terms governing the use of the platform.',
     'title_before' => 'Terms of',
     'title_highlight' => 'Service',
     'last_updated' => 'Last updated: December 12, 2025',
@@ -178,6 +186,8 @@ return [
 ],
 
 'support' => [
+        'title' => 'Support Center',
+    'subtitle' => 'Get help and support for using the platform.',
     'title_before' => 'Support &',
     'title_highlight' => 'FAQ',
     'subtitle_before' => 'Find answers quickly. If you still need help, please use our',
@@ -509,6 +519,7 @@ return [
     'empty' => 'No notifications yet.',
 ],
 'projects_directory' => [
+    'search_chip' => 'Search',
     'title' => 'Projects Directory',
     'showing_results' => 'Showing :from - :to of :total projects',
 ],
@@ -793,6 +804,7 @@ return [
     'socotra' => 'Socotra',
 ],
 'home' => [
+    
     'hero_platform_label' => 'A VertexGrad Platform',
     'hero_title_line1' => 'Connect with the Future of',
     'hero_title_brand' => 'VertexGrad',

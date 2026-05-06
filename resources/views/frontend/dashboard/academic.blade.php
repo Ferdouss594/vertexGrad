@@ -304,7 +304,19 @@
                             $scanState = strtolower((string) ($currentProject->status ?? $currentProject->scanner_status ?? 'draft'));
                         @endphp
                         <div id="heroScanWrap">
-                        @if(in_array($scanState, ['draft', 'scan_failed', 'scan_requested', 'pending', 'rejected']))
+                        @if($currentDecision === 'published' || $scanState === 'published')
+    <div class="flex items-center justify-between gap-4 p-4 bg-theme-surface-2 border border-theme-border rounded-2xl text-theme-muted opacity-70 cursor-not-allowed">
+        <div>
+            <span class="block font-black uppercase text-xs tracking-wider">
+                {{ __('frontend.academic_dashboard.technical_scan') }}
+            </span>
+            <span class="text-xs opacity-80">
+                {{ __('frontend.academic_dashboard.scan_disabled_published') }}
+            </span>
+        </div>
+        <i class="fas fa-lock text-theme-muted"></i>
+    </div>
+@elseif(in_array($scanState, ['draft', 'scan_failed', 'scan_requested', 'pending', 'rejected']))
                         @php
                             $scanData = base64_encode(json_encode([
                                 'platform_project_id' => $currentProject->project_id,
@@ -564,7 +576,7 @@
                     $thumb = $project->getFirstMediaUrl('images');
                     $imgCount = $project->getMedia('images')->count();
                     $hasVideo = (bool) $project->getFirstMediaUrl('videos');
-                    $active = (int) $project->getKey() === (int) $currentProject->getKey();
+                    $active = (int) $project->project_id === (int) $currentProject->project_id;
                     $projectDecision = $project->final_decision ?? null;
                 @endphp
 
@@ -572,6 +584,7 @@
     $images = $project->getMedia('images')->take(4)->map(fn($media) => $media->getUrl())->values();
     $videoUrl = $project->getFirstMediaUrl('videos');
     $detailsUrl = route('frontend.projects.show', $project->project_id);
+    $previewUrl = url('/dashboard/academic') . '?project=' . $project->project_id . '#dashboardHero';
 
     $projectPayload = [
         'id' => $project->project_id,
@@ -603,10 +616,9 @@
 <div
     role="button"
     tabindex="0"
-    data-project-b64="{{ $projectPayloadB64 }}"
-    onclick="previewDashboardProject(this)"
-    onkeydown="if(event.key === 'Enter'){ previewDashboardProject(this); }"
-    class="dashboard-project-card cursor-pointer block rounded-[2rem] overflow-hidden transition border {{ $active ? 'is-active border-brand-accent shadow-brand-soft' : 'border-theme-border theme-panel hover:border-brand-accent/40' }}"
+onclick="window.location.href='{{ $previewUrl }}'"
+onkeydown="if(event.key === 'Enter'){ window.location.href='{{ $previewUrl }}'; }"
+class="dashboard-project-card cursor-pointer block rounded-[2rem] overflow-hidden transition border {{ $active ? 'is-active border-brand-accent shadow-brand-soft' : 'border-theme-border theme-panel hover:border-brand-accent/40' }}"
 >
     <div class="h-44 bg-theme-surface-2 relative">
         @if($thumb)
@@ -660,12 +672,13 @@
 
 <div class="flex gap-3">
 <button type="button"
-    onclick="event.preventDefault(); event.stopPropagation(); previewDashboardProject(this.closest('.dashboard-project-card'));"
+    onclick="event.preventDefault(); event.stopPropagation(); window.location.href='{{ $previewUrl }}';"
     class="preview-project-btn flex-1 inline-flex items-center justify-center rounded-2xl px-4 py-3 bg-theme-surface-2 border border-theme-border text-theme-text font-black text-xs uppercase tracking-wider hover:bg-brand-accent-soft transition">
     {{ __('frontend.academic_dashboard.preview') }}
 </button>
 
 <a href="{{ $detailsUrl }}"
+    onclick="event.stopPropagation();"
     class="project-details-link flex-1 inline-flex items-center justify-center rounded-2xl px-4 py-3 bg-brand-accent text-white font-black text-xs uppercase tracking-wider hover:bg-brand-accent-strong transition">
     {{ __('frontend.academic_dashboard.details') }}
 </a>
@@ -1413,129 +1426,6 @@ ${deploymentNotes || '{{ __('frontend.academic_dashboard.no_deployment_notes') }
         form.submit();
     };
 
-function selectDashboardProject(project, card) {
-    const hero = document.getElementById('dashboardHero');
-
-    document.getElementById('heroCategory').textContent = project.category || 'General';
-    document.getElementById('heroRef').textContent = project.ref;
-    document.getElementById('heroTitle').textContent = project.name;
-    document.getElementById('heroBudget').textContent = project.budget;
-    document.getElementById('heroDate').textContent = project.date || '';
-    document.getElementById('heroStatus').textContent = project.status;
-    document.getElementById('heroImageCount').textContent = project.image_count || 0;
-    document.getElementById('heroVideoStatus').textContent = project.has_video ? '{{ __('frontend.academic_dashboard.yes') }}' : '{{ __('frontend.academic_dashboard.no') }}';
-
-    const detailsBtn = document.getElementById('heroDetailsBtn');
-    if (detailsBtn) {
-        detailsBtn.href = project.details_url;
-    }
-
-    const imagesWrap = document.getElementById('heroImages');
-
-    if (project.images && project.images.length > 0) {
-        let imagesHtml = '<div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">';
-
-        project.images.forEach(function (url) {
-            imagesHtml += `
-                <a href="${url}" target="_blank"
-                    class="project-preview-link relative overflow-hidden rounded-2xl border border-theme-border bg-theme-surface-2 transition">
-                    <img src="${url}" class="w-full h-24 sm:h-28 object-cover" alt="Project image">
-                </a>
-            `;
-        });
-
-        imagesHtml += '</div>';
-        imagesWrap.innerHTML = imagesHtml;
-    } else {
-        imagesWrap.innerHTML = `
-            <div class="p-5 rounded-2xl border border-theme-border bg-theme-surface-2 text-theme-muted text-sm">
-                {{ __('frontend.academic_dashboard.no_images_uploaded_yet') }}
-            </div>
-        `;
-    }
-
-    const videoWrap = document.getElementById('heroVideoWrap');
-
-    if (project.video_url) {
-        videoWrap.innerHTML = `
-            <button type="button" onclick="openVideoModal('${project.video_url}')"
-                class="mt-4 w-full flex items-center justify-between gap-4 p-5 bg-theme-surface-2 hover:bg-brand-accent-soft border border-theme-border rounded-2xl transition-all text-theme-text">
-                <span class="font-bold text-xs uppercase tracking-wider">{{ __('frontend.academic_dashboard.play_video') }}</span>
-                <i class="fas fa-play text-brand-accent"></i>
-            </button>
-        `;
-    } else {
-        videoWrap.innerHTML = '';
-    }
-
-    const scanWrap = document.getElementById('heroScanWrap');
-
-    if (scanWrap) {
-        const isPublished = project.final_decision === 'published' || project.scan_state === 'published';
-
-        if (isPublished) {
-            scanWrap.innerHTML = `
-                <div class="flex items-center justify-between gap-4 p-4 bg-theme-surface-2 border border-theme-border rounded-2xl text-theme-muted opacity-70 cursor-not-allowed">
-                    <div>
-                        <span class="block font-black uppercase text-xs tracking-wider">
-                            {{ __('frontend.academic_dashboard.technical_scan') }}
-                        </span>
-                        <span class="text-xs opacity-80">
-                            {{ __('frontend.academic_dashboard.scan_disabled_published') }}
-                        </span>
-                    </div>
-                    <i class="fas fa-lock text-theme-muted"></i>
-                </div>
-            `;
-        } else {
-            scanWrap.innerHTML = `
-                <a href="${project.scanner_url}"
-                    class="flex items-center justify-between gap-4 p-4 bg-blue-600 text-white rounded-2xl transition-all hover:bg-blue-700 group">
-                    <div>
-                        <span class="block font-black uppercase text-xs tracking-wider">
-                            {{ __('frontend.academic_dashboard.technical_scan') }}
-                        </span>
-                        <span class="text-xs opacity-80">
-                            {{ __('frontend.academic_dashboard.scan_now_question') }}
-                        </span>
-                    </div>
-                    <i class="fas fa-microscope group-hover:scale-110 transition-transform"></i>
-                </a>
-            `;
-        }
-    }
-
-    document.querySelectorAll('.dashboard-project-card').forEach(function (item) {
-    item.classList.remove('is-active', 'border-brand-accent', 'shadow-brand-soft');
-    item.classList.add('border-theme-border');
-    item.style.borderColor = '';
-});
-
-if (card) {
-    card.classList.add('is-active', 'border-brand-accent', 'shadow-brand-soft');
-    card.classList.remove('border-theme-border');
-    card.style.borderColor = '#22d3ee';
-}
-
-if (hero) {
-    const y = hero.offsetTop - 120;
-
-    window.scrollTo({
-        top: y,
-        behavior: 'smooth'
-    });
-}
-}
-function decodeProjectCard(card) {
-    return JSON.parse(atob(card.dataset.projectB64));
-}
-
-function previewDashboardProject(card) {
-    if (!card) return;
-
-    const project = decodeProjectCard(card);
-    selectDashboardProject(project, card);
-}
 </script>
 
 @endsection
