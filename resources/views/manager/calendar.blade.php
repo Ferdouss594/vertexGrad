@@ -423,4 +423,5 @@ const daysOfWeek = [
 
     fetchEvents();
 });
+</script>
 @endsection

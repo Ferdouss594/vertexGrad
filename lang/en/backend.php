@@ -399,6 +399,8 @@ return [
     'failed_fetch_user_data' => 'Failed to fetch user data.',
 ],
 'project_details' => [
+    'project_status' => 'Project Status',
+'scan_status' => 'Scan Status',
     'page_title' => 'Project Details',
 
     'project' => 'Project',

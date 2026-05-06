@@ -2,7 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Auth\Events\Verified;
+use App\Models\User;
 
 use App\Http\Controllers\Frontend\Auth\AuthController as FrontendAuth;
 use App\Http\Controllers\Frontend\Auth\LoginOtpController;
@@ -72,6 +73,7 @@ Route::get('/sitemap.xml', function () {
         ->view('frontend.utility.sitemap', ['urls' => $urls->unique()->values()])
         ->header('Content-Type', 'application/xml');
 })->name('sitemap');
+
 Route::get('/session-test', function () {
     $count = session('count', 0);
     $count++;
@@ -87,6 +89,62 @@ Route::middleware(['web', 'frontend.locale'])->group(function () {
     Route::get('/language/{locale}', [FrontendLanguageController::class, 'switch'])
         ->where('locale', 'en|ar')
         ->name('frontend.language.switch');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Cross-device email verification
+    |--------------------------------------------------------------------------
+    | This route must NOT be inside auth:web.
+    | It allows the user to register/login on laptop and verify from phone.
+    */
+    Route::get('/auth/email/verify/{id}/{hash}', function (Request $request, $id, $hash) {
+        if (! $request->hasValidSignature()) {
+            abort(403, 'Invalid or expired verification link.');
+        }
+
+        $user = User::findOrFail($id);
+
+        if (! hash_equals((string) $hash, sha1($user->getEmailForVerification()))) {
+            abort(403, 'Invalid verification link.');
+        }
+
+        $policy = \App\Services\AuthPolicyResolverService::resolveForUser($user);
+
+        if (($policy['email_verification_mode'] ?? 'required') === 'disabled') {
+            if (auth('web')->check() && auth('web')->id() === $user->id) {
+                return redirect()->to(match ($user->role) {
+                    'Investor' => route('dashboard.investor'),
+                    'Student'  => route('dashboard.academic'),
+                    default    => route('home'),
+                });
+            }
+
+            return redirect()->route('login.show');
+        }
+
+        if (! $user->hasVerifiedEmail()) {
+            $user->markEmailAsVerified();
+            event(new Verified($user));
+        }
+
+        if (auth('web')->check() && auth('web')->id() === $user->id) {
+            return redirect()
+                ->to(match ($user->role) {
+                    'Investor' => route('dashboard.investor'),
+                    'Student'  => route('dashboard.academic'),
+                    default    => route('home'),
+                })
+                ->with('success', __('frontend.verify_email.verified_success'));
+        }
+
+        return redirect()
+            ->route('verification.success')
+            ->with('success', __('frontend.verify_email.verified_login_required'));
+    })->middleware('signed')->name('verification.verify');
+
+    Route::get('/auth/email/verified', function () {
+        return view('frontend.auth.email-verified');
+    })->name('verification.success');
 
     Route::middleware('guest:web')->prefix('auth')->group(function () {
         Route::get('/login', [FrontendAuth::class, 'showLogin'])->name('login.show');
@@ -132,36 +190,6 @@ Route::middleware(['web', 'frontend.locale'])->group(function () {
 
             return view('frontend.auth.verify-email');
         })->name('verification.notice');
-
-        Route::get('/auth/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
-            $user = $request->user();
-
-            if (! $user) {
-                return redirect()->route('login.show');
-            }
-
-            $policy = \App\Services\AuthPolicyResolverService::resolveForUser($user);
-
-            if ($policy['email_verification_mode'] === 'disabled') {
-                return redirect()->to(match ($user->role) {
-                    'Investor' => route('dashboard.investor'),
-                    'Student'  => route('dashboard.academic'),
-                    default    => route('home'),
-                });
-            }
-
-            if (! $user->hasVerifiedEmail()) {
-                $request->fulfill();
-            }
-
-            return redirect()
-                ->to(match ($user->role) {
-                    'Investor' => route('dashboard.investor'),
-                    'Student'  => route('dashboard.academic'),
-                    default    => route('home'),
-                })
-                ->with('success', 'Email verified successfully.');
-        })->middleware('signed')->name('verification.verify');
 
         Route::post('/auth/email/verification-notification', function (Request $request) {
             $user = $request->user();

@@ -270,7 +270,15 @@ return [
     'create_investor_account' => 'Create Investor Account',
     'create_academic_account' => 'Create Academic Account',
 ],
+
 'academic_dashboard' => [
+    'scan_disabled_published' => 'Technical scan is disabled because this project is already published.',
+    'preview' => 'Preview',
+'details' => 'Details',
+'yes' => 'Yes',
+'no' => 'No',
+'no_images_uploaded_yet' => 'No images uploaded yet.',
+'play_video' => 'Play Video',
     'settings' => 'Settings',
     'welcome' => 'Welcome',
     'researcher_identity' => 'Researcher Identity',
@@ -298,7 +306,7 @@ return [
     'project_image' => 'Project image',
     'no_images_uploaded' => 'No images uploaded yet.',
     'play_video' => 'Play Video',
-    'project_portfolio' => 'Project Portfolio',
+    'project_portfolio' => 'Details',
     'upload_project_media' => 'Upload Project Media',
     'upload_locked' => 'Upload Locked',
     'upload_locked_text' => 'Project images and videos can be uploaded after the final decision allows it.',
@@ -589,7 +597,7 @@ return [
 ],
 
 'submit_review' => [
-    'step_title' => 'Step 5 of 5: Review & Start Technical Scan',
+    'step_title' => 'Step 5 of 5: Review & submit',
     'page_title' => 'Review Your Submission',
     'page_subtitle' => 'Please review your project information carefully before starting the technical scan.',
     'error' => 'Error',
@@ -632,8 +640,10 @@ return [
     'accepted' => 'Accepted',
     'accepted_previous_step' => 'Accepted during previous step',
     'important_note' => 'Important Note',
-    'important_note_text' => 'By clicking <strong>Start Technical Scan</strong>, your project will be saved in the main platform and a technical scan request will be created in the scanner platform.',
-    'start_technical_scan' => 'Start Technical Scan',
+    'important_note_text' => 'By clicking <strong>Submit Project</strong>, your project will be saved in the main platform and a technical scan request will be created in the scanner platform.',
+    'submit_project' => 'Submit Project',
+    'start_technical_scan'=>'Submit Project',
+
 ],
 
 'submit_step1' => [
@@ -699,7 +709,13 @@ return [
     'governorate' => 'Governorate',
     'select_governorate' => 'Select governorate',
 ],
-
+    'login_otp' => [
+        'subject' => 'Your VertexGrad login verification code',
+        'greeting' => 'Hello :name,',
+        'line_1' => 'Use the verification code below to complete your login:',
+        'line_2' => 'This code will expire in 10 minutes.',
+        'line_3' => 'If you did not request this login, please ignore this email or secure your account.',
+    ],
 'submit_step3' => [
     'enter_estimated_amount' => 'Enter the estimated amount needed.',
 'estimated_funding' => 'Estimated funding',

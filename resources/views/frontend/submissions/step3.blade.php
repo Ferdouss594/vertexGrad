@@ -212,13 +212,12 @@
                             <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
                                 <div class="md:col-span-4 min-w-0">
                                     <label for="milestone_{{ $i }}" class="block text-sm font-medium text-theme-muted mb-2">
-                                        {{ __('frontend.submit_step3.milestone') }} {{ $i }} <span class="text-brand-accent">*</span>
+                                        {{ __('frontend.submit_step3.milestone') }} {{ $i }}
                                     </label>
                                     <input
                                         type="text"
                                         id="milestone_{{ $i }}"
                                         name="milestone_{{ $i }}"
-                                        required
                                         value="{{ old('milestone_'.$i, session('project_data.milestone_'.$i)) }}"
                                         placeholder="{{ __('frontend.submit_step3.milestone_placeholder') }}"
                                         class="w-full min-w-0 p-3 rounded-lg border border-theme-border bg-theme-surface text-theme-text focus:ring-0 focus:border-brand-accent text-sm sm:text-base"
@@ -227,13 +226,12 @@
 
                                 <div class="md:col-span-1 min-w-0">
                                     <label for="milestone_{{ $i }}_month" class="block text-sm font-medium text-theme-muted mb-2">
-                                        {{ __('frontend.submit_step3.month') }} <span class="text-brand-accent">*</span>
+                                        {{ __('frontend.submit_step3.month') }}
                                     </label>
                                     <input
                                         type="number"
                                         id="milestone_{{ $i }}_month"
                                         name="milestone_{{ $i }}_month"
-                                        required
                                         min="1"
                                         max="60"
                                         value="{{ old('milestone_'.$i.'_month', session('project_data.milestone_'.$i.'_month')) }}"
@@ -280,6 +278,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const fields = Array.from(document.querySelectorAll('input, select, textarea'));
     const requestedAmountInput = document.getElementById('requested_amount');
     const durationInput = document.getElementById('duration_months');
+    const needsFundingSelect = document.getElementById('needs_funding');
+const supportTypeInput = document.getElementById('support_type');
+const budgetBreakdownInput = document.getElementById('budget_breakdown');
     const milestoneMonthInputs = Array.from(document.querySelectorAll('input[id^="milestone_"][id$="_month"]'));
     const backLink = form?.querySelector('a[href*="step2"]');
     const submitButton = form?.querySelector('button[type="submit"]');
@@ -508,6 +509,25 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
         });
     }
+
+    function toggleFundingFields() {
+    const needsFunding = needsFundingSelect?.value === 'yes';
+
+    [requestedAmountInput, supportTypeInput, budgetBreakdownInput].forEach(field => {
+        if (!field) return;
+
+        field.disabled = !needsFunding;
+        field.required = needsFunding;
+
+        if (!needsFunding) {
+            field.value = '';
+            field.classList.remove('is-valid', 'is-warning');
+        }
+    });
+}
+
+needsFundingSelect?.addEventListener('change', toggleFundingFields);
+toggleFundingFields();
 });
 </script>
 @endsection

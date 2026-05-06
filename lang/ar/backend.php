@@ -478,6 +478,9 @@ return [
     'project_image' => 'صورة المشروع',
     'no_images_uploaded' => 'لم يتم رفع صور.',
     'no_video_uploaded' => 'لم يتم رفع فيديو.',
+
+    'project_status' => 'حالة المشروع',
+'scan_status' => 'حالة الفحص',
     'video_not_supported' => 'متصفحك لا يدعم تشغيل الفيديو.',
 ],
 

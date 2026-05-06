@@ -319,7 +319,15 @@ return [
     'event_recovery_code_used' => 'تم استخدام رمز استرداد',
     'event_recovery_code_failed' => 'فشل رمز الاسترداد',
 ],
+
 'academic_dashboard' => [
+    'preview' => 'معاينة',
+    'scan_disabled_published' => 'تم تعطيل الفحص التقني لأن هذا المشروع منشور بالفعل.',
+'details' => 'التفاصيل',
+'yes' => 'نعم',
+'no' => 'لا',
+'no_images_uploaded_yet' => 'لم يتم رفع صور بعد.',
+'play_video' => 'تشغيل الفيديو',
     'settings' => 'الإعدادات',
     'welcome' => 'مرحباً',
     'researcher_identity' => 'هوية الباحث',
@@ -347,7 +355,7 @@ return [
     'project_image' => 'صورة المشروع',
     'no_images_uploaded' => 'لم يتم رفع أي صور بعد.',
     'play_video' => 'تشغيل الفيديو',
-    'project_portfolio' => 'ملف المشروع',
+    'project_portfolio' => 'تفاصيل المشروع',
     'upload_project_media' => 'رفع وسائط المشروع',
     'upload_locked' => 'الرفع مقفل',
     'upload_locked_text' => 'يمكن رفع صور وفيديوهات المشروع بعد أن يسمح القرار النهائي بذلك.',
@@ -638,9 +646,9 @@ return [
 ],
 
 'submit_review' => [
-    'step_title' => 'الخطوة 5 من 5: المراجعة وبدء الفحص التقني',
+    'step_title' => 'الخطوة 5 من 5: المراجعة والتأكيد',
     'page_title' => 'راجع بيانات التقديم',
-    'page_subtitle' => 'يرجى مراجعة معلومات مشروعك بعناية قبل بدء الفحص التقني.',
+    'page_subtitle' => 'يرجى مراجعة معلومات مشروعك بعناية قبل تأكيد المشروع.',
     'error' => 'خطأ',
     'success' => 'نجاح',
     'validation' => 'التحقق',
@@ -681,8 +689,9 @@ return [
     'accepted' => 'تمت الموافقة',
     'accepted_previous_step' => 'تمت الموافقة في الخطوة السابقة',
     'important_note' => 'ملاحظة مهمة',
-    'important_note_text' => 'عند الضغط على <strong>بدء الفحص التقني</strong>، سيتم حفظ مشروعك في المنصة الرئيسية وإنشاء طلب فحص تقني في منصة الفحص.',
-    'start_technical_scan' => 'بدء الفحص التقني',
+    'important_note_text' => 'عند الضغط على <strong> تأكيد المشروع </strong>، سيتم حفظ مشروعك في المنصة الرئيسية وإنشاء طلب فحص تقني في منصة الفحص.',
+    'submit_project' => 'تأكيد المشروع',
+    'start_technical_scan'=>'تأكيد المشروع',
 ],
 
 'submit_step1' => [
@@ -910,6 +919,13 @@ return [
     'academic_submission_text' => 'قدّم بحثك للتحقق الأكاديمي واحصل على وصول مباشر إلى التمويل المؤسسي العالمي.',
     'start_vetting_process' => 'ابدأ عملية التحقق',
 ],
+    'login_otp' => [
+        'subject' => 'رمز التحقق لتسجيل الدخول إلى VertexGrad',
+        'greeting' => 'مرحباً :name،',
+        'line_1' => 'استخدم رمز التحقق التالي لإكمال تسجيل الدخول:',
+        'line_2' => 'ستنتهي صلاحية هذا الرمز خلال 10 دقائق.',
+        'line_3' => 'إذا لم تطلب تسجيل الدخول، يرجى تجاهل هذه الرسالة أو تأمين حسابك.',
+    ],
 'investor_summary' => [
     'back_to_project' => 'العودة إلى المشروع',
     'download_powerpoint' => 'تحميل البوربوينت',

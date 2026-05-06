@@ -70,7 +70,7 @@ class StudentController extends Controller
             ]);
         }
 
-        return redirect()->route('students.index')->with('success', 'Student created successfully.');
+        return redirect()->route('admin.students.index')->with('success', 'Student created successfully.');
     }
 
     // عرض صفحة تعديل الطالب
@@ -119,7 +119,7 @@ class StudentController extends Controller
             ]);
         }
 
-        return redirect()->route('students.index')->with('success', 'Student updated successfully.');
+        return redirect()->route('admin.students.index')->with('success', 'Student updated successfully.');
     }
 
     // حذف الطالب والمستخدم
@@ -127,7 +127,7 @@ class StudentController extends Controller
     {
         $student->delete();
 
-        return redirect()->route('students.index')->with('success', 'Student deleted successfully.');
+        return redirect()->route('admin.students.index')->with('success', 'Student deleted successfully.');
     }
 
     // عرض تفاصيل الطالب
@@ -151,6 +151,6 @@ class StudentController extends Controller
         // تحديث الحالة
         $student->update(['status' => $status]);
 
-        return redirect()->route('students.index')->with('success', 'Status updated successfully.');
+        return redirect()->route('admin.students.index')->with('success', 'Status updated successfully.');
     }
 }

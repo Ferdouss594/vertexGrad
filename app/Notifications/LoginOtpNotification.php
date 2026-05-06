@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class LoginOtpNotification extends Notification implements ShouldQueue
+class LoginOtpNotification extends Notification
 {
     use Queueable;
 

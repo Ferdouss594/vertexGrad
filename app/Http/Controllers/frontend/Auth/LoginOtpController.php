@@ -171,17 +171,17 @@ class LoginOtpController extends Controller
             ]);
 
             cookie()->queue(
-                cookie(
-                    'trusted_device_token',
-                    $plainTrustedToken,
-                    60 * 24 * 30,
-                    null,
-                    null,
-                    false,
-                    true,
-                    false,
-                    'Lax'
-                )
+        cookie(
+    'trusted_device_token',
+    $plainTrustedToken,
+    60 * 24 * 30,
+    null,
+    null,
+    $request->isSecure(),
+    true,
+    false,
+    'Lax'
+)
             );
 
             SecurityActivityLogger::log(

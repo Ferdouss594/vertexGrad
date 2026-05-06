@@ -48,52 +48,76 @@
         --text-soft: #7b8497;
         --border-color: #e8ecf4;
         --primary-color: #4e73df;
+        --primary-soft: rgba(78, 115, 223, 0.10);
+        --success-soft: rgba(28, 200, 138, 0.12);
+        --warning-soft: rgba(246, 194, 62, 0.16);
+        --danger-soft: rgba(231, 74, 59, 0.12);
         --shadow-sm: 0 8px 20px rgba(18, 38, 63, 0.06);
+        --shadow-md: 0 16px 38px rgba(18, 38, 63, 0.10);
         --radius-xl: 24px;
+        --radius-lg: 20px;
+        --radius-md: 16px;
     }
 
-    body { background: var(--page-bg); }
+    body {
+        background: var(--page-bg);
+    }
 
     .project-details-page {
-        padding: 10px 0 24px;
+        padding: 10px 0 32px;
     }
 
     .page-header-card {
-        background: linear-gradient(135deg, #ffffff 0%, #f9fbff 100%);
+        background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
         border: 1px solid var(--border-color);
         border-radius: var(--radius-xl);
-        padding: 26px 28px;
+        padding: 28px;
         box-shadow: var(--shadow-sm);
         margin-bottom: 24px;
     }
 
     .page-title {
         margin: 0;
-        font-size: 1.7rem;
-        font-weight: 800;
+        font-size: 1.75rem;
+        font-weight: 900;
         color: var(--text-main);
+        line-height: 1.25;
     }
 
     .page-subtitle {
         margin: 10px 0 0;
         color: var(--text-soft);
         line-height: 1.8;
+        max-width: 900px;
+    }
+
+    .hero-badges {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 8px;
     }
 
     .hero-badges .badge {
-        font-size: 13px;
-        padding: 8px 12px;
+        font-size: 0.78rem;
+        padding: 9px 13px;
         border-radius: 999px;
-        margin-right: 8px;
-        margin-bottom: 8px;
+        font-weight: 800;
+        letter-spacing: 0.2px;
     }
 
     .info-card {
-        background: #fff;
+        background: var(--card-bg);
         border: 1px solid var(--border-color);
-        border-radius: 20px;
+        border-radius: var(--radius-lg);
         box-shadow: var(--shadow-sm);
         height: 100%;
+        transition: transform 0.22s ease, box-shadow 0.22s ease;
+    }
+
+    .info-card:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-md);
     }
 
     .info-card .card-body {
@@ -101,76 +125,82 @@
     }
 
     .mini-stat-label {
-        color: #64748b;
-        font-size: 13px;
-        font-weight: 600;
-        margin-bottom: 6px;
+        color: var(--text-soft);
+        font-size: 0.78rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.35px;
+        margin-bottom: 8px;
     }
 
     .mini-stat-value {
-        color: #0f172a;
-        font-size: 20px;
-        font-weight: 800;
-        line-height: 1.3;
+        color: var(--text-main);
+        font-size: 1.28rem;
+        font-weight: 900;
+        line-height: 1.35;
+        word-break: break-word;
     }
 
     .section-card {
-        background: #fff;
+        background: var(--card-bg);
         border: 1px solid var(--border-color);
-        border-radius: 20px;
+        border-radius: var(--radius-xl);
         box-shadow: var(--shadow-sm);
         overflow: hidden;
         margin-bottom: 24px;
     }
 
     .section-card .card-header {
-        background: #f8fafc;
-        border-bottom: 1px solid #e2e8f0;
-        padding: 16px 20px;
+        background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+        border-bottom: 1px solid var(--border-color);
+        padding: 18px 22px;
     }
 
     .section-card .card-header h3,
     .section-card .card-header h5 {
         margin: 0;
-        font-weight: 700;
-        color: #0f172a;
+        font-weight: 900;
+        color: var(--text-main);
+        font-size: 1.12rem;
+    }
+
+    .section-card .card-body {
+        padding: 24px 22px;
     }
 
     .detail-grid .item {
-        padding: 14px 0;
+        padding: 14px 12px;
         border-bottom: 1px dashed #e5e7eb;
     }
 
-    .detail-grid .item:last-child {
-        border-bottom: 0;
-    }
-
     .detail-label {
-        font-size: 13px;
-        color: #64748b;
-        font-weight: 700;
-        margin-bottom: 4px;
+        font-size: 0.76rem;
+        color: var(--text-soft);
+        font-weight: 900;
+        margin-bottom: 6px;
+        text-transform: uppercase;
+        letter-spacing: 0.35px;
     }
 
     .detail-value {
-        font-size: 15px;
-        color: #0f172a;
-        font-weight: 600;
+        font-size: 0.95rem;
+        color: var(--text-main);
+        font-weight: 800;
         word-break: break-word;
     }
 
     .summary-box {
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
-        border-radius: 16px;
+        background: #f8faff;
+        border: 1px solid #edf1f7;
+        border-radius: var(--radius-md);
         padding: 18px;
         height: 100%;
     }
 
     .summary-box h6 {
-        font-weight: 700;
+        font-weight: 900;
         margin-bottom: 12px;
-        color: #0f172a;
+        color: var(--text-main);
     }
 
     .summary-list {
@@ -180,9 +210,10 @@
     }
 
     .summary-list li {
-        padding: 8px 0;
+        padding: 9px 0;
         border-bottom: 1px dashed #e5e7eb;
         color: #334155;
+        font-size: 0.92rem;
     }
 
     .summary-list li:last-child {
@@ -190,42 +221,132 @@
     }
 
     .scan-score-box {
-        background: linear-gradient(135deg, #eff6ff, #dbeafe);
-        border-radius: 18px;
-        padding: 20px;
+        background: linear-gradient(135deg, #eef4ff, #dbeafe);
+        border-radius: 20px;
+        padding: 24px 18px;
         text-align: center;
-        border: 1px solid #bfdbfe;
+        border: 1px solid #c7d8ff;
+        height: 100%;
     }
 
     .scan-score-number {
-        font-size: 36px;
-        font-weight: 800;
+        font-size: 2.5rem;
+        font-weight: 900;
         color: #1d4ed8;
         line-height: 1;
     }
 
     .scan-score-label {
-        margin-top: 8px;
+        margin-top: 10px;
         color: #475569;
-        font-weight: 600;
+        font-weight: 800;
+    }
+
+    .highlight-list,
+    .recommend-list {
+        padding-left: 1.2rem;
     }
 
     .highlight-list li,
     .recommend-list li {
         margin-bottom: 10px;
         color: #334155;
+        line-height: 1.7;
+    }
+
+    .section-card .table {
+        margin-bottom: 0;
     }
 
     .section-card .table thead th {
+        background: #172033;
+        color: #fff;
+        border: none;
         white-space: nowrap;
+        font-size: 0.82rem;
+        padding: 14px;
+    }
+
+    .section-card .table tbody td {
+        padding: 14px;
+        vertical-align: middle;
+        border-color: #eef2f7;
+        font-size: 0.92rem;
+    }
+
+    .section-card .table tbody tr:hover {
+        background: #fafcff;
+    }
+
+    .section-card .table-bordered {
+        border-color: #eef2f7;
+        overflow: hidden;
+        border-radius: 16px;
     }
 
     .action-btns form {
         display: inline-block;
     }
 
+    .action-btns .btn,
+    .section-card .btn {
+        border-radius: 12px;
+        font-weight: 800;
+        padding: 8px 14px;
+    }
+
+    .project-details-page img {
+        border-radius: 16px !important;
+        box-shadow: var(--shadow-sm);
+    }
+
+    video {
+        box-shadow: var(--shadow-sm);
+    }
+
+    @media (max-width: 991px) {
+        .page-header-card {
+            padding: 22px;
+        }
+
+        .hero-badges {
+            justify-content: flex-start;
+        }
+
+        .section-card .card-body {
+            padding: 20px 18px;
+        }
+    }
+
     @media (max-width: 576px) {
-        .page-title { font-size: 1.3rem; }
+        .page-title {
+            font-size: 1.35rem;
+        }
+
+        .page-subtitle {
+            font-size: 0.92rem;
+        }
+
+        .info-card .card-body {
+            padding: 18px;
+        }
+
+        .mini-stat-value {
+            font-size: 1.1rem;
+        }
+
+        .section-card .card-header {
+            padding: 16px 18px;
+        }
+
+        .section-card .card-header h3,
+        .section-card .card-header h5 {
+            font-size: 1rem;
+        }
+
+        .section-card .table {
+            min-width: 760px;
+        }
     }
 </style>
 

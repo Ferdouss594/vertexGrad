@@ -95,7 +95,7 @@
                 $videoUrl = $project->getFirstMediaUrl('videos');
             @endphp
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-8">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-10">
 
                 <div class="lg:col-span-2 space-y-5 sm:space-y-6 lg:space-y-8 min-w-0">
                     <div class="project-show-card theme-panel p-4 sm:p-6 lg:p-8 rounded-3xl shadow-brand-soft min-w-0">
@@ -173,193 +173,193 @@
                     </div>
                 </div>
 
-                <aside class="space-y-5 sm:space-y-6 min-w-0">
-                    <div class="project-show-card theme-panel p-4 sm:p-6 lg:p-8 rounded-3xl shadow-brand-soft min-w-0 lg:sticky lg:top-28">
-                        <p class="text-theme-muted text-xs uppercase font-bold mb-1">
-                            {{ __('frontend.project_show.requested_budget') }}
-                        </p>
+<aside class="vg-project-sidebar min-w-0">
+    <div class="project-show-card vg-project-side-card theme-panel p-5 sm:p-6 lg:p-8 rounded-3xl shadow-brand-soft min-w-0">
+        <p class="text-theme-muted text-xs uppercase font-bold mb-1">
+            {{ __('frontend.project_show.requested_budget') }}
+        </p>
 
-                        <h2 class="project-budget text-3xl sm:text-4xl font-black text-green-600 break-words">
-                            ${{ is_numeric($project->budget) ? number_format($project->budget) : '0' }}
-                        </h2>
+        <h2 class="project-budget text-3xl sm:text-4xl font-black text-green-600 break-words">
+            ${{ is_numeric($project->budget) ? number_format($project->budget) : '0' }}
+        </h2>
 
-                        <div class="mt-5 sm:mt-6 pt-5 sm:pt-6 border-t border-theme-border space-y-4">
-                            <div class="flex flex-col sm:flex-row sm:justify-between gap-1 sm:gap-4">
-                                <span class="text-theme-muted">{{ __('frontend.project_show.student_lead') }}:</span>
-                                <span class="text-brand-accent font-bold sm:text-end break-words">{{ $project->student?->name ?? __('frontend.project_show.unknown_user') }}</span>
-                            </div>
+        <div class="mt-6 sm:mt-7 pt-6 sm:pt-7 border-t border-theme-border space-y-5">
+            <div class="flex flex-col sm:flex-row sm:justify-between gap-1 sm:gap-4">
+                <span class="text-theme-muted">{{ __('frontend.project_show.student_lead') }}:</span>
+                <span class="text-brand-accent font-bold sm:text-end break-words">{{ $project->student?->name ?? __('frontend.project_show.unknown_user') }}</span>
+            </div>
 
-                            <div class="flex flex-col sm:flex-row sm:justify-between gap-1 sm:gap-4">
-                                <span class="text-theme-muted">{{ __('frontend.project_show.status') }}:</span>
-                                <span class="text-yellow-600 font-bold sm:text-end break-words">{{ $project->status ?? 'pending' }}</span>
-                            </div>
+            <div class="flex flex-col sm:flex-row sm:justify-between gap-1 sm:gap-4">
+                <span class="text-theme-muted">{{ __('frontend.project_show.status') }}:</span>
+                <span class="text-yellow-600 font-bold sm:text-end break-words">{{ $project->status ?? 'pending' }}</span>
+            </div>
 
-                            <div class="flex flex-col sm:flex-row sm:justify-between gap-1 sm:gap-4">
-                                <span class="text-theme-muted">{{ __('frontend.project_show.interest_count') }}:</span>
-                                <span class="text-theme-text font-bold sm:text-end">{{ $interestedCount }}</span>
-                            </div>
+            <div class="flex flex-col sm:flex-row sm:justify-between gap-1 sm:gap-4">
+                <span class="text-theme-muted">{{ __('frontend.project_show.interest_count') }}:</span>
+                <span class="text-theme-text font-bold sm:text-end">{{ $interestedCount }}</span>
+            </div>
 
-                            <div class="flex flex-col sm:flex-row sm:justify-between gap-1 sm:gap-4">
-                                <span class="text-theme-muted">{{ __('frontend.project_show.funding_requests') }}:</span>
-                                <span class="text-theme-text font-bold sm:text-end">{{ $requestedCount }}</span>
-                            </div>
-                        </div>
+            <div class="flex flex-col sm:flex-row sm:justify-between gap-1 sm:gap-4">
+                <span class="text-theme-muted">{{ __('frontend.project_show.funding_requests') }}:</span>
+                <span class="text-theme-text font-bold sm:text-end">{{ $requestedCount }}</span>
+            </div>
+        </div>
 
-                        @if($isInvestor)
-                            @if($canViewInvestorDeck)
-                                <div class="mt-6 space-y-3">
-                                    <a href="{{ route('investor.projects.summary', $project) }}"
-                                       class="w-full inline-flex items-center justify-center px-4 py-3 bg-brand-accent text-white font-bold rounded-xl hover:bg-brand-accent-strong transition text-center">
-                                        <i class="fas fa-file-lines me-2"></i>
-                                        {{ __('frontend.project_show.view_summary') }}
-                                    </a>
+        @if($isInvestor)
+            @if($canViewInvestorDeck)
+                <div class="mt-6 space-y-3">
+                    <a href="{{ route('investor.projects.summary', $project) }}"
+                       class="w-full inline-flex items-center justify-center px-4 py-3 bg-brand-accent text-white font-bold rounded-xl hover:bg-brand-accent-strong transition text-center">
+                        <i class="fas fa-file-lines me-2"></i>
+                        {{ __('frontend.project_show.view_summary') }}
+                    </a>
 
-                                    <a href="{{ route('investor.projects.pitch-deck.download', $project) }}"
-                                       class="w-full inline-flex items-center justify-center px-4 py-3 bg-theme-surface-2 text-theme-text font-bold rounded-xl border border-theme-border hover:border-brand-accent hover:text-brand-accent transition text-center">
-                                        <i class="fas fa-file-powerpoint me-2"></i>
-                                        {{ __('frontend.project_show.download_powerpoint') }}
-                                    </a>
-                                </div>
-                            @endif
+                    <a href="{{ route('investor.projects.pitch-deck.download', $project) }}"
+                       class="w-full inline-flex items-center justify-center px-4 py-3 bg-theme-surface-2 text-theme-text font-bold rounded-xl border border-theme-border hover:border-brand-accent hover:text-brand-accent transition text-center">
+                        <i class="fas fa-file-powerpoint me-2"></i>
+                        {{ __('frontend.project_show.download_powerpoint') }}
+                    </a>
+                </div>
+            @endif
 
-                            @if(!$currentInvestorStatus)
-                                <div class="mt-6 space-y-3">
-                                    <form method="POST" action="{{ route('frontend.projects.invest', $project) }}">
-                                        @csrf
-                                        <button type="submit" class="w-full px-4 py-3 bg-brand-accent text-white font-bold rounded-xl hover:bg-brand-accent-strong transition">
-                                            {{ __('frontend.project_show.express_investment_interest') }}
-                                        </button>
-                                    </form>
+            @if(!$currentInvestorStatus)
+                <div class="mt-6 space-y-3">
+                    <form method="POST" action="{{ route('frontend.projects.invest', $project) }}">
+                        @csrf
+                        <button type="submit" class="w-full px-4 py-3 bg-brand-accent text-white font-bold rounded-xl hover:bg-brand-accent-strong transition">
+                            {{ __('frontend.project_show.express_investment_interest') }}
+                        </button>
+                    </form>
 
-                                    <form method="POST" action="{{ route('frontend.projects.requestFunding', $project) }}" class="space-y-3 funding-form">
-                                        @csrf
-                                        <input
-                                            type="number"
-                                            name="amount"
-                                            min="1"
-                                            step="0.01"
-                                            placeholder="{{ __('frontend.project_show.funding_amount') }}"
-                                            class="w-full min-w-0 px-4 py-3 rounded-xl bg-theme-surface-2 border border-theme-border text-theme-text placeholder:text-theme-muted focus:outline-none focus:border-brand-accent text-sm sm:text-base"
-                                        >
+                    <form method="POST" action="{{ route('frontend.projects.requestFunding', $project) }}" class="space-y-3 funding-form">
+                        @csrf
+                        <input
+                            type="number"
+                            name="amount"
+                            min="1"
+                            step="0.01"
+                            placeholder="{{ __('frontend.project_show.funding_amount') }}"
+                            class="w-full min-w-0 px-4 py-3 rounded-xl bg-theme-surface-2 border border-theme-border text-theme-text placeholder:text-theme-muted focus:outline-none focus:border-brand-accent text-sm sm:text-base"
+                        >
 
-                                        <textarea
-                                            name="message"
-                                            rows="4"
-                                            placeholder="{{ __('frontend.project_show.funding_message_placeholder') }}"
-                                            class="w-full min-w-0 px-4 py-3 rounded-xl bg-theme-surface-2 border border-theme-border text-theme-text placeholder:text-theme-muted focus:outline-none focus:border-brand-accent text-sm sm:text-base resize-y"
-                                        ></textarea>
+                        <textarea
+                            name="message"
+                            rows="4"
+                            placeholder="{{ __('frontend.project_show.funding_message_placeholder') }}"
+                            class="w-full min-w-0 px-4 py-3 rounded-xl bg-theme-surface-2 border border-theme-border text-theme-text placeholder:text-theme-muted focus:outline-none focus:border-brand-accent text-sm sm:text-base resize-y"
+                        ></textarea>
 
-                                        <button type="submit" class="w-full px-4 py-3 bg-green-500 text-white font-bold rounded-xl hover:bg-green-600 transition">
-                                            {{ __('frontend.project_show.request_funding') }}
-                                        </button>
-                                    </form>
-                                </div>
+                        <button type="submit" class="w-full px-4 py-3 bg-green-500 text-white font-bold rounded-xl hover:bg-green-600 transition">
+                            {{ __('frontend.project_show.request_funding') }}
+                        </button>
+                    </form>
+                </div>
 
-                            @elseif($currentInvestorStatus === 'interested')
-                                <div class="mt-6 space-y-3">
-                                    <div class="text-green-600 font-bold text-center p-3 rounded-xl bg-green-500/10 border border-green-500/20">
-                                        {{ __('frontend.project_show.already_expressed_interest') }}
-                                    </div>
-
-                                    <form method="POST" action="{{ route('frontend.projects.interest.remove', $project) }}">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="w-full px-4 py-3 bg-theme-surface-2 text-theme-text font-bold rounded-xl hover:bg-red-500/10 hover:text-red-600 transition border border-theme-border">
-                                            {{ __('frontend.project_show.remove_interest') }}
-                                        </button>
-                                    </form>
-
-                                    <form method="POST" action="{{ route('frontend.projects.requestFunding', $project) }}" class="space-y-3 funding-form">
-                                        @csrf
-                                        <input
-                                            type="number"
-                                            name="amount"
-                                            min="1"
-                                            step="0.01"
-                                            placeholder="{{ __('frontend.project_show.funding_amount') }}"
-                                            class="w-full min-w-0 px-4 py-3 rounded-xl bg-theme-surface-2 border border-theme-border text-theme-text placeholder:text-theme-muted focus:outline-none focus:border-brand-accent text-sm sm:text-base"
-                                        >
-
-                                        <textarea
-                                            name="message"
-                                            rows="4"
-                                            placeholder="{{ __('frontend.project_show.funding_message_placeholder') }}"
-                                            class="w-full min-w-0 px-4 py-3 rounded-xl bg-theme-surface-2 border border-theme-border text-theme-text placeholder:text-theme-muted focus:outline-none focus:border-brand-accent text-sm sm:text-base resize-y"
-                                        ></textarea>
-
-                                        <button type="submit" class="w-full px-4 py-3 bg-green-500 text-white font-bold rounded-xl hover:bg-green-600 transition">
-                                            {{ __('frontend.project_show.upgrade_to_funding_request') }}
-                                        </button>
-                                    </form>
-                                </div>
-
-                            @elseif($currentInvestorStatus === 'requested')
-                                <div class="mt-6 text-center p-4 rounded-xl bg-yellow-500/10 border border-yellow-500/20 text-yellow-700 font-bold">
-                                    {{ __('frontend.project_show.request_under_review') }}
-                                </div>
-
-                            @elseif($currentInvestorStatus === 'approved')
-                                <div class="mt-6 text-center p-4 rounded-xl bg-green-500/10 border border-green-500/20 text-green-600 font-bold">
-                                    {{ __('frontend.project_show.request_approved') }}
-                                </div>
-
-                            @elseif($currentInvestorStatus === 'rejected')
-                                <div class="mt-6 space-y-3">
-                                    <div class="text-center p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-600 font-bold">
-                                        {{ __('frontend.project_show.request_rejected') }}
-                                    </div>
-
-                                    <form method="POST" action="{{ route('frontend.projects.requestFunding', $project) }}" class="space-y-3 funding-form">
-                                        @csrf
-                                        <input
-                                            type="number"
-                                            name="amount"
-                                            min="1"
-                                            step="0.01"
-                                            placeholder="{{ __('frontend.project_show.new_funding_amount') }}"
-                                            class="w-full min-w-0 px-4 py-3 rounded-xl bg-theme-surface-2 border border-theme-border text-theme-text placeholder:text-theme-muted focus:outline-none focus:border-brand-accent text-sm sm:text-base"
-                                        >
-
-                                        <textarea
-                                            name="message"
-                                            rows="4"
-                                            placeholder="{{ __('frontend.project_show.new_request_placeholder') }}"
-                                            class="w-full min-w-0 px-4 py-3 rounded-xl bg-theme-surface-2 border border-theme-border text-theme-text placeholder:text-theme-muted focus:outline-none focus:border-brand-accent text-sm sm:text-base resize-y"
-                                        ></textarea>
-
-                                        <button type="submit" class="w-full px-4 py-3 bg-brand-accent text-white font-bold rounded-xl hover:bg-brand-accent-strong transition">
-                                            {{ __('frontend.project_show.submit_new_funding_request') }}
-                                        </button>
-                                    </form>
-                                </div>
-                            @endif
-                        @endif
+            @elseif($currentInvestorStatus === 'interested')
+                <div class="mt-6 space-y-3">
+                    <div class="text-green-600 font-bold text-center p-3 rounded-xl bg-green-500/10 border border-green-500/20">
+                        {{ __('frontend.project_show.already_expressed_interest') }}
                     </div>
 
-                    <div class="project-show-card theme-panel p-4 sm:p-6 rounded-3xl shadow-brand-soft min-w-0">
-                        <h3 class="text-theme-text font-bold mb-4 flex items-center text-base sm:text-lg">
-                            <i class="fas fa-file-alt me-2 text-brand-accent"></i>
-                            {{ __('frontend.project_show.legacy_files') }}
-                        </h3>
+                    <form method="POST" action="{{ route('frontend.projects.interest.remove', $project) }}">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="w-full px-4 py-3 bg-theme-surface-2 text-theme-text font-bold rounded-xl hover:bg-red-500/10 hover:text-red-600 transition border border-theme-border">
+                            {{ __('frontend.project_show.remove_interest') }}
+                        </button>
+                    </form>
 
-                        @if($project->files && $project->files->count() > 0)
-                            @foreach($project->files as $file)
-                                <div class="project-file-row flex items-center justify-between gap-4 p-3 bg-theme-surface-2 rounded-xl border border-theme-border mb-2 hover:bg-brand-accent-soft transition-all">
-                                    <span class="text-theme-text text-sm font-semibold break-words min-w-0">
-                                        {{ strtoupper($file->file_type ?? __('frontend.project_show.document')) }}
-                                    </span>
-                                    <a href="{{ asset('storage/' . ($file->file_path ?? '')) }}" target="_blank" class="text-brand-accent hover:text-theme-text shrink-0">
-                                        <i class="fas fa-download"></i>
-                                    </a>
-                                </div>
-                            @endforeach
-                        @else
-                            <p class="text-theme-muted italic text-sm text-center py-4">
-                                {{ __('frontend.project_show.no_legacy_files') }}
-                            </p>
-                        @endif
+                    <form method="POST" action="{{ route('frontend.projects.requestFunding', $project) }}" class="space-y-3 funding-form">
+                        @csrf
+                        <input
+                            type="number"
+                            name="amount"
+                            min="1"
+                            step="0.01"
+                            placeholder="{{ __('frontend.project_show.funding_amount') }}"
+                            class="w-full min-w-0 px-4 py-3 rounded-xl bg-theme-surface-2 border border-theme-border text-theme-text placeholder:text-theme-muted focus:outline-none focus:border-brand-accent text-sm sm:text-base"
+                        >
+
+                        <textarea
+                            name="message"
+                            rows="4"
+                            placeholder="{{ __('frontend.project_show.funding_message_placeholder') }}"
+                            class="w-full min-w-0 px-4 py-3 rounded-xl bg-theme-surface-2 border border-theme-border text-theme-text placeholder:text-theme-muted focus:outline-none focus:border-brand-accent text-sm sm:text-base resize-y"
+                        ></textarea>
+
+                        <button type="submit" class="w-full px-4 py-3 bg-green-500 text-white font-bold rounded-xl hover:bg-green-600 transition">
+                            {{ __('frontend.project_show.upgrade_to_funding_request') }}
+                        </button>
+                    </form>
+                </div>
+
+            @elseif($currentInvestorStatus === 'requested')
+                <div class="mt-6 text-center p-4 rounded-xl bg-yellow-500/10 border border-yellow-500/20 text-yellow-700 font-bold">
+                    {{ __('frontend.project_show.request_under_review') }}
+                </div>
+
+            @elseif($currentInvestorStatus === 'approved')
+                <div class="mt-6 text-center p-4 rounded-xl bg-green-500/10 border border-green-500/20 text-green-600 font-bold">
+                    {{ __('frontend.project_show.request_approved') }}
+                </div>
+
+            @elseif($currentInvestorStatus === 'rejected')
+                <div class="mt-6 space-y-3">
+                    <div class="text-center p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-600 font-bold">
+                        {{ __('frontend.project_show.request_rejected') }}
                     </div>
-                </aside>
+
+                    <form method="POST" action="{{ route('frontend.projects.requestFunding', $project) }}" class="space-y-3 funding-form">
+                        @csrf
+                        <input
+                            type="number"
+                            name="amount"
+                            min="1"
+                            step="0.01"
+                            placeholder="{{ __('frontend.project_show.new_funding_amount') }}"
+                            class="w-full min-w-0 px-4 py-3 rounded-xl bg-theme-surface-2 border border-theme-border text-theme-text placeholder:text-theme-muted focus:outline-none focus:border-brand-accent text-sm sm:text-base"
+                        >
+
+                        <textarea
+                            name="message"
+                            rows="4"
+                            placeholder="{{ __('frontend.project_show.new_request_placeholder') }}"
+                            class="w-full min-w-0 px-4 py-3 rounded-xl bg-theme-surface-2 border border-theme-border text-theme-text placeholder:text-theme-muted focus:outline-none focus:border-brand-accent text-sm sm:text-base resize-y"
+                        ></textarea>
+
+                        <button type="submit" class="w-full px-4 py-3 bg-brand-accent text-white font-bold rounded-xl hover:bg-brand-accent-strong transition">
+                            {{ __('frontend.project_show.submit_new_funding_request') }}
+                        </button>
+                    </form>
+                </div>
+            @endif
+        @endif
+    </div>
+
+    <div class="project-show-card vg-project-side-card theme-panel p-5 sm:p-6 lg:p-7 rounded-3xl shadow-brand-soft min-w-0">
+        <h3 class="text-theme-text font-bold mb-4 flex items-center text-base sm:text-lg">
+            <i class="fas fa-file-alt me-2 text-brand-accent"></i>
+            {{ __('frontend.project_show.legacy_files') }}
+        </h3>
+
+        @if($project->files && $project->files->count() > 0)
+            @foreach($project->files as $file)
+                <div class="project-file-row flex items-center justify-between gap-4 p-3 bg-theme-surface-2 rounded-xl border border-theme-border mb-2 hover:bg-brand-accent-soft transition-all">
+                    <span class="text-theme-text text-sm font-semibold break-words min-w-0">
+                        {{ strtoupper($file->file_type ?? __('frontend.project_show.document')) }}
+                    </span>
+                    <a href="{{ asset('storage/' . ($file->file_path ?? '')) }}" target="_blank" class="text-brand-accent hover:text-theme-text shrink-0">
+                        <i class="fas fa-download"></i>
+                    </a>
+                </div>
+            @endforeach
+        @else
+            <p class="text-theme-muted italic text-sm text-center py-4">
+                {{ __('frontend.project_show.no_legacy_files') }}
+            </p>
+        @endif
+    </div>
+</aside>
             </div>
         @else
             <div class="project-show-reveal bg-red-500/10 border border-red-500/40 p-6 sm:p-10 rounded-3xl text-center">
@@ -400,6 +400,28 @@ document.addEventListener('DOMContentLoaded', function () {
             .project-file-row {
                 transition: transform .24s ease, box-shadow .24s ease, border-color .24s ease, background-color .24s ease;
             }
+                .vg-project-sidebar {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 2rem !important;
+    align-items: stretch !important;
+}
+
+.vg-project-sidebar > .vg-project-side-card {
+    position: relative !important;
+    transform: none !important;
+    margin: 0 !important;
+    width: 100% !important;
+    z-index: 1 !important;
+}
+
+.vg-project-sidebar > .vg-project-side-card + .vg-project-side-card {
+    margin-top: 2rem !important;
+}
+
+.vg-project-sidebar .project-show-card:hover {
+    transform: none !important;
+}
 
             .vg-focus-ring:focus-visible {
                 outline: none;
@@ -505,6 +527,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 opacity: 0;
                 transition: opacity 0.25s ease;
             ">
+        
                 <button type="button" id="projectImagePreviewClose" style="
                     position: absolute;
                     top: 18px;

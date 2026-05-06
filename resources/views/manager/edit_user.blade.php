@@ -1,137 +1,324 @@
 @extends('layouts.app')
 
-@section('title', __('backend.manager_users_create.page_title'))
+@section('title', __('backend.users_management.edit'))
 
 @section('content')
-<div class="container mt-4">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+<style>
+    :root {
+        --page-bg: #f5f7fb;
+        --card-bg: #ffffff;
+        --text-main: #172033;
+        --text-soft: #7b8497;
+        --border-color: #e8ecf4;
+        --primary-color: #4e73df;
+        --success-color: #1cc88a;
+        --danger-color: #e74a3b;
+        --shadow-sm: 0 8px 20px rgba(18, 38, 63, 0.06);
+        --shadow-md: 0 14px 36px rgba(18, 38, 63, 0.10);
+    }
+
+    body {
+        background: var(--page-bg);
+    }
+
+    .user-form-page {
+        padding: 10px 0 28px;
+    }
+
+    .page-header-card,
+    .form-panel {
+        background: #fff;
+        border: 1px solid var(--border-color);
+        border-radius: 24px;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .page-header-card {
+        padding: 26px 28px;
+        margin-bottom: 24px;
+    }
+
+    .page-title {
+        margin: 0;
+        font-size: 1.65rem;
+        font-weight: 800;
+        color: var(--text-main);
+    }
+
+    .page-subtitle {
+        margin: 8px 0 0;
+        color: var(--text-soft);
+        font-size: 0.96rem;
+    }
+
+    .form-panel {
+        overflow: hidden;
+    }
+
+    .form-panel-head {
+        padding: 22px 24px;
+        border-bottom: 1px solid var(--border-color);
+        background: linear-gradient(135deg, #ffffff 0%, #f9fbff 100%);
+    }
+
+    .form-panel-title {
+        margin: 0;
+        font-size: 1.15rem;
+        font-weight: 800;
+        color: var(--text-main);
+    }
+
+    .form-panel-body {
+        padding: 26px 24px 28px;
+    }
+
+    .avatar-preview-wrap {
+        width: 132px;
+        height: 132px;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 4px solid #edf1f7;
+        box-shadow: var(--shadow-sm);
+        background: #f8faff;
+        margin: 0 auto 18px;
+    }
+
+    .avatar-preview-wrap img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .form-label {
+        font-weight: 700;
+        color: var(--text-main);
+        font-size: 0.9rem;
+        margin-bottom: 8px;
+    }
+
+    .form-control,
+    .form-select {
+        min-height: 48px;
+        border-radius: 14px;
+        border-color: var(--border-color);
+        color: var(--text-main);
+        font-weight: 600;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 4px rgba(78, 115, 223, 0.12);
+    }
+
+    .readonly-soft {
+        background: #f7f9fd;
+        color: var(--text-soft);
+    }
+
+    .btn-main {
+        min-height: 48px;
+        border-radius: 999px;
+        padding: 10px 28px;
+        font-weight: 800;
+        background: linear-gradient(135deg, var(--primary-color), #6f8df3);
+        color: #fff;
+        border: none;
+        box-shadow: 0 8px 18px rgba(78, 115, 223, 0.24);
+    }
+
+    .btn-main:hover {
+        color: #fff;
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-md);
+    }
+
+    .btn-back {
+        min-height: 48px;
+        border-radius: 999px;
+        padding: 10px 24px;
+        font-weight: 800;
+        border: 1px solid var(--border-color);
+        background: #fff;
+        color: var(--text-main);
+    }
+
+    .custom-alert {
+        border: none;
+        border-radius: 16px;
+        box-shadow: var(--shadow-sm);
+    }
+
+    @media (max-width: 576px) {
+        .page-header-card,
+        .form-panel-body,
+        .form-panel-head {
+            padding-left: 18px;
+            padding-right: 18px;
+        }
+
+        .page-title {
+            font-size: 1.35rem;
+        }
+
+        .btn-main,
+        .btn-back {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="container-fluid user-form-page">
+
+    <div class="page-header-card">
+        <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3">
+            <div>
+                <h1 class="page-title">
+                    {{ __('backend.users_management.edit') }}
+                </h1>
+                <p class="page-subtitle">
+                    {{ $user->name }} — {{ $user->email }}
+                </p>
+            </div>
+
+            <a href="{{ route('manager.pending.users') }}" class="btn btn-back">
+                <i class="bi bi-arrow-left me-2"></i>
+                {{ __('backend.users_management.users_directory') }}
+            </a>
+        </div>
+    </div>
 
     @if(session('error'))
-        <div class="alert alert-danger alert-dismissible fade show">
+        <div class="alert alert-danger custom-alert alert-dismissible fade show">
             {{ session('error') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     @endif
 
-    <div class="card shadow-sm border-0 rounded">
-        <div class="card-header bg-primary text-white">
-            <h4 class="mb-0">{{ __('backend.manager_users_create.heading') }}</h4>
+    @if(session('success'))
+        <div class="alert alert-success custom-alert alert-dismissible fade show">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
-        <div class="card-body">
+    @endif
 
-            <form action="{{ route('manager.users.store') }}" method="POST" enctype="multipart/form-data">
+    @if($errors->any())
+        <div class="alert alert-danger custom-alert">
+            <ul class="mb-0">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    <div class="form-panel">
+        <div class="form-panel-head">
+            <h2 class="form-panel-title">
+                <i class="bi bi-pencil-square me-2 text-primary"></i>
+                {{ __('backend.users_management.edit') }}
+            </h2>
+        </div>
+
+        <div class="form-panel-body">
+            <form action="{{ route('manager.users.update', $user->id) }}" method="POST">
                 @csrf
+                @method('PUT')
 
                 <div class="text-center mb-4">
-                    <div style="position: relative; display: inline-block; width: 150px; height: 150px;">
-                        <img id="imagePreview" src="{{ asset('src/images/avatar.png') }}"
-                            alt="{{ __('backend.manager_users_create.profile_preview') }}"
-                            style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; border: 2px solid #ddd;">
+                    <div class="avatar-preview-wrap">
+                        <img
+                            src="{{ $user->profile_image ? asset($user->profile_image) : asset('src/images/avatar.png') }}"
+                            alt="{{ $user->name }}"
+                        >
+                    </div>
+                    <div class="fw-bold text-dark">{{ $user->name }}</div>
+                    <div class="text-muted small">{{ $user->role }}</div>
+                </div>
 
-                        <label for="profileImage"
-                            style="position: absolute; bottom: -10px; right: -10px;
-                                   width: 50px; height: 50px; background-color: #5bc0de;
-                                   color: white; border-radius: 50%; display: flex;
-                                   justify-content: center; align-items: center;
-                                   cursor: pointer; font-weight: bold; font-size: 24px;">
-                            +
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <label class="form-label">
+                            {{ __('backend.users_management.username') ?? 'Username' }}
                         </label>
-                        <input type="file" name="profile_image" id="profileImage" class="d-none" accept="image/*">
-                    </div>
-                </div>
-
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <label class="form-label">{{ __('backend.manager_users_create.username') }}</label>
-                        <input type="text" name="username" class="form-control" required>
+                        <input
+                            type="text"
+                            value="{{ $user->username }}"
+                            class="form-control readonly-soft"
+                            readonly
+                        >
                     </div>
 
                     <div class="col-md-6">
-                        <label class="form-label">{{ __('backend.manager_users_create.full_name') }}</label>
-                        <input type="text" name="name" class="form-control" required>
+                        <label class="form-label">
+                            {{ __('backend.users_management.full_name') ?? 'Full Name' }}
+                        </label>
+                        <input
+                            type="text"
+                            name="name"
+                            value="{{ old('name', $user->name) }}"
+                            class="form-control"
+                            required
+                        >
                     </div>
 
                     <div class="col-md-6">
-                        <label class="form-label">{{ __('backend.manager_users_create.email') }}</label>
-                        <input type="email" name="email" class="form-control" required>
+                        <label class="form-label">
+                            {{ __('backend.users_management.email') }}
+                        </label>
+                        <input
+                            type="email"
+                            name="email"
+                            value="{{ old('email', $user->email) }}"
+                            class="form-control"
+                            required
+                        >
                     </div>
 
                     <div class="col-md-6">
-                        <label class="form-label">{{ __('backend.manager_users_create.role') }}</label>
+                        <label class="form-label">
+                            {{ __('backend.users_management.role') }}
+                        </label>
                         <select name="role" class="form-select">
-                            <option value="Student">{{ __('backend.manager_users_create.roles.student') }}</option>
-                            <option value="Supervisor">{{ __('backend.manager_users_create.roles.supervisor') }}</option>
-                            <option value="Manager">{{ __('backend.manager_users_create.roles.manager') }}</option>
-                            <option value="Investor">{{ __('backend.manager_users_create.roles.investor') }}</option>
-                            <option value="Admin">{{ __('backend.manager_users_create.roles.admin') }}</option>
+                            @foreach(['Student', 'Supervisor', 'Manager', 'Investor', 'Admin'] as $role)
+                                <option value="{{ $role }}" {{ old('role', $user->role) === $role ? 'selected' : '' }}>
+                                    {{ $role }}
+                                </option>
+                            @endforeach
                         </select>
                     </div>
 
                     <div class="col-md-6">
-                        <label class="form-label">{{ __('backend.manager_users_create.status') }}</label>
-                        <select name="status" class="form-select">
-                            <option value="active">{{ __('backend.manager_users_create.statuses.active') }}</option>
-                            <option value="inactive">{{ __('backend.manager_users_create.statuses.inactive') }}</option>
-                            <option value="pending" selected>{{ __('backend.manager_users_create.statuses.pending') }}</option>
-                            <option value="disabled">{{ __('backend.manager_users_create.statuses.disabled') }}</option>
+                        <label class="form-label">
+                            {{ __('backend.users_management.status') }}
+                        </label>
+                        <select name="status" class="form-select" required>
+                            @foreach(['active', 'inactive', 'pending', 'disabled'] as $status)
+                                <option value="{{ $status }}" {{ old('status', $user->status) === $status ? 'selected' : '' }}>
+                                    {{ ucfirst($status) }}
+                                </option>
+                            @endforeach
                         </select>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label class="form-label">{{ __('backend.manager_users_create.gender') }}</label>
-                        <select name="gender" class="form-select">
-                            <option value="">{{ __('backend.manager_users_create.select') }}</option>
-                            <option value="male">{{ __('backend.manager_users_create.genders.male') }}</option>
-                            <option value="female">{{ __('backend.manager_users_create.genders.female') }}</option>
-                        </select>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label class="form-label">{{ __('backend.manager_users_create.city') }}</label>
-                        <input type="text" name="city" class="form-control">
-                    </div>
-
-                    <div class="col-md-6">
-                        <label class="form-label">{{ __('backend.manager_users_create.state_country') }}</label>
-                        <input type="text" name="state" class="form-control">
-                    </div>
-
-                    <div class="col-md-6">
-                        <label class="form-label">{{ __('backend.manager_users_create.password') }}</label>
-                        <input type="password" name="password" class="form-control" required>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label class="form-label">{{ __('backend.manager_users_create.confirm_password') }}</label>
-                        <input type="password" name="password_confirmation" class="form-control" required>
                     </div>
                 </div>
 
-                <div class="mt-4 text-center">
-                    <button type="submit" class="btn px-5 py-2" style="background-color: #003366; color: white; font-weight: bold;">
-                        {{ __('backend.manager_users_create.add_user') }}
+                <div class="d-flex flex-column flex-sm-row align-items-stretch align-items-sm-center justify-content-end gap-3 mt-5">
+                    <a href="{{ route('manager.pending.users') }}" class="btn btn-back">
+                        {{ __('backend.users_management.close') }}
+                    </a>
+
+                    <button type="submit" class="btn btn-main">
+                        <i class="bi bi-check-circle-fill me-2"></i>
+                        {{ __('backend.users_management.edit') }}
                     </button>
                 </div>
-
             </form>
         </div>
     </div>
 </div>
 
-<script>
-    const profileImage = document.getElementById('profileImage');
-    const imagePreview = document.getElementById('imagePreview');
-
-    profileImage.addEventListener('change', function() {
-        const file = this.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                imagePreview.src = e.target.result;
-            }
-            reader.readAsDataURL(file);
-        } else {
-            imagePreview.src = "{{ asset('src/images/avatar.png') }}";
-        }
-    });
-</script>
 @endsection

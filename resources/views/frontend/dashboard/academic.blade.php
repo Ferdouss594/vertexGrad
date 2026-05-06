@@ -191,30 +191,30 @@
 
         @if($currentProject)
         {{-- HERO --}}
-        <div class="relative overflow-hidden theme-panel rounded-3xl md:rounded-[2.5rem] mb-10 transition-all">
+        <div id="dashboardHero" class="relative overflow-hidden theme-panel rounded-3xl md:rounded-[2.5rem] mb-10 transition-all">
             <div class="p-5 sm:p-8 md:p-12">
                 <div class="flex flex-col lg:flex-row justify-between gap-10">
                     <div class="flex-1 min-w-0">
                         <div class="flex items-center gap-3 mb-6 flex-wrap">
                             <span class="px-4 py-1.5 rounded-xl bg-brand-accent-soft text-brand-accent text-[10px] font-black uppercase tracking-[0.15em] border border-brand-accent">
-                                {{ $currentProject->category ?? __('frontend.academic_dashboard.uncategorized') }}
+                                <span id="heroCategory">{{ $currentProject->category ?? __('frontend.academic_dashboard.uncategorized') }}</span>
                             </span>
-                            <span class="text-theme-muted text-xs font-mono">REF: PRJ-{{ $currentProject->project_id + 1000 }}</span>
+                            <span class="text-theme-muted text-xs font-mono">REF: <span id="heroRef">PRJ-{{ $currentProject->project_id + 1000 }}</span></span>
                         </div>
 
                         <h2 class="text-3xl md:text-5xl font-bold text-theme-text mb-8 leading-[1.1] tracking-tight break-words">
-                            {{ $currentProject->name }}
+                            <span id="heroTitle">{{ $currentProject->name }}</span>
                         </h2>
 
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
                             <div class="theme-panel-soft p-4 rounded-2xl">
                                 <p class="text-theme-muted text-[10px] uppercase font-black mb-1 tracking-widest">{{ __('frontend.academic_dashboard.target_budget') }}</p>
-                                <p class="text-2xl font-bold text-green-600">${{ number_format($currentProject->budget ?? 0) }}</p>
+                                <p class="text-2xl font-bold text-green-600"><span id="heroBudget">${{ number_format($currentProject->budget ?? 0) }}</span></p>
                             </div>
 
                             <div class="theme-panel-soft p-4 rounded-2xl">
                                 <p class="text-theme-muted text-[10px] uppercase font-black mb-1 tracking-widest">{{ __('frontend.academic_dashboard.submission_date') }}</p>
-                                <p class="text-xl text-theme-text font-semibold">{{ $currentProject->created_at->format('M d, Y') }}</p>
+                                <p class="text-xl text-theme-text font-semibold"><span id="heroDate">{{ $currentProject->created_at->format('M d, Y') }}</span></p>
                             </div>
 
                             <div class="theme-panel-soft p-4 rounded-2xl">
@@ -225,7 +225,9 @@
                                         <span class="relative inline-flex rounded-full h-2 w-2 bg-yellow-500"></span>
                                     </div>
                                     <span class="text-lg font-bold text-theme-text italic break-words">
-                                        {{ $decisionLabel($currentDecision) ?? ($currentProject->status == 'pending' ? __('frontend.academic_dashboard.reviewing') : ucfirst($currentProject->status)) }}
+                                        <span id="heroStatus">
+    {{ $decisionLabel($currentDecision) ?? ($currentProject->status == 'pending' ? __('frontend.academic_dashboard.reviewing') : ucfirst($currentProject->status)) }}
+</span>
                                     </span>
                                 </div>
                             </div>
@@ -239,39 +241,41 @@
                                     {{ __('frontend.academic_dashboard.media_preview') }}
                                 </h3>
                                 <div class="text-xs text-theme-muted font-mono">
-                                    {{ __('frontend.academic_dashboard.images') }}: {{ $currentImages->count() }} •
-                                    {{ __('frontend.academic_dashboard.video') }}: {{ $currentVideoUrl ? __('frontend.academic_dashboard.yes') : __('frontend.academic_dashboard.no') }}
-                                </div>
+                             {{ __('frontend.academic_dashboard.images') }}: <span id="heroImageCount">{{ $currentImages->count() }}</span> •
+{{ __('frontend.academic_dashboard.video') }}: <span id="heroVideoStatus">{{ $currentVideoUrl ? __('frontend.academic_dashboard.yes') : __('frontend.academic_dashboard.no') }}</span> </div>
                             </div>
+<div id="heroImages">
+    @if($currentImages->count() > 0)
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+        @foreach($currentImages->take(4) as $m)
+        <a href="{{ $m->getUrl() }}" target="_blank"
+            class="project-preview-link relative overflow-hidden rounded-2xl border border-theme-border bg-theme-surface-2 transition">
+            <img src="{{ $m->getUrl() }}" class="w-full h-24 sm:h-28 object-cover"
+                alt="{{ __('frontend.academic_dashboard.project_image') }}">
+        </a>
+        @endforeach
+    </div>
+    @else
+    <div class="p-5 rounded-2xl border border-theme-border bg-theme-surface-2 text-theme-muted text-sm">
+        {{ __('frontend.academic_dashboard.no_images_uploaded') }}
+    </div>
+    @endif
+</div>
 
-                            @if($currentImages->count() > 0)
-                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-                                @foreach($currentImages->take(4) as $m)
-                                <a href="{{ $m->getUrl() }}" target="_blank"
-                                    class="project-preview-link relative overflow-hidden rounded-2xl border border-theme-border bg-theme-surface-2 transition">
-                                    <img src="{{ $m->getUrl() }}" class="w-full h-24 sm:h-28 object-cover"
-                                        alt="{{ __('frontend.academic_dashboard.project_image') }}">
-                                </a>
-                                @endforeach
-                            </div>
-                            @else
-                            <div class="p-5 rounded-2xl border border-theme-border bg-theme-surface-2 text-theme-muted text-sm">
-                                {{ __('frontend.academic_dashboard.no_images_uploaded') }}
-                            </div>
-                            @endif
-
-                            @if($currentVideoUrl)
-                            <button type="button" onclick="openVideoModal('{{ $currentVideoUrl }}')"
-                                class="mt-4 w-full flex items-center justify-between gap-4 p-5 bg-theme-surface-2 hover:bg-brand-accent-soft border border-theme-border rounded-2xl transition-all text-theme-text">
-                                <span class="font-bold text-xs uppercase tracking-wider">{{ __('frontend.academic_dashboard.play_video') }}</span>
-                                <i class="fas fa-play text-brand-accent"></i>
-                            </button>
-                            @endif
+             <div id="heroVideoWrap">
+    @if($currentVideoUrl)
+    <button type="button" onclick="openVideoModal('{{ $currentVideoUrl }}')"
+        class="mt-4 w-full flex items-center justify-between gap-4 p-5 bg-theme-surface-2 hover:bg-brand-accent-soft border border-theme-border rounded-2xl transition-all text-theme-text">
+        <span class="font-bold text-xs uppercase tracking-wider">{{ __('frontend.academic_dashboard.play_video') }}</span>
+        <i class="fas fa-play text-brand-accent"></i>
+    </button>
+    @endif
+</div>
                         </div>
                     </div>
 
                     <div class="flex flex-col justify-center gap-4 w-full lg:w-[280px] shrink-0">
-                        <a href="{{ route('frontend.projects.show', $currentProject->project_id) }}"
+                        <a id="heroDetailsBtn" href="{{ route('frontend.projects.show', $currentProject->project_id) }}"
                             class="group/btn flex items-center justify-between gap-4 p-5 bg-brand-accent text-white rounded-2xl transition-all hover:bg-brand-accent-strong">
                             <span class="font-black uppercase text-xs tracking-wider">{{ __('frontend.academic_dashboard.project_portfolio') }}</span>
                             <i class="fas fa-arrow-right rtl:rotate-180 group-hover/btn:translate-x-1 transition-transform"></i>
@@ -299,7 +303,7 @@
                         @php
                             $scanState = strtolower((string) ($currentProject->status ?? $currentProject->scanner_status ?? 'draft'));
                         @endphp
-
+                        <div id="heroScanWrap">
                         @if(in_array($scanState, ['draft', 'scan_failed', 'scan_requested', 'pending', 'rejected']))
                         @php
                             $scanData = base64_encode(json_encode([
@@ -310,7 +314,6 @@
                                 'language' => $currentProject->primary_language ?? 'php',
                             ]));
                         @endphp
-
                         <a href="{{ env('SCANNER_PUBLIC_BASE_URL') }}/submit?data={{ urlencode($scanData) }}"
                             class="flex items-center justify-between gap-4 p-4 bg-blue-600 text-white rounded-2xl transition-all hover:bg-blue-700 group">
                             <div>
@@ -323,7 +326,6 @@
                             </div>
                             <i class="fas fa-microscope group-hover:scale-110 transition-transform"></i>
                         </a>
-
                         @elseif(in_array($scanState, ['scan_completed', 'awaiting_manual_review', 'approved', 'published', 'active']))
                         @php
                             $scanData = base64_encode(json_encode([
@@ -348,6 +350,7 @@
                             <i class="fas fa-check-circle group-hover:scale-110 transition-transform"></i>
                         </a>
                         @endif
+                        </div>
                     </div>
                 </div>
             </div>
@@ -561,61 +564,114 @@
                     $thumb = $project->getFirstMediaUrl('images');
                     $imgCount = $project->getMedia('images')->count();
                     $hasVideo = (bool) $project->getFirstMediaUrl('videos');
-                    $active = $project->project_id === $currentProject->project_id;
+                    $active = (int) $project->getKey() === (int) $currentProject->getKey();
                     $projectDecision = $project->final_decision ?? null;
                 @endphp
 
-                <a href="{{ route('frontend.projects.show', $project) }}"
-                    class="block rounded-[2rem] overflow-hidden transition border {{ $active ? 'border-brand-accent shadow-brand-soft' : 'border-theme-border theme-panel hover:border-brand-accent/40' }}">
-                    <div class="h-44 bg-theme-surface-2 relative">
-                        @if($thumb)
-                        <img src="{{ $thumb }}" class="w-full h-full object-cover"
-                            alt="{{ __('frontend.academic_dashboard.project_thumbnail') }}">
-                        @else
-                        <div class="w-full h-full flex items-center justify-center text-theme-muted">
-                            <div class="text-center">
-                                <i class="fas fa-image text-3xl mb-2"></i>
-                                <div class="text-xs uppercase tracking-[0.2em] font-black">{{ __('frontend.academic_dashboard.no_image') }}</div>
-                            </div>
-                        </div>
-                        @endif
+@php
+    $images = $project->getMedia('images')->take(4)->map(fn($media) => $media->getUrl())->values();
+    $videoUrl = $project->getFirstMediaUrl('videos');
+    $detailsUrl = route('frontend.projects.show', $project->project_id);
 
-                        <div class="absolute top-4 left-4 flex gap-2 flex-wrap max-w-[calc(100%-2rem)]">
-                            <span class="px-3 py-1 rounded-xl bg-brand-accent-soft text-brand-accent text-[10px] font-black uppercase tracking-[0.15em] border border-brand-accent">
-                                {{ $project->category ?? __('frontend.academic_dashboard.general') }}
-                            </span>
-                            @if($hasVideo)
-                            <span class="px-3 py-1 rounded-xl bg-theme-surface text-theme-text text-[10px] font-black uppercase tracking-[0.15em] border border-theme-border">
-                                {{ __('frontend.academic_dashboard.video') }}
-                            </span>
-                            @endif
-                        </div>
-                    </div>
+    $projectPayload = [
+        'id' => $project->project_id,
+        'ref' => 'PRJ-' . ($project->project_id + 1000),
+        'name' => $project->name,
+        'category' => $project->category ?? __('frontend.academic_dashboard.general'),
+        'budget' => '$' . number_format($project->budget ?? 0),
+        'date' => optional($project->created_at)->format('M d, Y'),
+        'status' => $decisionLabel($projectDecision) ?? ($project->status === 'pending' ? __('frontend.academic_dashboard.reviewing') : ucfirst($project->status)),
+        'images' => $images,
+        'image_count' => $imgCount,
+        'video_url' => $videoUrl,
+        'has_video' => (bool) $videoUrl,
+        'details_url' => $detailsUrl,
+        'scan_state' => strtolower((string) ($project->status ?? $project->scanner_status ?? 'draft')),
+'final_decision' => $project->final_decision,
+'scanner_url' => env('SCANNER_PUBLIC_BASE_URL') . '/submit?data=' . urlencode(base64_encode(json_encode([
+    'platform_project_id' => $project->project_id,
+    'project_name' => $project->name,
+    'student_name' => $user->name,
+    'student_email' => $user->email,
+    'language' => $project->language ?? $project->primary_language ?? 'php',
+]))),
+    ];
 
-                    <div class="p-6">
-                        <div class="flex items-center justify-between gap-3 mb-2">
-                            <span class="text-theme-muted text-xs font-mono">PRJ-{{ $project->project_id + 1000 }}</span>
-                            <span class="text-theme-muted text-xs font-mono">{{ $project->created_at?->format('M d, Y') }}</span>
-                        </div>
+    $projectPayloadB64 = base64_encode(json_encode($projectPayload));
+@endphp
 
-                        <h3 class="text-theme-text text-lg font-black leading-tight mb-3">
-                            {{ \Illuminate\Support\Str::limit($project->name, 60) }}
-                        </h3>
+<div
+    role="button"
+    tabindex="0"
+    data-project-b64="{{ $projectPayloadB64 }}"
+    onclick="previewDashboardProject(this)"
+    onkeydown="if(event.key === 'Enter'){ previewDashboardProject(this); }"
+    class="dashboard-project-card cursor-pointer block rounded-[2rem] overflow-hidden transition border {{ $active ? 'is-active border-brand-accent shadow-brand-soft' : 'border-theme-border theme-panel hover:border-brand-accent/40' }}"
+>
+    <div class="h-44 bg-theme-surface-2 relative">
+        @if($thumb)
+        <img src="{{ $thumb }}" class="w-full h-full object-cover"
+            alt="{{ __('frontend.academic_dashboard.project_thumbnail') }}">
+        @else
+        <div class="w-full h-full flex items-center justify-center text-theme-muted">
+            <div class="text-center">
+                <i class="fas fa-image text-3xl mb-2"></i>
+                <div class="text-xs uppercase tracking-[0.2em] font-black">{{ __('frontend.academic_dashboard.no_image') }}</div>
+            </div>
+        </div>
+        @endif
 
-                        <div class="flex items-center justify-between gap-4 text-sm">
-                            <div class="text-theme-muted">
-                                <span>{{ __('frontend.academic_dashboard.images') }}:</span>
-                                <span class="font-bold text-theme-text">{{ $imgCount }}</span>
-                            </div>
-                            <div class="text-theme-muted text-end">
-                                <span>{{ __('frontend.academic_dashboard.status') }}:</span>
-                                <span class="font-bold text-theme-text">
-                                    {{ $decisionLabel($projectDecision) ?? ($project->status === 'pending' ? __('frontend.academic_dashboard.reviewing') : ucfirst($project->status)) }}
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </a>
+        <div class="absolute top-4 left-4 flex gap-2 flex-wrap max-w-[calc(100%-2rem)]">
+            <span class="px-3 py-1 rounded-xl bg-brand-accent-soft text-brand-accent text-[10px] font-black uppercase tracking-[0.15em] border border-brand-accent">
+                {{ $project->category ?? __('frontend.academic_dashboard.general') }}
+            </span>
+
+            @if($hasVideo)
+            <span class="px-3 py-1 rounded-xl bg-theme-surface text-theme-text text-[10px] font-black uppercase tracking-[0.15em] border border-theme-border">
+                {{ __('frontend.academic_dashboard.video') }}
+            </span>
+            @endif
+        </div>
+    </div>
+
+    <div class="p-6">
+        <div class="flex items-center justify-between gap-3 mb-2">
+            <span class="text-theme-muted text-xs font-mono">PRJ-{{ $project->project_id + 1000 }}</span>
+            <span class="text-theme-muted text-xs font-mono">{{ $project->created_at?->format('M d, Y') }}</span>
+        </div>
+
+        <h3 class="text-theme-text text-lg font-black leading-tight mb-3">
+            {{ \Illuminate\Support\Str::limit($project->name, 60) }}
+        </h3>
+
+        <div class="flex items-center justify-between gap-4 text-sm mb-5">
+            <div class="text-theme-muted">
+                <span>{{ __('frontend.academic_dashboard.images') }}:</span>
+                <span class="font-bold text-theme-text">{{ $imgCount }}</span>
+            </div>
+
+            <div class="text-theme-muted text-end">
+                <span>{{ __('frontend.academic_dashboard.status') }}:</span>
+                <span class="font-bold text-theme-text">
+                    {{ $decisionLabel($projectDecision) ?? ($project->status === 'pending' ? __('frontend.academic_dashboard.reviewing') : ucfirst($project->status)) }}
+                </span>
+            </div>
+        </div>
+
+<div class="flex gap-3">
+<button type="button"
+    onclick="event.preventDefault(); event.stopPropagation(); previewDashboardProject(this.closest('.dashboard-project-card'));"
+    class="preview-project-btn flex-1 inline-flex items-center justify-center rounded-2xl px-4 py-3 bg-theme-surface-2 border border-theme-border text-theme-text font-black text-xs uppercase tracking-wider hover:bg-brand-accent-soft transition">
+    {{ __('frontend.academic_dashboard.preview') }}
+</button>
+
+<a href="{{ $detailsUrl }}"
+    class="project-details-link flex-1 inline-flex items-center justify-center rounded-2xl px-4 py-3 bg-brand-accent text-white font-black text-xs uppercase tracking-wider hover:bg-brand-accent-strong transition">
+    {{ __('frontend.academic_dashboard.details') }}
+</a>
+</div>
+    </div>
+</div>
                 @endforeach
             </div>
         </section>
@@ -833,41 +889,7 @@
     document.addEventListener('DOMContentLoaded', function () {
         const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-        if (!document.getElementById('vg-academic-dashboard-style')) {
-            const style = document.createElement('style');
-            style.id = 'vg-academic-dashboard-style';
-            style.innerHTML = `
-                @keyframes spin-slow {
-                    from { transform: rotate(0deg); }
-                    to { transform: rotate(360deg); }
-                }
-
-                @keyframes vgSpin {
-                    from { transform: rotate(0deg); }
-                    to { transform: rotate(360deg); }
-                }
-
-                .animate-spin-slow {
-                    animation: spin-slow 8s linear infinite;
-                }
-
-                .vg-progress-line {
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    height: 3px;
-                    width: 0%;
-                    z-index: 9999;
-                    pointer-events: none;
-                    background: linear-gradient(90deg, rgba(99,102,241,0.98), rgba(34,197,94,0.98));
-                    box-shadow: 0 0 18px rgba(99,102,241,0.28);
-                    transition: width 0.08s linear;
-                }
-            `;
-            document.head.appendChild(style);
-        }
-
-        const progress = document.createElement('div');
+ const progress = document.createElement('div');
         progress.className = 'vg-progress-line';
         document.body.appendChild(progress);
 
@@ -1389,7 +1411,131 @@ ${deploymentNotes || '{{ __('frontend.academic_dashboard.no_deployment_notes') }
         });
 
         form.submit();
+    };
+
+function selectDashboardProject(project, card) {
+    const hero = document.getElementById('dashboardHero');
+
+    document.getElementById('heroCategory').textContent = project.category || 'General';
+    document.getElementById('heroRef').textContent = project.ref;
+    document.getElementById('heroTitle').textContent = project.name;
+    document.getElementById('heroBudget').textContent = project.budget;
+    document.getElementById('heroDate').textContent = project.date || '';
+    document.getElementById('heroStatus').textContent = project.status;
+    document.getElementById('heroImageCount').textContent = project.image_count || 0;
+    document.getElementById('heroVideoStatus').textContent = project.has_video ? '{{ __('frontend.academic_dashboard.yes') }}' : '{{ __('frontend.academic_dashboard.no') }}';
+
+    const detailsBtn = document.getElementById('heroDetailsBtn');
+    if (detailsBtn) {
+        detailsBtn.href = project.details_url;
     }
+
+    const imagesWrap = document.getElementById('heroImages');
+
+    if (project.images && project.images.length > 0) {
+        let imagesHtml = '<div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">';
+
+        project.images.forEach(function (url) {
+            imagesHtml += `
+                <a href="${url}" target="_blank"
+                    class="project-preview-link relative overflow-hidden rounded-2xl border border-theme-border bg-theme-surface-2 transition">
+                    <img src="${url}" class="w-full h-24 sm:h-28 object-cover" alt="Project image">
+                </a>
+            `;
+        });
+
+        imagesHtml += '</div>';
+        imagesWrap.innerHTML = imagesHtml;
+    } else {
+        imagesWrap.innerHTML = `
+            <div class="p-5 rounded-2xl border border-theme-border bg-theme-surface-2 text-theme-muted text-sm">
+                {{ __('frontend.academic_dashboard.no_images_uploaded_yet') }}
+            </div>
+        `;
+    }
+
+    const videoWrap = document.getElementById('heroVideoWrap');
+
+    if (project.video_url) {
+        videoWrap.innerHTML = `
+            <button type="button" onclick="openVideoModal('${project.video_url}')"
+                class="mt-4 w-full flex items-center justify-between gap-4 p-5 bg-theme-surface-2 hover:bg-brand-accent-soft border border-theme-border rounded-2xl transition-all text-theme-text">
+                <span class="font-bold text-xs uppercase tracking-wider">{{ __('frontend.academic_dashboard.play_video') }}</span>
+                <i class="fas fa-play text-brand-accent"></i>
+            </button>
+        `;
+    } else {
+        videoWrap.innerHTML = '';
+    }
+
+    const scanWrap = document.getElementById('heroScanWrap');
+
+    if (scanWrap) {
+        const isPublished = project.final_decision === 'published' || project.scan_state === 'published';
+
+        if (isPublished) {
+            scanWrap.innerHTML = `
+                <div class="flex items-center justify-between gap-4 p-4 bg-theme-surface-2 border border-theme-border rounded-2xl text-theme-muted opacity-70 cursor-not-allowed">
+                    <div>
+                        <span class="block font-black uppercase text-xs tracking-wider">
+                            {{ __('frontend.academic_dashboard.technical_scan') }}
+                        </span>
+                        <span class="text-xs opacity-80">
+                            {{ __('frontend.academic_dashboard.scan_disabled_published') }}
+                        </span>
+                    </div>
+                    <i class="fas fa-lock text-theme-muted"></i>
+                </div>
+            `;
+        } else {
+            scanWrap.innerHTML = `
+                <a href="${project.scanner_url}"
+                    class="flex items-center justify-between gap-4 p-4 bg-blue-600 text-white rounded-2xl transition-all hover:bg-blue-700 group">
+                    <div>
+                        <span class="block font-black uppercase text-xs tracking-wider">
+                            {{ __('frontend.academic_dashboard.technical_scan') }}
+                        </span>
+                        <span class="text-xs opacity-80">
+                            {{ __('frontend.academic_dashboard.scan_now_question') }}
+                        </span>
+                    </div>
+                    <i class="fas fa-microscope group-hover:scale-110 transition-transform"></i>
+                </a>
+            `;
+        }
+    }
+
+    document.querySelectorAll('.dashboard-project-card').forEach(function (item) {
+    item.classList.remove('is-active', 'border-brand-accent', 'shadow-brand-soft');
+    item.classList.add('border-theme-border');
+    item.style.borderColor = '';
+});
+
+if (card) {
+    card.classList.add('is-active', 'border-brand-accent', 'shadow-brand-soft');
+    card.classList.remove('border-theme-border');
+    card.style.borderColor = '#22d3ee';
+}
+
+if (hero) {
+    const y = hero.offsetTop - 120;
+
+    window.scrollTo({
+        top: y,
+        behavior: 'smooth'
+    });
+}
+}
+function decodeProjectCard(card) {
+    return JSON.parse(atob(card.dataset.projectB64));
+}
+
+function previewDashboardProject(card) {
+    if (!card) return;
+
+    const project = decodeProjectCard(card);
+    selectDashboardProject(project, card);
+}
 </script>
 
 @endsection
