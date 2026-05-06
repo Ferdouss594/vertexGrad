@@ -307,7 +307,7 @@ const daysOfWeek = [
             }
             calendarContent.appendChild(daysContainer);
         } else if(currentView==='week'){
-            label.innerText=`${__('backend.platform_calendar.week_of')} ${months[currentMonth]} ${currentYear}`;
+            label.innerText=`${@json(__('backend.platform_calendar.week_of'))} ${months[currentMonth]} ${currentYear}`;
             const weekRow=document.createElement('div');
             weekRow.className='week-row';
             for(let i=1;i<=7;i++){
@@ -323,7 +323,7 @@ const daysOfWeek = [
             }
             calendarContent.appendChild(weekRow);
         } else {
-            label.innerText=`${__('backend.platform_calendar.day_of')} ${months[currentMonth]} ${currentYear}`;
+            label.innerText=`${@json(__('backend.platform_calendar.day_of'))} ${months[currentMonth]} ${currentYear}`;
             const dayDiv=document.createElement('div');
             dayDiv.className='day-view';
             const key=`${currentYear}-${String(currentMonth+1).padStart(2,'0')}-01`;
