@@ -63,7 +63,7 @@
 @extends('frontend.layouts.app')
 @section('title', __('frontend.submit_review.page_title') . ' | ' . config('app.name'))
 @section('meta_description', __('frontend.submit_review.page_subtitle'))
-@section('canonical', route('project.submit.review'))
+@section('canonical', route('project.submit.final'))
 @section('robots', 'noindex, nofollow')
 @section('content')
 <div class="min-h-screen py-10 sm:py-14 lg:py-16 bg-theme-bg transition-colors duration-300 overflow-x-hidden">
