@@ -316,14 +316,6 @@
                 <div class="d-flex flex-wrap" style="gap: 10px;">
                     <a href="{{ route('admin.investors.index') }}" class="btn-back"><i class="fa fa-arrow-left mr-1"></i> {{ __('backend.investors_show.back') }}</a>
                     <a href="{{ route('admin.investment-requests.index', ['search' => $investor->user?->email]) }}" class="btn-back"><i class="fa fa-hand-holding-usd mr-1"></i> {{ __('backend.investors_show.requests') }}</a>
-                    <a href="{{ route('admin.investors.report', $investor->user_id) }}" class="btn-back"><i class="fa fa-chart-bar mr-1"></i> {{ __('backend.investors_show.report') }}</a>
-                    <a href="{{ route('admin.investors.meetings.index', $investor->user_id) }}" class="btn-back"><i class="fa fa-calendar-alt mr-1"></i> {{ __('backend.investors_show.meetings') }}</a>
-                    <a href="{{ route('admin.investors.contracts.index', $investor->user_id) }}" class="btn-back"><i class="fa fa-file-contract mr-1"></i> {{ __('backend.investors_show.contracts') }}</a>
-                    <a href="{{ route('admin.investors.email.create', $investor->user_id) }}" class="btn-back"><i class="fa fa-envelope mr-1"></i> {{ __('backend.investors_show.email') }}</a>
-                    <a href="{{ route('admin.investors.preferences.edit', $investor->user_id) }}" class="btn-back"><i class="fa fa-sliders-h mr-1"></i> {{ __('backend.investors_show.preferences') }}</a>
-                    <a href="{{ route('admin.investors.reminders.index', $investor->user_id) }}" class="btn-back"><i class="fa fa-bell mr-1"></i> {{ __('backend.investors_show.reminders') }}</a>
-                    <a href="{{ route('admin.investors.notify.create',$investor->user_id) }}" class="btn-back"><i class="fa fa-bell mr-1"></i> {{ __('backend.investors_show.notify') }}</a>
-                    <a href="{{ route('admin.investors.edit', $investor->user_id) }}" class="btn-edit"><i class="fa fa-pencil-alt mr-1"></i> {{ __('backend.investors_show.edit_investor') }}</a>
                 </div>
             </div>
         </div>
