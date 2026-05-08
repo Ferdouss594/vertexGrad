@@ -15,7 +15,9 @@ class UsersSeeder extends Seeder
     {
 
         // // مستخدم طالب
-        User::create([
+        User::query()->updateOrCreate([
+            'email' => 'student1@example.com'
+        ],[
             'username' => 'student1',
             'name' => 'Student One',
             'email' => 'student1@example.com',
@@ -27,7 +29,9 @@ class UsersSeeder extends Seeder
         ]);
 
         // // مستخدم مشرف
-        User::create([
+        User::query()->updateOrCreate([
+            'email' => 'supervisor1@example.com'
+        ],[
             'username' => 'supervisor1',
             'name' => 'Supervisor One',
             'email' => 'supervisor1@example.com',
@@ -39,7 +43,9 @@ class UsersSeeder extends Seeder
         ]);
 
         // // مستخدم مستثمر
-        User::create([
+        User::query()->updateOrCreate([
+            'email' => 'investor1@example.com'
+        ],[
             'username' => 'investor1',
             'name' => 'Investor One',
             'email' => 'investor1@example.com',
