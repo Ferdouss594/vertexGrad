@@ -837,22 +837,35 @@
                                                 <i class="bi bi-pencil-square"></i>
                                             </a>
 
-                                            @if($profile->trashed())
-                                                <form action="{{ route('admin.investors.restore', $profile->user_id) }}" method="POST" class="d-inline">
-                                                    @csrf
-                                                    <button type="submit" class="action-btn btn-restore" title="{{ __('backend.investors_index.restore') }}">
-                                                        <i class="bi bi-arrow-counterclockwise"></i>
-                                                    </button>
-                                                </form>
-                                            @else
-                                                <form action="{{ route('admin.investors.destroy', $profile->user_id) }}" method="POST" class="d-inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="action-btn btn-delete" onclick="return confirm('{{ __('backend.investors_index.confirm_delete') }}')" title="{{ __('backend.investors_index.delete') }}">
-                                                        <i class="bi bi-trash"></i>
-                                                    </button>
-                                                </form>
-                                            @endif
+   @if($profile->trashed())
+    <form action="{{ route('admin.investors.restore', $profile->user_id) }}" method="POST" class="d-inline">
+        @csrf
+        <button type="submit" class="action-btn btn-restore" title="{{ __('backend.investors_index.restore') }}">
+            <i class="bi bi-arrow-counterclockwise"></i>
+        </button>
+    </form>
+
+    <form action="{{ route('admin.investors.forceDelete', $profile->user_id) }}" method="POST" class="d-inline">
+        @csrf
+        @method('DELETE')
+        <button
+            type="submit"
+            class="action-btn btn-delete"
+            onclick="return confirm('{{ __('backend.investors_index.confirm_force_delete') }}')"
+            title="{{ __('backend.investors_index.permanent_delete') }}"
+        >
+            <i class="bi bi-x-circle-fill"></i>
+        </button>
+    </form>
+@else
+    <form action="{{ route('admin.investors.destroy', $profile->user_id) }}" method="POST" class="d-inline">
+        @csrf
+        @method('DELETE')
+        <button type="submit" class="action-btn btn-delete" onclick="return confirm('{{ __('backend.investors_index.confirm_delete') }}')" title="{{ __('backend.investors_index.delete') }}">
+            <i class="bi bi-trash"></i>
+        </button>
+    </form>
+@endif
                                         @endif
                                     </div>
                                 </td>

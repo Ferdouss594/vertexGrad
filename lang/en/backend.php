@@ -2372,6 +2372,8 @@ return [
     'processing' => 'Processing...',
 ],
 'investors_index' => [
+    'permanent_delete' => 'Permanent Delete',
+'confirm_force_delete' => 'Are you sure? This will permanently delete this investor and cannot be undone.',
         'filters' => 'Filters',
     'filters_subtitle' => 'Search and navigate active, archived, or all investors.',
     'active_investors' => 'Active Investors',

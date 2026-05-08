@@ -1,6 +1,7 @@
 @php
     $transitionBase = config('design.classes.transition_base');
     $user = auth('web')->user();
+    
     $isLoggedIn = auth('web')->check();
 
     if ($user) {
@@ -26,6 +27,7 @@
     $currentLocale = app()->getLocale();
     $nextLocale = $currentLocale === 'ar' ? 'en' : 'ar';
     $languageLabel = $currentLocale === 'ar' ? 'English' : 'العربية';
+    $localeVersion = $currentLocale;
 @endphp
 
 <style>
@@ -110,6 +112,7 @@
 <header
     class="w-full fixed top-0 inset-x-0 z-50 border-b header-shell transition-colors duration-300"
     x-data="{ mobileOpen: false }"
+    data-current-locale="{{ $currentLocale }}"
 >
     <div class="max-w-6xl mx-auto px-3 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-2 sm:gap-3 lg:gap-5">
 
@@ -198,8 +201,9 @@
             </div>
 
             {{-- LANGUAGE SWITCHER --}}
-            <a
-                href="{{ route('frontend.language.switch', $nextLocale) }}"
+<a
+    href="{{ route('frontend.language.switch', $nextLocale) }}"
+    onclick="localStorage.setItem('vertexgrad_locale', '{{ $nextLocale }}')"
                 class="h-10 px-3 xl:px-4 rounded-xl border border-theme-border bg-theme-surface text-theme-text hover-border-brand-accent hover-text-brand-accent transition-all text-[11px] font-black uppercase tracking-widest shadow-brand-soft inline-flex items-center justify-center whitespace-nowrap"
             >
                 {{ $languageLabel }}
@@ -354,8 +358,9 @@
 
         {{-- TABLET / MOBILE ACTIONS --}}
         <div class="vg-mobile-header-actions flex items-center gap-2 shrink-0">
-            <a
-                href="{{ route('frontend.language.switch', $nextLocale) }}"
+   <a
+    href="{{ route('frontend.language.switch', $nextLocale) }}"
+    onclick="localStorage.setItem('vertexgrad_locale', '{{ $nextLocale }}')"
                 class="hidden sm:inline-flex min-w-[74px] h-10 px-3 rounded-xl border border-theme-border bg-theme-surface text-theme-text items-center justify-center shadow-brand-soft text-[11px] font-black uppercase tracking-widest hover-border-brand-accent hover-text-brand-accent transition-all"
             >
                 {{ $languageLabel }}
@@ -440,8 +445,9 @@
             </nav>
 
             <div class="grid grid-cols-2 gap-2">
-                <a
-                    href="{{ route('frontend.language.switch', $nextLocale) }}"
+               <a
+    href="{{ route('frontend.language.switch', $nextLocale) }}"
+    onclick="localStorage.setItem('vertexgrad_locale', '{{ $nextLocale }}')"
                     class="h-11 px-4 rounded-2xl border border-theme-border bg-theme-bg/40 text-theme-text flex items-center justify-center shadow-brand-soft text-[11px] font-black uppercase tracking-widest hover-border-brand-accent hover-text-brand-accent transition-all"
                 >
                     {{ $languageLabel }}
@@ -637,5 +643,17 @@
     } else {
         initVertexHeader();
     }
+
+    window.addEventListener('pageshow', function (event) {
+    const header = document.querySelector('header.header-shell');
+    if (!header) return;
+
+    const pageLocale = header.dataset.currentLocale;
+    const savedLocale = localStorage.getItem('vertexgrad_locale');
+
+    if (savedLocale && pageLocale && savedLocale !== pageLocale) {
+        window.location.reload();
+    }
+});
 })();
 </script>
