@@ -74,12 +74,27 @@
                 </div>
             </div>
         </header>
+@if (session('status'))
+    <div
+        data-alert-box
+        class="security-reveal relative pointer-events-auto rounded-2xl border border-green-500/40 bg-green-500/10 text-green-600 shadow-brand-soft overflow-hidden"
+    >
+        <button
+            type="button"
+            data-alert-close
+            class="absolute z-30 top-1/2 -translate-y-1/2 ltr:right-4 rtl:left-4
+                   w-9 h-9 rounded-full flex items-center justify-center
+                   bg-white/10 hover:bg-white/20 text-green-500 transition cursor-pointer"
+            aria-label="Close"
+        >
+            <span class="text-xl leading-none">&times;</span>
+        </button>
 
-        @if (session('status'))
-            <div class="security-reveal p-4 rounded-2xl border border-green-500/40 bg-green-500/10 text-green-600 shadow-brand-soft">
-                {{ session('status') }}
-            </div>
-        @endif
+        <div class="px-5 py-4 ltr:pr-16 rtl:pl-16 text-start">
+            {{ session('status') }}
+        </div>
+    </div>
+@endif
 
         @if ($errors->any())
             <div class="security-reveal p-5 rounded-2xl border border-red-500/40 bg-red-500/10 text-red-600 shadow-brand-soft">
@@ -239,31 +254,21 @@
                 </div>
             </div>
 
-            @if (session('recovery_codes'))
-                <div class="mb-6 rounded-2xl border border-yellow-500/30 bg-yellow-500/10 p-5">
-                    <div class="text-sm font-bold text-yellow-700 mb-3">
-                        {{ __('frontend.security.recovery_codes_saved_once') }}
-                    </div>
+@if (!empty($plainRecoveryCodes))
+    <div class="mb-6 rounded-2xl border border-yellow-500/30 bg-yellow-500/10 p-5">
+        <div class="text-sm font-bold text-yellow-700 mb-3">
+            {{ __('frontend.security.recovery_codes_saved_once') }}
+        </div>
 
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        @foreach (session('recovery_codes') as $code)
-                            <div class="rounded-xl bg-theme-surface-2 border border-theme-border px-4 py-3 font-mono text-theme-text break-all">
-                                {{ $code }}
-                            </div>
-                        @endforeach
-                    </div>
-
-                    <div class="mt-4 flex flex-wrap gap-3">
-                        <a href="{{ route('security.recovery-codes.download') }}"
-                           class="inline-flex items-center justify-center gap-2 rounded-2xl px-5 py-3 text-sm font-black uppercase tracking-[0.14em] border border-theme-border text-theme-text hover:bg-theme-surface-2 transition">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v12m0 0 4-4m-4 4-4-4M4 21h16" />
-                            </svg>
-                            <span>{{ __('frontend.security.download_recovery_codes') }}</span>
-                        </a>
-                    </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            @foreach ($plainRecoveryCodes as $code)
+                <div class="rounded-xl bg-theme-surface-2 border border-theme-border px-4 py-3 font-mono text-theme-text break-all">
+                    {{ $code }}
                 </div>
-            @endif
+            @endforeach
+        </div>
+    </div>
+@endif
 
             <form method="POST" action="{{ route('security.recovery-codes.regenerate') }}" onsubmit="return confirm(@js(__('frontend.security.confirm_regenerate_recovery_codes')))">
                 @csrf
@@ -399,5 +404,18 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+</script>
+<script>
+    document.addEventListener('click', function (event) {
+        const closeButton = event.target.closest('[data-alert-close]');
+
+        if (!closeButton) return;
+
+        const alertBox = closeButton.closest('[data-alert-box]');
+
+        if (alertBox) {
+            alertBox.remove();
+        }
+    });
 </script>
 @endsection

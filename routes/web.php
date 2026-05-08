@@ -154,9 +154,6 @@ Route::middleware(['web', 'frontend.locale'])->group(function () {
         Route::post('/login/otp', [LoginOtpController::class, 'verify'])->name('login.otp.verify');
         Route::post('/login/otp/resend', [LoginOtpController::class, 'resend'])->middleware('throttle:6,1')->name('login.otp.resend');
         Route::post('/login/otp/recovery', [LoginOtpController::class, 'verifyRecoveryCode'])->middleware('throttle:6,1')->name('login.otp.recovery');
-
-        Route::get('/recovery-codes/download', [SecurityController::class, 'downloadRecoveryCodes'])->name('recovery-codes.download');
-
         Route::get('/register', fn () => view('frontend.auth.register'))->name('register.show');
         Route::get('/register/investor', fn () => view('frontend.auth.register_investor'))->name('register.investor');
         Route::post('/register/investor', [FrontendAuth::class, 'registerInvestor'])->name('register.investor.post');

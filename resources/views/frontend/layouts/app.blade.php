@@ -7,6 +7,7 @@
 <head>
     @php
         $siteName = config('app.name', 'VertexGrad');
+
         $defaultTitle = __('frontend.seo.default_title') !== 'frontend.seo.default_title'
             ? __('frontend.seo.default_title')
             : $siteName . ' | Academic Innovation & Investment Platform';
@@ -53,11 +54,7 @@
     <meta name="twitter:description" content="{{ $pageDescription }}">
     <meta name="twitter:image" content="{{ $ogImage }}">
 
-    @if(app()->getLocale() === 'ar')
-        <link rel="alternate" hreflang="ar" href="{{ $canonicalUrl }}">
-    @else
-        <link rel="alternate" hreflang="en" href="{{ $canonicalUrl }}">
-    @endif
+    <link rel="alternate" hreflang="{{ app()->getLocale() === 'ar' ? 'ar' : 'en' }}" href="{{ $canonicalUrl }}">
     <link rel="alternate" hreflang="x-default" href="{{ $canonicalUrl }}">
 
     @yield('structured_data')
@@ -85,6 +82,7 @@
             object-fit: contain !important;
             flex-shrink: 0 !important;
             display: block !important;
+            transition: transform 0.2s ease;
         }
 
         img.brand-logo:hover {
@@ -105,66 +103,80 @@
 </head>
 
 <body class="min-h-screen overflow-x-hidden transition-colors duration-300 bg-theme-bg text-theme-text antialiased">
+
     <x-header />
 
-@if (session('success') || session('error'))
-    <div class="fixed top-24 inset-x-0 z-50 px-4 pointer-events-none">
-        <div class="max-w-5xl mx-auto space-y-3">
+    @if (session('success') || session('error'))
+        <div class="fixed top-24 inset-x-0 z-50 px-4 pointer-events-none">
+            <div class="max-w-5xl mx-auto space-y-3">
 
-            @if (session('success'))
-                <div
-                    class="relative pointer-events-auto rounded-2xl alert-success-theme shadow-xl backdrop-blur overflow-hidden">
-
-                    <button
-                        type="button"
-                        onclick="this.closest('.relative').remove()"
-                        class="absolute z-20 top-1/2 -translate-y-1/2 ltr:right-4 rtl:left-4
-                               w-9 h-9 rounded-full
-                               flex items-center justify-center
-                               bg-white/10 hover:bg-white/20
-                               text-white transition"
-                        aria-label="Close"
+                @if (session('success'))
+                    <div
+                        data-alert-box
+                        class="relative pointer-events-auto rounded-2xl alert-success-theme shadow-xl backdrop-blur overflow-hidden"
                     >
-                        <i class="fas fa-times text-sm"></i>
-                    </button>
+                        <button
+                            type="button"
+                            data-alert-close
+                            class="absolute z-30 top-1/2 -translate-y-1/2 ltr:right-4 rtl:left-4
+                                   w-9 h-9 rounded-full flex items-center justify-center
+                                   bg-white/10 hover:bg-white/20 text-white transition cursor-pointer"
+                            aria-label="Close"
+                        >
+                            <span class="text-xl leading-none">&times;</span>
+                        </button>
 
-                    <div class="px-6 py-5 ltr:pr-16 rtl:pl-16 text-start text-white text-base leading-relaxed">
-                        {{ session('success') }}
+                        <div class="px-6 py-5 ltr:pr-16 rtl:pl-16 text-start text-white text-base leading-relaxed">
+                            {{ session('success') }}
+                        </div>
                     </div>
-                </div>
-            @endif
+                @endif
 
-            @if (session('error'))
-                <div
-                    class="relative pointer-events-auto rounded-2xl alert-error-theme shadow-xl backdrop-blur overflow-hidden">
-
-                    <button
-                        type="button"
-                        onclick="this.closest('.relative').remove()"
-                        class="absolute z-20 top-1/2 -translate-y-1/2 ltr:right-4 rtl:left-4
-                               w-9 h-9 rounded-full
-                               flex items-center justify-center
-                               bg-white/10 hover:bg-white/20
-                               text-white transition"
-                        aria-label="Close"
+                @if (session('error'))
+                    <div
+                        data-alert-box
+                        class="relative pointer-events-auto rounded-2xl alert-error-theme shadow-xl backdrop-blur overflow-hidden"
                     >
-                        <i class="fas fa-times text-sm"></i>
-                    </button>
+                        <button
+                            type="button"
+                            data-alert-close
+                            class="absolute z-30 top-1/2 -translate-y-1/2 ltr:right-4 rtl:left-4
+                                   w-9 h-9 rounded-full flex items-center justify-center
+                                   bg-white/10 hover:bg-white/20 text-white transition cursor-pointer"
+                            aria-label="Close"
+                        >
+                            <span class="text-xl leading-none">&times;</span>
+                        </button>
 
-                    <div class="px-6 py-5 ltr:pr-16 rtl:pl-16 text-start text-white text-base leading-relaxed">
-                        {{ session('error') }}
+                        <div class="px-6 py-5 ltr:pr-16 rtl:pl-16 text-start text-white text-base leading-relaxed">
+                            {{ session('error') }}
+                        </div>
                     </div>
-                </div>
-            @endif
+                @endif
 
+            </div>
         </div>
-    </div>
-@endif
+    @endif
 
     <main class="min-h-screen overflow-x-hidden">
         @yield('content')
     </main>
 
     <x-footer />
+
+    <script>
+        document.addEventListener('click', function (event) {
+            const closeButton = event.target.closest('[data-alert-close]');
+
+            if (!closeButton) return;
+
+            const alertBox = closeButton.closest('[data-alert-box]');
+
+            if (alertBox) {
+                alertBox.remove();
+            }
+        });
+    </script>
+
 </body>
 </html>

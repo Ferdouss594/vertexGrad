@@ -49,13 +49,14 @@ class SecurityController extends Controller
         $recoveryCodesCount = RecoveryCode::where('user_id', $user->id)
             ->whereNull('used_at')
             ->count();
-
-        return view('frontend.auth.security', compact(
-            'sessions',
-            'trustedDevices',
-            'recentActivities',
-            'recoveryCodesCount'
-        ));
+            $plainRecoveryCodes = $request->session()->get('recovery_codes_for_display');
+return view('frontend.auth.security', compact(
+    'sessions',
+    'trustedDevices',
+    'recentActivities',
+    'recoveryCodesCount',
+    'plainRecoveryCodes'
+));
     }
 
     public function revokeSession(Request $request, string $sessionId)
@@ -157,39 +158,64 @@ class SecurityController extends Controller
         return back()->with('status', 'Logged out from all other devices and cleared trusted devices.');
     }
 
-    public function regenerateRecoveryCodes(Request $request)
-    {
-        $user = $request->user();
+  public function regenerateRecoveryCodes(Request $request): StreamedResponse
+{
+    $user = $request->user();
 
-        $plainCodes = RecoveryCodeService::regenerateFor($user);
+    $plainCodes = collect(RecoveryCodeService::regenerateFor($user))
+        ->values()
+        ->all();
 
-        SecurityActivityLogger::log(
-            $user->id,
-            'recovery_codes_regenerated',
-            $request,
-            true
-        );
+    SecurityActivityLogger::log(
+        $user->id,
+        'recovery_codes_regenerated',
+        $request,
+        true
+    );
 
-        return redirect()
-            ->route('security.index')
-            ->with('status', 'Recovery codes regenerated successfully.')
-            ->with('recovery_codes', $plainCodes);
-    }
+    SecurityActivityLogger::log(
+        $user->id,
+        'recovery_codes_downloaded',
+        $request,
+        true
+    );
 
+    $filename = 'vertexgrad-recovery-codes-' . now()->format('Y-m-d-H-i') . '.txt';
+
+    return response()->streamDownload(function () use ($user, $plainCodes) {
+        echo "VertexGrad Recovery Codes\n";
+        echo "User: {$user->email}\n";
+        echo "Generated At: " . now()->toDateTimeString() . "\n";
+        echo "----------------------------------------\n";
+        echo "Each code can be used once only.\n";
+        echo "Store these codes in a safe place.\n";
+        echo "----------------------------------------\n\n";
+
+        foreach ($plainCodes as $code) {
+            echo $code . "\n";
+        }
+
+        echo "\n----------------------------------------\n";
+        echo "If you regenerate recovery codes, old unused codes will be replaced.\n";
+    }, $filename, [
+        'Content-Type' => 'text/plain; charset=UTF-8',
+    ]);
+}
     public function downloadRecoveryCodes(Request $request): StreamedResponse
     {
         $user = $request->user();
 
-        $codes = session('recovery_codes');
+$codes = $request->session()->pull('recovery_codes_for_download');
 
-        if (! is_array($codes) || empty($codes)) {
+if (empty($codes)) {
             return response()->streamDownload(function () {
                 echo "No new recovery codes are available to download.\n";
                 echo "Generate new recovery codes first, then download them immediately.\n";
             }, 'vertexgrad-recovery-codes.txt', [
                 'Content-Type' => 'text/plain; charset=UTF-8',
             ]);
-        }
+        } 
+        $request->session()->forget('recovery_codes_for_display');
 
         SecurityActivityLogger::log(
             $user->id,
