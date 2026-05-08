@@ -32,9 +32,18 @@
 @endphp
 
 <div
-    {{ $attributes->merge(['class' => "p-4 rounded-lg border-l-4 shadow-brand-soft transition duration-300 {$scheme['wrapper']}"]) }}
+    {{ $attributes->merge(['class' => "relative p-4 pr-12 rounded-lg border-l-4 shadow-brand-soft transition duration-300 {$scheme['wrapper']}"]) }}
     role="alert"
 >
+    <button
+        type="button"
+        onclick="this.closest('[role=alert]').remove()"
+        class="absolute top-3 right-3 text-theme-text/60 hover:text-theme-text transition text-lg leading-none"
+        aria-label="Close alert"
+    >
+        ×
+    </button>
+
     <div class="flex items-start">
         <div class="flex-shrink-0 mr-3 text-xl">
             <i class="{{ $scheme['icon'] }}"></i>

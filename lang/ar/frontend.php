@@ -648,6 +648,7 @@ return [
     'project_not_found_text' => 'تعذر جلب بيانات المشروع. يرجى المحاولة مرة أخرى.',
 ],
 'common' => [
+    'close' => 'إغلاق',
     'edit' => 'تعديل',
     'back' => 'رجوع',
     'save_continue' => 'حفظ ومتابعة',

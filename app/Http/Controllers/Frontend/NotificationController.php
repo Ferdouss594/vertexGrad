@@ -71,4 +71,13 @@ public function latest()
 
         return back();
     }
+    public function destroy($id)
+{
+    auth()->user()
+        ->notifications()
+        ->where('id', $id)
+        ->delete();
+
+    return back();
+}
 }

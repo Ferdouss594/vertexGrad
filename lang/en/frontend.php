@@ -597,6 +597,7 @@ return [
     'project_not_found_text' => "We couldn't retrieve the project data. Please try again.",
 ],
 'common' => [
+    'close' => 'Close',
     'edit' => 'Edit',
     'back' => 'Back',
     'save_continue' => 'Save & Continue',

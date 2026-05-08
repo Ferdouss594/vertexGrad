@@ -543,9 +543,9 @@
         </div>
     </div>
 </header>
-
 <script>
 (function () {
+    
     function initVertexHeader() {
         const header = document.querySelector('header.header-shell');
         if (!header) return;

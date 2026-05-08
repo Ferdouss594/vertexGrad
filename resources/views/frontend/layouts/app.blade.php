@@ -107,23 +107,59 @@
 <body class="min-h-screen overflow-x-hidden transition-colors duration-300 bg-theme-bg text-theme-text antialiased">
     <x-header />
 
-    @if (session('success') || session('error'))
-        <div class="fixed top-24 inset-x-0 z-50 px-4 pointer-events-none">
-            <div class="max-w-4xl mx-auto space-y-3">
-                @if (session('success'))
-                    <div class="pointer-events-auto p-4 rounded-2xl alert-success-theme shadow-xl backdrop-blur">
+@if (session('success') || session('error'))
+    <div class="fixed top-24 inset-x-0 z-50 px-4 pointer-events-none">
+        <div class="max-w-5xl mx-auto space-y-3">
+
+            @if (session('success'))
+                <div
+                    class="relative pointer-events-auto rounded-2xl alert-success-theme shadow-xl backdrop-blur overflow-hidden">
+
+                    <button
+                        type="button"
+                        onclick="this.closest('.relative').remove()"
+                        class="absolute z-20 top-1/2 -translate-y-1/2 ltr:right-4 rtl:left-4
+                               w-9 h-9 rounded-full
+                               flex items-center justify-center
+                               bg-white/10 hover:bg-white/20
+                               text-white transition"
+                        aria-label="Close"
+                    >
+                        <i class="fas fa-times text-sm"></i>
+                    </button>
+
+                    <div class="px-6 py-5 ltr:pr-16 rtl:pl-16 text-start text-white text-base leading-relaxed">
                         {{ session('success') }}
                     </div>
-                @endif
+                </div>
+            @endif
 
-                @if (session('error'))
-                    <div class="pointer-events-auto p-4 rounded-2xl alert-error-theme shadow-xl backdrop-blur">
+            @if (session('error'))
+                <div
+                    class="relative pointer-events-auto rounded-2xl alert-error-theme shadow-xl backdrop-blur overflow-hidden">
+
+                    <button
+                        type="button"
+                        onclick="this.closest('.relative').remove()"
+                        class="absolute z-20 top-1/2 -translate-y-1/2 ltr:right-4 rtl:left-4
+                               w-9 h-9 rounded-full
+                               flex items-center justify-center
+                               bg-white/10 hover:bg-white/20
+                               text-white transition"
+                        aria-label="Close"
+                    >
+                        <i class="fas fa-times text-sm"></i>
+                    </button>
+
+                    <div class="px-6 py-5 ltr:pr-16 rtl:pl-16 text-start text-white text-base leading-relaxed">
                         {{ session('error') }}
                     </div>
-                @endif
-            </div>
+                </div>
+            @endif
+
         </div>
-    @endif
+    </div>
+@endif
 
     <main class="min-h-screen overflow-x-hidden">
         @yield('content')

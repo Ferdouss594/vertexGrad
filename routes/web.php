@@ -327,6 +327,11 @@ Route::middleware(['web', 'frontend.locale'])->group(function () {
         Route::get('/projects/{project}/scanner-review', [ProjectController::class, 'scannerReview'])->name('projects.scannerReview');
         Route::post('/projects/{project}/start-scan', [ProjectController::class, 'startScan'])->name('projects.startScan');
     });
+    Route::delete('/notifications/{id}', function ($id) {
+    auth()->user()->notifications()->where('id', $id)->delete();
+
+    return response()->json(['success' => true]);
+})->name('notifications.delete');
 
     Route::get('/_debug/auth', function () {
         return response()->json([
