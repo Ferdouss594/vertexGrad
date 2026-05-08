@@ -415,18 +415,17 @@ Route::get('notifications/latest', [AdminNotificationController::class, 'latest'
         | Audit Logs
         |--------------------------------------------------------------------------
         */
-        Route::get('audit-logs', [AuditLogController::class, 'index'])
-            ->name('audit-logs.index')
-            ->middleware('permission:view_audit_logs');
+Route::get('audit-logs', [AuditLogController::class, 'index'])
+    ->name('audit-logs.index')
+    ->middleware('role:Manager');
 
-        Route::get('audit-logs/export/excel', [AuditLogController::class, 'exportExcel'])
-            ->name('audit.export.excel')
-            ->middleware('permission:view_audit_logs');
+Route::get('audit-logs/export/excel', [AuditLogController::class, 'exportExcel'])
+    ->name('audit.export.excel')
+    ->middleware('role:Manager');
 
-        Route::get('audit-logs/export/pdf', [AuditLogController::class, 'exportPdf'])
-            ->name('audit.export.pdf')
-            ->middleware('permission:view_audit_logs');
-
+Route::get('audit-logs/export/pdf', [AuditLogController::class, 'exportPdf'])
+    ->name('audit.export.pdf')
+    ->middleware('role:Manager');
         /*
         |--------------------------------------------------------------------------
         | Settings
